@@ -62,8 +62,8 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         public static bool HasDesignerFile(string prgPath)
         {
             if (string.IsNullOrEmpty(prgPath) ||
-                !string.Equals(Path.GetExtension(prgPath), ".prg", StringComparison.OrdinalIgnoreCase) ||
-                prgPath.EndsWith(".designer.prg", StringComparison.OrdinalIgnoreCase))
+                !string.Equals(Path.GetExtension(prgPath), Constants.SourceFileExtension, StringComparison.OrdinalIgnoreCase) ||
+                prgPath.EndsWith(Constants.DesignerExtension, StringComparison.OrdinalIgnoreCase))
             {
                 return false;
             }

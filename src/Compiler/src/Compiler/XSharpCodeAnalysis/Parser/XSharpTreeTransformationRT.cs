@@ -89,17 +89,6 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 _actualType = XSharpQualifiedTypeNames.ActualType;
                 _clipperCallingConvention = XSharpQualifiedTypeNames.ClipperCallingConvention;
             }
-            else
-            {
-                //_errorType = VulcanQualifiedTypeNames.Error;
-                //_wrappedExceptionType = VulcanQualifiedTypeNames.WrappedException;
-                //_classLibraryType = VulcanQualifiedTypeNames.ClassLibrary;
-                //_compilerVersionType = VulcanQualifiedTypeNames.CompilerVersion;
-                //_runtimeStateType = VulcanQualifiedTypeNames.RuntimeState;
-                //_defaultParameterType = VulcanQualifiedTypeNames.DefaultParameter;
-                //_actualType = VulcanQualifiedTypeNames.ActualType;
-                //_clipperCallingConvention = VulcanQualifiedTypeNames.ClipperCallingConvention;
-            }
 
             _literalSymbols = new Dictionary<string, FieldDeclarationSyntax>();
             _literalPSZs = new Dictionary<string, Tuple<string, FieldDeclarationSyntax>>();
@@ -3018,6 +3007,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             }
             if (hasPsz)
             {
+                bool isNet5 = _options.Net5orHigher;
+                TypeSyntax type = isNet5 ? StringType : IntPtrType;
 
                 var @params = new List<ParameterSyntax>();
                 for (int i = 0; i < parameters.Parameters.Count; i++)
@@ -3032,7 +3023,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                         var newParam = _syntaxFactory.Parameter(
                             attributeLists: GetActualArgs(),
                             modifiers: p.Modifiers,
-                            type: IntPtrType,
+                            type: type,
                             identifier: p.Identifier,
                             @default: p.Default
                             );

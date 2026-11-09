@@ -2,41 +2,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Tools.props" />
   <PropertyGroup>
-    <Name>RegisterProvider</Name>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>RegisterProvider</RootNamespace>
-    <TargetFramework>net472</TargetFramework>
-    <Dialect>Core</Dialect>
-    <Nostandarddefs>true</Nostandarddefs>
-    <NamedArgs>True</NamedArgs>
-    <Allowdot>True</Allowdot>
-    <AssemblyName>RegisterProvider</AssemblyName>
+    <TargetFramework>net47</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="$(CommonDir)constants.prg">
+    <Compile Include="$(CommonDir)constants.prg">
       <Link>constants.prg</Link>
     </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="System.Runtime">
-      <Version>4.3.1</Version>
-    </PackageReference>
-    <PackageReference Include="System.Xml.XmlDocument">
-      <Version>4.3.0</Version>
-    </PackageReference>
-  </ItemGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <PPO>false</PPO>
-    <Prefer32Bit>True</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DefineConstants>TRACE</DefineConstants>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <PPO>false</PPO>
-    <Prefer32Bit>True</Prefer32Bit>
-  </PropertyGroup>
 </Project>

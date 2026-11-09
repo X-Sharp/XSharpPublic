@@ -23,6 +23,30 @@ namespace XSharp.LanguageService.FindReferences
         internal bool IsDefinition { get; set; }
         /// <summary>The declaration the hit belongs to: the target or a member of its override family</summary>
         internal string Group { get; set; }
+        /// <summary>Position in the file text</summary>
+        internal int Start { get; set; }
+        /// <summary>None: the place surely refers to the target</summary>
+        internal ReferenceUncertainty Uncertainty { get; set; }
+        /// <summary>Comments or Strings when the hit is the name in a comment or string, otherwise None</summary>
+        internal TextTokenKinds InText { get; set; }
+    }
+
+    /// <summary>Why a place may, or may not, refer to the target.</summary>
+    internal enum ReferenceUncertainty
+    {
+        None,
+        /// <summary>o:Name that the lookup cannot resolve</summary>
+        LateBound,
+        /// <summary>#Name</summary>
+        Symbol,
+        /// <summary>The name that the lookup cannot resolve at all</summary>
+        Unresolved,
+        /// <summary>Another overload fits the arguments as well</summary>
+        AmbiguousOverload,
+        /// <summary>The name in an excluded #ifdef block</summary>
+        InactiveCode,
+        /// <summary>The file could not be searched</summary>
+        FileNotRead
     }
 
     internal readonly struct ClassifiedRange

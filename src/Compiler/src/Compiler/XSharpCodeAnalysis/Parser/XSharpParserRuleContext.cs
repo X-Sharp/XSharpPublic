@@ -23,6 +23,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
         }
         public XSharpParserRuleContext XParent => (XSharpParserRuleContext)Parent;
+        public XSharpToken XStart => Start as XSharpToken;
 
 #if !VSPARSER
 
@@ -85,7 +86,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 if (cu.HasDocComments || options.TargetDLL != XSharpTargetDLL.Other)
                 {
                     var xnode = parent.XNode as XSharpParserRuleContext;
-                    var start = xnode.Start as XSharpToken;
+                    var start = xnode?.XStart;
                     if (start != null)
                     {
                         // we have stored the XML comments of an entity in the first token of the ContextNode
@@ -105,10 +106,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     for (int i = 0; i < acc.Accessors.Count; i++)
                     {
                         var accessor = acc.Accessors[i];
-                        var node = accessor.XNode as XSharpParserRuleContext;
-                        if (node != null && node.Start is XSharpToken xtoken && xtoken.HasXmlComments)
+                        var xnode = accessor.XNode as XSharpParserRuleContext;
+                        var start = xnode?.XStart;
+                        if (start?.HasXmlComments == true)
                         {
-                            return ParseTrivia(xtoken.XmlComments);
+                            return ParseTrivia(start.XmlComments);
                         }
                     }
                 }
@@ -137,7 +139,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             return t;
         }
         public object CsNode { get; set; }
-        public string SourceFileName { get { return (Start as XSharpToken).SourceName; } }
+        public string SourceFileName { get { return XStart?.SourceName; } }
 #if !VSPARSER
 
         internal bool ContainsCast
@@ -276,8 +278,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
 
             }
         }
-        public int Line { get { return (Start as XSharpToken).Line; } }
-        public XSharpToken SourceSymbol { get { return (Start as XSharpToken).SourceSymbol; } }
+        public int Line { get { return XStart?.Line ?? 0; } }
+        public XSharpToken SourceSymbol { get { return XStart?.SourceSymbol; } }
         public override string ToString()
         {
             /*return this.GetText();*/

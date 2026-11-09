@@ -7,7 +7,7 @@ USING System.Text
 USING System.Drawing
 USING System.Linq
 USING VOParser
-
+USING Fab_VO_Entities
 
 _DLL FUNCTION AllocConsole() AS LOGIC:kernel32.AllocConsole
 _DLL FUNCTION AttachConsole( dwProcessId as int) AS LOGIC:kernel32.AttachConsole
@@ -80,9 +80,9 @@ FUNCTION Start(asParams AS STRING[]) AS INT
 			Console.WriteLine("When using the NOGUI mode, you must specify an existing file or folder to import with /s and an existing output folder with /o")
 			RETURN 1
 		END IF
-		
+
 		Console.WriteLine("Exporting in progress...")
-		
+
 		IF SafeFolderExists(DefaultSourceFolder)
 			xPorter.xPort_AppsFromAefsInFolder(DefaultSourceFolder, DefaultOutputFolder, DirectoryInfo{DefaultSourceFolder}:Name)
 		ELSEIF SafeFileExists(DefaultSourceFolder)
@@ -97,10 +97,10 @@ FUNCTION Start(asParams AS STRING[]) AS INT
 				xPorter.xPort_PrgFromPrg(DefaultSourceFolder, DefaultOutputFolder)
 			END CASE
 		END IF
-		
+
 		Console.WriteLine("Finished exporting to folder " + DefaultOutputFolder:ToString())
 		Console.WriteLine()
-		
+
 		FreeConsole()
 
 	ELSE
@@ -561,7 +561,7 @@ CLASS xPorter
 		IF oModule:Generated
 			xPorter.Message("  Generating module :" , oModule:Name)
 			File.WriteAllLines(cOutputFolder + "\" + oModule:PathValidName + ".prg" , oCode:GetContents() , System.Text.Encoding.UTF8)
-	
+
 			FOREACH oDesigner AS Designer IN oMef:aDesigners
 				oModule:Designers:Add(oDesigner)
 			NEXT
@@ -1298,7 +1298,7 @@ CLASS ApplicationDescriptor
 				ELSE
 					File.WriteAllLines(cFolder + "\" + oModule:PathValidName + ".prg" , oCode:GetContents() , System.Text.Encoding.UTF8)
 				ENDIF
-				
+
 				oModule:ExportBinaries(cFolder)
 
 			END IF
@@ -1846,7 +1846,7 @@ CLASS ModuleDescriptor
 		LOCAL oClasses , oDefines , oTextblocks , oGlobals , oFuncs , oRest AS OutputCode
 
 		//STATIC oConvertFromCodePageToCodePage := NULL AS EntityDescriptor
-		
+
 		IF SELF:_lNoChange
 			oCode := OutputCode{}
 			FOREACH oLine AS LineObject IN SELF:_aLines

@@ -341,14 +341,14 @@ namespace XSharp.Project
             {
                 case XFileType.Header:
                 case XFileType.ManagedResource:
-                    path = Path.ChangeExtension(path, ".prg");
+                    path = Path.ChangeExtension(path, Constants.SourceFileExtension);
                     if (project.FindURL(folder + path) == null)
                     {
                         // this could be Form1.Language.resx
                         // so strip the last part and try again
                         if (relationIndex >= 0)
                         {
-                            path = path.Substring(0, relationIndex) + ".prg";
+                            path = path.Substring(0, relationIndex) + Constants.SourceFileExtension;
                             if (project.FindURL(folder + path) == null)
                                 path = null;
                         }
@@ -369,7 +369,7 @@ namespace XSharp.Project
                 case XFileType.NativeResource:
                     if (relationIndex >= 0)
                     {
-                        path = path.Substring(0, relationIndex) + ".prg";
+                        path = path.Substring(0, relationIndex) + Constants.SourceFileExtension;
                         if (project.FindURL(folder + path) == null)
                             path = null;
                     }
@@ -377,13 +377,13 @@ namespace XSharp.Project
                         path = null;
                     break;
                 default:
-                    if (path.EndsWith(".designer.prg"))
+                    if (path.EndsWith(Constants.DesignerExtension))
                     {
                         // could be Form.Prg
                         // Resources.resx
                         // Settings.Settings
                         path = path.Substring(0, relationIndex);
-                        string parent = folder + path + ".prg";
+                        string parent = folder + path + Constants.SourceFileExtension;
                         if (project.FindURL(parent) != null)
                             return parent;
                         parent = folder + path + ".resx";

@@ -8,7 +8,11 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
 {
     internal abstract partial class TypeSyntax
     {
+#if XSHARP
+        public bool IsVar => IsIdentifierName(XSharpSpecialNames.ImpliedTypeName) || IsIdentifierName("var");
+#else
         public bool IsVar => IsIdentifierName("var");
+#endif
         public bool IsUnmanaged => IsIdentifierName("unmanaged");
         public bool IsNotNull => IsIdentifierName("notnull");
         public bool IsNint => IsIdentifierName("nint");

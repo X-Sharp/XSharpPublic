@@ -5774,17 +5774,42 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         {
             AttributeArgumentSyntax charset;
             SyntaxToken id;
+            bool hasPsz = false;
+            foreach (var param in context.ParamList._Params)
+            {
+                if (param.Type != null && param.Type.Start.Type == XP.PSZ)
+                {
+                    hasPsz = true;
+                    break;
+                }
+            }
+            string cs = null;
             if (context.CharSet != null)
             {
                 // convert to 1 Upper char and lower chars
-                string cs = context.CharSet.Text;
+                cs = context.CharSet.Text;
                 cs = cs.Substring(0, 1).ToUpperInvariant() + cs.Substring(1).ToLowerInvariant();
-                id = SyntaxFactory.Identifier(cs);
             }
             else
             {
-                id = SyntaxFactory.Identifier("Auto");
+                cs = hasPsz ? "Ansi" : "Auto";
             }
+            switch (cs.ToLower())
+            {
+                case "auto":
+                    id = SyntaxFactory.Identifier("Auto");
+                    break;
+                case "ansi":
+                    id = SyntaxFactory.Identifier("Ansi");
+                    break;
+                case "unicode":
+                    id = SyntaxFactory.Identifier("Unicode");
+                    break;
+                default:
+                    id = SyntaxFactory.Identifier("Auto");
+                    break;
+            }
+
             charset = _syntaxFactory.AttributeArgument(GenerateNameEquals("CharSet"), null,
                              MakeSimpleMemberAccess(GenerateQualifiedName(SystemQualifiedNames.CharSet),
                                   _syntaxFactory.IdentifierName(id)));

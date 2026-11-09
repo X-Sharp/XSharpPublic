@@ -103,17 +103,17 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
             IF nAt != -1 // strip out window name
                 cFileName := cFileName:Substring(0 , nAt)
             ENDIF
-            cPrgFileName := cBaseDir + "\" + cFileName + ".prg"
-            cHeaderFile  := System.IO.Path.ChangeExtension(cPrgFileName, ".vh")
+            cPrgFileName := cBaseDir + "\" + cFileName + Constants.SourceFileExtension
+            cHeaderFile  := System.IO.Path.ChangeExtension(cPrgFileName, Constants.VHExtension)
             IF !File.Exists(cHeaderFile)
-                cHeaderFile  := System.IO.Path.ChangeExtension(cHeaderFile, ".xh")
+                cHeaderFile  := System.IO.Path.ChangeExtension(cHeaderFile, Constants.XHExtension)
             ENDIF
-            cAlternative := oBaseDir:Parent:FullName + "\" + cFileName + ".prg"
+            cAlternative := oBaseDir:Parent:FullName + "\" + cFileName + Constants.SourceFileExtension
             IF !File.Exists(cPrgFileName)
                 cPrgFileName := cAlternative
-                cHeaderFile  := System.IO.Path.ChangeExtension(cPrgFileName, ".vh")
+                cHeaderFile  := System.IO.Path.ChangeExtension(cPrgFileName, Constants.VHExtension)
                 IF !File.Exists(cHeaderFile)
-                    cHeaderFile  := System.IO.Path.ChangeExtension(cHeaderFile, ".xh")
+                    cHeaderFile  := System.IO.Path.ChangeExtension(cHeaderFile, Constants.XHExtension)
                 ENDIF
             ENDIF
             cVhName := System.IO.Path.GetFileName(cHeaderFile)
@@ -314,7 +314,7 @@ CLASS XSharp_VOWindowEditor INHERIT VOWindowEditor
 
     ACCESS XFile AS XSharpModel.XFile
         LOCAL cPrgFileName AS STRING
-        cPrgFileName := Funcs.GetModuleFilenameFromBinary(SELF:cDefaultFileName) + ".prg"
+        cPrgFileName := Funcs.GetModuleFilenameFromBinary(SELF:cDefaultFileName) + Constants.SourceFileExtension
 
         RETURN XSharpModel.XSolution.FindFile(cPrgFileName)
 

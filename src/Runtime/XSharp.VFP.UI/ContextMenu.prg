@@ -40,7 +40,7 @@ PARTIAL CLASS ContextMenu INHERIT System.Windows.Forms.ContextMenuStrip IMPLEMEN
 				SUPER:Name := VALUE
 				IF !String.IsNullOrEmpty(VALUE)
 					IF _registry == NULL
-						_registry := Dictionary<STRING, ContextMenu>{}
+						_registry := Dictionary<STRING, ContextMenu>{ System.StringComparer.OrdinalIgnoreCase }
 					ENDIF
 					_registry[VALUE] := SELF
 				ENDIF

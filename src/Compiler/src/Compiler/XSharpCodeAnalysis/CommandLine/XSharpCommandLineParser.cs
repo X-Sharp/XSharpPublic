@@ -82,6 +82,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                     options.CaseSensitive = positive;
                     XSharpString.CaseSensitive = positive;
                     break;
+                case "d":
+                case "define":
+                    handled = false;
+                    if (value != null)
+                        options.Net5orHigher = value.IndexOf("net5_0_or_greater",StringComparison.OrdinalIgnoreCase) >= 0;
+                    break;
                 case "dialect":
                     XSharpDialect dialect = XSharpDialect.Core;
                     if (string.IsNullOrEmpty(value))

@@ -62,6 +62,7 @@
     <Compile Include="Commands\DocumentOutlineCommand.cs" />
     <Compile Include="Commands\FormattingCommand.cs" />
     <Compile Include="Commands\FindReferencesCommand.cs" />
+    <Compile Include="Commands\RenameCommand.cs" />
     <Compile Include="Commands\GotoCommand.cs" />
     <Compile Include="Commands\GotoDefinition.cs" />
     <Compile Include="Controls\GotoDefinitionResultsWindow.xaml.cs">
@@ -145,7 +146,24 @@
     <Compile Include="FindReferences\ReferenceDocumentSource.cs" />
     <Compile Include="FindReferences\OverloadFilter.cs" />
     <Compile Include="FindReferences\OverrideFamily.cs" />
+    <Compile Include="Commands\GoToImplementationCommand.cs" />
+    <Compile Include="Commands\TargetUnderCursor.cs" />
+    <Compile Include="GoToImplementation\DeclarationHit.cs" />
+    <Compile Include="GoToImplementation\SourceHierarchy.cs" />
+    <Compile Include="GoToImplementation\TypeHierarchy.cs" />
     <Compile Include="FindReferences\ReferenceHit.cs" />
+    <Compile Include="FindReferences\ReferenceSearchOptions.cs" />
+    <Compile Include="FindReferences\ReferencesWindow.cs" />
+    <Compile Include="Rename\RenameApplier.cs" />
+    <Compile Include="Rename\RenameConflicts.cs" />
+    <Compile Include="Rename\RenameDialog.xaml.cs">
+      <DependentUpon>RenameDialog.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Rename\RenameGuard.cs" />
+    <Compile Include="Rename\RenameName.cs" />
+    <Compile Include="Rename\RenamePlan.cs" />
+    <Compile Include="Rename\RenamePreview.cs" />
     <Compile Include="FindReferences\ReferenceLineText.cs" />
     <Compile Include="FindReferences\FindReferencesEngine.cs" />
     <Compile Include="FindReferences\ReferencesTableDataSource.cs" />
@@ -207,6 +225,11 @@
     <Compile Include="OptionsPages\GeneratorOptionsControl.Designer.cs">
       <DependentUpon>GeneratorOptionsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="NavigateTo\NameMatcher.cs" />
+    <Compile Include="NavigateTo\NavigateToDisplay.cs" />
+    <Compile Include="NavigateTo\NavigateToEntry.cs" />
+    <Compile Include="NavigateTo\NavigateToProvider.cs" />
+    <Compile Include="NavigateTo\NavigateToSnapshot.cs" />
     <Compile Include="Options\CompletionOptions.cs" />
     <Compile Include="Options\FormattingOptions.cs" />
     <Compile Include="Options\IntellisenseOptions.cs" />
@@ -397,6 +420,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\GotoDefinitionResultsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Rename\RenameDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -3,7 +3,8 @@
 
 	<PropertyGroup>
     <LangVersion>latest</LangVersion>
-		<TargetFrameworks>net40</TargetFrameworks>
+		<TargetFrameworks>net47</TargetFrameworks>
+    <OutputType>Library</OutputType>
   </PropertyGroup>
 	<ItemGroup>
 		<Compile Include="ProjectInfo.cs" />

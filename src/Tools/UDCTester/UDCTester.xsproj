@@ -3,13 +3,8 @@
   <Import Project="..\Tools.props" />
   <PropertyGroup>
     <AssemblyName>XUDCTester</AssemblyName>
-    <Name>UDCTester</Name>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>UDCTesterApp</RootNamespace>
     <TargetFramework>net472</TargetFramework>
-    <Dialect>Core</Dialect>
-    <NoStandardDefs>true</NoStandardDefs>
-    <ApplicationIcon>$(Commondir)XSharp.ico</ApplicationIcon>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
   <ItemGroup>
@@ -23,14 +18,4 @@
       <HintPath>$(vsexternaldir)XSharp.VSParser.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <DefineConstants>NDEBUG</DefineConstants>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn>1591</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-    <NoWarn>1591,9043</NoWarn>
-  </PropertyGroup>
 </Project>

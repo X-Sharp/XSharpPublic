@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using XSharp.Settings;
 using XSharpModel;
 
 namespace XSharp.LanguageService.FindReferences
@@ -67,6 +68,9 @@ namespace XSharp.LanguageService.FindReferences
             return SymbolIdentity.IsSame(TargetRoot, Root(member));
         }
 
+        /// <summary>The base class of a type, resolved within the type's namespace and cached for this search.</summary>
+        internal IXTypeSymbol BaseTypeOf(IXTypeSymbol type) => type == null ? null : BaseOf(type);
+
         private IXTypeSymbol BaseOf(IXTypeSymbol type)
         {
             var key = type.FullName ?? "";
@@ -105,15 +109,69 @@ namespace XSharp.LanguageService.FindReferences
             return kind == Kind.Method || SymbolIdentity.IsPropertyLike(kind);
         }
 
-        /// <summary>Same name and, for methods, the same kind and parameter list.</summary>
-        private static bool SameSlot(IXMemberSymbol member, IXMemberSymbol other)
+        /// <summary>
+        /// Same name and, for methods, the same kind and the same parameter types (by value or by reference);
+        /// parameter names and default values do not count. Untyped (CLIPPER) methods of the same name are one slot:
+        /// Close() overrides Close(oEvent).
+        /// </summary>
+        internal static bool SameSlot(IXMemberSymbol member, IXMemberSymbol other)
         {
             if (!string.Equals(member.Name, other.Name, StringComparison.OrdinalIgnoreCase))
                 return false;
             if (SymbolIdentity.IsPropertyLike(member.Kind) && SymbolIdentity.IsPropertyLike(other.Kind))
                 return true;
-            return member.Kind == other.Kind &&
-                string.Equals(member.ParameterList ?? "", other.ParameterList ?? "", StringComparison.OrdinalIgnoreCase);
+            if (member.Kind != other.Kind)
+                return false;
+            var mine = member.Parameters ?? (IList<IXParameterSymbol>)Array.Empty<IXParameterSymbol>();
+            var theirs = other.Parameters ?? (IList<IXParameterSymbol>)Array.Empty<IXParameterSymbol>();
+            bool myUntyped = IsUntyped(member, mine), theirUntyped = IsUntyped(other, theirs);
+            if ((myUntyped && (theirUntyped || theirs.Count == 0)) || (theirUntyped && mine.Count == 0))
+                return true;
+            if (myUntyped || theirUntyped || mine.Count != theirs.Count)
+                return false;
+            for (int i = 0; i < mine.Count; i++)
+            {
+                if (IsByReference(mine[i]) != IsByReference(theirs[i]) ||
+                    !string.Equals(NormalizedType(mine[i].TypeName), NormalizedType(theirs[i].TypeName), StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// CLIPPER calling convention, or a parameter written without AS: in the VO dialect the parser gives it the type
+        /// USUAL but no parameter kind. x AS USUAL is typed.
+        /// </summary>
+        private static bool IsUntyped(IXMemberSymbol member, IList<IXParameterSymbol> parameters)
+        {
+            if (member.CallingConvention == CallingConvention.Clipper)
+                return true;
+            return parameters.Any(p => string.IsNullOrEmpty(p.TypeName) ||
+                (p.ParamType == 0 && string.Equals(p.TypeName, "USUAL", StringComparison.OrdinalIgnoreCase)));
+        }
+
+        /// <summary>
+        /// A DLL member carries full type names (System.Windows.Forms.PaintEventArgs, System.Int32), the source what was
+        /// written (PaintEventArgs, INT): compare the system name without its namespace, type arguments kept.
+        /// </summary>
+        private static string NormalizedType(string typeName)
+        {
+            if (string.IsNullOrEmpty(typeName))
+                return "";
+            var name = typeName.Trim().GetSystemTypeName(true) ?? typeName;
+            var generic = name.IndexOf('<');
+            var outer = generic >= 0 ? name.Substring(0, generic) : name;
+            var dot = outer.LastIndexOf('.');
+            if (dot >= 0)
+                outer = outer.Substring(dot + 1);
+            return generic >= 0 ? outer + name.Substring(generic) : outer;
+        }
+
+        private static bool IsByReference(IXParameterSymbol parameter)
+        {
+            return parameter.ParamType == ParamType.Ref || parameter.ParamType == ParamType.Out;
         }
     }
 }

@@ -16,6 +16,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.FindAllReferences;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
+using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.Threading;
 using Microsoft.VisualStudio.Utilities;
@@ -26,17 +27,54 @@ using Task = System.Threading.Tasks.Task;
 
 namespace XSharp.LanguageService.Commands
 {
+    /// <summary>The symbol a command works on, or the message why there is none.</summary>
+    internal sealed class TargetSelection
+    {
+        internal IXSymbol Target { get; set; }
+        /// <summary>How many overloads fit the arguments at the call site</summary>
+        internal int Candidates { get; set; }
+        internal XSharpSearchLocation Location { get; set; }
+        internal OverrideFamily Family { get; set; }
+        /// <summary>Set when there is no target to work on: show it and stop</summary>
+        internal string Message { get; set; }
+    }
+
     internal class FindReferencesCommand : AbstractCommand
     {
-        private static CancellationTokenSource _cancellation;
-        private static ReferencesTableDataSource _source;
-        private static Microsoft.VisualStudio.Shell.TableManager.ITableManager _sourceManager;
-        private static IFindAllReferencesWindow _window;
-        private static EventHandler _windowClosed;
-
         public static async Task InitializeAsync()
         {
             await VS.Commands.InterceptAsync(VSConstants.VSStd97CmdID.FindReferences, () => Execute(FindReferences));
+        }
+
+        /// <summary>
+        /// The symbol under the cursor: on a declaration the declared overload, on a call site the overload that takes
+        /// these arguments. UI thread. <paramref name="commandName"/> prefixes the messages.
+        /// </summary>
+        internal static TargetSelection SelectTarget(ITextView view, string commandName)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var selection = new TargetSelection();
+            IXSymbol target = null;
+            XSharpSearchLocation location = null;
+            try
+            {
+                target = TargetUnderCursor.Resolve(view, out location, out _, out var candidates);
+                selection.Candidates = candidates;
+                if (target != null)
+                    selection.Family = new OverrideFamily(target);
+            }
+            catch (Exception ex)
+            {
+                Logger.Exception(ex, $"{commandName}: cannot determine the symbol under the cursor");
+                target = null;
+            }
+            if (target == null || location == null)
+                selection.Message = "No X# symbol under the cursor";
+            else if (!FindReferencesEngine.IsInSource(target))
+                selection.Message = $"{commandName}: '{target.FullName}' is not declared in the X# source of this solution";
+            selection.Target = target;
+            selection.Location = location;
+            return selection;
         }
 
         private static void FindReferences(DocumentView doc)
@@ -44,70 +82,19 @@ namespace XSharp.LanguageService.Commands
             ThreadHelper.JoinableTaskFactory.Run(async delegate
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                var symbols = doc.TextView.GetSymbolUnderCursor(out _, out var location, out _);
-                IXSymbol target = null;
-                int candidates = 0;
-                OverrideFamily family = null;
-                try
+                var selection = SelectTarget(doc.TextView, "Find References");
+                if (selection.Message != null)
                 {
-                    // on a declaration: the declared overload; on a call site: the overload that takes these arguments
-                    var name = location == null ? null : OverloadFilter.NameAt(location.Document?.Tokens, location.Position);
-                    target = name == null ? null : FindReferencesEngine.DeclaredEntity(location.File?.EntityList, name);
-                    if (target == null && location != null)
-                    {
-                        var matches = OverloadFilter.Filter(SymbolResolver.ForCreation(symbols, location.Document?.Tokens, name),
-                            OverloadFilter.ArgumentsAt(location.Document?.Tokens, location.Position),
-                            id => SymbolResolver.TypeOf(location, id));
-                        target = matches.FirstOrDefault();
-                        candidates = matches.Count;
-                    }
-                    // Foo{} of a class without constructors: the lookup makes one up, search the class instead
-                    if (target != null && target.Kind == Kind.Constructor && target is IXMemberSymbol ctor &&
-                        ctor.ParentType != null && ctor.ParentType.GetConstructors().Length == 0)
-                    {
-                        target = ctor.ParentType;
-                    }
-                    if (target != null)
-                        family = new OverrideFamily(target);
-                }
-                catch (Exception ex)
-                {
-                    Logger.Exception(ex, "FindReferences: cannot determine the symbol under the cursor");
-                    target = null;
-                }
-                if (target == null || location == null)
-                {
-                    await VS.StatusBar.ShowMessageAsync("No X# symbol under the cursor");
+                    await VS.StatusBar.ShowMessageAsync(selection.Message);
                     return;
                 }
-                if (!FindReferencesEngine.IsInSource(target))
-                {
-                    await VS.StatusBar.ShowMessageAsync($"Find References: '{target.FullName}' is not declared in the X# source of this solution");
-                    return;
-                }
+                var target = selection.Target;
+                var family = selection.Family;
+                var location = selection.Location;
+                var candidates = selection.Candidates;
                 var title = target.Kind == Kind.Constructor ? FindReferencesEngine.SearchName(target) + "{}" : target.Name;
                 var documents = await CreateDocumentSourceAsync();
-                var service = await VS.GetRequiredServiceAsync<SVsFindAllReferences, IFindAllReferencesService>();
-                var window = service.StartSearch($"'{title}' references");
-                var source = new ReferencesTableDataSource(target, await CreateTextFormatAsync());
-                // After "Keep Results" StartSearch opens a new window. The kept window keeps its results,
-                // its running search and its Closed handler; only a reused window gives up the previous search.
-                if (_sourceManager != null && window.Manager == _sourceManager)
-                {
-                    _cancellation?.Cancel();
-                    if (_source != null)
-                        _sourceManager.RemoveSource(_source);
-                    if (_window != null)
-                        _window.Closed -= _windowClosed;
-                }
-                var cancellation = new CancellationTokenSource();
-                _cancellation = cancellation;
-                window.Manager.AddSource(source, ReferencesTableDataSource.Columns);
-                _source = source;
-                _sourceManager = window.Manager;
-                _window = window;
-                _windowClosed = (s, e) => cancellation.Cancel();
-                window.Closed += _windowClosed;
+                var (source, token) = await ReferencesWindow.OpenAsync($"'{title}' references", target, await CreateTextFormatAsync());
                 if (candidates > 1 && target is IXMemberSymbol overload)
                 {
                     // the arguments do not tell the overloads apart
@@ -121,11 +108,12 @@ namespace XSharp.LanguageService.Commands
                 factory.RunAsync(async delegate
                 {
                     // shutting down VS cancels the search instead of waiting for it
-                    var shutdown = package?.DisposalToken.Register(cancellation.Cancel);
+                    var shutdown = package == null ? null : CancellationTokenSource.CreateLinkedTokenSource(token, package.DisposalToken);
                     try
                     {
-                        var stats = await FindReferencesEngine.FindAsync(target, family, FindReferencesEngine.IncludeLateBound,
-                            location, documents, source, cancellation.Token);
+                        var stats = await FindReferencesEngine.FindAsync(target, family,
+                            ReferenceSearchOptions.ForFindReferences(FindReferencesEngine.IncludeLateBound),
+                            location, documents, source, shutdown?.Token ?? token);
                         if (stats.Failed > 0)
                             await VS.StatusBar.ShowMessageAsync($"Find References: {stats.Failed} file(s) could not be searched, see the X# log");
                     }
@@ -143,7 +131,7 @@ namespace XSharp.LanguageService.Commands
         }
 
         /// <summary>The editor colors for the Text column, and the reference highlight that C# uses for the hit.</summary>
-        private static async System.Threading.Tasks.Task<ReferenceTextFormat> CreateTextFormatAsync()
+        internal static async System.Threading.Tasks.Task<ReferenceTextFormat> CreateTextFormatAsync()
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             var componentModel = await VS.Services.GetComponentModelAsync();
@@ -155,7 +143,7 @@ namespace XSharp.LanguageService.Commands
         }
 
         /// <summary>Collects the open X# buffers on the UI thread; the search itself runs in the background.</summary>
-        private static async System.Threading.Tasks.Task<ReferenceDocumentSource> CreateDocumentSourceAsync()
+        internal static async System.Threading.Tasks.Task<ReferenceDocumentSource> CreateDocumentSourceAsync()
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             var componentModel = await VS.Services.GetComponentModelAsync();

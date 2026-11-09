@@ -26,6 +26,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Symbols
         {
             XP.IMemberContext result = null;
             var node = this.SyntaxNode.XNode;
+            if (node != null)
             {
                 if (node is XP.IMemberContext ent)
                     result = ent;

@@ -1466,8 +1466,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 if (fileName != null)
                     return fileName;
-                var ct = (Symbol as XSharpToken);
-                if (ct != null)
+                if (Symbol is XSharpToken ct)
                 {
                     if (ct.TokenSource != null && !String.IsNullOrEmpty(ct.TokenSource.SourceName))
                         return ct.TokenSource.SourceName;

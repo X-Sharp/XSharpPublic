@@ -32,11 +32,20 @@ STATIC CLASS XDatabase
     STATIC PRIVATE lastWritten := DateTime.MinValue AS DateTime
     STATIC PRIVATE backupRunning := 0 AS LONG          // guards against overlapping backups
     STATIC PRIVATE currentFile AS STRING
+    STATIC PRIVATE changeCounter := 0 AS INT64
     STATIC PROPERTY FileName as STRING GET currentFile
+    /// <summary>Changes after every write of files, types or members (and when the database opens or closes).
+    /// Readers that cache data, such as Navigate To, compare it to know when to read again.</summary>
+    STATIC PROPERTY ChangeCounter AS INT64 GET System.Threading.Interlocked.Read(REF changeCounter)
     STATIC PROPERTY DeleteOnClose as LOGIC AUTO
     // 3.9: added Types_File / Types_Project indexes
     // 3.10: fixed typo in view ProjectExtensionMethods
     PRIVATE CONST CurrentDbVersion := 3.12 AS System.Double
+// After the write, not before: a reader that reads in between must see the new counter afterwards.
+STATIC PRIVATE METHOD MarkChanged() AS VOID
+    System.Threading.Interlocked.Increment(REF changeCounter)
+    RETURN
+
 STATIC METHOD LogDbClosed() AS VOID
     Log("Database is not open")
     RETURN
@@ -130,6 +139,7 @@ STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
         END USING
         DeleteOrphanFiles()
     ENDIF
+    MarkChanged()
     RETURN
 
 STATIC METHOD SaveDatabase(cFile AS STRING) AS LOGIC
@@ -160,6 +170,7 @@ STATIC METHOD CloseDatabase(cFile AS STRING) AS LOGIC
         lResult := TRUE
         oConn := NULL
     END LOCK
+    MarkChanged()
     RETURN lResult
 
 STATIC METHOD SetPragmas(oConn AS DbConnection) AS VOID
@@ -719,6 +730,7 @@ STATIC METHOD DeleteOrphanFiles() AS List<STRING>
         END TRY
 
     END LOCK
+    MarkChanged()
     Log(i" Deleted OrphanFiles")
     RETURN result
 
@@ -983,6 +995,7 @@ STATIC METHOD DeleteProjectsNotInSession() AS VOID
             XSettings.Exception(e)
         END TRY
     END LOCK
+    MarkChanged()
 
     STATIC METHOD SaveProjectAssemblyReferences(oProject as XProject, Assemblies as List<XAssembly>) AS VOID
         CHECKIFOPEN
@@ -1057,6 +1070,7 @@ STATIC METHOD DeleteFile(cFileName AS STRING) AS VOID
             XSettings.Exception(e)
         END TRY
     END LOCK
+    MarkChanged()
     CommitWhenNeeded()
 
 STATIC METHOD GetFilename(idFile as Int64) AS STRING
@@ -1191,6 +1205,7 @@ STATIC METHOD Update(oFile AS XFile) AS VOID
         UpdateFileContents(oFile)
     ENDIF
     UpdateFileData(oFile)
+    MarkChanged()
     CommitWhenNeeded()
     RETURN
 
@@ -1931,6 +1946,79 @@ STATIC METHOD GetProjectTypesLike(sName AS STRING, sProjectIds AS STRING) AS ILi
     Log(i"GetProjectTypesLike '{sName}' returns {result.Count} matches")
     RETURN result
 
+/// <summary>
+/// The classes, structures and interfaces whose declaration line mentions this name, in all projects. Only a
+/// prefilter for Go To Implementation: the caller reads the IMPLEMENTS list and resolves each interface.
+/// </summary>
+STATIC METHOD GetProjectTypesMentioning(sShortName AS STRING) AS IList<XDbResult>
+    VAR result := List<XDbResult>{}
+    CHECKIFOPEN result
+    VAR stmt := "Select * from ProjectTypes where Sourcecode like '%' || $name || '%' and Kind in (" + ;
+        ((INT) Kind.Class):ToString() + ", " + ((INT) Kind.Structure):ToString() + ", " + ((INT) Kind.Interface):ToString() + ")"
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
+        TRY
+            USING VAR oCmd := CreateCommand(stmt, oConn)
+            oCmd:Parameters:AddWithValue("$name", sShortName)
+            USING VAR rdr := oCmd:ExecuteReader()
+            DO WHILE rdr:Read()
+                result:Add(CreateTypeInfo(rdr))
+            ENDDO
+        CATCH e AS Exception
+            XSettings.Exception(e)
+        END TRY
+    END LOCK
+    Log(i"GetProjectTypesMentioning '{sShortName}' returns {result.Count} matches")
+    RETURN result
+
+/// <summary>
+/// All types with a base class, in all projects, in one query: Go To Implementation builds the derived-class tree in
+/// memory from these rows instead of querying per level.
+/// </summary>
+STATIC METHOD GetProjectTypesWithBase() AS IList<XDbResult>
+    VAR result := List<XDbResult>{}
+    CHECKIFOPEN result
+    VAR stmt := "Select * from ProjectTypes where BaseTypeName is not null and BaseTypeName <> ''"
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
+        TRY
+            USING VAR oCmd := CreateCommand(stmt, oConn)
+            USING VAR rdr := oCmd:ExecuteReader()
+            DO WHILE rdr:Read()
+                result:Add(CreateTypeInfo(rdr))
+            ENDDO
+        CATCH e AS Exception
+            XSettings.Exception(e)
+        END TRY
+    END LOCK
+    Log(i"GetProjectTypesWithBase returns {result.Count} matches")
+    RETURN result
+
+/// <summary>The types (name, namespace, project file) that declare a member with this name, in all projects.</summary>
+STATIC METHOD GetProjectTypesWithMember(sName AS STRING) AS IList<XDbResult>
+    VAR result := List<XDbResult>{}
+    CHECKIFOPEN result
+    VAR stmt := "Select distinct TypeName, Namespace, ProjectFileName from ProjectMembers where Name = $name"
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
+        TRY
+            USING VAR oCmd := CreateCommand(stmt, oConn)
+            oCmd:Parameters:AddWithValue("$name", sName)
+            USING VAR rdr := oCmd:ExecuteReader()
+            DO WHILE rdr:Read()
+                VAR res := XDbResult{}
+                res:TypeName  := DbToString(rdr["TypeName"])
+                res:Namespace := DbToString(rdr["Namespace"])
+                res:Project   := DbToString(rdr["ProjectFileName"])
+                result:Add(res)
+            ENDDO
+        CATCH e AS Exception
+            XSettings.Exception(e)
+        END TRY
+    END LOCK
+    Log(i"GetProjectTypesWithMember '{sName}' returns {result.Count} matches")
+    RETURN result
+
 STATIC METHOD GetProjectTypesInNamespace(sName AS STRING, sProjectIds AS STRING) AS IList<XDbResult>
     VAR result := List<XDbResult>{}
     CHECKIFOPEN result
@@ -2307,6 +2395,64 @@ STATIC METHOD GetProjectMembersLike(sName AS STRING, sProjectIds AS STRING) AS I
         END TRY
     END LOCK
     Log(i"GetProjectMembersLike '{sName}' returns {result.Count} matches")
+    RETURN result
+
+/// <summary>Every type of every project, for Navigate To: only name, kind, place and project (the load holds dbLock).
+/// A file in several projects gives a row per project.</summary>
+STATIC METHOD GetAllProjectTypes() AS IList<XDbResult>
+    VAR result := List<XDbResult>{}
+    CHECKIFOPEN result
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
+        TRY
+            USING VAR oCmd := CreateCommand("Select Name, Namespace, Kind, Attributes, FileName, ProjectFileName, StartLine, StartColumn from ProjectTypes", oConn)
+            USING VAR rdr := oCmd:ExecuteReader()
+            DO WHILE rdr:Read()
+                VAR res := XDbResult{}
+                res:TypeName     := DbToString(rdr[0])
+                res:Namespace    := DbToString(rdr[1])
+                res:Kind         := (Kind) (INT64) rdr[2]
+                res:Attributes   := (Modifiers) (INT64) rdr[3]
+                res:FileName     := DbToString(rdr[4])
+                res:Project      := DbToString(rdr[5])
+                res:StartLine    := DbToInt(rdr[6])
+                res:StartColumn  := DbToInt(rdr[7])
+                result:Add(res)
+            ENDDO
+        CATCH e AS Exception
+            XSettings.Exception(e)
+        END TRY
+    END LOCK
+    Log(i"GetAllProjectTypes returns {result.Count} rows")
+    RETURN result
+
+/// <summary>Every member of every project (also of the global type), for Navigate To: only name, kind, type, place
+/// and project (the load holds dbLock).</summary>
+STATIC METHOD GetAllProjectMembers() AS IList<XDbResult>
+    VAR result := List<XDbResult>{}
+    CHECKIFOPEN result
+    BEGIN LOCK dbLock
+        CHECKIFOPEN result
+        TRY
+            USING VAR oCmd := CreateCommand("Select Name, TypeName, Kind, Attributes, FileName, ProjectFileName, StartLine, StartColumn from ProjectMembers", oConn)
+            USING VAR rdr := oCmd:ExecuteReader()
+            DO WHILE rdr:Read()
+                VAR res := XDbResult{}
+                res:MemberName   := DbToString(rdr[0])
+                res:TypeName     := DbToString(rdr[1])
+                res:Kind         := (Kind) (INT64) rdr[2]
+                res:Attributes   := (Modifiers) (INT64) rdr[3]
+                res:FileName     := DbToString(rdr[4])
+                res:Project      := DbToString(rdr[5])
+                res:StartLine    := DbToInt(rdr[6])
+                res:StartColumn  := DbToInt(rdr[7])
+                result:Add(res)
+            ENDDO
+        CATCH e AS Exception
+            XSettings.Exception(e)
+        END TRY
+    END LOCK
+    Log(i"GetAllProjectMembers returns {result.Count} rows")
     RETURN result
 
 STATIC METHOD GetFunctions( nFileId AS Int64, nProjectId as Int64) AS IList<XDbResult>

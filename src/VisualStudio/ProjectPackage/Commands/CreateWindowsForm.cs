@@ -32,14 +32,14 @@ namespace XSharp.Project
                 return;
             }
             // check to see if the file already exists
-            var fileName = System.IO.Path.Combine(Path, name + ".prg");
+            var fileName = System.IO.Path.Combine(Path, name + Constants.SourceFileExtension);
             if (System.IO.File.Exists(fileName))
             {
                 var result = MessageBox.Show("The file '" + fileName + "' already exists", "File Exists", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             // check to see if the file.designer already exists
-            var fileNameDesigner = System.IO.Path.Combine(Path, name + ".designer.prg");
+            var fileNameDesigner = System.IO.Path.Combine(Path, name + Constants.DesignerExtension);
             if (System.IO.File.Exists(fileNameDesigner))
             {
                 var result = MessageBox.Show("The file '" + fileNameDesigner + "' already exists", "File Exists", MessageBoxButtons.OK, MessageBoxIcon.Error);

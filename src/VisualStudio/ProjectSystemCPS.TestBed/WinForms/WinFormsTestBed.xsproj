@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    SDK-style X# WinForms project for testing the shadow WinForms designer in the CPS project system:
+    double click (or View Designer) on Form1.prg opens the designer through a hidden companion C# project.
+    Part of ..\SelectorTestBed.sln (loaded by CPS through the project selector).
+  -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Dialect>Core</Dialect>
+    <RootNamespace>WinFormsTestBed</RootNamespace>
+    <Allowdot>True</Allowdot>
+    <NamedArgs>True</NamedArgs>
+  </PropertyGroup>
+</Project>

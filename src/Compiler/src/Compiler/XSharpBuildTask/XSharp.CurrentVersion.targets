@@ -6,8 +6,8 @@ WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and
           created a backup copy.  Incorrect changes to this file will make it
           impossible to load or build your projects from the command-line or the IDE.
 
-This file defines the steps in the standard build process specific for C# .NET projects.
-For example, it contains the step that actually calls the C# compiler.  The remainder
+This file defines the steps in the standard build process specific for X# .NET projects.
+For example, it contains the step that actually calls the X# compiler.  The remainder
 of the build process is defined in Microsoft.Common.targets, which is imported by
 this file.
 
@@ -22,6 +22,20 @@ Copyright (c) XSharp B.V.  All Rights Reserved
     <XSharpBuildAssemblyFile Condition=" '$(XSharpBuildAssemblyFile)' =='' ">$(MSBuildThisFileDirectory)XSharp.Build.dll</XSharpBuildAssemblyFile>
   </PropertyGroup>
 
+  <!-- Extension points, equivalent to the ones in Microsoft.CSharp.CurrentVersion.targets -->
+  <PropertyGroup>
+    <ImportByWildcardBeforeXSharpTargets Condition="'$(ImportByWildcardBeforeXSharpTargets)' == ''">true</ImportByWildcardBeforeXSharpTargets>
+    <ImportByWildcardAfterXSharpTargets Condition="'$(ImportByWildcardAfterXSharpTargets)' == ''">true</ImportByWildcardAfterXSharpTargets>
+    <ImportUserLocationsByWildcardBeforeXSharpTargets Condition="'$(ImportUserLocationsByWildcardBeforeXSharpTargets)' == ''">true</ImportUserLocationsByWildcardBeforeXSharpTargets>
+    <ImportUserLocationsByWildcardAfterXSharpTargets Condition="'$(ImportUserLocationsByWildcardAfterXSharpTargets)' == ''">true</ImportUserLocationsByWildcardAfterXSharpTargets>
+  </PropertyGroup>
+  <Import Project="$(MSBuildUserExtensionsPath)\$(MSBuildToolsVersion)\XSharp.targets\ImportBefore\*" Condition="'$(ImportUserLocationsByWildcardBeforeXSharpTargets)' == 'true' and exists('$(MSBuildUserExtensionsPath)\$(MSBuildToolsVersion)\XSharp.targets\ImportBefore')"/>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\XSharp.targets\ImportBefore\*" Condition="'$(ImportByWildcardBeforeXSharpTargets)' == 'true' and exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\XSharp.targets\ImportBefore')"/>
+  <PropertyGroup>
+    <CustomBeforeXSharpTargets Condition="'$(CustomBeforeXSharpTargets)' == ''">$(MSBuildExtensionsPath)\v$(MSBuildToolsVersion)\Custom.Before.XSharp.targets</CustomBeforeXSharpTargets>
+    <CustomAfterXSharpTargets Condition="'$(CustomAfterXSharpTargets)' == ''">$(MSBuildExtensionsPath)\v$(MSBuildToolsVersion)\Custom.After.XSharp.targets</CustomAfterXSharpTargets>
+  </PropertyGroup>
+  <Import Project="$(CustomBeforeXSharpTargets)" Condition="'$(CustomBeforeXSharpTargets)' != '' and Exists('$(CustomBeforeXSharpTargets)')" />
 
   <UsingTask TaskName="XSharp.Build.Xsc"  AssemblyFile="$(XSharpBuildAssemblyFile)" />
   <UsingTask TaskName="CreateXSharpManifestResourceName" AssemblyFile="$(XSharpBuildAssemblyFile)" />
@@ -374,6 +388,13 @@ Copyright (c) XSharp B.V.  All Rights Reserved
 
   <!-- Import design time targets for Roslyn Project System. These are only available if Visual Studio is installed. -->
   <!-- Import design time targets before the common targets, which import targets from Nuget. -->
+  <PropertyGroup>
+    <XSharpDesignTimeTargetsPath Condition="'$(XSharpDesignTimeTargetsPath)'==''">$(MSBuildThisFileDirectory)XSharp.DesignTime.targets</XSharpDesignTimeTargetsPath>
+    <!-- Imported by XSharp.DesignTime.targets; defined here so the condition below checks the same (overridable) file -->
+    <XSharpManagedDesignTimeTargetsPath Condition="'$(XSharpManagedDesignTimeTargetsPath)'==''">$(MSBuildExtensionsPath)\Microsoft\VisualStudio\Managed\Microsoft.Managed.DesignTime.targets</XSharpManagedDesignTimeTargetsPath>
+  </PropertyGroup>
+  <!-- Only for projects loaded by the CPS based X# project system, which sets XSharpCpsProjectSystem as a global property -->
+  <Import Project="$(XSharpDesignTimeTargetsPath)" Condition="'$(XSharpCpsProjectSystem)' == 'true' and '$(XSharpDesignTimeTargetsPath)' != '' and Exists('$(XSharpDesignTimeTargetsPath)') and Exists('$(XSharpManagedDesignTimeTargetsPath)')" />
 
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
 
@@ -436,5 +457,8 @@ Copyright (c) XSharp B.V.  All Rights Reserved
       -->
     <_ExplicitReference Include="$(FrameworkPathOverride)\mscorlib.dll" />
   </ItemGroup>
+  <Import Project="$(CustomAfterXSharpTargets)" Condition="'$(CustomAfterXSharpTargets)' != '' and Exists('$(CustomAfterXSharpTargets)')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\XSharp.targets\ImportAfter\*" Condition="'$(ImportByWildcardAfterXSharpTargets)' == 'true' and exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\XSharp.targets\ImportAfter')"/>
+  <Import Project="$(MSBuildUserExtensionsPath)\$(MSBuildToolsVersion)\XSharp.targets\ImportAfter\*" Condition="'$(ImportUserLocationsByWildcardAfterXSharpTargets)' == 'true' and exists('$(MSBuildUserExtensionsPath)\$(MSBuildToolsVersion)\XSharp.targets\ImportAfter')"/>
 
 </Project>

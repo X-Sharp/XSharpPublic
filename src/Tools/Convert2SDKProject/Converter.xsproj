@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Tools.props" />
+  <PropertyGroup>
+  <TargetFramework>net472</TargetFramework>
+  </PropertyGroup>
+</Project>

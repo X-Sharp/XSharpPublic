@@ -34,24 +34,6 @@ namespace XSharp.Project
         {
             return new XSharpProjectConfig(base.ProjectMgr, canonicalName);
         }
-#if DEV17
-        /// <summary>
-        /// Returns configuration provider properties.
-        /// For SDK-style projects, hides the Configuration/Platform toolbar in the
-        /// Project Designer property page frame — matching C# CPS project system behaviour.
-        /// </summary>
-        public override int GetCfgProviderProperty(int propid, out object var)
-        {
-            // VSCFGPROPID_HideConfigurations = -16009 (from __VSCFGPROPID2, not available via NuGet)
-            const int VSCFGPROPID_HideConfigurations = -16009;
-            if (propid == VSCFGPROPID_HideConfigurations)
-            {
-                var = this.ProjectMgr is XSharpSdkProjectNode;
-                return VSConstants.S_OK;
-            }
-            return base.GetCfgProviderProperty(propid, out var);
-        }
-#endif
         public override int GetCfgOfName(string name, string platName, out IVsCfg cfg)
         {
             if (name.IndexOf("|") >= 0)
@@ -234,15 +216,6 @@ namespace XSharp.Project
                 {
                     info.clsidCustom = VSConstants.DebugEnginesGuids.ManagedOnly_guid;      // {449EC4CC-30D2-4032-9256-EE18EB41B62B}
                 }
-#if DEV17
-                if (this.ProjectMgr is XSharpSdkProjectNode sdk)
-                {
-                    if (sdk.IsNetCoreApp)
-                    {
-                        info.clsidCustom = VSConstants.DebugEnginesGuids.CoreSystemClr_guid;
-                    }
-                }
-#endif
                 info.grfLaunch = grfLaunch;
                 VsShellUtilities.LaunchDebugger(this._project.Site, info);
             }

@@ -20,7 +20,7 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Conditionally executes a block of statements.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Code with box">IF &lt;<text style="font-style:italic;">lCondition</text>&gt; [THEN]<br/><tab />&lt;<text style="font-style:italic;">Statements</text>&gt;...<br/>[ELSEIF &lt;<text style="font-style:italic;">lCondition</text>&gt;]<br/><tab />&lt;<text style="font-style:italic;">Statements</text>&gt;...<br/>[ELSE]<br/><tab />&lt;<text style="font-style:italic;">Statements</text>&gt;...<br/>END[IF]</para>
+    <para styleclass="Code with box">IF &lt;<text style="font-style:italic;">lCondition</text>&gt; [THEN]<br/><tab />&lt;<text style="font-style:italic;">Statements</text>&gt;...<br/>[ELSEIF &lt;<text style="font-style:italic;">lCondition</text>&gt;]<br/><tab />&lt;<text style="font-style:italic;">Statements</text>&gt;...<br/>[ELSE]<br/><tab />&lt;<text style="font-style:italic;">Statements</text>&gt;...<br/>END [IF] | ENDIF</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">[THEN]<tab />The THEN keyword is optional and has been added because Visual FoxPro allows this keyword.</para>
     <para styleclass="List"></para>

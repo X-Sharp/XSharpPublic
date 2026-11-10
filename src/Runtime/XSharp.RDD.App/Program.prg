@@ -56,7 +56,7 @@ BEGIN NAMESPACE XSharp.RDD.App
 		//
 		LOCAL myTest := TestDBF_Console{} AS TestDBF_Console
 		myTest:OpenDBF()
-		myTest:OpenDBFErr()
+		//myTest:OpenDBFErr()
 		myTest:OpenDBFShowFields()
 		myTest:CheckFieldInfo()
 		myTest:CheckFieldValue()

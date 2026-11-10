@@ -32,6 +32,6 @@ using System.Reflection;
 #endif
 #endif	
 
-[assembly: AssemblyVersion("9.9.9.9")]
-[assembly: AssemblyFileVersion("9.9.9.9")]
-[assembly: AssemblyInformationalVersion("9.9.9.9")]
+[assembly: AssemblyVersion("42.42.42.42")]
+[assembly: AssemblyFileVersion("42.42.42.42")]
+[assembly: AssemblyInformationalVersion("42.42.42.42")]

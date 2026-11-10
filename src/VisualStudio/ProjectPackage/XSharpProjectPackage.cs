@@ -218,14 +218,6 @@ namespace XSharp.Project
             await this.RegisterCommandsAsync();
             await GetOptionsAsync();
             XSettings.CodeDomProviderClass  = typeof(XSharp.CodeDom.XSharpCodeDomProvider);
-            // In your package's InitializeAsync / OnAfterPackageLoadedAsync:
-            var registerTarget = await GetServiceAsync(typeof(SVsRegisterPriorityCommandTarget))
-                as IVsRegisterPriorityCommandTarget;
-#if DEV17
-            uint cookie;
-            if (registerTarget != null)
-                registerTarget.RegisterPriorityCommandTarget(0, new BuildCommandFilter(), out cookie);
-#endif
         }
 
 

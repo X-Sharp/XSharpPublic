@@ -23,6 +23,10 @@ Copyright (C) XSharp BV. All rights reserved.
          is imported after this file) and is listed so the value is picked up should that order
          ever change. The output directories are added explicitly for the same reason - they are
          only appended to DefaultItemExcludes later, which is too late for the globs below. -->
+    <!-- Companion C# projects of the shadow WinForms designer ({Project}.ShadowDesigner, generated next to the
+         project folder): never part of an X# project, also not of an X# project in a parent folder.
+         Added before XSharpDefaultItemExcludes captures DefaultItemExcludes, so the globs below skip them too. -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);**/*.ShadowDesigner/**</DefaultItemExcludes>
     <XSharpDefaultItemExcludes>$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)</XSharpDefaultItemExcludes>
     <XSharpDefaultItemExcludes Condition="'$(BaseOutputPath)' != ''">$(XSharpDefaultItemExcludes);$(BaseOutputPath)/**</XSharpDefaultItemExcludes>
     <XSharpDefaultItemExcludes Condition="'$(BaseIntermediateOutputPath)' != ''">$(XSharpDefaultItemExcludes);$(BaseIntermediateOutputPath)/**</XSharpDefaultItemExcludes>
@@ -56,13 +60,15 @@ Copyright (C) XSharp BV. All rights reserved.
       <DependentUpon Condition="Exists('%(ParentXamlName)')">%(ParentXamlName)</DependentUpon>
 	</Compile>
     <Compile Include="**/*.designer.prg" Exclude="$(XSharpDefaultItemExcludes)" KeepDuplicates="false" >
-      <!-- Designer.prg can depend on prg, resx or settings -->
+      <!-- Designer.prg can depend on prg, resx or settings. The last matching assignment wins, so the prg comes last:
+           a form (Form1.designer.prg) has both Form1.prg and Form1.resx and belongs under Form1.prg, like
+           Form1.resx itself; Resources.designer.prg and Settings.designer.prg have no prg of the same name. -->
       <ParentPrgName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.designer.prg$', '.prg', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentPrgName>
       <ParentResxName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.designer.prg$', '.resx', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentResxName>
       <ParentSettingsName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.designer.prg$', '.settings', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentSettingsName>
-      <DependentUpon Condition="Exists('%(ParentPrgName)')">%(ParentPrgName)</DependentUpon>
-      <DependentUpon Condition="Exists('%(ParentResxName)')">%(ParentResxName)</DependentUpon>
       <DependentUpon Condition="Exists('%(ParentSettingsName)')">%(ParentSettingsName)</DependentUpon>
+      <DependentUpon Condition="Exists('%(ParentResxName)')">%(ParentResxName)</DependentUpon>
+      <DependentUpon Condition="Exists('%(ParentPrgName)')">%(ParentPrgName)</DependentUpon>
     </Compile>
     <EmbeddedResource Include="**/*.resx" Exclude="$(XSharpDefaultItemExcludes)" KeepDuplicates="false">
       <!-- This handles .resx that depends on a prg -->

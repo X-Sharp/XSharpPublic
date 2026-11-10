@@ -177,9 +177,11 @@ namespace XSharp.MacroCompiler
             }
             else if (type.IsReferenceType && expr.Datatype.IsReferenceType)
             {
-                if (expr.Datatype.IsSubclassOf(type))
+                // IsAssignableFrom() also handles interfaces, IsSubclassOf() only handles base classes
+                // (e.g. a codeblock literal of type XSharp.Codeblock to a parameter of type ICodeblock)
+                if (type.IsAssignableFrom(expr.Datatype))
                     return ConversionSymbol.Create(ConversionKind.ImplicitReference);
-                if (type.IsSubclassOf(expr.Datatype))
+                if (expr.Datatype.IsAssignableFrom(type))
                 {
                     if (options.HasFlag(BindOptions.Explicit))
                         return ConversionSymbol.Create(ConversionKind.ExplicitReference);

@@ -8,6 +8,7 @@ USING System.Collections.Generic
 USING System.Linq
 USING System.Text
 USING XUnit
+USING System.Globalization
 
 
 
@@ -127,4 +128,47 @@ BEGIN NAMESPACE XSharp.Core.Tests
 
 
 		END CLASS
+
+	// The tests in this collection replace ConversionHelpers.usCulture, so they must not run
+	// in parallel with any other test that calls _Val()
+	[CollectionDefinition("UsCulture", DisableParallelization := TRUE)];
+	CLASS UsCultureCollection
+	END CLASS
+
+	[Collection("UsCulture")];
+	CLASS CoreUsCultureTests
+
+		[Trait("Category", "Conversion")];
+		[Fact];
+		METHOD UsCultureIgnoresUserOverridesTest() AS VOID
+			VAR oCulture := XSharp.ConversionHelpers.usCulture
+			Assert.Equal("en-US", oCulture:Name)
+			Assert.False(oCulture:UseUserOverride)
+			Assert.Equal(".", oCulture:NumberFormat:NumberDecimalSeparator)
+			Assert.Equal(",", oCulture:NumberFormat:NumberGroupSeparator)
+
+		[Trait("Category", "Conversion")];
+		[Fact];
+		METHOD ValWithUserOverriddenSeparatorsTest() AS VOID
+			// Simulates Windows format "English (United States)" with decimal symbol "," and digit grouping "."
+			VAR oSaved   := XSharp.ConversionHelpers.usCulture
+			VAR oSwapped := (CultureInfo) CultureInfo{"en-US", FALSE}:Clone()
+			oSwapped:NumberFormat:NumberDecimalSeparator := ","
+			oSwapped:NumberFormat:NumberGroupSeparator   := "."
+			VAR nOldDec  := RuntimeState.DecimalSep
+			RuntimeState.DecimalSep := 46
+			TRY
+				TRY
+					XSharp.ConversionHelpers.usCulture := oSwapped
+					// "." is now parsed as a group separator, which is the bug this culture setup reproduces
+					Assert.Equal(99.0, (REAL8) _Val("0.99"))
+				FINALLY
+					XSharp.ConversionHelpers.usCulture := oSaved
+				END TRY
+				Assert.Equal(0.99, (REAL8) _Val("0.99"))
+			FINALLY
+				RuntimeState.DecimalSep := nOldDec
+			END TRY
+
+	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

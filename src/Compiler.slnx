@@ -10,9 +10,6 @@
     <Project Path="Compiler/src/Tools/csc/csc.csproj">
       <BuildType Solution="Public|*" Project="Debug" />
     </Project>
-    <Project Path="Compiler/src/Tools/CSCompiler/CSCompiler.csproj">
-      <BuildType Solution="Public|*" Project="Debug" />
-    </Project>
     <Project Path="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj">
       <BuildType Solution="Public|*" Project="Debug" />
     </Project>
@@ -83,31 +80,26 @@
   <Folder Name="/XSharp/Compiler/">
     <Project Path="Compiler/src/Compiler/xsc/xsc.csproj">
       <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
-      <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
       <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
       <BuildType Solution="Public|*" Project="Debug" />
     </Project>
     <Project Path="Compiler/src/Compiler/XSCompiler/XSCompiler.csproj">
       <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
-      <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
       <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
       <BuildType Solution="Public|*" Project="Debug" />
     </Project>
     <Project Path="Compiler/src/Compiler/XSharpCodeAnalysis/XSharpCodeAnalysis.csproj">
       <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
-      <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
       <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
     </Project>
     <Project Path="Compiler/src/Compiler/XSharpCodeAnalysis/XSharpVSParser.csproj">
       <BuildDependency Project="Compiler/src/Compiler/XSharpCodeAnalysis/XSharpCodeAnalysis.csproj" />
       <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
-      <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
       <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
       <BuildType Solution="Public|*" Project="Debug" />
     </Project>
     <Project Path="Compiler/src/Compiler/XSharpEvaluator/XSharpEvaluator.csproj">
       <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
-      <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
       <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
       <BuildType Solution="Public|*" Project="Debug" />
     </Project>
@@ -120,7 +112,6 @@
       <BuildDependency Project="Compiler/src/Scripting/XSharpScripting/XSharpScripting.csproj" />
       <BuildDependency Project="Compiler/src/Scripting/xsi/xsi.csproj" />
       <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
-      <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
       <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
       <BuildType Solution="Public|*" Project="Debug" />
     </Project>
@@ -128,7 +119,6 @@
   <Folder Name="/XSharp/Scripting/">
     <Project Path="Compiler/src/Scripting/XSharpScripting/XSharpScripting.csproj">
       <BuildDependency Project="Compiler/src/Tools/csc/csc.csproj" />
-      <BuildDependency Project="Compiler/src/Tools/CSCompiler/CSCompiler.csproj" />
       <BuildDependency Project="Compiler/src/Tools/CSharpCodeAnalysis/CSharpCodeAnalysis.csproj" />
       <BuildType Solution="Public|*" Project="Debug" />
     </Project>

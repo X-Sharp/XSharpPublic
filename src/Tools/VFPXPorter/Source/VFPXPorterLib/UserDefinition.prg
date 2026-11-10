@@ -1,7 +1,7 @@
 ﻿// UserDefinition.prg
 // Created by    : fabri
 // Creation Date : 2/16/2021 7:59:17 PM
-// Created for   : 
+// Created for   :
 // WorkStation   : FABPORTABLE
 
 
@@ -15,19 +15,19 @@ BEGIN NAMESPACE VFPXPorterLib
 	/// Store information about User defined element in a class
 	/// </summary>
 	CLASS UserDefinition
-		
+
 		ENUM Visibility
 			MEMBER Public
 			MEMBER Protected
 			MEMBER Private
 		END ENUM
-		
+
 		ENUM ItemKind
 			MEMBER Method
 			MEMBER Field
 			MEMBER FieldArray
-		END ENUM 
-		
+		END ENUM
+
 		PROPERTY Name AS STRING AUTO
 		PROPERTY ArraySize AS STRING AUTO
 		PROPERTY Modifier AS Visibility AUTO
@@ -36,10 +36,10 @@ BEGIN NAMESPACE VFPXPorterLib
 		PROPERTY InitialValue AS STRING AUTO
 
 		PROPERTY Code AS BlockCode AUTO
-		
+
 		CONSTRUCTOR()
 			RETURN
-		
+
 		CONSTRUCTOR( itemToCopy AS UserDefinition )
 			SELF:Name := itemToCopy:Name
 			SELF:ArraySize := itemToCopy:ArraySize
@@ -50,8 +50,8 @@ BEGIN NAMESPACE VFPXPorterLib
 			IF itemToCopy:Code != NULL
 				SELF:Code := BlockCode{ itemToCopy:Code }
 			ENDIF
-			RETURN			
-		
+			RETURN
+
 		/// <summary>
 		///	Create a UserDerfinition, based on the information found in the DataBase:Reserved3
 		///
@@ -67,7 +67,7 @@ BEGIN NAMESPACE VFPXPorterLib
 			ELSE
 				SELF:Name := line
 				SELF:Help := String.Empty
-			ENDIF					
+			ENDIF
 			IF ( SELF:Name:StartsWith("*") )
 				SELF:Name := SELF:Name:Substring(1)
 				SELF:Kind := ItemKind.Method
@@ -88,8 +88,8 @@ BEGIN NAMESPACE VFPXPorterLib
 			//
 			SELF:Modifier := Visibility.Public // Public per default (Could be Protected, Private )
 			RETURN
-		
-		
+
+
 		PROPERTY Declaration AS STRING
 			GET
 				LOCAL declaration AS StringBuilder
@@ -113,7 +113,7 @@ BEGIN NAMESPACE VFPXPorterLib
 				declaration:Append(SELF:Name)
 				IF SELF:Kind == UserDefinition.ItemKind.FieldArray
 					declaration:Append(SELF:ArraySize)
-				ENDIF				
+				ENDIF
 				IF SELF:Kind == UserDefinition.ItemKind.Method
 					declaration:Append("()")
 				ENDIF
@@ -128,11 +128,9 @@ BEGIN NAMESPACE VFPXPorterLib
 					ELSEIF v:StartsWith(e"\"") .OR. v:StartsWith("'") .OR. v:StartsWith("[")
 						inferredType := "STRING"
 					ELSE
-						LOCAL dummy AS LONG
-						LOCAL dummyD AS Double
-						IF Int32.TryParse(v, OUT dummy)
+						IF Int32.TryParse(v, OUT VAR _)
 							inferredType := "LONG"
-						ELSEIF Double.TryParse(v, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, OUT dummyD)
+						ELSEIF Double.TryParse(v, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, OUT VAR _)
 							inferredType := "DOUBLE"
 						ENDIF
 					ENDIF
@@ -148,7 +146,7 @@ BEGIN NAMESPACE VFPXPorterLib
 				RETURN declaration:ToString()
 			END GET
 		END PROPERTY
-			
-			
+
+
 	END CLASS
 END NAMESPACE // VFPXPorterLib

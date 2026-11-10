@@ -14,8 +14,8 @@
     <LargeAddressAware>true</LargeAddressAware>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <TargetFrameworks>net472;net9.0</TargetFrameworks>
-    <UseAppHost>false</UseAppHost> 
-    <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants);NET46;NET472</DefineConstants>
+    <UseAppHost>false</UseAppHost>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants);NET472</DefineConstants>
     <DefineConstants>$(DefineConstants);XSHARP;COMMITHASH</DefineConstants>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <!--Use the C# compiler created in this solution-->
@@ -46,11 +46,11 @@
     </None>
   </ItemGroup>
   <Import Project="XscCommandLine.projitems" Label="Shared" />
-  
+
   <Target Name="DeleteCSFiles" AfterTargets="Build" Condition="'$(TargetFramework)' != ''">
     <ItemGroup>
         <FilesToDelete Include="$(OutputPath)\CS*.*" />
-    </ItemGroup> 
+    </ItemGroup>
      <Delete Files="@(FilesToDelete)" />
   </Target>
 </Project>

@@ -1,5 +1,5 @@
 LOCAL cCls, oObj, i, nclas, nmembers, cClass, cBase
-LOCAL cFile 
+LOCAL cFile
 DIMENSION classes(40)
 
 classes(1) = "CheckBox"
@@ -145,7 +145,7 @@ FOR nClass = 1 TO ALEN(classes)
 			LOOP
 		CASE cMember = "ZORDER"
 			LOOP
-			
+
 		otherwise
 		IF LOWER(members[i,2]) == "property"
 		? "PROPERTY " + members[i,1] + " AS USUAL AUTO"
@@ -154,16 +154,16 @@ FOR nClass = 1 TO ALEN(classes)
 		? "METHOD " + members[i,1] + " AS USUAL CLIPPER"
 		? "RETURN NIL"
 		ENDIF
-		ENDcase	
+		ENDcase
 	NEXT
 	? "END CLASS"
-	? "END NAMESPACE"	
+	? "END NAMESPACE"
 	SET ALTERNATE OFF
 	CLOSE ALTERNATE
-	
+
 next
 SET SAFETY ON
-	
+
 
 
 PROCEDURE ErrorHandler()

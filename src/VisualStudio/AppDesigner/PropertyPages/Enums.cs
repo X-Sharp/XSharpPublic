@@ -196,7 +196,7 @@ namespace XSharp.Project
 
         public override StandardValuesCollection GetStandardValues(System.ComponentModel.ITypeDescriptorContext context)
         {
-            return new StandardValuesCollection(new Dialect[] { Dialect.Core, Dialect.VO, Dialect.Vulcan, Dialect.Harbour,Dialect.XPP, Dialect.FoxPro});
+            return new StandardValuesCollection(new Dialect[] { Dialect.Core, Dialect.VO, Dialect.Vulcan, Dialect.Harbour,Dialect.XPP, Dialect.FoxPro, Dialect.XBaseNet});
         }
     }
 

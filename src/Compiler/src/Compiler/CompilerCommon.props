@@ -50,8 +50,8 @@ See License.txt in the project root for license information.
     <BinariesDir>$(ArtifactsDir)bin\</BinariesDir>
     <ZipsDir>$(ArtifactsDir)Zips\</ZipsDir>
     <VsExternalDir>$(ArtifactsDir)Shared\$(Configuration)</VsExternalDir>
-    <GeneratedCompilerPath Condition="$(COnfiguration)!='Public'">$(BinariesDir)csc\$(Configuration)\net472\</GeneratedCompilerPath>
-	<GeneratedCompilerPath Condition="$(COnfiguration)=='Public'">$(BinariesDir)csc\Debug\net472\</GeneratedCompilerPath>
+    <GeneratedCompilerPath Condition="$(Configuration)!='Public'">$(BinariesDir)csc\$(Configuration)\net472\</GeneratedCompilerPath>
+    <GeneratedCompilerPath Condition="$(Configuration)=='Public'">$(BinariesDir)csc\Debug\net472\</GeneratedCompilerPath>
 
     <XSharpCompilerSrc>$(Solutiondir)Compiler\src\Compiler\</XSharpCompilerSrc>
     <Configurations>Debug;Release</Configurations>

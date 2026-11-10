@@ -26,6 +26,7 @@ internal class SqlDbTableCommandBuilder
     property Provider           as ISqlDbProvider   get Connection:Provider
     Property MetadataProvider   as ISqlMetadataProvider get Connection:MetadataProvider
     property OrderBagList       as List<SqlDbOrderBag> get _oRdd:OrderBagList
+    internal property TableInfo as SqlDbTableInfo get _oTable
 
     constructor(cTable as string, oRdd as SQLRDD)
         self:_cTable      := cTable
@@ -125,6 +126,16 @@ internal class SqlDbTableCommandBuilder
         endif
         return false
 
+    /// <summary>The table's server filter and the work area's filter condition (see SQLRDD._FilterToSql()).</summary>
+    private method _AddFilters(whereClauses as List<String>) as void
+        if SELF:_oTable:HasServerFilter
+            whereClauses:Add(_oTable:ServerFilter)
+        endif
+        if !String.IsNullOrEmpty(_oRdd:ServerFilterWhere)
+            whereClauses:Add(_oRdd:ServerFilterWhere)
+        endif
+        return
+
     method CombineWhereClauses(whereList as List<String>) as string
         if whereList:Count == 0
             return ""
@@ -149,7 +160,8 @@ internal class SqlDbTableCommandBuilder
     /// Build a fetch of nCount rows of the current order/scope/filter (further restricted by
     /// sWhereClause), starting at the 0-based row offset nOffset within that result.
     /// </summary>
-    method BuildSqlStatement(sWhereClause as string, nOffset as int, nCount as int) as string
+    /// <param name="lReverse">TRUE to sort in reverse, for reading the rows before a given one.</param>
+    method BuildSqlStatement(sWhereClause as string, nOffset as int, nCount as int, lReverse := false as logic) as string
         var sb := System.Text.StringBuilder{}
         local scopeWhere := null as string
         var CurrentOrder := _oRdd:CurrentOrder
@@ -171,9 +183,7 @@ internal class SqlDbTableCommandBuilder
         if ! String.IsNullOrEmpty(scopeWhere)
             whereClauses:Add(scopeWhere)
         endif
-        if SELF:_oTable:HasServerFilter
-            whereClauses:Add(_oTable:ServerFilter)
-        endif
+        SELF:_AddFilters(whereClauses)
         sWhereClause := self:CombineWhereClauses(whereClauses)
         sWhereClause :=_connection:RaiseStringEvent(_connection, SqlRDDEventReason.WhereClause, _cTable, sWhereClause)
         if ! String.IsNullOrEmpty(sWhereClause)
@@ -196,9 +206,27 @@ internal class SqlDbTableCommandBuilder
                     cOrderby += " DESC"
                 endif
             endif
+            if lReverse
+                // per item, the items can be expressions with commas
+                var aItems := List<string>{}
+                foreach var cItem in CurrentOrder:OrderList
+                    if cItem:EndsWith(" DESC", StringComparison.OrdinalIgnoreCase)
+                        aItems:Add(cItem:Substring(0, cItem:Length - 5):TrimEnd())
+                    else
+                        aItems:Add(cItem + " DESC")
+                    endif
+                next
+                if SELF:_oTable:HasRecnoColumn .and. !Functions.List2String(CurrentOrder:OrderList):Contains(Provider:QuoteIdentifier(self:_oTable:RecnoColumn))
+                    aItems:Add(Provider:QuoteIdentifier(self:_oTable:RecnoColumn) + iif(CurrentOrder:Descending, "", " DESC"))
+                endif
+                cOrderby := Functions.List2String(aItems)
+            endif
         elseif SELF:_oTable:HasRecnoColumn
             sb:Append(Provider:OrderByClause)
             cOrderby := Provider:QuoteIdentifier(self:_oTable:RecnoColumn)
+            if lReverse
+                cOrderby += " DESC"
+            endif
         endif
         cOrderby :=_connection:RaiseStringEvent(_connection, SqlRDDEventReason.OrderByClause, _cTable, cOrderby)
         sb:Replace(SqlDbProvider.ColumnsMacro, cOrderby)
@@ -206,8 +234,27 @@ internal class SqlDbTableCommandBuilder
         sb:Append(Provider:PagingClause)
         sb:Replace(SqlDbProvider.PagesizeMacro, nCount:ToString())
         sb:Replace(SqlDbProvider.StartRecMacro, nOffset:ToString())
+        sb:Append(SELF:_QueryHint(sWhereClause))
 
         return sb:ToString()
+
+    private static _rangeCondition := System.Text.RegularExpressions.Regex{"\s(or|like|<|>|<=|>=)\s", ;
+        System.Text.RegularExpressions.RegexOptions.IgnoreCase} as System.Text.RegularExpressions.Regex
+
+    /// <summary>
+    /// The provider's hint for a query with this condition (see SqlDbProvider.RangeQueryHint): when it has
+    /// OR, LIKE or range terms (a keyset condition, a soft seek, a scope, a prefix seek) and the table is
+    /// large. A condition of equalities only keeps the plan from the cache, it is a seek for any value.
+    /// </summary>
+    private method _QueryHint(sWhereClause as string) as string
+        if String.IsNullOrEmpty(sWhereClause) .or. !_rangeCondition:IsMatch(sWhereClause)
+            return ""
+        endif
+        if Provider is SqlDbProvider var oProvider .and. !String.IsNullOrEmpty(oProvider:RangeQueryHint) ;
+            .and. _connection:ApproximateRows(self:_oTable:RealName) >= oProvider:RangeQueryHintMinRows
+            return oProvider:RangeQueryHint
+        endif
+        return ""
 
     /// <summary>
     /// Build a fetch of the last page of the current order/scope/filter, without the classic
@@ -222,7 +269,7 @@ internal class SqlDbTableCommandBuilder
     /// OFFSET 0 is always cheap regardless of table size; the caller is responsible for
     /// reversing the returned rows back into ascending order.
     /// </remarks>
-    method BuildLastPageStatement() as string
+    method BuildLastPageStatement(nRows := 0 as long) as string
         var sb := System.Text.StringBuilder{}
         local scopeWhere := null as string
         var CurrentOrder := _oRdd:CurrentOrder
@@ -240,9 +287,7 @@ internal class SqlDbTableCommandBuilder
         if ! String.IsNullOrEmpty(scopeWhere)
             whereClauses:Add(scopeWhere)
         endif
-        if SELF:_oTable:HasServerFilter
-            whereClauses:Add(_oTable:ServerFilter)
-        endif
+        SELF:_AddFilters(whereClauses)
         var sWhereClause := self:CombineWhereClauses(whereClauses)
         sWhereClause := _connection:RaiseStringEvent(_connection, SqlRDDEventReason.WhereClause, _cTable, sWhereClause)
         if ! String.IsNullOrEmpty(sWhereClause)
@@ -276,8 +321,9 @@ internal class SqlDbTableCommandBuilder
         sb:Replace(SqlDbProvider.ColumnsMacro, cOrderby)
 
         sb:Append(Provider:PagingClause)
-        sb:Replace(SqlDbProvider.PagesizeMacro, _oTable:PageSize:ToString())
+        sb:Replace(SqlDbProvider.PagesizeMacro, iif(nRows > 0, nRows, _oTable:PageSize):ToString())
         sb:Replace(SqlDbProvider.StartRecMacro, "0")
+        sb:Append(SELF:_QueryHint(sWhereClause))
 
         return sb:ToString()
 
@@ -288,9 +334,7 @@ internal class SqlDbTableCommandBuilder
         // to calculate the correct pagenumber !
         var currentOrder := _oRdd:CurrentOrder
         var whereClauses := List<String>{}
-        if SELF:_oTable:HasServerFilter
-            whereClauses:Add(_oTable:ServerFilter)
-        endif
+        SELF:_AddFilters(whereClauses)
         if currentOrder != null
             var sWhere := currentOrder:GetScopeClause()
             if !String.IsNullOrEmpty(sWhere)
@@ -356,7 +400,20 @@ internal class SqlDbTableCommandBuilder
         return sb:ToString()
 
 
+    /// <summary>The quoted column list of the table, recno and deleted column last.</summary>
+    /// <remarks>Built once: every statement of the work area uses it, and for a table with 178 columns
+    /// building it took a noticeable part of a seek on the client.</remarks>
     method ColumnList() as string
+        if _columnList == null .or. _columnListCount != _oTable:Columns:Count
+            _columnList := SELF:_BuildColumnList()
+            _columnListCount := _oTable:Columns:Count
+        endif
+        return _columnList
+
+    private _columnList as string
+    private _columnListCount as long
+
+    private method _BuildColumnList() as string
         var sb := StringBuilder{}
         var List  := Dictionary<string, SqlDbColumnDef>{StringComparer.OrdinalIgnoreCase}
         var newColumns     := List<SqlDbColumnDef>{}
@@ -437,9 +494,11 @@ internal class SqlDbTableCommandBuilder
         sb:Append("count(*)")
         sb:Append(SqlDbProvider.FromClause)
         sb:Append(Provider.QuoteIdentifier(_oTable:RealName))
-        if _oTable:HasServerFilter
+        var whereClauses := List<String>{}
+        SELF:_AddFilters(whereClauses)
+        if whereClauses:Count > 0
             sb:Append(SqlDbProvider.WhereClause)
-            sb:Append(_oTable:ServerFilter)
+            sb:Append(SELF:CombineWhereClauses(whereClauses))
         endif
         var stmt := sb:ToString()
         var result := _connection:ExecuteScalar(stmt, _cTable)
@@ -454,9 +513,7 @@ internal class SqlDbTableCommandBuilder
 
         var currentOrder := _oRdd:CurrentOrder
         var whereClauses := List<String>{}
-        if SELF:_oTable:HasServerFilter
-            whereClauses:Add(_oTable:ServerFilter)
-        endif
+        SELF:_AddFilters(whereClauses)
         if currentOrder != null
             var sWhere := currentOrder:GetScopeClause()
             if !String.IsNullOrEmpty(sWhere)

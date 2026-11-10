@@ -206,7 +206,7 @@ BEGIN NAMESPACE  XSharp.VFP.UI
 		/// </summary>
 		NEW PROPERTY Value AS USUAL
 			GET
-				RETURN (USUAL)(FLOAT) SUPER:Value
+				RETURN (FLOAT) SUPER:Value
 			END GET
 			SET
 				LOCAL dec AS System.Decimal

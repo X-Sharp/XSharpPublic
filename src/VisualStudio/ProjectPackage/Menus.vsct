@@ -48,18 +48,6 @@
         </Strings>
       </Menu>
 
-      <!--XSharp Debugger Framework  in Debug/Windows-->
-      <!-- Debugging Framework menu added to debug controller -->
-      <Menu guid="guidProjectPackage" id="DebugTargetMenuDebugFrameworkMenu" priority="0x00F1" type="Menu">
-        <Parent guid="guidDebugTargetHandlerPackage" id="DebugTargetMenuControllerFooterGroup"/>
-        <CommandFlag>TextChanges</CommandFlag>
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
-        <!--<CommandFlag>DefaultInvisible</CommandFlag>-->
-        <Strings>
-          <ButtonText>Framework</ButtonText>
-        </Strings>
-      </Menu>
 
 
 
@@ -78,11 +66,6 @@
         <GroupFlag />
       </Group>
 
-      <!--Group for the Framework Items inside the Debug-Start menu for MultiTarget projects-->
-      <Group guid="guidProjectPackage" id="DebugTargetMenuDebugFrameworkGroup" priority="0x0600">
-        <Parent guid="guidProjectPackage"  id="DebugTargetMenuDebugFrameworkMenu"/>
-        <GroupFlag />
-      </Group>
 
       <!--Group for the items in the Help Menu-->
       <Group guid="guidProjectPackage" id="idHelpMenuGroup" priority="0x0600">
@@ -352,44 +335,6 @@
       </Button>
 
 
-      <!-- Added to the Debugger Framework Menu-->
-
-      <Button guid="guidProjectPackage" id="idFramework1" priority="0x1000" type="Button">
-        <Parent guid="guidProjectPackage" id="DebugTargetMenuDebugFrameworkGroup"/>
-        <CommandFlag>TextChanges</CommandFlag>
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
-        <Strings>
-          <ButtonText>Framework 1</ButtonText>
-        </Strings>
-      </Button>
-      <Button guid="guidProjectPackage" id="idFramework2" priority="0x1000" type="Button">
-        <Parent guid="guidProjectPackage" id="DebugTargetMenuDebugFrameworkGroup"/>
-        <CommandFlag>TextChanges</CommandFlag>
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
-        <Strings>
-          <ButtonText>Framework 2</ButtonText>
-        </Strings>
-      </Button>
-      <Button guid="guidProjectPackage" id="idFramework3" priority="0x1000" type="Button">
-        <Parent guid="guidProjectPackage" id="DebugTargetMenuDebugFrameworkGroup"/>
-        <CommandFlag>TextChanges</CommandFlag>
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
-        <Strings>
-          <ButtonText>Framework 3</ButtonText>
-        </Strings>
-      </Button>
-      <Button guid="guidProjectPackage" id="idFramework4" priority="0x1000" type="Button">
-        <Parent guid="guidProjectPackage" id="DebugTargetMenuDebugFrameworkGroup"/>
-        <CommandFlag>TextChanges</CommandFlag>
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>DefaultInvisible</CommandFlag>
-        <Strings>
-          <ButtonText>Framework 4</ButtonText>
-        </Strings>
-      </Button>
 
 
       <Button guid="guidProjectPackage" id="idConvertSDKProject" priority="0x0400" type="Button">
@@ -453,27 +398,6 @@
           <ButtonText>Sync Designer Changes From Shadow Designer</ButtonText>
         </Strings>
       </Button>
-      <Button guid="guidProjectPackage" id="idPublishProject" priority="0x0200" type="Button">
-        <Icon guid="ImageCatalogGuid" id="PublishAllWebSites" />
-        <CommandFlag>IconIsMoniker</CommandFlag>
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>IconAndText</CommandFlag>
-        <Strings>
-          <ButtonText>Publish...</ButtonText>
-          <MenuText>Publish...</MenuText>
-          <ToolTipText>Publish the project with dotnet publish</ToolTipText>
-        </Strings>
-      </Button>
-      <Button guid="guidProjectPackage" id="idPackProject" priority="0x0210" type="Button">
-        <CommandFlag>IconIsMoniker</CommandFlag>
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <CommandFlag>IconAndText</CommandFlag>
-        <Strings>
-          <ButtonText>Pack (Create NuGet Package)</ButtonText>
-          <MenuText>Pack...</MenuText>
-          <ToolTipText>Create a NuGet package from the project</ToolTipText>
-        </Strings>
-      </Button>
     </Buttons>
     <Bitmaps>
       <Bitmap guid="guidImages" href="Resources\XSharpProjectImageList.bmp" />
@@ -512,12 +436,6 @@
     </CommandPlacement>
     <CommandPlacement guid="guidProjectPackage" id="idSyncDesignerChanges" priority="0x0102">
       <Parent guid="guidProjectPackage" id="idFileContextMenuGroup"/>
-    </CommandPlacement>
-    <CommandPlacement guid="guidProjectPackage" id="idPackProject" priority="0x0001">
-      <Parent guid="guidProjectPackage" id="idProjectContextMenuGroup"/>
-    </CommandPlacement>
-    <CommandPlacement guid="guidProjectPackage" id="idPublishProject" priority="0x0002">
-      <Parent guid="guidProjectPackage" id="idProjectContextMenuGroup"/>
     </CommandPlacement>
 
     <CommandPlacement guid="guidProjectPackage" id="idConvertSDKProject" priority="0x0100">
@@ -612,8 +530,6 @@
       <IDSymbol name="idEditProjectFile" value="0x010F" />
       <IDSymbol name="idHelpOffLineChinese" value="0x0110" />
       <IDSymbol name="idGenerateWinForm" value="0x0120" />
-      <IDSymbol name="idPublishProject" value="0x0121" />
-      <IDSymbol name="idPackProject" value="0x0122" />
       <IDSymbol name="idSyncEventHandlers" value="0x0123" />
       <IDSymbol name="idSyncDesignerChanges" value="0x0124" />
       <IDSymbol name="idExporterSubMenu" value="0x01030" />
@@ -631,19 +547,9 @@
       <IDSymbol name="idDebuggerToolbarGroup" value="0x2001" />
       <IDSymbol name="idDebuggerFrameworkSubMenu" value="0x2002" />
 
-      <IDSymbol name="DebugTargetMenuDebugFrameworkMenu" value="0x7000" />
-      <IDSymbol name="DebugTargetMenuDebugFrameworkGroup" value="0x7001" />
       <IDSymbol name="cmdidProjectDebugger" value="0x7002" />
-      <IDSymbol name="idFramework1" value="0x7011" />
-      <IDSymbol name="idFramework2" value="0x7012" />
-      <IDSymbol name="idFramework3" value="0x7013" />
-      <IDSymbol name="idFramework4" value="0x7014" />
     </GuidSymbol>
 
-    <GuidSymbol name="guidDebugTargetHandlerPackage" value="{6e87cfad-6c05-4adf-9cd7-3b7943875b7c}">
-      <IDSymbol name="DebugTargetMenuControllerGroup" value="0x1000" />
-      <IDSymbol name="DebugTargetMenuControllerFooterGroup" value="0x2000" />
-    </GuidSymbol>
 
     <GuidSymbol name="guidImages" value="{9f1c712d-4803-4aff-9153-28b74c34e1bf}">
       <IDSymbol name="bmpXSharp" value="2" />

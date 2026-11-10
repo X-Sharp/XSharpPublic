@@ -4,6 +4,7 @@
 // See License.txt in the project root for license information.
 //
 #nullable disable
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -151,7 +152,8 @@ namespace Microsoft.CodeAnalysis.CSharp
                     if (!Compilation.Options.HasOption(CompilerOption.EnforceSelf, syntax))
                     {
                         // Static method generate the error elsewhere
-                        bool ignore = name.ToLower() == XSharpSpecialNames.funcToIgnore1 || name.ToLower() == XSharpSpecialNames.funcToIgnore2;
+                        bool ignore = string.Equals(name, XSharpSpecialNames.funcToIgnore1, StringComparison.OrdinalIgnoreCase)
+                            || string.Equals(name, XSharpSpecialNames.funcToIgnore2, StringComparison.OrdinalIgnoreCase);
                         if (!ignore)
                         {
                             var args = new object[] { name, func, meth };
@@ -168,7 +170,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 // function first and then the methods
                 LookupResult mergedResults = LookupResult.GetInstance();
                 mergedResults.MergeEqual(functionResults);
-                // now add the symbols from result that do not exist 
+                // now add the symbols from result that do not exist
                 for (int j = 0; j < result.Symbols.Count; j++)
                 {
                     var sym = result.Symbols[j];

@@ -15,8 +15,8 @@
     <para styleclass="Normal">Declare an enumeration to the compiler.</para>
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal"><tab />[attributes] [Modifiers] </para>
-    <para styleclass="Normal"><tab />ENUM &lt;idEnumName&gt; [AS type] &#160; </para>
-    <para styleclass="Normal"><tab /><tab />memberName [:= value]</para>
+    <para styleclass="Normal"><tab />ENUM &lt;idEnumName&gt; [AS | INHERIT type] &#160; </para>
+    <para styleclass="Normal"><tab /><tab />[Attributes] [MEMBER] memberName [:= value]</para>
     <para styleclass="Normal"><tab /><tab /> &#160;[...]</para>
     <para styleclass="Normal"><tab />END [ENUM]</para>
     <para styleclass="Normal"></para>

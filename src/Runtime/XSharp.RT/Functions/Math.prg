@@ -230,7 +230,7 @@ FUNCTION Round(nNumber IN USUAL,siDecimals AS INT) AS USUAL
             siDecimals := MAX_DECIMALS
         ENDIF
 
-        r8 := (REAL8) Math.Round( (System.Decimal) r8, siDecimals, MidpointRounding.AwayFromZero )
+        r8 := (REAL8)Math.Round( (System.Decimal) r8, siDecimals, MidpointRounding.AwayFromZero)
     ELSE
         // Round before decimal point
         siDecimals := -siDecimals
@@ -252,6 +252,14 @@ FUNCTION Round(nNumber IN USUAL,siDecimals AS INT) AS USUAL
         ENDIF
         siDecimals := 0
     ENDIF
+
+#ifdef NET6_0_OR_GREATER
+    // Rounding can produce a negative zero (-0.0), which .NET Core 3.0+ displays as "-0"
+    // -0.0 == 0.0 is TRUE, so this turns every zero into a positive zero
+    IF r8 == 0.0
+        r8 := 0.0
+    ENDIF
+#endif
 
     IF IsLong .OR. IsInt64
         siDecimals := 0

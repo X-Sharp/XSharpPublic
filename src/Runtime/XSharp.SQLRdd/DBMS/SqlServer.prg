@@ -55,6 +55,44 @@ class SqlDbProviderSqlServer inherit SqlDbProvider
         return
     end constructor
 
+    /// <summary>SQL Server also reads [...] in a LIKE pattern as a character class.</summary>
+    override property LikeWildcards as string => "%_["
+
+    /// <inheritdoc />
+    /// <remarks>'yyyyMMdd' is read the same way for date, datetime, datetime2 and smalldatetime,
+    /// whatever the language and DATEFORMAT of the session.</remarks>
+    override method DateLiteral(dValue as DateTime) as string
+        return "'" + dValue:ToString("yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture) + "'"
+    end method
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// A keyset condition k1 >= v1 AND (k1 > v1 OR (k1 = v1 AND k2 > v2) OR ...) can only be turned
+    /// into seeks on the index when the server knows the values. With PARAMETERIZATION FORCED (or a
+    /// plan from the cache) it does not: it seeks on k1 alone and reads all rows of v1 before the
+    /// position. Paging the lines of an order near the end of a table with 5.4 million rows read
+    /// 6,641 pages (860 ms CPU) for 10 rows, with OPTION (RECOMPILE) 54 pages (2 ms to compile).
+    /// A range is at risk as well: a plan from the cache for TYP = @0 AND KURZNAME >= @1 ORDER BY
+    /// KURZNAME, made for the 1.1 million customers (TYP 'K'), read the short name index in order and
+    /// looked up TYP for every row. For a soft seek among the 488 suppliers (TYP 'L') near the end of
+    /// the names it read 720,398 pages (107 s) to find nothing; recompiled, 418 pages (6 ms).
+    /// On small tables these reads are cheap and compiling every query costs more: navigation tests on
+    /// tables with 1,000 to 50,000 rows took 1.5 to 2 times as long, hence RangeQueryHintMinRows.
+    /// </remarks>
+    override property RangeQueryHint as string => " OPTION (RECOMPILE)"
+
+    /// <inheritdoc />
+    override property BinaryCollation as string => " COLLATE Latin1_General_BIN2"
+
+    /// <inheritdoc />
+    /// <remarks>A varchar literal takes the default collation of the database.</remarks>
+    override property CodePageStatement as string => ;
+        "SELECT COLLATIONPROPERTY(CONVERT(sysname, DATABASEPROPERTYEX(DB_NAME(), 'Collation')), 'CodePage')"
+
+    /// <inheritdoc />
+    override property TableRowsStatement as string => ;
+        "SELECT SUM(rows) FROM sys.partitions WHERE object_id = OBJECT_ID(N'" + TableNameMacro + "') AND index_id IN (0, 1)"
+
     private static aFuncs := null as Dictionary<string, string>
     /// <inheritdoc />
     override method GetFunctions() as Dictionary<string, string>
@@ -65,7 +103,7 @@ class SqlDbProviderSqlServer inherit SqlDbProvider
                         {"STR(%1%,%2%,%3%)"			,"STR(%1%,%2%,%3%)"},;
                         {"STR(%1%,%2%)"				,"STR(%1%,%2%,0)"},;
                         {"SUBSTR(%1%,%2%,%3%)"		,"SUBSTRING(%1%,%2%,%3%)"},;
-                        {"DTOS(%1%)"				,"CONVERT(char(8), %1%,11)"},;
+                        {"DTOS(%1%)"				,"CONVERT(char(8), %1%,112)"},;
                         {"IIF(%1%,%2%,%3%)"			,"CASE WHEN %1% THEN %2% ELSE %3% END"},;
                         {"TODAY()"					,"GETDATE()"},;
                         {"CHR(%1%)"					,"CHAR(%1%)"},;

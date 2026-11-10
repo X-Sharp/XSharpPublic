@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // See License.txt in the project root for license information.
 //
+#define IMAGE
 using Community.VisualStudio.Toolkit;
 
 using EnvDTE;
@@ -78,12 +79,16 @@ namespace XSharp.Project
         static XSharpProjectNode()
         {
             // first the extension to look for, second the extension that can be the parent
-            dependencies = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            dependencies.Add(".designer.prg", ".prg");
-            dependencies.Add(".xaml.prg", ".xaml");
-            dependencies.Add(".vh", ".prg");
-            dependencies.Add(".xh", ".prg");
-            dependencies.Add(".resx", ".prg");
+            dependencies = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                { Constants.DesignerExtension, Constants.SourceFileExtension },
+                { ".xaml.prg", ".xaml" },
+                { Constants.VHExtension, Constants.SourceFileExtension },
+                { Constants.XHExtension, Constants.SourceFileExtension },
+                { Constants.CHExtension, Constants.SourceFileExtension },
+                { ".resx", Constants.SourceFileExtension }
+            };
+#if IMAGE
             try
             {
                 imageList = Utilities.GetImageList(typeof(XSharpProjectNode).Assembly.GetManifestResourceStream("XSharp.Project.Resources.XSharpProjectImageList.bmp"));
@@ -91,6 +96,7 @@ namespace XSharp.Project
             catch (Exception)
             {
             }
+#endif
             _changedProjectFiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
         internal static IDictionary<string, string> ChangedProjectFiles => _changedProjectFiles;
@@ -102,7 +108,9 @@ namespace XSharp.Project
 
         #region Fields
         private XSharpProjectPackage package;
+#if IMAGE
         private static ImageList imageList;
+#endif
         private VSLangProj.VSProject vsProject;
         bool isLoading = false;
         XSharpModel.XProject projectModel;
@@ -110,7 +118,7 @@ namespace XSharp.Project
 
 
         //private Microsoft.VisualStudio.Designer.Interfaces.IVSMDCodeDomProvider codeDomProvider;
-        #endregion
+#endregion
 
         #region Constructors
 
@@ -123,7 +131,9 @@ namespace XSharp.Project
             this.package = package;
             _cachedProjectProperties = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             this.OnProjectPropertyChanged += XSharpProjectNode_OnProjectPropertyChanged;
+#if IMAGE
             InitializeImageList();
+#endif
             InitializeCATIDs();
 
             // Used by (at least) the AddFromTemplate in order (for eg) to have Form1.Designer.Prg depending on Form1.prg
@@ -249,11 +259,12 @@ namespace XSharp.Project
             AddCATIDMapping(typeof(XSharpDialectPropertyPage), typeof(XSharpDialectPropertyPage).GUID);
             AddCATIDMapping(typeof(XSharpDebugPropertyPage), typeof(XSharpDebugPropertyPage).GUID);
         }
-        #endregion
+#endregion
 
         #region Properties
 
         internal bool IsLoading => isLoading;
+#if IMAGE
         /// <summary>
         /// Gets or sets the image list.
         /// </summary>
@@ -269,7 +280,7 @@ namespace XSharp.Project
                 imageList = value;
             }
         }
-
+#endif
         /// <summary>
         /// Gets the XSharpPackage instance for this project.
         /// </summary>
@@ -312,7 +323,7 @@ namespace XSharp.Project
         }
 
 
-        #endregion
+#endregion
 
         #region Overriden implementation
 
@@ -379,13 +390,9 @@ namespace XSharp.Project
             base.options = xoptions;
             if (projectModel != null)
                 projectModel.ResetParseOptions(null);
-            var constants = (string)LastBuildResult?.GetPropertyValue("DefineConstants");
-            if (constants != null)
+            foreach (string s in _buildAddedDefines)
             {
-                foreach (string s in constants.Replace(" \t\r\n", "").Split(';'))
-                {
-                    options.DefinedPreprocessorSymbols.Add(s);
-                }
+                options.DefinedPreprocessorSymbols.Add(s);
             }
             return options;
         }
@@ -680,9 +687,6 @@ namespace XSharp.Project
                 typeof(XSharpGeneralPropertyPage).GUID,
                 typeof(XSharpLanguagePropertyPage).GUID,
                 typeof(XSharpDialectPropertyPage).GUID,
-#if DEV17
-                 typeof(XSharpGlobalUsingsPropertiesPage).GUID,
-#endif
                 typeof(XSharpBuildPropertyPage).GUID,
                 typeof(XSharpBuildEventsPropertyPage).GUID,
                 typeof(XSharpDebugPropertyPage).GUID
@@ -1028,7 +1032,7 @@ namespace XSharp.Project
             }
             var parentFile = fileName.Substring(0, fileName.Length - extension.Length);
             parentFile = Path.Combine(path, parentFile);
-            var parentExtension = ".prg";
+            var parentExtension = Constants.SourceFileExtension;
             if (dependencies.ContainsKey(extension))
             {
                 parentExtension = dependencies[extension];
@@ -1471,7 +1475,7 @@ namespace XSharp.Project
             }
         }
 
-
+#if IMAGE
         private void InitializeImageList()
         {
             imageOffset = this.ImageHandler.ImageList.Images.Count;
@@ -1481,6 +1485,7 @@ namespace XSharp.Project
                 this.ImageHandler.AddImage(img);
             }
         }
+#endif
         /// <summary>
         /// Factory method for reference container node
         /// </summary>
@@ -1489,70 +1494,6 @@ namespace XSharp.Project
         {
             return new XSharpReferenceContainerNode(this);
         }
-
-        internal bool HasIncompleteReferences = false;
-
-#if DEV17
-        internal bool FixReferences()
-        {
-            var found = true;
-            var container = this.GetReferenceContainer() as XSharpReferenceContainerNode;
-            if (container == null)
-                return false;
-            foreach (var child in container.EnumReferences())
-            {
-                if (child is XSharpSDKProjectReferenceNode sdkref)
-                {
-
-                    var element = child.ItemNode;
-
-                    var path = element.Item.EvaluatedInclude;
-                    var completePath = Path.Combine(this.ProjectFolder, path);
-                    completePath = Path.GetFullPath(completePath);
-                    var refnode = FindProject(completePath);
-                    Guid refnodeGuid = Guid.Empty;
-                    string refnodeName = child.Caption;
-                    if (refnode != null)
-                    {
-                        refnodeGuid = refnode.ProjectIDGuid;
-                    }
-                    else
-                    {
-                        // this must be a foreign project reference
-                        var projectInfo = ProjectInfo.GetProjectInfo(completePath);
-                        if (projectInfo == null)
-                        {
-                            if (this.GetProjectGuid(completePath, out refnodeGuid) && refnodeGuid != Guid.Empty)
-                            {
-                                projectInfo = new ProjectInfo(refnodeGuid, completePath);
-                            }
-                        }
-                        else
-                        {
-                            refnodeGuid = projectInfo.Id;
-                        }
-                    }
-                    if (refnodeGuid != Guid.Empty)
-                    {
-                        element.SetMetadata(ProjectFileConstants.Project, refnodeGuid.ToString("B").ToUpperInvariant());
-                        element.SetMetadata(ProjectFileConstants.Name, refnodeName);
-                        sdkref.SaveProperties();
-                        // The node was created before the referenced project was available, so it has no
-                        // guid and no build dependency yet.
-                        sdkref.UpdateReferencedProjectGuid(refnodeGuid);
-                    }
-                    else
-                    {
-                        Logger.Information($"Could not determine the guid of project {completePath}, referenced by {this.Caption}");
-                        found = false;
-                    }
-                }
-            }
-            HasIncompleteReferences = !found;
-            this.SetProjectFileDirty(false);
-            return found;
-        }
-#endif
 
         internal bool GetProjectGuid(string url, out  Guid guid)
         {
@@ -1597,11 +1538,23 @@ namespace XSharp.Project
 
             return service;
         }
-        ProjectInstance LastBuildResult = null;
+        // Defines that the targets of the last build added to the evaluated DefineConstants (e.g. the implicit
+        // framework defines of an SDK project). The evaluated defines themselves are not kept: after a change
+        // on the property page they would be stale until the next build.
+        List<string> _buildAddedDefines = new List<string>();
+        static string[] SplitDefines(string defines)
+        {
+            return defines.Split(new char[] { ';', ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        }
         protected override Microsoft.VisualStudio.Project.BuildResult InvokeMsBuild(string target, out ProjectInstance projectInstance)
         {
             var result = base.InvokeMsBuild(target, out projectInstance);
-            LastBuildResult = projectInstance;
+            var buildDefines = projectInstance?.GetPropertyValue(XSharpProjectFileConstants.DefineConstants);
+            if (buildDefines != null)
+            {
+                var evaluated = new HashSet<string>(SplitDefines(BuildProject.GetPropertyValue(XSharpProjectFileConstants.DefineConstants)), StringComparer.OrdinalIgnoreCase);
+                _buildAddedDefines = SplitDefines(buildDefines).Where(d => !evaluated.Contains(d)).ToList();
+            }
             // Find Items from NuGet packages
             foreach (var item in projectInstance.Items)
             {
@@ -2122,29 +2075,13 @@ namespace XSharp.Project
             base.Reload();
             CreateListManagers();
             this.CreateIncludeFileFolder();
-            if (ResetDependencies() && !this.IsSdkProject)
+            if (ResetDependencies())
             {
                 this.BeforeSave();
                 this.BuildProject.Save();
             }
             RefreshIncludeFiles();
         }
-
-        /// <summary>
-        /// Exposes RefreshReferences to code elsewhere in this assembly that isn't an
-        /// XSharpProjectNode subclass (e.g. ShadowDesignerBridge), for forcing a synchronous
-        /// re-read of the .rsp/reference list right after a build it just ran itself --
-        /// rather than trusting that the normal BuildEnded(true) -> RefreshReferences() path
-        /// (triggered by XSharpIDEBuildLogger's MSBuild logger callback) has already
-        /// completed by the time a synchronous EnvDTE BuildProject(...) call returns.
-        /// Confirmed via diagnostic logging that it sometimes hasn't: GetFilteredReferencePaths
-        /// read a stale, empty (framework-only) list immediately after EnsureBuilt reported
-        /// success, causing the unresolved-3rd-party-reference CodeDom corruption
-        /// (oControl1:Property := x collapsing to a bare oControl1 = x) intermittently.
-        /// Virtual dispatch through this wrapper still reaches the most-derived override
-        /// (e.g. XSharpSdkProjectNode.RefreshReferences), same as calling it directly would.
-        /// </summary>
-        internal List<string> ForceRefreshReferences() => RefreshReferences();
 
         protected virtual List<string> RefreshReferences()
         {
@@ -2173,25 +2110,6 @@ namespace XSharp.Project
                 }
             }
         }
-#if DEV17
-        internal IList<XSharpSDKProjectReferenceNode> GetSdkProjectReferences()
-        {
-            var nodes = new List<XSharpSDKProjectReferenceNode>();
-            var container = this.GetReferenceContainer() as ReferenceContainerNode;
-            if (container != null)
-                container.FindNodesOfType(nodes);
-            return nodes;
-        }
-        internal IList<XSharpSDKProjectReferenceNode> ClearSdkProjectReferences()
-        {
-            var nodes = GetSdkProjectReferences();
-            foreach (var node in nodes)
-            {
-                node.RemoveProperties();
-            }
-            return nodes;
-        }
-#endif
 #if DEV17
         public override int Save(string fileToBeSaved, int remember, uint formatIndex)
         {
@@ -2623,6 +2541,7 @@ namespace XSharp.Project
             int result;
             bool dialectVO = false;
             bool ok = true;
+            bool adjustTarget = false;
             ThreadHelper.ThrowIfNotOnUIThread();
             silent = (__VSUPGRADEPROJFLAGS)grfUpgradeFlags == __VSUPGRADEPROJFLAGS.UPF_SILENTMIGRATE;
             if (ChangedProjectFiles.ContainsKey(this.Url))
@@ -2642,11 +2561,6 @@ namespace XSharp.Project
                 Utilities.DeleteFileSafe(this.Url);
                 File.WriteAllText(Url, changedSource);
                 ok = false;
-            }
-            if (ok && this.IsSdkProject)
-            {
-                // do not touch SDK style projects !
-                return VSConstants.S_OK;
             }
             StringWriter backup = new StringWriter();
             BuildProject.Save(backup);
@@ -2717,6 +2631,22 @@ namespace XSharp.Project
                         ok = false;
                 }
             }
+            var vers = this.BuildProject.GetPropertyValue(XSharpProjectFileConstants.TargetFrameworkVersion);
+            if (vers != null)
+            {
+                if (vers.StartsWith("v4", StringComparison.OrdinalIgnoreCase) && Dialect != XDialect.Core)
+                {
+                    vers = vers.ToLower().Substring(3);
+                    double.TryParse(vers, out double dvers);
+                    if (dvers < 7.0)
+                    {
+                        ok = false;
+                        adjustTarget = true;
+                    }
+
+                }
+            }
+
             if (str.IndexOf("XSharp.VO", StringComparison.OrdinalIgnoreCase) >= 0 && str.IndexOf("XSharp.RT", StringComparison.OrdinalIgnoreCase) == -1)
             {
                 switch (this.Dialect)
@@ -2736,7 +2666,7 @@ namespace XSharp.Project
                 }
                 else
                 {
-                    FixProjectFile(BuildProject.FullPath, dialectVO);
+                    FixProjectFile(BuildProject.FullPath, dialectVO, adjustTarget);
                     base.UpgradeProject(grfUpgradeFlags);
                     result = VSConstants.S_OK;
                 }
@@ -2785,7 +2715,7 @@ namespace XSharp.Project
             this.RemoveProjectProperty(XSharpProjectVersion);
             this.RemoveProjectProperty(ProjectFileConstants.TargetPath);
         }
-        private void FixProjectFile(string filename, bool dialectVO)
+        private void FixProjectFile(string filename, bool dialectVO, bool adjustTarget)
         {
             bool changed = false;
             var xml = BuildProject.Xml;
@@ -2896,6 +2826,10 @@ namespace XSharp.Project
             {
                 if (UpdateDocumentationFile(group))
                     changed = true;
+            }
+            if (adjustTarget)
+            {
+                BuildProject.SetProperty(XSharpProjectFileConstants.TargetFrameworkVersion, "v4.7");
             }
             // Add ProjectVersion and IncludePaths & NoStandardDefs to first Propertygroup without condition.
             var grp = groups.Where(g => g.Condition.Trim().Length == 0).FirstOrDefault();

@@ -1,20 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <ProjectGuid>22f634c4-97c1-4347-8994-a4f89d100afb</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BinaryTest</RootNamespace>
-    <AssemblyName>BinaryTest</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFramework>net472</TargetFramework>
     <Name>TestBed</Name>
-    <Nologo>true</Nologo>
-    <GenerateFullPaths>true</GenerateFullPaths>
     <Dialect>FoxPro</Dialect>
-    <na>false</na>
     <az>false</az>
-    <nostddef>false</nostddef>
     <ins>true</ins>
     <unsafe>true</unsafe>
     <vo2>true</vo2>
@@ -35,112 +27,35 @@
     <initlocals>true</initlocals>
     <fox1>true</fox1>
     <fox2>true</fox2>
-    <OutputName>BinaryTest</OutputName>
     <VO1>false</VO1>
     <VO8>false</VO8>
     <VO11>false</VO11>
     <VO12>false</VO12>
     <NamedArgs>False</NamedArgs>
-    <StartupObject />
-    <ApplicationIcon />
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <NoWin32Manifest>False</NoWin32Manifest>
     <CS>false</CS>
     <OVF>false</OVF>
     <NS>false</NS>
     <NoStandardDefs>false</NoStandardDefs>
-    <IncludePaths />
-    <StandardDefs />
     <Allowdot>true</Allowdot>
     <AllowOldStyleAssignments>true</AllowOldStyleAssignments>
+    <AssemblyName>BinaryTest</AssemblyName>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <EmitDebugInformation>true</EmitDebugInformation>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" Label="Configuration">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <EmitDebugInformation>false</EmitDebugInformation>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
+    <ProjectReference Include="..\..\Runtime\MacroCompiler\XSharp.MacroCompiler.csproj" />
+    <ProjectReference Include="..\..\Runtime\XSharp.Core\XSharp.Core.xsproj" />
+    <ProjectReference Include="..\..\Runtime\XSharp.Rdd\XSharp.RDD.xsproj" />
+    <ProjectReference Include="..\..\Runtime\XSharp.RT\XSharp.RT.xsproj" />
+    <ProjectReference Include="..\..\Runtime\XSharp.VFP\XSharp.VFP.xsproj" />
+    <ProjectReference Include="..\..\Runtime\XSharp.XPP\XSharp.XPP.xsproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.prg">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Program.prg">
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Runtime\MacroCompiler\MacroCompiler.csproj">
-      <Name>MacroCompiler (Macrocompiler\MacroCompiler)</Name>
-      <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Runtime\XSharp.Core\XSharp.Core.xsproj">
-      <Name>XSharp.Core</Name>
-      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Runtime\XSharp.Rdd\XSharp.RDD.xsproj">
-      <Name>XSharp.RDD</Name>
-      <Project>{e83c6c8c-773f-4b01-a597-3d38398a9362}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Runtime\XSharp.RT\XSharp.RT.xsproj">
-      <Name>XSharp.RT</Name>
-      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Runtime\XSharp.VFP\XSharp.VFP.xsproj">
-      <Name>XSharp.VFP</Name>
-      <Project>{3a771f0e-9400-4a19-8663-c71567ebfa29}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Runtime\XSharp.XPP\XSharp.XPP.xsproj">
-      <Name>XSharp.XPP</Name>
-      <Project>{c5d7be20-038e-4b42-a90a-b13bab83d8e5}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <!-- This next bit is required unless the macro used to Import your targets is defined in an MSBuild toolset. -->
-  <ProjectExtensions>
-    <ProjectCapabilities>
-      <ProjectConfigurationsDeclaredAsItems />
-    </ProjectCapabilities>
-  </ProjectExtensions>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
 </Project>

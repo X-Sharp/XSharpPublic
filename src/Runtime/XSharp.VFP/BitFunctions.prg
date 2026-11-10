@@ -41,7 +41,7 @@ FUNCTION BitClear (Arg1 AS USUAL, Bit AS USUAL) AS USUAL
     ENDIF
     IF IsBinary(Arg1)
         VAR binValue := (BINARY) Arg1
-        RETURN IIF(binValue.Length == 0, 0h, BitClear(binValue, (INT)Bit, 1))
+        RETURN IIF(binValue:Length == 0, 0h, BitClear(binValue, (INT)Bit, 1))
     ELSEIF IsNumeric(Arg1)
         RETURN BitClear((INT)Arg1, (INT)Bit)
     ELSE
@@ -69,13 +69,13 @@ END FUNC
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitclear/*" />
 FUNCTION BitClear (BinString AS BINARY) AS BINARY
 
-    RETURN IIF(BinString.Length == 0, 0h, BitClear(BinString, 0, BinString.Length * 8))
+    RETURN IIF(BinString:Length == 0, 0h, BitClear(BinString, 0, BinString:Length * 8))
 
 END FUNC
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitclear/*" />
 FUNCTION BitClear (BinString AS BINARY, StartBit AS INT) AS BINARY
-    RETURN IIF(BinString.Length == 0, 0h, BitClear(BinString, StartBit, 1))
+    RETURN IIF(BinString:Length == 0, 0h, BitClear(BinString, StartBit, 1))
 END FUNC
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitclear/*" />
@@ -89,7 +89,7 @@ FUNCTION BitClear (BinString AS BINARY, StartBit AS INT, BitCount AS INT) AS BIN
     FOR BitCounter := 1 TO BitCount
 
         ByteIndex := BitIndex / 8 + 1
-        IF BETWEEN(ByteIndex, 1, Result.Length)
+        IF BETWEEN(ByteIndex, 1, Result:Length)
             Result[ByteIndex] := (BYTE) _AND(Result[ByteIndex],_NOT(1 << BitIndex % 8))
             BitIndex++
         ELSE
@@ -137,7 +137,7 @@ END FUNC
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitnot/*" />
 FUNCTION BitNot (BinString AS BINARY) AS BINARY
-    RETURN BitNot(BinString, 0, BinString.Length * 8)
+    RETURN BitNot(BinString, 0, BinString:Length * 8)
 END FUNC
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitnot/*" />
@@ -150,7 +150,7 @@ FUNCTION BitNot (BinString AS BINARY, StartBit AS INT, BitCount := 1 AS INT) AS 
     FOR BitCounter := 1 TO BitCount
 
         ByteIndex := BitIndex / 8 + 1
-        IF BETWEEN(ByteIndex, 1, Result.Length)
+        IF BETWEEN(ByteIndex, 1, Result:Length)
             Result[ByteIndex] := (BYTE) _XOR(Result[ByteIndex], 1 << BitIndex % 8)
             BitIndex++
         ELSE
@@ -239,12 +239,12 @@ END FUNC
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitset/*" />
 FUNCTION BitSet (BinString AS BINARY) AS BINARY
-    RETURN IIF(BinString.Length == 0, 0h, BitSet(BinString, 0, BinString.Length * 8))
+    RETURN IIF(BinString:Length == 0, 0h, BitSet(BinString, 0, BinString:Length * 8))
 END FUNC
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitset/*" />
 FUNCTION BitSet (BinString AS BINARY, StartBit AS INT) AS BINARY
-    RETURN IIF(BinString.Length == 0, 0h, BitSet(BinString, StartBit, 1))
+    RETURN IIF(BinString:Length == 0, 0h, BitSet(BinString, StartBit, 1))
 END FUNC
 
 /// <include file="VFPDocs.xml" path="Runtimefunctions/bitset/*" />
@@ -258,7 +258,7 @@ FUNCTION BitSet (BinString AS BINARY, StartBit AS INT, BitCount AS INT) AS BINAR
     FOR BitCounter := 1 TO BitCount
 
         ByteIndex := BitIndex / 8 + 1
-        IF BETWEEN(ByteIndex, 1, Result.Length)
+        IF BETWEEN(ByteIndex, 1, Result:Length)
             Result[ByteIndex] := (BYTE) _OR(Result[ByteIndex], 1 << BitIndex % 8)
             BitIndex++
         ELSE
@@ -299,7 +299,7 @@ FUNCTION BitTest (BinString AS BINARY, BitNumber AS INT) AS LOGIC
 
     LOCAL Buff := BinString AS BYTE[]
 
-    IF BETWEEN(BitNumber, 0, Buff.Length * 8 - 1)
+    IF BETWEEN(BitNumber, 0, Buff:Length * 8 - 1)
         RETURN _AND(Buff[BitNumber / 8 + 1], 1 << BitNumber % 8) != 0
     ELSE
         THROW Error.ArgumentError(__FUNCTION__, nameof(BitNumber),2)
@@ -327,19 +327,19 @@ INTERNAL STATIC CLASS BitHelpers
 STATIC METHOD _BITANDORX (LogicalOp AS BitOperation, Arg1 AS USUAL, Arg2 PARAMS USUAL[]) AS USUAL
 
     IF IsBinary(Arg1)
-        VAR Args = BINARY[]{Arg2.Length}
+        VAR Args := BINARY[]{Arg2:Length}
         LOCAL ArgIndex AS INT
 
-        FOR ArgIndex := 1 TO Args.Length
+        FOR ArgIndex := 1 TO Args:Length
             Args[ArgIndex] := (BINARY)Arg2[ArgIndex]
         NEXT
 
         RETURN _BITANDORX(LogicalOp, (BINARY)Arg1, Args)
     ELSEIF IsLong(Arg1)
-        VAR Args = INT[]{Arg2.Length}
+        VAR Args := INT[]{Arg2:Length}
         LOCAL ArgIndex AS INT
 
-        FOR ArgIndex := 1 TO Args.Length
+        FOR ArgIndex := 1 TO Args:Length
             Args[ArgIndex] := (INT)Arg2[ArgIndex]
         NEXT
 
@@ -356,15 +356,15 @@ STATIC METHOD _BITANDORX (LogicalOp AS BitOperation, Arg1 AS INT, Arg2 PARAMS IN
 
     SWITCH LogicalOp
         CASE BitOperation.And
-            FOR ArgIndex := 1 TO Arg2.Length
+            FOR ArgIndex := 1 TO Arg2:Length
                 Result := _AND(Result, Arg2[ArgIndex])
             NEXT
         CASE BitOperation.Or
-            FOR ArgIndex := 1 TO Arg2.Length
+            FOR ArgIndex := 1 TO Arg2:Length
                 Result := _OR(Result, Arg2[ArgIndex])
             NEXT
         CASE BitOperation.Xor
-            FOR ArgIndex := 1 TO Arg2.Length
+            FOR ArgIndex := 1 TO Arg2:Length
                 Result := _XOR(Result, Arg2[ArgIndex])
             NEXT
         END
@@ -378,27 +378,27 @@ STATIC METHOD _BITANDORX (LogicalOp AS BitOperation, Arg1 AS BINARY, Arg2 PARAMS
     LOCAL Result := 0h + Arg1 AS BYTE[]
     LOCAL ArgIndex AS INT
 
-    FOR ArgIndex := 1 TO Arg2.Length
+    FOR ArgIndex := 1 TO Arg2:Length
         LOCAL Arg := 0h + Arg2[ArgIndex] AS BYTE[]
-        IF Result.Length < Arg.Length
-            Array.Resize(REF Result, Arg.Length)
+        IF Result:Length < Arg:Length
+            Array.Resize(REF Result, Arg:Length)
         ELSE
-            IF Result.Length > Arg.Length
-                Array.Resize(REF Arg, Result.Length)
+            IF Result:Length > Arg:Length
+                Array.Resize(REF Arg, Result:Length)
             ENDIF
         ENDIF
         LOCAL ByteIndex AS INT
         SWITCH LogicalOp
             CASE BitOperation.And
-                FOR ByteIndex := 1 TO Result.Length
+                FOR ByteIndex := 1 TO Result:Length
                     Result[ByteIndex] := _AND(Result[ByteIndex], Arg[ByteIndex])
                 NEXT
             CASE BitOperation.Or
-                FOR ByteIndex := 1 TO Result.Length
+                FOR ByteIndex := 1 TO Result:Length
                     Result[ByteIndex] := _OR(Result[ByteIndex], Arg[ByteIndex])
                 NEXT
             CASE BitOperation.Xor
-                FOR ByteIndex := 1 TO Result.Length
+                FOR ByteIndex := 1 TO Result:Length
                     Result[ByteIndex] := _XOR(Result[ByteIndex], Arg[ByteIndex])
                 NEXT
             END

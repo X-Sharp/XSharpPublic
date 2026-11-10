@@ -1,16 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
-  <Import Project="..\Runtime.props" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Runtime.Sdk.props" />
   <PropertyGroup>
-    <ProjectGuid>16d523f2-b871-4bdc-94ef-33b3db7ae617</ProjectGuid>
     <OutputType>Library</OutputType>
+    <TargetFrameworks>net47</TargetFrameworks>
     <RootNamespace>XSharp.Runtime.RT.Tests</RootNamespace>
-    <AssemblyName>XSharp.Runtime.RT.Tests</AssemblyName>
     <Name>XSharp.RT.Tests</Name>
     <Dialect>Vulcan</Dialect>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
     <AZ>false</AZ>
     <CS>false</CS>
     <LB>false</LB>
@@ -22,95 +18,21 @@
     <VO14>true</VO14>
     <VO15>true</VO15>
     <Nostandarddefs>False</Nostandarddefs>
-    <StartupObject />
-    <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
+    <AssemblyName>XSharp.RT.Tests</AssemblyName>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <NoWarn>165,169,219,618,168</NoWarn>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <EmitDebugInformation>false</EmitDebugInformation>
-    <DebugType>pdbonly</DebugType>
-    <DefineConstants>TRACE</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-  </PropertyGroup>
-  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
-      <Name>Newtonsoft.Json</Name>
-      <AssemblyName>Newtonsoft.Json.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System">
-      <Name>System</Name>
-      <AssemblyName>System.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
+  <Compile Include="..\XSharp.Core.Tests\Support.prg">
+    <Link>Support.prg</Link>
+  </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj" />
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\XSharp.Core.Tests\Support.prg">
-      <Link>Support.prg</Link>
-    </Compile>
-    <Compile Include="ArrayTests.prg" />
-    <Compile Include="BinaryTests.prg" />
-    <Compile Include="ConversionTests.prg" />
-    <Compile Include="CodeBlockTest.prg" />
-    <Compile Include="ClipperCallingTests.prg" />
-    <Compile Include="ArrayBaseTests.prg" />
-    <Compile Include="DbfVfpTests.prg" />
-    <Compile Include="LateBindingTests.prg" />
-    <Compile Include="StringExtendedTests.prg" />
-    <Compile Include="TerminalTests.prg" />
-    <Compile Include="DbfNtxTests.prg" />
-    <Compile Include="DbfBlobTests.prg" />
-    <Compile Include="EmptyTests.prg" />
-    <Compile Include="CurrencyTests.prg" />
-    <Compile Include="DbfCdxTests.prg" />
-    <Compile Include="FileIOTests.prg" />
-    <Compile Include="MacroTest.prg" />
-    <Compile Include="NullTests.prg" />
-    <Compile Include="OemTests.prg" />
-    <Compile Include="DateTests.prg" />
-    <Compile Include="DbfTests.prg" />
-    <Compile Include="Serializing.prg" />
-    <Compile Include="StringTests.prg" />
-    <Compile Include="ErrorTests.prg" />
-    <Compile Include="FloatTests.prg" />
-    <Compile Include="MathTests.prg" />
-    <Compile Include="MemoryTests.prg" />
-    <Compile Include="MiscTests.prg" />
-    <Compile Include="Properties\AssemblyInfo.prg">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="TransformTests.prg" />
-    <Compile Include="UsualTests.prg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MacroCompiler\MacroCompiler.csproj">
-      <Name>MacroCompiler (Macrocompiler\MacroCompiler)</Name>
-      <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
-      <Name>XSharp.Core</Name>
-      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj">
-      <Name>XSharp.RT</Name>
-      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>
     </PackageReference>
@@ -124,13 +46,14 @@
     </PackageReference>
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <NoWarn>165,169,219,618,168</NoWarn>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
 </Project>

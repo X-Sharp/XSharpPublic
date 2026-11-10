@@ -18,6 +18,8 @@ DEFINE BINARY_MED := 16
 DEFINE BINARY_REP := 17 // Caret Report
 DEFINE BINARY_ORD := 30
 
+BEGIN NAMESPACE Fab_VO_Entities
+
 CLASS Designer
 	PROPERTY Name AS STRING AUTO
 	PROPERTY Bytes AS BYTE[] AUTO
@@ -105,7 +107,6 @@ CLASS Designer
 	PROPERTY FileName AS STRING GET Name+Extension
 END CLASS
 
-BEGIN NAMESPACE Fab_VO_Entities
 
     CLASS FabMEFFile	INHERIT	FabModuleBase
         // Open the AEF file through a FileStream

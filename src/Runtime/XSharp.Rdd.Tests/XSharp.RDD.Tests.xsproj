@@ -1,95 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
-  <Import Project="..\Runtime.props" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Runtime.Sdk.props" />
   <PropertyGroup>
-    <ProjectGuid>d77877a7-f7cf-4dad-be6f-ae7a3bc9b942</ProjectGuid>
     <OutputType>Library</OutputType>
+    <TargetFrameworks>net47</TargetFrameworks>
     <RootNamespace>XSharp.RDD.Tests</RootNamespace>
-    <AssemblyName>XSharp.RDD.Tests</AssemblyName>
     <Name>XSharp.RDD.Tests</Name>
     <Dialect>Core</Dialect>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
     <Nostandarddefs>true</Nostandarddefs>
-    <StartupObject />
     <Allowdot>True</Allowdot>
-    <EnforceSelf>True</EnforceSelf>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <AssemblyName>XSharp.RDD.Tests</AssemblyName>
+    <cs>false</cs>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <DefineConstants>TRACE</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-  </PropertyGroup>
-  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.prg">
-      <SubType>Code</SubType>
+    <Compile Include="..\XSharp.Core.Tests\Support.prg">
+      <Link>Support.prg</Link>
     </Compile>
-    <Compile Include="TestClass.prg">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="TestDBF.prg" />
-    <Compile Include="TestDbfNtx.prg" />
-    <Compile Include="TestHelpers.prg" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="customer.dbf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="dbase_03.dbf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="dbase_03_summary.html" />
-    <None Include="Readme.md" />
-    <None Include="TESTNTX2.DBF">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="TESTNTX2.NTX">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MacroCompiler\MacroCompiler.csproj">
-      <Name>MacroCompiler (Macrocompiler\MacroCompiler)</Name>
-      <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
-      <Name>XSharp.Core</Name>
-      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.Rdd\XSharp.RDD.xsproj">
-      <Name>XSharp.RDD</Name>
-      <Project>{e83c6c8c-773f-4b01-a597-3d38398a9362}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj">
-      <Name>XSharp.RT</Name>
-      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System</Name>
-      <AssemblyName>System.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System.Core</Name>
-      <AssemblyName>System.Core.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
+    <ProjectReference Include="..\MacroCompiler\XSharp.MacroCompiler.csproj" />
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj" />
+    <ProjectReference Include="..\XSharp.Rdd\XSharp.RDD.xsproj" />
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="xunit">
@@ -101,4 +34,23 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Update="customer.dbf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="customer.dbf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Documentation|AnyCPU'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
 </Project>

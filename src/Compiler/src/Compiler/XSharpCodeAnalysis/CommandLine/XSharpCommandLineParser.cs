@@ -54,7 +54,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 name = name.Substring(0, name.Length - 1);
             }
-            switch (name.ToLower())
+            switch (name.ToLowerInvariant())
             {
                 case "allowoldstyleassignments":
                     options.AllowOldStyleAssignments = positive;
@@ -81,6 +81,12 @@ namespace Microsoft.CodeAnalysis.CSharp
                 case "cs":
                     options.CaseSensitive = positive;
                     XSharpString.CaseSensitive = positive;
+                    break;
+                case "d":
+                case "define":
+                    handled = false;
+                    if (value != null)
+                        options.Net5orHigher = value.IndexOf("net5_0_or_greater",StringComparison.OrdinalIgnoreCase) >= 0;
                     break;
                 case "dialect":
                     XSharpDialect dialect = XSharpDialect.Core;
@@ -211,7 +217,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                         value = value.Trim();
                         if (value.StartsWith("\"") && value.EndsWith("\""))
                             value = value.Substring(1, value.Length - 2);
-                        string fn = System.IO.Path.GetFileName(value).ToLower();
+                        string fn = System.IO.Path.GetFileName(value).ToLowerInvariant();
                         fn = System.IO.Path.GetFileNameWithoutExtension(fn);
                         switch (fn)
                         {
@@ -302,7 +308,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                             value = value.Substring(1, value.Length - 2);
                         }
                         string filename = value;
-                        if (value.IndexOf(";") != -1)
+                        if (value.IndexOf(';') != -1)
                         {
                             foreach (var fname in ParseSeparatedPaths(value).Where((path) => !string.IsNullOrWhiteSpace(path)))
                             {

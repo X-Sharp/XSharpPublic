@@ -69,7 +69,14 @@ CLASS XProject
     PROPERTY FileName                          AS STRING GET _fileName
     PROPERTY HasFiles                          AS LOGIC GET _SourceFilesDict:Keys:Count > 0 .or. _OtherFilesDict:Keys:Count > 0
     PROPERTY Framework                         AS STRING GET _framework
-    PROPERTY DisplayName                       AS STRING GET _projectNode?.DisplayName
+    PROPERTY DisplayName                       AS STRING
+        GET
+            if String.IsNullOrEmpty(self:_framework)
+                return _projectNode?.DisplayName
+            ENDIF
+            return _projectNode?.DisplayName + " (" + _framework + ")"
+        END GET
+    END PROPERTY
     property GlobalUsings                      AS List<STRING> GET SELF:EnsureGlobalUsings():_globalUsings
     property GlobalStaticUsings                AS List<STRING> GET SELF:EnsureGlobalUsings():_globalStaticUsing
 
@@ -183,7 +190,8 @@ CLASS XProject
         END GET
     END PROPERTY
 
-    PROPERTY RootNamespace as STRING GET _projectNode:RootNameSpace
+    // Close() clears _projectNode while a background parse of the project may still resolve types
+    PROPERTY RootNamespace as STRING GET _projectNode?:RootNameSpace DEFAULT ""
 #endregion
 
     CONSTRUCTOR(project AS IXSharpProject)
@@ -359,7 +367,8 @@ CLASS XProject
     PRIVATE METHOD SaveAssemblyReferencesToDatabase() as VOID
         if _unprocessedAssemblyReferences:Count == 0
             // Save Assembly-Project References to the Database
-            XDatabase.SaveProjectAssemblyReferences(SELF, SELF:AssemblyReferences)
+            // Use the field: the AssemblyReferences property calls ResolveReferences(), which may re-read assemblies
+            XDatabase.SaveProjectAssemblyReferences(SELF, SELF:_AssemblyReferences)
         endif
     PROPERTY RefCheckTimeOut as LOGIC
         GET
@@ -1315,14 +1324,20 @@ CLASS XProject
                                     endif
                                 next
                             endif
-                            melement:UpdateLocation(xmember)
+                            LOCAL memberFile AS XFile
                             if aFiles:ContainsKey(melement:IdFile)
-                                xmember:File         := aFiles[melement:IdFile]
+                                memberFile := aFiles[melement:IdFile]
                             ELSE
-                                File := SELF:GetFileById(melement:IdFile)
-                                aFiles:Add(melement:IdFile, File)
-                                xmember:File         := File
+                                // the file belongs to the project of the type, not to the project that looks it up
+                                memberFile := project:GetFileById(melement:IdFile)
+                                IF memberFile == NULL
+                                    memberFile := project:FindXFile(melement:FileName)
+                                ENDIF
+                                IF memberFile != NULL
+                                    aFiles:Add(melement:IdFile, memberFile)
+                                ENDIF
                             ENDIF
+                            melement:UpdateLocation(xmember, memberFile)
                         ELSE
                             NOP
                         ENDIF
@@ -1425,11 +1440,13 @@ CLASS XProject
                 endif
             next
         endif
-        if entities:Count == List:Count
+        if entities:Count == List:Count .and. List:Count > 0
+            // all elements come from the same file: look it up once
+            var memberFile := XSolution.FindFile(List[0]:FileName)
             FOR var i := 0 to entities:Count-1
                 var entity := (XSourceMemberSymbol) entities[i]
                 var dbres  := List[i]
-                dbres:UpdateLocation(entity)
+                dbres:UpdateLocation(entity, memberFile)
             next
         endif
         RETURN entities

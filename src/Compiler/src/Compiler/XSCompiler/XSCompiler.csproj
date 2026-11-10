@@ -15,7 +15,7 @@
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <UseAppHost>false</UseAppHost>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>false</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
-    <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants)NET46;NET472</DefineConstants>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants)NET472</DefineConstants>
     <DefineConstants Condition="'$(TargetFramework)' != 'net472'">$(DefineConstants)NETCOREAPP</DefineConstants>
     <DefineConstants>$(DefineConstants);XSHARP;COMMITHASH</DefineConstants>
     <!--Use the C# compiler created in this solution-->
@@ -45,6 +45,6 @@
   </ItemGroup>
   <Import Project="VBCSCompilerCommandLine.projitems" Label="Shared" />
   <PropertyGroup>
-    <PreBuildEvent>taskkill  /f /t /fi "IMAGENAME eq XSCompiler.exe" &gt; NUL</PreBuildEvent>
+    <PreBuildEvent Condition="'$(UseSharedCompilation)' == 'true'">taskkill  /f /t /fi "IMAGENAME eq XSCompiler.exe" &gt; NUL</PreBuildEvent>
 </PropertyGroup>
 </Project>

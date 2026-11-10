@@ -118,7 +118,7 @@ BEGIN NAMESPACE MacroCompilerTest
         TestMacro(mc, e"{|a,b| asdgfafd(123) /*aaa*/ }", Args(), NULL, NULL,ErrorCode.NotAMethod)
 
         // bug 1186
-        TestMacro(mc, e"{|| ctest.fld}", Args(), "Variable does not exist", typeof(XSharp.Error))
+        TestMacro(mc, e"{|| ctest.fld}", Args(), "Variable does not exist: ctest", typeof(XSharp.Error))
         TestMacro(mc, "MyNS.StaticClass.Test", Args(), NULL, NULL, ErrorCode.NotAnExpression)
 
         mc:Options:UndeclaredVariableResolution := VariableResolution.Error
@@ -691,9 +691,10 @@ BEGIN NAMESPACE MacroCompilerTest
         Testmacro(mc, e"{|str, x| PadL(str, x)}",Args("abc",2),"ab",typeof(STRING))
         TestMacro(mc, e"{|o|o:Checked}", Args(CheckBox{}), FALSE, typeof(LOGIC))
         TestMacro(mc, e"{|a,b|AltD(), a+b}", Args(1,2), 3, typeof(LONG))
+#ifndef NET5_0_OR_GREATER
         var tempGetInst := System.Runtime.InteropServices.Marshal.GetHINSTANCE(typeof(XSharp.VO.Functions):Module)
         TestMacro(mc, e"{||_GetInst()}", Args(), tempGetInst, typeof(IntPtr))
-
+#endif
         // Dynamic assembly load test (note: XSharp.VO needs to be compiled before this for it to work! This is ensured by the solution build order)
         //TestMacro(mc, "{ || FloatNext(0) } ", Args(), null, null, ErrorCode.NotAMethod)
         //System.Reflection.Assembly.Load("XSharp.VO")

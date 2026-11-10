@@ -279,8 +279,6 @@ CLASS SplitView INHERIT Control
 	PROPERTY deferPaintCount AS DWORD GET SELF:dwDeferPaintCount
 
 	METHOD Destroy() AS USUAL clipper
-		LOCAL liPane  AS LONGINT
-		LOCAL liCount AS LONGINT
 
 		IF SELF:_aPanes != NULL
             FOREACH VAR oPane IN SELF:_aPanes
@@ -342,14 +340,12 @@ CLASS SplitView INHERIT Control
 		RETURN aPanes
 
 	METHOD GetPaneClient(nPane AS LONG) AS IGuiObject
-		LOCAL oRet AS OBJECT
         IF nPane <= SELF:_aPanes:Count
             RETURN SELF:_aPanes[nPane- __ARRAYBASE__]
         ENDIF
 		RETURN NULL_OBJECT
 
 	METHOD GetPaneSize(nPane AS LONG) AS Dimension
-		LOCAL oRet AS OBJECT
         IF nPane <= SELF:_aPanes:Count
             VAR panel := SELF:__GetPanel(nPane)
             RETURN panel:Size
@@ -357,7 +353,6 @@ CLASS SplitView INHERIT Control
 		RETURN NULL_OBJECT
 
 	METHOD HidePane(nPane := -1 AS LONG)  AS VOID
-		LOCAL oRet AS OBJECT
         IF nPane > 0
             IF nPane <= SELF:_aPanes:Count
                 SELF:_aPanes[nPane- __ARRAYBASE__]:Hide()

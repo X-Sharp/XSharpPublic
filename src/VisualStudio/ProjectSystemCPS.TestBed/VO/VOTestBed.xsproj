@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    SDK-style X# VO project for testing the VO designers (window, menu editors) in the CPS project system.
+    Made from the VO SDI Application template (ProjectPackage/Templates/Projects/Windows/VOSdiApp), without the
+    template's AssemblyInfo.prg (the SDK generates the assembly attributes) and without explicit items: the X# SDK
+    globs add the .prg, .rc and VO binaries (with DependentUpon). Part of ..\SelectorTestBed.sln (loaded by CPS
+    through the project selector).
+  -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <PlatformTarget>x86</PlatformTarget>
+    <RootNamespace>VOTestBed</RootNamespace>
+    <Dialect>VO</Dialect>
+    <LB>true</LB>
+    <Unsafe>true</Unsafe>
+    <INS>true</INS>
+    <VO1>true</VO1>
+    <VO2>true</VO2>
+    <VO3>true</VO3>
+    <VO4>true</VO4>
+    <VO5>true</VO5>
+    <VO6>true</VO6>
+    <VO7>true</VO7>
+    <VO8>true</VO8>
+    <VO9>true</VO9>
+    <VO10>true</VO10>
+    <VO11>false</VO11>
+    <VO12>false</VO12>
+    <VO13>true</VO13>
+    <VO14>false</VO14>
+    <VO15>true</VO15>
+    <VO16>true</VO16>
+    <NamedArgs>false</NamedArgs>
+    <NoWarn>$(NoWarn);9032;9043;618;162;165;649;9025</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <!-- The X# runtime and VO SDK assemblies of the X# installation -->
+    <XSharpInstallDir Condition="'$(XSharpInstallDir)' == ''">$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\XSharpBV\XSharp@XSharpPath)</XSharpInstallDir>
+    <XSharpInstallDir Condition="'$(XSharpInstallDir)' == ''">$(MSBuildProgramFiles32)\XSharp</XSharpInstallDir>
+    <XSharpAssembliesDir>$([MSBuild]::EnsureTrailingSlash('$(XSharpInstallDir)'))Assemblies\</XSharpAssembliesDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="XSharp.Core" HintPath="$(XSharpAssembliesDir)XSharp.Core.dll" />
+    <Reference Include="XSharp.RT" HintPath="$(XSharpAssembliesDir)XSharp.RT.dll" />
+    <Reference Include="XSharp.VO" HintPath="$(XSharpAssembliesDir)XSharp.VO.dll" />
+    <Reference Include="VOSystemClasses" HintPath="$(XSharpAssembliesDir)VOSystemClasses.dll" />
+    <Reference Include="VOGUIClasses" HintPath="$(XSharpAssembliesDir)VOGUIClasses.dll" />
+    <Reference Include="VORDDClasses" HintPath="$(XSharpAssembliesDir)VORDDClasses.dll" />
+    <Reference Include="VOWin32APILibrary" HintPath="$(XSharpAssembliesDir)VOWin32APILibrary.dll" />
+  </ItemGroup>
+</Project>

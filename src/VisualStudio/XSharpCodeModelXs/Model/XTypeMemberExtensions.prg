@@ -105,8 +105,8 @@ STATIC METHOD GetProtoType(SELF tm as IXMemberSymbol, lApplyCallingConvention :=
         RETURN desc + " "+tm:GetProtoType()
 
     STATIC METHOD GetFullName(SELF tm as IXMemberSymbol) AS STRING
-        IF (tm:Parent != NULL)
-        RETURN tm:Parent:FullName +"." + XLiterals.EscapeName(tm:Name)
+        IF tm:Parent != NULL .and. !tm:Kind:IsGlobalTypeMember()
+            RETURN tm:Parent:FullName +"." + XLiterals.EscapeName(tm:Name)
         ENDIF
         RETURN tm:Name
 

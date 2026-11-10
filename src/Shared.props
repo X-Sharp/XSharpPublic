@@ -28,6 +28,8 @@ See License.txt in the project root for license information.
     <VsExternalDir>$(ArtifactsDir)Shared\$(Configuration)\</VsExternalDir>
     <RTOutputPath Condition="'$(RTOutputPath)' == ''" >$(ArtifactsDir)$(Configuration)\net46\</RTOutputPath>
     <AssemblyOriginatorKeyFile>$(CommonDir)XSharp.snk</AssemblyOriginatorKeyFile>
+    <UseSharedCompilation Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">false</UseSharedCompilation>
+    <UseSharedCompilation Condition=" '$(BuildingInsideVisualStudio)' == 'false' ">true</UseSharedCompilation>
   </PropertyGroup>
 </Project>
 

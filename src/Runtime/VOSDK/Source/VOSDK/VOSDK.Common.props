@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
-  <Import Project="..\..\..\..\Shared.Props" />
+  <Import Project="$(Solutiondir)Shared.Props" />
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <VOSdkDir>$(MSBuildThisFileDirectory)</VOSdkDir>
     <OutputType>Library</OutputType>
     <RootNamespace>VO</RootNamespace>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <TargetFrameworkProfile />
     <Nostandarddefs>true</Nostandarddefs>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <Prefer32Bit>False</Prefer32Bit>
-    <CommandLineOption />
     <Unsafe>true</Unsafe>
     <INS>true</INS>
     <NS>true</NS>
@@ -30,8 +30,6 @@
     <IncludePaths>$(CommonDir)</IncludePaths>
     <ErrorReport>prompt</ErrorReport>
     <Dialect>Vulcan</Dialect>
-    <StartupObject />
-    <ApplicationIcon />
     <VulcanCompatibleResources>True</VulcanCompatibleResources>
     <PlatformTarget>x86</PlatformTarget>
     <WarningLevel>4</WarningLevel>
@@ -39,26 +37,17 @@
   </PropertyGroup>
   <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
     <DocumentationFile>$(MSBuildProjectName).Xml</DocumentationFile>
-    <EmitDebugInformation>true</EmitDebugInformation>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <DefineConstants>DEBUG;TRACE;DOCUMENTATION;RUNTIME</DefineConstants>
     <NoWarn>$(DisabledWarnings);$(NoWarn);165,169,9032,170,618,9068,108,9043,169,9015,649,414,1591,1573</NoWarn>
     <CommandLineOption>/noclipcall </CommandLineOption>
-	<vo15>true</vo15>
-	<vo5>false</vo5>
+    <vo15>true</vo15>
+    <vo5>false</vo5>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" >
-    <EmitDebugInformation>false</EmitDebugInformation>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
     <DefineConstants>TRACE;RUNTIME</DefineConstants>
     <NoWarn>$(DisabledWarnings);$(NoWarn);165,9032,170,618,9068,108,9043</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" >
-    <EmitDebugInformation>true</EmitDebugInformation>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <DefineConstants>DEBUG;TRACE;RUNTIME</DefineConstants>
     <NoWarn>$(DisabledWarnings);$(NoWarn);165,9032,170,618,9068,108,9043</NoWarn>
   </PropertyGroup>

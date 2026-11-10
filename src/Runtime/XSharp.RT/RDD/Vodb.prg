@@ -74,7 +74,7 @@ STATIC METHOD Info(nOrdinal AS DWORD,oValue AS USUAL) AS LOGIC
     IF oValue:IsArray
         LOCAL aValue := oValue AS ARRAY
         oValue := (OBJECT[]) aValue
-    ENDIF 
+    ENDIF
 
     RETURN CoreDb.Info(nOrdinal, (OBJECT) oValue)
 
@@ -338,7 +338,7 @@ STATIC METHOD SetFilter(oBlock AS USUAL,cFilter AS STRING) AS LOGIC
             IF ALen(aField) >= DBS_FLAGS
                 oFld:Flags := (DBFFieldFlags) (LONG) aField[DBS_FLAGS]
             ENDIF
-            IF oFld:IsNullable
+            IF oFld:IsNullable .or. oFld:NeedsNullColumn
                 nullable += 1
             ENDIF
             IF oFld:FieldType == DbFieldType.NullFlags

@@ -15,6 +15,7 @@ USING XSharp.VFP.UI
 /// Returns the 1-based number of the most recently selected menu bar item.
 /// Returns 0 if no item was selected or the user pressed ESC.
 /// </summary>
+[FoxProFunction("BAR", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION BAR() AS INT
 	RETURN MenuState.LastBar
 
@@ -22,6 +23,7 @@ FUNCTION BAR() AS INT
 /// Returns the name of the most recently selected menu pad (top-level title).
 /// Returns an empty string if no pad was selected.
 /// </summary>
+[FoxProFunction("PAD", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION PAD() AS STRING
 	RETURN MenuState.LastPad
 
@@ -29,6 +31,7 @@ FUNCTION PAD() AS STRING
 /// Returns the name of the popup that contained the last selected bar.
 /// Returns an empty string if no popup was active.
 /// </summary>
+[FoxProFunction("POPUP", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION POPUP() AS STRING
 	RETURN MenuState.LastPopup
 
@@ -36,6 +39,7 @@ FUNCTION POPUP() AS STRING
 /// Returns the name of the menu bar that was active when the last selection occurred.
 /// Returns an empty string if no menu was active.
 /// </summary>
+[FoxProFunction("MENU", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION MENU() AS STRING
 	RETURN MenuState.LastMenu
 
@@ -43,10 +47,13 @@ FUNCTION MENU() AS STRING
 /// Returns .T. if the specified bar item is currently checked (marked).
 /// <paramref name="cPopupName"/> — name of the Popup; <paramref name="nBar"/> — 1-based bar number.
 /// </summary>
+[FoxProFunction("MRKBAR", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION MRKBAR( cPopupName AS STRING, nBar AS INT ) AS LOGIC
-	LOCAL oPopup := Popup.Find(cPopupName) AS Popup
-	IF oPopup != NULL .AND. nBar >= 1 .AND. nBar <= oPopup:BarCount
-		RETURN oPopup:Bars[nBar]:Checked
+	// nBar is the number given in DEFINE BAR, not the position: a separator or a gap
+	// in the numbering must not shift the result
+	LOCAL oBar := __VFPFindBarByNumber( __VFPFindPopupContainer( cPopupName ), nBar ) AS Bar
+	IF oBar != NULL
+		RETURN oBar:Checked
 	ENDIF
 	RETURN FALSE
 
@@ -54,6 +61,7 @@ FUNCTION MRKBAR( cPopupName AS STRING, nBar AS INT ) AS LOGIC
 /// Returns .T. if the specified pad is currently checked (marked).
 /// <paramref name="cMenuName"/> — name of the Menu; <paramref name="cPadName"/> — pad name.
 /// </summary>
+[FoxProFunction("MRKPAD", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION MRKPAD( cMenuName AS STRING, cPadName AS STRING ) AS LOGIC
 	LOCAL oMenu := Menu.Find(cMenuName) AS Menu
 	IF oMenu != NULL
@@ -70,10 +78,11 @@ FUNCTION MRKPAD( cMenuName AS STRING, cPadName AS STRING ) AS LOGIC
 /// Returns the prompt (caption) text of the specified bar item.
 /// <paramref name="cPopupName"/> — name of the Popup; <paramref name="nBar"/> — 1-based bar number.
 /// </summary>
+[FoxProFunction("PRMBAR", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION PRMBAR( cPopupName AS STRING, nBar AS INT ) AS STRING
-	LOCAL oPopup := Popup.Find(cPopupName) AS Popup
-	IF oPopup != NULL .AND. nBar >= 1 .AND. nBar <= oPopup:BarCount
-		RETURN oPopup:Bars[nBar]:Caption
+	LOCAL oBar := __VFPFindBarByNumber( __VFPFindPopupContainer( cPopupName ), nBar ) AS Bar
+	IF oBar != NULL
+		RETURN MenuPrompt.WithoutHotkey( oBar:Caption )
 	ENDIF
 	RETURN ""
 
@@ -81,14 +90,30 @@ FUNCTION PRMBAR( cPopupName AS STRING, nBar AS INT ) AS STRING
 /// Returns the prompt (caption) text of the specified pad.
 /// <paramref name="cMenuName"/> — name of the Menu; <paramref name="cPadName"/> — pad name.
 /// </summary>
+[FoxProFunction("PRMPAD", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION PRMPAD( cMenuName AS STRING, cPadName AS STRING ) AS STRING
 	LOCAL oMenu := Menu.Find(cMenuName) AS Menu
 	IF oMenu != NULL
 		LOCAL i AS INT
 		FOR i := 1 TO oMenu:PadCount
 			IF String.Compare( oMenu:Pads[i]:Name, cPadName, TRUE ) == 0
-				RETURN oMenu:Pads[i]:Caption
+				RETURN MenuPrompt.WithoutHotkey( oMenu:Pads[i]:Caption )
 			ENDIF
 		NEXT
 	ENDIF
 	RETURN ""
+
+
+/// <summary>The prompt of a bar or pad the way PRMBAR() and PRMPAD() report it.</summary>
+INTERNAL STATIC CLASS MenuPrompt
+
+	// VFP keeps the caption with its \< hotkey marker, but PRMBAR() and PRMPAD() return
+	// the text without it, so "\<Open" comes back as "Open".
+	INTERNAL STATIC METHOD WithoutHotkey( cCaption AS STRING ) AS STRING
+		IF String.IsNullOrEmpty( cCaption )
+			RETURN ""
+		ENDIF
+		RETURN cCaption:Replace( "\<", "" )
+	END METHOD
+
+END CLASS

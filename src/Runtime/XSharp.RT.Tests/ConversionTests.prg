@@ -9,6 +9,7 @@ USING System.Linq
 USING System.Text
 USING XUnit
 USING System.Globalization
+USING System.Reflection
 
 DEFINE FTRUE  := TRUE
 DEFINE FFALSE := FALSE
@@ -450,6 +451,55 @@ BEGIN NAMESPACE XSharp.RT.Tests
         static METHOD F2BinValues() as float[]
             return <float>{ 1.23456, 1.23E5, 9.87E-1, -1.23456, -1.23E5, -9.87E-1, 2.0, -2.0, System.Double.NaN, System.Double.PositiveInfinity, System.Double.NegativeInfinity }
 
+
+	END CLASS
+
+	// The tests in this collection replace ConversionHelpers.usCulture, so they must not run
+	// in parallel with any other test that calls Val() or Str()
+	[CollectionDefinition("UsCulture", DisableParallelization := TRUE)];
+	CLASS UsCultureCollection
+	END CLASS
+
+	[Collection("UsCulture")];
+	CLASS UsCultureTests
+
+		// ConversionHelpers is internal and XSharp.RT has no InternalsVisibleTo for this assembly
+		STATIC METHOD GetUsCultureField() AS FieldInfo
+			VAR oType := typeof(__Float):Assembly:GetType("XSharp.ConversionHelpers", TRUE)
+			RETURN oType:GetField("usCulture", BindingFlags.Static | BindingFlags.NonPublic)
+
+		[Fact, Trait("Category", "Conversion")];
+		METHOD UsCultureIgnoresUserOverridesTest() AS VOID
+			VAR oCulture := (CultureInfo) GetUsCultureField():GetValue(NULL)
+			Assert.Equal("en-US", oCulture:Name)
+			Assert.False(oCulture:UseUserOverride)
+			Assert.Equal(".", oCulture:NumberFormat:NumberDecimalSeparator)
+			Assert.Equal(",", oCulture:NumberFormat:NumberGroupSeparator)
+
+		[Fact, Trait("Category", "Conversion")];
+		METHOD ValWithUserOverriddenSeparatorsTest() AS VOID
+			// Simulates Windows format "English (United States)" with decimal symbol "," and digit grouping "."
+			VAR oField   := GetUsCultureField()
+			VAR oSaved   := (CultureInfo) oField:GetValue(NULL)
+			VAR oSwapped := (CultureInfo) CultureInfo{"en-US", FALSE}:Clone()
+			oSwapped:NumberFormat:NumberDecimalSeparator := ","
+			oSwapped:NumberFormat:NumberGroupSeparator   := "."
+			VAR nOldDec  := SetDecimalSep(46)
+			TRY
+				TRY
+					oField:SetValue(NULL, oSwapped)
+					// "." is now parsed as a group separator, which is the bug this culture setup reproduces
+					Assert.Equal(99.0, (FLOAT) Val("0.99"))
+					// formatting uses the same culture, so Str() emits the user's decimal symbol
+					Assert.Equal(" 1,5", Str(1.5, 4, 1))
+				FINALLY
+					oField:SetValue(NULL, oSaved)
+				END TRY
+				Assert.Equal(0.99, (FLOAT) Val("0.99"))
+				Assert.Equal(" 1.5", Str(1.5, 4, 1))
+			FINALLY
+				SetDecimalSep(nOldDec)
+			END TRY
 
 	END CLASS
 END NAMESPACE // XSharp.Runtime.Tests

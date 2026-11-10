@@ -87,7 +87,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		/// </summary>
 		PROPERTY Value AS USUAL
 			GET
-				RETURN (USUAL)(LONG) SELF:CheckState
+				RETURN (LONG) SELF:CheckState
 			END GET
 			SET
 				LOCAL state AS System.Windows.Forms.CheckState

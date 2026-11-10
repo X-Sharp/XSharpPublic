@@ -46,6 +46,21 @@ partial class SQLRDD
     /// the buffer edges then has to re-locate the current record first.
     /// </summary>
     private _bufferContiguous as logic
+    /// <summary>Empty table with the buffer's columns, to load further query results into.</summary>
+    private _tableTemplate as DataTable
+    /// <summary>An empty table with the buffer's structure (the last replaced buffer or a page already copied
+    /// into it) to load the next query result into, instead of copying _tableTemplate again.</summary>
+    private _spareTable as DataTable
+    /// <summary>
+    /// Rows to fetch with the next forward page (0 = PageSize): doubles with every full page read
+    /// on in a row (up to BufferSize pages). After a seek it starts small, because code that
+    /// seeks and then skips while the key matches mostly reads only a few records.
+    /// </summary>
+    private _readAheadRows := 0 as long
+    /// <summary>Rows to fetch with the next backward page (0 = PageSize), grows like _readAheadRows.</summary>
+    private _readBackRows := 0 as long
+    /// <summary>How many GoTo() calls in a row loaded the single buffered record without its position.</summary>
+    private _lazyGotos as long
     /// <summary>
     /// TRUE after GoTo(0) positioned on the phantom record while the buffer does not end at the
     /// last record of the order: a backward Skip() then has to start from GoBottom().
@@ -95,20 +110,59 @@ partial class SQLRDD
     /// actually changes (_CloseCursor(), a fresh _OpenTable() fetch, or a write in GoCold()).</summary>
     private _serverReccountValid as logic
     /// <summary>
+    /// RecCount/LastRec() like DBF: the highest record number of the whole table (the row count
+    /// without a recno column), independent of the current order's condition and scope.
+    /// </summary>
+    private _tableReccount as dword
+    /// <summary>TRUE when _tableReccount does not need to be requeried.</summary>
+    private _tableReccountValid as logic
+    /// <summary>
     /// TRUE when the cursor is positioned (via GoTo()) on a record that physically exists but
     /// does not satisfy the current order's FOR-condition/scope, i.e. OrderKeyNo is 0. Skip()
     /// needs this because RowNumber/_bufferStart no longer correspond to any real position in
     /// the order's sequence, so the normal relative-skip logic cannot be used from here.
     /// </summary>
     private _outsideOrder as logic
+    /// <summary>The work area's filter as SQL condition for the server, "" when there is none (see _FilterToSql()).</summary>
+    private _serverFilterWhere := "" as string
+    /// <summary>TRUE while SetFilter() runs: its ClearFilter() must not reload the buffer, SetFilter() does.</summary>
+    private _settingFilter as logic
 
 #region Properties
+    /// <summary>The work area's filter as SQL condition, "" when it is only evaluated on the client.</summary>
+    internal property ServerFilterWhere as string get _serverFilterWhere
     internal property Connection     as SqlDbConnection get _connection
     internal property Provider       as ISqlDbProvider get _connection?:Provider
     internal property Command        as SqlDbCommand get _command
     internal property OrderBagList   as List<SqlDbOrderBag> get _orderBagList
+    internal property RecnoColumnName as string
+        get
+            // The production index is parsed inside FetchInfo(), before _oTd is assigned.
+            var oTable := _oTd ?? _builder?:TableInfo
+            if !String.IsNullOrEmpty(oTable?:RecnoColumn)
+                return oTable:RecnoColumn
+            endif
+            return _connection?:RecnoColumn
+        end get
+    end property
+    /// <summary>Length of the character column cName, -1 when it is no character column or unknown.
+    /// Also while the production index is parsed: the fields of the work area are not there yet.</summary>
+    internal method _CharColumnLength(cName as string) as long
+        var oTable := _oTd ?? _builder?:TableInfo
+        if oTable?:Columns != null
+            foreach var oCol in oTable:Columns
+                if String.Equals(oCol:Name, cName, StringComparison.OrdinalIgnoreCase)
+                    return iif(oCol:ColumnInfo:FieldType == DbFieldType.Character, oCol:Length, -1)
+                endif
+            next
+        endif
+        return -1
+    end method
     /// <summary>Maximum number of rows kept in the local buffer.</summary>
     private property _MaxBufferRows  as long => _oTd:PageSize * Math.Max(_oTd:BufferSize, 1)
+    /// <summary>Rows for a first read where only a few records are expected to be needed (after a seek,
+    /// GoBottom(), looking up the position of a record). Reading on makes the pages grow again.</summary>
+    private property _SmallPageRows  as long => Math.Max(1, _oTd:PageSize / 10)
     internal property DataTable      as DataTable
         get
             return _table
@@ -123,7 +177,9 @@ partial class SQLRDD
                 _table:Rows:Clear()
                 return
             endif
+            var oOld := _table
             _table := value
+            SELF:_ReturnSpareTable(oOld)
             if _table is NULL
                 SELF:_hasData := FALSE
                 return
@@ -154,6 +210,11 @@ partial class SQLRDD
                 endif
                 dbColumn:Flags := DBFFieldFlags.None
             next
+            if SELF:_tableTemplate == null
+                // the structure for all further queries of this work area (same column list),
+                // see SqlDbCommand.GetDataTable(cTable, oTemplate)
+                SELF:_tableTemplate := _table:Clone()
+            endif
             SELF:RowNumber  := 1
             SELF:_CheckEofBof()
         end set
@@ -268,6 +329,29 @@ partial class SQLRDD
         return true
     end method
 
+    /// <summary>
+    /// A Character field holds exactly its declared width, as in DBF: shorter values are padded
+    /// with spaces, longer ones truncated.
+    /// </summary>
+    /// <remarks>
+    /// Only when trailing spaces are not trimmed (DBF-like storage). Otherwise rows written by
+    /// the RDD had trimmed values next to the padded ones of the existing data, and a key
+    /// expression concatenated on the server (e.g. TYP+UPPER(KATEGORIE)+UPPER(BEZEICH))
+    /// shifted the following parts of such a row, so seeks on the key prefix missed it.
+    /// </remarks>
+    private method _FixedWidthValue(nIndex as int, oValue as object) as object
+        if !SELF:_trimValues .and. oValue is string var strValue .and. nIndex < SELF:_Fields:Length
+            var oField := SELF:_Fields[nIndex]
+            if oField:FieldType == DbFieldType.Character .and. oField:Length > 0
+                if strValue:Length < oField:Length
+                    return strValue:PadRight(oField:Length, ' ')
+                elseif strValue:Length > oField:Length
+                    return strValue:Substring(0, oField:Length)
+                endif
+            endif
+        endif
+        return oValue
+    end method
 
     private method _GetEmptyValues() as logic
         var values := List<object>{}
@@ -278,7 +362,7 @@ partial class SQLRDD
             endif
             switch Type.GetTypeCode(col.DataType)
             case TypeCode.String
-                values.Add("")
+                values.Add(SELF:_FixedWidthValue(col:Ordinal, ""))
             case TypeCode.Byte
             case TypeCode.Char
             case TypeCode.Double
@@ -346,7 +430,7 @@ partial class SQLRDD
             hasGetIdentity := true
         endif
         try
-            _command:Connection:BeginTrans()
+            var lOwnTrans := _command:Connection:BeginTrans()
             _command:BindParameters()
             local lInsertWithGetIdentity := false as LOGIC
             if hasGetIdentity .and. ! String.IsNullOrEmpty(Provider:GetIdentity)
@@ -355,18 +439,35 @@ partial class SQLRDD
                 lInsertWithGetIdentity := TRUE
             endif
             _command.CommandText := Connection:RaiseStringEvent(_command, SqlRDDEventReason.CommandText, _cTable, sb:ToString())
+            // The command methods report a failure through their result and LastException, they
+            // do not throw.
+            local lOk as logic
+            _command:Connection:LastException := null
             if lInsertWithGetIdentity
                 var result := _command:ExecuteScalar()
-                row[_recnoColumNo] := result
-            elseif hasGetIdentity
-                _command:ExecuteScalar()
-                row[_recnoColumNo] := _builder:GetMaxRecno()
+                lOk := result != null .and. result != DBNull.Value
+                if lOk
+                    row[_recnoColumNo] := result
+                endif
             else
-                _command:ExecuteNonQuery()
+                lOk := _command:ExecuteNonQuery()
+                if lOk .and. hasGetIdentity
+                    row[_recnoColumNo] := _builder:GetMaxRecno()
+                endif
             endif
-            _command:Connection:CommitTrans()
-        catch
+            if lOk
+                lOk := _command:Connection:CommitTrans() .or. !lOwnTrans
+            endif
+            if !lOk
+                var oError := _command:Connection:LastException
+                throw iif(oError != null, oError, Exception{"The insert returned no record number"})
+            endif
+        catch e as Exception
+            // Reporting success here made a failed insert look like a new record whose changes
+            // then went nowhere.
             _command:Connection:RollBackTrans()
+            self:_dbfError(ERDD.WRITE, XSharp.Gencode.EG_WRITE, "SqlRDD:Append", e:Message, FALSE)
+            return false
         end try
         return true
     end method
@@ -495,7 +596,7 @@ partial class SQLRDD
         return DBNull.Value
 
     /// <summary>
-    /// Can changing column cColumn change RecCount? RecCount counts the rows of the current
+    /// Can changing column cColumn change the cached row count? It counts the rows of the current
     /// order (its FOR condition and scope) or of the table, both subject to the server filter.
     /// Updating any other column - the common case, e.g. recalculating a balance - leaves the
     /// count as it is, so it does not have to be requeried.
@@ -507,6 +608,9 @@ partial class SQLRDD
             return true
         endif
         if SELF:_oTd:HasServerFilter .and. System.Text.RegularExpressions.Regex.IsMatch(SELF:_oTd:ServerFilter, pattern, options)
+            return true
+        endif
+        if !String.IsNullOrEmpty(SELF:_serverFilterWhere) .and. System.Text.RegularExpressions.Regex.IsMatch(SELF:_serverFilterWhere, pattern, options)
             return true
         endif
         var order := SELF:CurrentOrder
@@ -564,12 +668,24 @@ partial class SQLRDD
     /// Fetch the last page of the current order/scope/filter directly, without going through
     /// the ascending, huge-OFFSET query GoBottom() would otherwise need for a large table.
     /// </summary>
-    /// <remarks>See SqlDbTableCommandBuilder.BuildLastPageStatement for why this exists.</remarks>
-    private method _FetchLastPage(nTotalRows as long) as logic
+    /// <remarks>
+    /// See SqlDbTableCommandBuilder.BuildLastPageStatement for why this exists.
+    /// The position of the page in the order is only known from a count of the order. When no valid
+    /// count is cached, the page is anchored at its first row instead (as after GoTo(), see
+    /// _anchorWhere), and the position is looked up when something needs it. A list of the lines of
+    /// an order in our ERP calls GoBottom() on every move to another order: each one counted the
+    /// order of a table with 5.4 million rows first (46 ms), 72 times while paging through orders.
+    /// </remarks>
+    private method _FetchLastPage() as logic
         try
-            SELF:_command:CommandText := _builder:BuildLastPageStatement()
+            // A descending order is reversed item by item, like the backward keyset reads do.
+            if SELF:CurrentOrder != null .and. SELF:CurrentOrder:Descending
+                SELF:_command:CommandText := SELF:_BuildSqlStatement("", 0, SELF:_SmallPageRows, TRUE)
+            else
+                SELF:_command:CommandText := _builder:BuildLastPageStatement(SELF:_SmallPageRows)
+            endif
             SELF:_command:ClearParameters()
-            var newTable := SELF:_command:GetDataTable(SELF:Alias)
+            var newTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate, SELF:_TakeSpareTable())
             if newTable == null
                 return false
             endif
@@ -583,9 +699,26 @@ partial class SQLRDD
                 SELF:DataTable:Rows:InsertAt(newRow, 0)
                 newRow:AcceptChanges()
             next
+            SELF:_ReturnSpareTable(newTable)
             SELF:_anchorWhere := ""
             SELF:_bufferContiguous := true
-            SELF:_bufferStart := Math.Max(0, nTotalRows - SELF:RowCount)
+            if SELF:_serverReccountValid
+                SELF:_bufferStart := Math.Max(0, (long) SELF:_serverReccount - SELF:RowCount)
+            elseif SELF:RowCount < SELF:_SmallPageRows
+                // fewer rows than asked for: the whole order
+                SELF:_bufferStart := 0
+            else
+                var cAnchor := SELF:_KeysetCondition(SELF:DataTable:Rows[0], FALSE, TRUE, TRUE)
+                if cAnchor != null
+                    SELF:_anchorWhere := cAnchor
+                    SELF:_bufferStart := 0
+                else
+                    SELF:_GetRecCount()
+                    SELF:_bufferStart := Math.Max(0, (long) SELF:_serverReccount - SELF:RowCount)
+                endif
+            endif
+            // reading backwards from the bottom starts small as well
+            SELF:_readBackRows := SELF:_SmallPageRows
             // This IS the last page by definition - without this, a Skip(1) right after
             // GoBottom() (e.g. GoTo(0)'s GoBottom()+Skip(1)) would not know it's already at
             // the end, and would fall through to fetching "the next page" via the normal
@@ -610,11 +743,11 @@ partial class SQLRDD
         return self:_OpenTable("", "")
     end method
 
-    private method _ReadTable(sWhereClause as string, nOffset as long, nCount as long) as DataTable
+    private method _ReadTable(sWhereClause as string, nOffset as long, nCount as long, lReverse := false as logic) as DataTable
         try
-            _command:CommandText := self:_BuildSqlStatement(sWhereClause, nOffset, nCount)
+            _command:CommandText := self:_BuildSqlStatement(sWhereClause, nOffset, nCount, lReverse)
             _command:ClearParameters()
-            var oDataTable := _command:GetDataTable(self:Alias)
+            var oDataTable := _command:GetDataTable(self:Alias, SELF:_tableTemplate, SELF:_TakeSpareTable())
             return oDataTable
         catch as Exception
             return null
@@ -627,17 +760,21 @@ partial class SQLRDD
     /// <param name="sAnchorWhere">Condition that defines the coordinate system for later paging
     /// (see _anchorWhere). The rows matching sLoadWhere must be the leading rows of the rows
     /// matching sAnchorWhere, in order - a hard seek and its soft counterpart satisfy that.</param>
-    private method _OpenTable(sLoadWhere as string, sAnchorWhere as string) as logic
+    /// <param name="oLoaded">The rows matching sLoadWhere when they were already read (first page), else NULL.</param>
+    private method _OpenTable(sLoadWhere as string, sAnchorWhere as string, oLoaded := null as DataTable) as logic
         try
             SELF:_bufferStart := 0
             SELF:_anchorWhere := sAnchorWhere
             SELF:_bufferContiguous := true
+            // a hard seek (sLoadWhere narrower than the anchor) mostly continues with a few records
+            SELF:_readAheadRows := iif(sLoadWhere != sAnchorWhere .and. !String.IsNullOrEmpty(sAnchorWhere), SELF:_SmallPageRows, 0)
+            SELF:_readBackRows := 0
             // A fresh open/reposition (e.g. from Seek()) must not inherit a stale "no more
             // rows" flag left over from whatever this buffer was doing before - otherwise
             // Skip() refuses to fetch the next page and reports EOF even though the new
             // WHERE clause has plenty more rows past the first page.
             SELF:_hasEOF := false
-            SELF:DataTable := self:_ReadTable(sLoadWhere, 0, _oTd:PageSize)
+            SELF:DataTable := oLoaded ?? self:_ReadTable(sLoadWhere, 0, _oTd:PageSize)
             if SELF:DataTable == null
                 // _ReadTable() -> Command:GetDataTable()/ExecuteReader() swallow the real
                 // ADO.NET exception into Connection:LastException instead of throwing it.
@@ -662,10 +799,10 @@ partial class SQLRDD
     end method
 
 
-    private method _BuildSqlStatement(sWhereClause as string, nOffset as long, nCount as long) as string
+    private method _BuildSqlStatement(sWhereClause as string, nOffset as long, nCount as long, lReverse := false as logic) as string
         local query as string
         if self:_tableMode == TableMode.Table
-            query := _builder:BuildSqlStatement(sWhereClause, (int) nOffset, (int) nCount)
+            query := _builder:BuildSqlStatement(sWhereClause, (int) nOffset, (int) nCount, lReverse)
         else
             query := self:_oTd:SelectStatement
         endif
@@ -730,14 +867,16 @@ partial class SQLRDD
         return fields:ToArray()
     end method
 
-    /// <summary>Position on the phantom record (EOF) without reading anything.</summary>
+    /// <summary>
+    /// Position on the phantom record (EOF) without reading anything. BOF is left to the caller:
+    /// GoTo() to a record that does not exist sets it (as ADS does), an order change at EOF and a
+    /// failed seek keep or clear it. Computing it here meant counting the order for an empty buffer.
+    /// </summary>
     private method _GoToPhantom() as void
         SELF:_Found := FALSE
         SELF:_outsideOrder := FALSE
         SELF:RowNumber := SELF:RowCount + 1
         SELF:_SetEOF(TRUE)
-        // BOF too only for an empty table (an empty buffer alone does not mean that)
-        SELF:_SetBOF(SELF:RowCount == 0 .and. SELF:RecCount == 0)
         // When the buffer already ends at the last record, a backward Skip() from the phantom
         // row naturally lands on it; otherwise remember to go to the bottom first.
         SELF:_eofPending := !(SELF:_hasEOF .and. SELF:_bufferContiguous)
@@ -753,7 +892,29 @@ partial class SQLRDD
         // Whatever the cached count reflected (a prior WHERE clause, order or scope) no longer
         // applies once the cursor is torn down - force the next _GetRecCount() to requery.
         self:_serverReccountValid := false
+        self:_tableReccountValid  := false
         return
+
+    /// <summary>Number of rows in the current order (condition, scope) or table, counted on demand.</summary>
+    private method _OrderRowCount() as dword
+        if self:_tableMode == TableMode.Table .and. !self:_serverReccountValid .and. self:_builder != null
+            self:_GetRecCount()
+        endif
+        return self:_serverReccount
+    end method
+
+    private method _GetTableRecCount() as void
+        // DBF's LastRec() is the highest record number, whatever order or filter is active.
+        // Using the order's row count instead made RecNo at EOF (LastRec+1) collide with a real
+        // record of a conditional order, and code that treats RecNo > LastRec as EOF (browsers)
+        // stopped before the records with the highest numbers.
+        if self:_oTd:HasRecnoColumn
+            self:_tableReccount := self:_builder:GetMaxRecno()
+        else
+            self:_tableReccount := self:_builder:GetRecCount()
+        endif
+        self:_tableReccountValid := true
+    end method
 
     private method _GetRecCount() as void
         // Skip the round trip entirely when nothing has changed since the last real count.
@@ -778,6 +939,157 @@ partial class SQLRDD
     end method
 
     /// <summary>
+    /// Condition for the rows that follow the last buffered row in the current order (keyset
+    /// paging), or NULL when that cannot be expressed and the caller must page with OFFSET.
+    /// </summary>
+    private method _KeysetAfterLastRow() as string
+        if SELF:RowCount == 0 .or. !SELF:_bufferContiguous
+            return null
+        endif
+        return SELF:_KeysetCondition(SELF:DataTable:Rows[SELF:RowCount-1], FALSE, FALSE)
+    end method
+
+    /// <summary>
+    /// Condition for the rows that come after oRow (lBefore FALSE) or before it (lBefore TRUE) in
+    /// the current order, including oRow itself when lInclusive is TRUE. NULL when that cannot be
+    /// expressed and the caller must use row offsets instead.
+    /// </summary>
+    /// <remarks>
+    /// The order is the ORDER BY list of the current order plus the recno column, exactly as
+    /// SqlDbTableCommandBuilder.BuildSqlStatement() sorts. Every item is compared with its value
+    /// for oRow (see _KeysetLiteral(), otherwise read by a subquery on the row's recno, so the
+    /// comparison uses the same expressions and collation as the ORDER BY, also for keys with
+    /// functions; lLiteralOnly returns NULL instead, see _KeysetLiteral() for the cost). For the
+    /// rows after oRow:
+    ///   k1 >= v1 AND ( k1 > v1 OR (k1 = v1 AND k2 > v2) OR ... OR (k1 = v1 AND ... AND recno > n) )
+    /// The leading bound lets the server seek in an index on k1. Where the order goes towards
+    /// lower values (a descending item after oRow, an ascending one before it) the comparison is
+    /// "<" and also accepts NULL, which sorts below all values. When oRow has NULL in one of the
+    /// key columns its position cannot be expressed this way.
+    /// </remarks>
+    private method _KeysetCondition(oRow as DataRow, lBefore as logic, lInclusive as logic, lLiteralOnly := false as logic) as string
+        if !SELF:_oTd:HasRecnoColumn .or. SELF:_recnoColumNo < 0
+            return null
+        endif
+        var oRecno  := oRow[(int) SELF:_recnoColumNo]
+        if oRecno == null .or. oRecno == DBNull.Value
+            return null
+        endif
+        var nRecno  := Convert.ToInt64(oRecno)
+        var cRecno  := SELF:Provider:QuoteIdentifier(SELF:_oTd:RecnoColumn)
+        var cTable  := SELF:Provider:QuoteIdentifier(SELF:_oTd:RealName)
+        var aExpr   := List<string>{}
+        var aDesc   := List<logic>{}
+        var oOrder  := SELF:CurrentOrder
+        if oOrder != null
+            foreach var cCol in oOrder:ColumnList
+                var nCol := SELF:DataTable:Columns:IndexOf(cCol:Trim(<char>{'[',']','"','`'}))
+                if nCol < 0 .or. oRow[nCol] == DBNull.Value
+                    return null
+                endif
+            next
+            foreach var cItem in oOrder:OrderList
+                var lDesc := cItem:EndsWith(" DESC", StringComparison.OrdinalIgnoreCase)
+                aExpr:Add(iif(lDesc, cItem:Substring(0, cItem:Length - 5), cItem):Trim())
+                aDesc:Add(lDesc)
+            next
+        endif
+        aExpr:Add(cRecno)
+        aDesc:Add(oOrder != null .and. oOrder:Descending)
+
+        var aValue := List<string>{}
+        foreach var cExpr in aExpr
+            if cExpr == cRecno
+                aValue:Add(nRecno:ToString())
+            else
+                var cLiteral := SELF:_KeysetLiteral(oRow, cExpr)
+                if cLiteral == null
+                    if lLiteralOnly
+                        return null
+                    endif
+                    cLiteral := "(SELECT " + cExpr + " FROM " + cTable + " WHERE " + cRecno + " = " + nRecno:ToString() + ")"
+                endif
+                aValue:Add(cLiteral)
+            endif
+        next
+
+        var nLast := aExpr:Count - 1
+        var sb := StringBuilder{}
+        sb:Append("(")
+        if aExpr:Count > 1
+            sb:Append(SELF:_KeysetCompare(aExpr[0], aDesc[0] != lBefore, aValue[0], TRUE))
+            sb:Append(SqlDbProvider.AndClause)
+        endif
+        sb:Append("(")
+        for var i := 0 upto nLast
+            if i > 0
+                sb:Append(SqlDbProvider.OrClause)
+            endif
+            sb:Append("(")
+            for var j := 0 upto i-1
+                sb:Append(aExpr[j] + " = " + aValue[j] + SqlDbProvider.AndClause)
+            next
+            sb:Append(SELF:_KeysetCompare(aExpr[i], aDesc[i] != lBefore, aValue[i], lInclusive .and. i == nLast))
+            sb:Append(")")
+        next
+        sb:Append("))")
+        return sb:ToString()
+    end method
+
+    /// <summary>
+    /// The value of the order item cExpr in oRow as a SQL literal, or NULL when the subquery must
+    /// be used: cExpr is not a plain column, or the value cannot be written as a literal that
+    /// compares exactly like the stored value.
+    /// </summary>
+    /// <remarks>
+    /// Every subquery has to be optimized by the server: with one per item, compiling the keyset
+    /// condition of a two column key took 30-45 ms, executing it 3 ms. Since the text changes with
+    /// every page the plan is never reused. The buffer holds the values as read from the server, so
+    /// a literal is exact for strings (ASCII only, so no code page conversion can change them),
+    /// integers/decimals, and dates without a time of day when the provider has a literal for them
+    /// (SqlDbProvider.DateLiteral()). With a subquery for a date, SQL Server could not seek on the
+    /// index: every page of a 3.8 million row table read all of it (665,762 pages against 1,941).
+    /// </remarks>
+    private method _KeysetLiteral(oRow as DataRow, cExpr as string) as string
+        var nCol := SELF:DataTable:Columns:IndexOf(cExpr:Trim(<char>{'[',']','"','`'}))
+        if nCol < 0
+            return null
+        endif
+        switch oRow[nCol]
+        case cValue as string
+            // Non-ASCII characters only when the database stores them unchanged in a literal: a key
+            // like 'GÜNTHER' fell back to the position of the record, an OFFSET of 323,815 rows in
+            // the list of 1.1 million addresses (more than a minute).
+            if cValue:IndexOf((char) 92) >= 0 .or. !SELF:Connection:IsExactStringLiteral(cValue)
+                return null
+            endif
+            return Functions.XsValueToSqlValue(cValue)
+        case nValue as long
+            return nValue:ToString(System.Globalization.CultureInfo.InvariantCulture)
+        case nValue as int64
+            return nValue:ToString(System.Globalization.CultureInfo.InvariantCulture)
+        case nValue as short
+            return nValue:ToString(System.Globalization.CultureInfo.InvariantCulture)
+        case nValue as decimal
+            return nValue:ToString(System.Globalization.CultureInfo.InvariantCulture)
+        case dValue as DateTime
+            // a time of day would need the precision of the column type
+            if dValue:TimeOfDay == TimeSpan.Zero .and. SELF:Provider is SqlDbProvider var oProvider
+                return oProvider:DateLiteral(dValue)
+            endif
+        end switch
+        return null
+    end method
+
+    private method _KeysetCompare(cExpr as string, lLower as logic, cValue as string, lInclusive as logic) as string
+        var cComp := iif(lLower, " <", " >") + iif(lInclusive, "= ", " ")
+        if lLower
+            return "(" + cExpr + cComp + cValue + SqlDbProvider.OrClause + cExpr + " IS NULL)"
+        endif
+        return cExpr + cComp + cValue
+    end method
+
+    /// <summary>
     /// Append the next page of the anchored result set to the end of the buffer, evicting rows
     /// from the start when the buffer would grow beyond _MaxBufferRows. RowNumber keeps pointing
     /// at the same row. Returns the number of rows fetched (0 = nothing left, or an error).
@@ -787,10 +1099,33 @@ partial class SQLRDD
             return 0
         endif
         var nOffset  := SELF:_bufferStart + SELF:RowCount
-        var newTable := SELF:_ReadTable(SELF:_anchorWhere, nOffset, _oTd:PageSize)
+        local newTable as DataTable
+        local nCount := _oTd:PageSize as long
+        var cAfterLast := SELF:_KeysetAfterLastRow()
+        if cAfterLast != null
+            // Same rows as OFFSET nOffset, but found by an index seek behind the last buffered row
+            // instead of skipping nOffset rows on the server for every page (a full sequential
+            // read was quadratic: 52.000 rows = 521 pages with OFFSET up to 52.000).
+            var cWhere := cAfterLast
+            if !String.IsNullOrEmpty(SELF:_anchorWhere)
+                cWhere := "(" + SELF:_anchorWhere + ")" + SqlDbProvider.AndClause + cWhere
+            endif
+            // Reading on page by page (DbEval(), a report, a count): fetch more rows per query, up
+            // to what the buffer holds without evicting the current row.
+            var nWanted := iif(SELF:_readAheadRows > 0, SELF:_readAheadRows, nCount)
+            var nMax    := SELF:_MaxBufferRows - (SELF:RowCount - SELF:RowNumber) - 1
+            nCount := iif(nWanted <= nCount, nWanted, Math.Max(nCount, Math.Min(nWanted, nMax)))
+            newTable := SELF:_ReadTable(cWhere, 0, nCount)
+        else
+            if SELF:_readAheadRows > 0 .and. SELF:_readAheadRows < nCount
+                nCount := SELF:_readAheadRows
+            endif
+            newTable := SELF:_ReadTable(SELF:_anchorWhere, nOffset, nCount)
+        endif
         if newTable == null
             return 0
         endif
+        SELF:_readAheadRows := iif(newTable:Rows:Count < nCount, 0, Math.Min(nCount * 2, _oTd:PageSize * Math.Max(_oTd:BufferSize, 1)))
         var nRows := newTable:Rows:Count
         foreach row as DataRow in newTable:Rows
             var newRow := SELF:DataTable:NewRow()
@@ -798,6 +1133,7 @@ partial class SQLRDD
             SELF:DataTable:Rows:Add(newRow)
             newRow:AcceptChanges()
         next
+        SELF:_ReturnSpareTable(newTable)
         // A short page always means EOF. But when the total record count is an exact
         // multiple of PageSize, the last page comes back FULL - "short page" never fires,
         // so also check whether this page's absolute record range already reaches the
@@ -805,7 +1141,7 @@ partial class SQLRDD
         // jumps straight to the last page and marks it via _FetchLastPage) never sets
         // _hasEOF on that exactly-full last page: the next Skip() then fetches a
         // nonexistent page past it, landing on a bogus RowNumber instead of staying put.
-        if nRows < _oTd:PageSize
+        if nRows < nCount
             SELF:_hasEOF := true
         elseif String.IsNullOrEmpty(SELF:_anchorWhere) .and. SELF:_serverReccountValid .and. ;
             nOffset + nRows >= SELF:_serverReccount
@@ -826,11 +1162,17 @@ partial class SQLRDD
     /// buffer, evicting rows from the end when the buffer would grow beyond _MaxBufferRows.
     /// RowNumber keeps pointing at the same row. Returns the number of rows fetched.
     /// </summary>
-    private method _FetchBackward() as long
+    /// <param name="nNeeded">Rows that must at least be read (when there are that many).</param>
+    private method _FetchBackward(nNeeded := 0 as long) as long
+        SELF:_readAheadRows := 0
         if self:_tableMode != TableMode.Table .or. SELF:_bufferStart <= 0
             return 0
         endif
-        var nStart   := Math.Max(0, SELF:_bufferStart - _oTd:PageSize)
+        var nKeyset := SELF:_FetchBackwardKeyset(nNeeded)
+        if nKeyset >= 0
+            return nKeyset
+        endif
+        var nStart   := Math.Max(0, SELF:_bufferStart - Math.Max(_oTd:PageSize, nNeeded))
         var newTable := SELF:_ReadTable(SELF:_anchorWhere, nStart, SELF:_bufferStart - nStart)
         if newTable == null
             return 0
@@ -843,8 +1185,67 @@ partial class SQLRDD
             SELF:DataTable:Rows:InsertAt(newRow, 0)
             newRow:AcceptChanges()
         next
+        SELF:_ReturnSpareTable(newTable)
         SELF:_bufferStart := nStart
         SELF:RowNumber    += nRows
+        SELF:_TrimBufferEnd()
+        return nRows
+
+    /// <summary>
+    /// Like _FetchBackward(), but finds the rows before the buffer by the key of its first row
+    /// (sorted in reverse) instead of by their offset, which makes the server read through all
+    /// rows before them. Works on a seek-anchored buffer too, which is then anchored at its new
+    /// first row. Returns -1 when the key cannot be expressed (see _KeysetCondition()).
+    /// </summary>
+    private method _FetchBackwardKeyset(nNeeded as long) as long
+        if self:_tableMode != TableMode.Table .or. SELF:RowCount == 0 .or. !SELF:_bufferContiguous
+            return -1
+        endif
+        var cBefore := SELF:_KeysetCondition(SELF:DataTable:Rows[0], TRUE, FALSE, TRUE)
+        if cBefore == null
+            return -1
+        endif
+        local nCount := iif(SELF:_readBackRows > 0, SELF:_readBackRows, _oTd:PageSize) as long
+        nCount := Math.Max(nCount, nNeeded)
+        var newTable := SELF:_ReadTable(cBefore, 0, nCount, TRUE)
+        if newTable == null
+            return -1
+        endif
+        var nRows := newTable:Rows:Count
+        local cAnchor := "" as string
+        if nRows == nCount .and. !String.IsNullOrEmpty(SELF:_anchorWhere)
+            // The rows before the anchor are not part of the anchored result set.
+            cAnchor := SELF:_KeysetCondition(newTable:Rows[nRows-1], FALSE, TRUE, TRUE)
+            if cAnchor == null
+                return -1
+            endif
+        endif
+        // The rows come nearest first.
+        for var nRow := 0 upto nRows-1
+            var newRow := SELF:DataTable:NewRow()
+            newRow:ItemArray := newTable:Rows[nRow]:ItemArray
+            SELF:DataTable:Rows:InsertAt(newRow, 0)
+            newRow:AcceptChanges()
+        next
+        SELF:_ReturnSpareTable(newTable)
+        SELF:RowNumber    += nRows
+        SELF:_readAheadRows := 0
+        SELF:_readBackRows := iif(nRows < nCount, 0, Math.Min(nCount * 2, SELF:_MaxBufferRows))
+        if nRows < nCount
+            // the buffer now starts at the first row of the order
+            SELF:_anchorWhere := ""
+            SELF:_bufferStart := 0
+        elseif !String.IsNullOrEmpty(SELF:_anchorWhere)
+            SELF:_anchorWhere := cAnchor
+            SELF:_bufferStart := 0
+        else
+            SELF:_bufferStart := Math.Max(0, SELF:_bufferStart - nRows)
+        endif
+        SELF:_TrimBufferEnd()
+        return nRows
+
+    /// <summary>Evict rows from the end when the buffer grew beyond _MaxBufferRows.</summary>
+    private method _TrimBufferEnd() as void
         var nRemove := SELF:RowCount - SELF:_MaxBufferRows
         if nRemove > 0
             for var i := 1 upto nRemove
@@ -852,12 +1253,15 @@ partial class SQLRDD
             next
             SELF:_hasEOF := false
         endif
-        return nRows
+        return
 
     /// <summary>
     /// Replace the buffer with up to one page of the anchored result set starting at nOffset.
     /// </summary>
-    private method _LoadBufferAt(nOffset as long) as long
+    /// <param name="nRows">Rows to read, 0 = PageSize.</param>
+    private method _LoadBufferAt(nOffset as long, nRows := 0 as long) as long
+        SELF:_readAheadRows := nRows
+        SELF:_readBackRows := nRows
         SELF:_ClearTable()
         SELF:_bufferStart := Math.Max(0, nOffset)
         SELF:_bufferContiguous := true
@@ -907,6 +1311,10 @@ partial class SQLRDD
                 nNewRow := 1
                 exit
             endif
+            // a read-ahead that started small must still reach the target in one page
+            if SELF:_readAheadRows > 0 .and. SELF:_readAheadRows < nNewRow - SELF:RowCount
+                SELF:_readAheadRows := nNewRow - SELF:RowCount
+            endif
             if SELF:_FetchForward() == 0
                 SELF:_hasEOF := true
             endif
@@ -918,6 +1326,21 @@ partial class SQLRDD
                 SELF:RowNumber := 1
                 SELF:_SetBOF(TRUE)
                 return true
+            endif
+            if !String.IsNullOrEmpty(SELF:_anchorWhere) .and. 1 - nNewRow <= SELF:_MaxBufferRows
+                // Read the rows before an anchored buffer by key, without looking up its position.
+                // Also for more than a page: the position of a buffer near the end of a large order
+                // is far down, and the page by position needs an OFFSET of millions of rows (two
+                // minutes for 150 rows back from the end of 3.8 million orders).
+                var nFetched := SELF:_FetchBackwardKeyset(1 - nNewRow)
+                if nFetched == 0
+                    SELF:RowNumber := 1
+                    SELF:_SetBOF(TRUE)
+                    return true
+                elseif nFetched > 0
+                    nNewRow += nFetched
+                    loop
+                endif
             endif
             if !String.IsNullOrEmpty(SELF:_anchorWhere)
                 // Seek-anchored buffer: the rows before the anchor are not part of the anchored
@@ -942,7 +1365,8 @@ partial class SQLRDD
                 return true
             endif
             nTarget := SELF:_bufferStart + nNewRow - 1
-            if 1 - nNewRow > _oTd:PageSize
+            // up to what the buffer holds _FetchBackward() reads by key (see above), beyond that by position
+            if 1 - nNewRow > SELF:_MaxBufferRows
                 SELF:_LoadBufferAt(nTarget)
                 if nTarget < 0
                     SELF:RowNumber := 1
@@ -952,12 +1376,13 @@ partial class SQLRDD
                 nNewRow := 1
                 exit
             endif
-            if SELF:_FetchBackward() == 0
+            var nRows := SELF:_FetchBackward(1 - nNewRow)
+            if nRows == 0
                 SELF:RowNumber := 1
                 SELF:_SetBOF(TRUE)
                 return true
             endif
-            nNewRow := nTarget - SELF:_bufferStart + 1
+            nNewRow += nRows
         enddo
         SELF:RowNumber := nNewRow
         SELF:_SetEOF(FALSE)
@@ -1029,6 +1454,13 @@ partial class SQLRDD
         return true
 
     PRIVATE METHOD _GotoRecord(nRec as DWORD) AS LOGIC
+        if SELF:_tableMode == TableMode.Table .and. ;
+            !(SELF:_bufferContiguous .and. String.IsNullOrEmpty(SELF:_anchorWhere) .and. SELF:RowCount > 0) ;
+            .and. SELF:_LoadWindowAt(nRec, -1)
+            // Nothing that could be extended: the buffer now starts at the record, anchored at its
+            // key, and its position in the order is only looked up when needed.
+            RETURN TRUE
+        endif
         // GoTo() only calls _GotoRecord() after it already established that nRec is NOT in
         // the currently loaded buffer, so its position in the order must be looked up.
         var nOffset := SELF:_GetAbsoluteOffset(nRec)
@@ -1051,16 +1483,20 @@ partial class SQLRDD
             if SELF:_bufferContiguous .and. String.IsNullOrEmpty(SELF:_anchorWhere) .and. SELF:RowCount > 0
                 var nBufferEnd := SELF:_bufferStart + SELF:RowCount
                 if nOffset >= nBufferEnd .and. nOffset < nBufferEnd + _oTd:PageSize .and. !SELF:_hasEOF
+                    // the page must reach the record, a smaller read-ahead would stop short of it
+                    if SELF:_readAheadRows > 0 .and. SELF:_readAheadRows <= nOffset - nBufferEnd
+                        SELF:_readAheadRows := 0
+                    endif
                     lLoaded := SELF:_FetchForward() > 0
                 elseif nOffset < SELF:_bufferStart .and. nOffset >= SELF:_bufferStart - _oTd:PageSize
-                    lLoaded := SELF:_FetchBackward() > 0
+                    lLoaded := SELF:_FetchBackward(SELF:_bufferStart - nOffset) > 0
                 endif
             endif
-            if !lLoaded
-                // Center the record in the new page, so that its neighbours on either side
-                // are buffered as well.
+            if !lLoaded .and. !SELF:_LoadWindowAt(nRec, nOffset)
+                // Center the record in a small page, so that its neighbours on either side are
+                // buffered as well.
                 SELF:_anchorWhere := ""
-                SELF:_LoadBufferAt(nOffset - _oTd:PageSize / 2)
+                SELF:_LoadBufferAt(nOffset - SELF:_SmallPageRows / 2, SELF:_SmallPageRows)
             endif
         endif
         var nRow := SELF:_FindRowInBuffer(nRec)
@@ -1071,6 +1507,75 @@ partial class SQLRDD
         SELF:_SetEOF(FALSE)
         SELF:_SetBOF(FALSE)
         RETURN TRUE
+
+    /// <summary>
+    /// Replace the buffer with a small page that starts at record nRec, found by its key in the
+    /// current order (see _KeysetCondition()) instead of its offset: with OFFSET the server reads
+    /// through all rows before it (10 ms for a 10 row page at offset 500 of a 1000 row table, 2 ms
+    /// by key). Code that goes to a record mostly reads only it and the next or previous one;
+    /// reading on makes the pages grow, in both directions.
+    /// </summary>
+    /// <param name="nOffset">The record's 0 based offset in the order when known, otherwise -1:
+    /// the buffer is then anchored at the record.</param>
+    /// <returns>FALSE when the key cannot be expressed or the record is not part of the order.</returns>
+    PRIVATE METHOD _LoadWindowAt(nRec as DWORD, nOffset as long) AS LOGIC
+        local oRow as DataRow
+        if SELF:CurrentOrder != null
+            // only orders on plain columns, a key expression has no literal value
+            foreach var cItem in SELF:CurrentOrder:OrderList
+                var cExpr := iif(cItem:EndsWith(" DESC", StringComparison.OrdinalIgnoreCase), cItem:Substring(0, cItem:Length - 5), cItem)
+                if SELF:DataTable == null .or. SELF:DataTable:Columns:IndexOf(cExpr:Trim():Trim(<char>{'[',']','"','`'})) < 0
+                    return false
+                endif
+            next
+        endif
+        var nRow := SELF:_FindRowInBuffer(nRec)
+        if nRow > 0
+            oRow := SELF:DataTable:Rows[nRow-1]
+        else
+            SELF:_command:CommandText := _builder:BuildDirectRecnoStatement(nRec)
+            SELF:_command:ClearParameters()
+            var oRecTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate, SELF:_TakeSpareTable())
+            if oRecTable == null .or. oRecTable:Rows:Count == 0
+                SELF:_ReturnSpareTable(oRecTable)
+                return false
+            endif
+            oRow := oRecTable:Rows[0]
+        endif
+        var cFrom := SELF:_KeysetCondition(oRow, FALSE, TRUE, TRUE)
+        if oRow:Table != SELF:DataTable
+            // the record was read only for its key
+            SELF:_ReturnSpareTable(oRow:Table)
+        endif
+        if cFrom == null
+            return false
+        endif
+        var nCount   := SELF:_SmallPageRows
+        var newTable := SELF:_ReadTable(cFrom, 0, nCount)
+        if newTable == null .or. newTable:Rows:Count == 0 .or. Convert.ToUInt32(newTable:Rows[0][self:_recnoColumNo]) != nRec
+            // not part of the order (FOR condition, scope)
+            return false
+        endif
+        var nRows := newTable:Rows:Count
+        SELF:_lazyGotos := 0
+        SELF:_ClearTable()
+        SELF:DataTable := newTable
+        SELF:RowNumber := 1
+        SELF:_outsideOrder := false
+        SELF:_bufferContiguous := true
+        if nOffset >= 0
+            SELF:_anchorWhere := ""
+            SELF:_bufferStart := nOffset
+        else
+            SELF:_anchorWhere := cFrom
+            SELF:_bufferStart := 0
+        endif
+        SELF:_hasEOF := nRows < nCount
+        SELF:_readAheadRows := iif(nRows < nCount, 0, nCount * 2)
+        SELF:_readBackRows := nCount
+        SELF:_SetEOF(FALSE)
+        SELF:_SetBOF(FALSE)
+        return true
 
     PRIVATE METHOD _GotoRecordOutsideOrder(nRec as DWORD) AS LOGIC
         if !SELF:_LoadSingleRecord(nRec)
@@ -1087,12 +1592,20 @@ partial class SQLRDD
     /// (Skip(), OrderKeyNo, ...).
     /// </summary>
     PRIVATE METHOD _LoadSingleRecord(nRec as DWORD) AS LOGIC
+        return SELF:_FetchSingleRecord(nRec) == 1
+
+    /// <summary>Like _LoadSingleRecord(): 1 = loaded, 0 = the record does not exist, -1 = error.</summary>
+    PRIVATE METHOD _FetchSingleRecord(nRec as DWORD) AS LONG
         try
+            SELF:_lazyGotos := 0
             SELF:_command:CommandText := _builder:BuildDirectRecnoStatement(nRec)
             SELF:_command:ClearParameters()
-            var oTable := SELF:_command:GetDataTable(SELF:Alias)
-            if oTable == null .or. oTable:Rows:Count == 0
-                return false
+            var oTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate, SELF:_TakeSpareTable())
+            if oTable == null
+                return -1
+            elseif oTable:Rows:Count == 0
+                SELF:_ReturnSpareTable(oTable)
+                return 0
             endif
             SELF:_ClearTable()
             SELF:DataTable := oTable
@@ -1104,9 +1617,9 @@ partial class SQLRDD
             SELF:_bufferContiguous := false
             SELF:_SetEOF(FALSE)
             SELF:_SetBOF(FALSE)
-            return true
+            return 1
         catch as Exception
-            return false
+            return -1
         end try
 
     /// <summary>
@@ -1118,25 +1631,561 @@ partial class SQLRDD
     /// and under DBF/ADS the order switches are free. Positioning eagerly here meant a
     /// ROW_NUMBER() over the whole order plus a page fetch at a large OFFSET for every switch.
     /// </remarks>
-    PRIVATE METHOD _RepositionAfterOrderChange(nRec as DWORD, lWasEof as LOGIC) AS VOID
-        if SELF:_tableMode != TableMode.Table .or. SELF:_recnoColumNo == -1 .or. lWasEof
+    PRIVATE METHOD _RepositionAfterOrderChange(nRec as DWORD, lWasEof as LOGIC, aCurrentRow as object[]) AS VOID
+        if SELF:_tableMode != TableMode.Table .or. SELF:_recnoColumNo == -1
             SELF:GoTo(iif(lWasEof, 0, nRec))
+        elseif lWasEof
+            // EOF stays EOF (e.g. switching back to the previous order after a seek that found
+            // nothing, before going back to the saved record). GoTo(0) would first load the
+            // first page of the new order; an empty buffer is enough to stand on the phantom
+            // record. _GoToPhantom() marks the EOF as pending (the empty buffer does not end at
+            // the last record), so Skip(1) stays at EOF and Skip(-1) goes to the bottom.
+            if SELF:_SetBufferRows(null) .or. SELF:_OpenTable("1=0", "")
+                // BOF stays as it was, see OrderListFocus()
+                SELF:_GoToPhantom()
+            else
+                SELF:GoTo(0)
+            endif
+        elseif aCurrentRow != null .and. SELF:_SetBufferRows(aCurrentRow)
+            // The record we stand on was in the buffer a moment ago (written by GoCold() before the
+            // order change): keep it instead of reading it again. Its position in the new order is
+            // looked up when needed, as after _LoadSingleRecord().
+            SELF:_bufferContiguous := false
         elseif !SELF:_LoadSingleRecord(nRec)
             SELF:GoTo(nRec)
         endif
         return
 
+    private static _filterTokens := System.Text.RegularExpressions.Regex{ ;
+        e"\\s+|'[^']*'|\"[^\"]*\"|\\.(AND|OR|NOT|T|F)\\.|[A-Za-z_][A-Za-z0-9_]*|\\d+(\\.\\d+)?|==|!=|<>|>=|<=|->|[=<>$!#()+\\-*/,]", ;
+        System.Text.RegularExpressions.RegexOptions.IgnoreCase} as System.Text.RegularExpressions.Regex
+
+    /// <summary>
+    /// The filter expression as SQL condition for the server, or NULL when no part of it can be
+    /// translated without risk. The filter is still evaluated on the client as well.
+    /// </summary>
+    /// <remarks>
+    /// SetFilter() only evaluated the filter on the client: every row of the order came over the
+    /// wire to be tested (our ERP's demand planning read 449,531 articles for the 3,832 that pass).
+    /// The SQL condition may let more rows through than the filter, the client test removes them,
+    /// but never fewer. Of a filter whose parts are joined with .AND. on the top level, the parts
+    /// that can be translated go to the server and the others stay on the client: the article
+    /// selection of our ERP combines a product group with "active only" (AKTIV = .T.) or
+    /// EMPTY(SCANCODE), and one such part kept the whole filter on the client. See
+    /// _FilterPartToSql() for what a part may contain.
+    /// </remarks>
+    private method _FilterToSql(cFilter as string) as string
+        if String.IsNullOrWhiteSpace(cFilter) .or. SELF:_tableMode != TableMode.Table .or. SELF:Connection:UseNulls
+            return null
+        endif
+        // the translator needs an order for its provider, any order of the table does
+        var oOrder := SELF:CurrentOrder
+        if oOrder == null
+            foreach var oBag in SELF:_orderBagList
+                if oBag:Tags:Count > 0
+                    oOrder := oBag:Tags[0]
+                    exit
+                endif
+            next
+        endif
+        if oOrder == null
+            return null
+        endif
+        var aTokens := List<string>{}
+        local nPos := 0 as long
+        foreach oMatch as System.Text.RegularExpressions.Match in _filterTokens:Matches(cFilter)
+            if oMatch:Index != nPos
+                return null
+            endif
+            nPos += oMatch:Length
+            if !String.IsNullOrWhiteSpace(oMatch:Value)
+                aTokens:Add(oMatch:Value)
+            endif
+        next
+        if nPos != cFilter:Length .or. aTokens:Count == 0
+            return null
+        endif
+        // parentheses around the whole filter
+        while aTokens:Count >= 2 .and. aTokens[0] == "(" .and. _ClosingParen(aTokens, 0) == aTokens:Count-1
+            aTokens:RemoveAt(aTokens:Count-1)
+            aTokens:RemoveAt(0)
+        enddo
+        // the parts joined with .AND. on the top level; with .OR. on the top level the filter is one part
+        var aParts := List<List<string>>{}
+        var aPart  := List<string>{}
+        local nDepth := 0 as long
+        local lOr := false as logic
+        foreach var cToken in aTokens
+            if cToken == "("
+                nDepth++
+            elseif cToken == ")"
+                nDepth--
+            endif
+            if nDepth == 0 .and. cToken:ToUpper() == ".OR."
+                lOr := true
+            endif
+            if nDepth == 0 .and. cToken:ToUpper() == ".AND."
+                aParts:Add(aPart)
+                aPart := List<string>{}
+            else
+                aPart:Add(cToken)
+            endif
+        next
+        aParts:Add(aPart)
+        if lOr .or. nDepth != 0
+            aParts := List<List<string>>{} {aTokens}
+        endif
+        var aSql := List<string>{}
+        foreach var aTerm in aParts
+            var cPart := SELF:_FilterPartToSql(aTerm, oOrder)
+            if cPart != null
+                aSql:Add("(" + cPart + ")")
+            endif
+        next
+        if aSql:Count == 0
+            return null
+        endif
+        var cSql := String.Join(SqlDbProvider.AndClause, aSql)
+        try
+            // a condition the server rejects stays on the client
+            var oLast := SELF:Connection:LastException
+            var oCount := SELF:Connection:ExecuteScalar(SqlDbProvider.SelectClause + "count(*)" + SqlDbProvider.FromClause + ;
+                Provider:QuoteIdentifier(SELF:_oTd:RealName) + SqlDbProvider.WhereClause + "1=0" + SqlDbProvider.AndClause + "(" + cSql + ")", SELF:_cTable)
+            if oCount == null .or. SELF:Connection:LastException != oLast
+                return null
+            endif
+            return cSql
+        catch as Exception
+            return null
+        end try
+    end method
+
+    /// <summary>Index of the ")" that closes the "(" at nOpen, -1 when there is none.</summary>
+    private static method _ClosingParen(aTokens as List<string>, nOpen as long) as long
+        local nDepth := 0 as long
+        for var i := nOpen upto aTokens:Count-1
+            if aTokens[i] == "("
+                nDepth++
+            elseif aTokens[i] == ")"
+                nDepth--
+                if nDepth == 0
+                    return i
+                endif
+            endif
+        next
+        return -1
+
+    /// <summary>
+    /// One part of a filter (see _FilterToSql()) as SQL condition, or NULL when it cannot be
+    /// translated so that it lets through at least the records the filter accepts.
+    /// </summary>
+    /// <remarks>
+    /// Not translated: a function call (except CTOD()/STOD() of a literal), a variable, an alias,
+    /// #, a string compared other than as character field = 'literal' (a prefix compare, LIKE) or
+    /// == 'literal' (the collations differ for &lt; &gt; and the like), a negated string comparison
+    /// (the server compares without case, so the negation would drop rows the client keeps).
+    /// A logical field without comparison becomes FIELD == 1, compared with .T. or .F. FIELD == 1 or
+    /// 0, FIELD $ 'abc' on a one-character field an OR of equalities. CTOD('...') and STOD('...')
+    /// are evaluated when the filter is set, as the client evaluates them (date format, epoch).
+    /// </remarks>
+    private method _FilterPartToSql(aTokens as List<string>, oOrder as SqlDbOrder) as string
+        if aTokens:Count == 0
+            return null
+        endif
+        // the xBase expression for the translator, and per token what it is:
+        // 0 other, 1 character field, 2 string literal, 3 string comparison (see _StringCompareSql())
+        var aOut  := List<string>{}
+        var aKind := List<long>{}
+        // SQL the translator cannot write, in the expression as placeholder columns it keeps
+        var aParts := List<string>{}
+        for var i := 0 upto aTokens:Count-1
+            var cToken := aTokens[i]
+            var cUpper := cToken:ToUpper()
+            var cNext  := iif(i+1 < aTokens:Count, aTokens[i+1], "")
+            var cPrev  := iif(i > 0, aTokens[i-1], "")
+            if cUpper == ".T." .or. cUpper == ".F."
+                // a logical literal compared with something else than a logical field (see below)
+                if _IsComparison(cPrev) .or. _IsComparison(cNext)
+                    return null
+                endif
+                aOut:Add(iif(cUpper == ".T.", "(1==1)", "(1==0)"))
+                aKind:Add(0)
+            elseif cToken == "#" .or. cToken == "," .or. cToken == "->" .or. cToken == "$"
+                return null
+            elseif cUpper == ".NOT."
+                aOut:Add("!")
+                aKind:Add(0)
+            elseif cUpper == ".AND." .or. cUpper == ".OR."
+                aOut:Add(cUpper)
+                aKind:Add(0)
+            elseif cToken:StartsWith("'")
+                aOut:Add(cToken)
+                aKind:Add(2)
+            elseif cToken:StartsWith(e"\"")
+                if cToken:Contains("'")
+                    return null
+                endif
+                aOut:Add("'" + cToken:Substring(1, cToken:Length-2) + "'")
+                aKind:Add(2)
+            elseif (cUpper == "CTOD" .or. cUpper == "STOD") .and. cNext == "(" .and. i+3 < aTokens:Count ;
+                .and. (aTokens[i+2]:StartsWith("'") .or. aTokens[i+2]:StartsWith(e"\"")) .and. aTokens[i+3] == ")"
+                var cDate := SELF:_DateLiteralSql(cUpper + "(" + aTokens[i+2] + ")")
+                if cDate == null
+                    return null
+                endif
+                aParts:Add(cDate)
+                aOut:Add(_FilterPlaceholder(aParts:Count))
+                aKind:Add(0)
+                i += 3
+            elseif Char.IsLetter(cToken[0]) .or. cToken[0] == c'_'
+                var nField := SELF:FieldIndex(cToken)
+                if nField <= 0 .or. cNext == "(" .or. cNext == "->"
+                    return null
+                endif
+                var oField := SELF:_Fields[nField-1]
+                if oField:FieldType == DbFieldType.DateTime
+                    return null
+                elseif oField:FieldType == DbFieldType.Logic
+                    var cLit := iif(i+2 < aTokens:Count, aTokens[i+2]:ToUpper(), "")
+                    if (cNext == "=" .or. cNext == "==" .or. cNext == "<>" .or. cNext == "!=" .or. cNext == "#") .and. (cLit == ".T." .or. cLit == ".F.")
+                        // FIELD = .T. is FIELD == 1, FIELD <> .T. is FIELD == 0
+                        var lTrue := (cLit == ".T.") == (cNext == "=" .or. cNext == "==")
+                        aOut:Add(iif(lTrue, "(" + cToken + "==1)", "(" + cToken + "==0)"))
+                        aKind:Add(0)
+                        i += 2
+                    elseif _IsComparison(cPrev) .or. _IsComparison(cNext)
+                        return null
+                    else
+                        aOut:Add("(" + cToken + "==1)")
+                        aKind:Add(0)
+                    endif
+                elseif cNext == "$"
+                    if oField:FieldType != DbFieldType.Character .or. oField:Length != 1 .or. i+2 >= aTokens:Count .or. !aTokens[i+2]:StartsWith("'")
+                        return null
+                    endif
+                    var cChars := aTokens[i+2]:Substring(1, aTokens[i+2]:Length-2)
+                    var sb := StringBuilder{}
+                    foreach var c in cChars
+                        var cPart := SELF:_StringCompareSql(cToken, "==", c:ToString())
+                        if cPart == null
+                            return null
+                        endif
+                        sb:Append(iif(sb:Length > 0, " OR ", "") + "(" + cPart + ")")
+                    next
+                    aParts:Add(iif(sb:Length > 0, sb:ToString(), "1=0"))
+                    aOut:Add(_FilterPlaceholder(aParts:Count))
+                    aKind:Add(3)
+                    i += 2
+                else
+                    aOut:Add(cToken)
+                    aKind:Add(iif(oField:FieldType == DbFieldType.Character, 1, 0))
+                endif
+            else
+                aOut:Add(iif(cToken == "!=", "<>", cToken))
+                aKind:Add(0)
+            endif
+        next
+        local lString := false as logic
+        foreach var nKind in aKind
+            lString := lString .or. nKind > 0
+        next
+        for var i := 0 upto aOut:Count-1
+            var cOp := aOut[i]
+            if cOp == "=" .or. cOp == "==" .or. cOp == "<" .or. cOp == ">" .or. cOp == "<=" .or. cOp == ">=" .or. cOp == "<>"
+                if i == 0 .or. i == aOut:Count-1
+                    return null
+                endif
+                // an operand in parentheses or with arithmetic: its type is not known here
+                if lString .and. (aOut[i-1] == ")" .or. aOut[i+1] == "(" .or. aOut[i+1] == "-" .or. aOut[i+1] == "+")
+                    return null
+                endif
+                if aKind[i-1] > 0 .or. aKind[i+1] > 0
+                    // strings only as character field = 'literal' or == 'literal', see remarks
+                    if !(cOp == "=" .or. cOp == "==") .or. aKind[i-1] != 1 .or. aKind[i+1] != 2
+                        return null
+                    endif
+                    var cPart := SELF:_StringCompareSql(aOut[i-1], cOp, aOut[i+1]:Substring(1, aOut[i+1]:Length-2))
+                    if cPart == null
+                        return null
+                    endif
+                    aParts:Add(cPart)
+                    aOut[i-1] := _FilterPlaceholder(aParts:Count)
+                    aKind[i-1] := 3
+                    aOut[i] := ""
+                    aKind[i] := 0
+                    aOut[i+1] := ""
+                    aKind[i+1] := 0
+                endif
+            endif
+        next
+        // a negated string comparison (see remarks)
+        for var i := 0 upto aOut:Count-1
+            if aOut[i] == "!"
+                local nEnd := i+1 as long
+                if nEnd < aOut:Count .and. aOut[nEnd] == "("
+                    local nDepth := 0 as long
+                    for var j := nEnd upto aOut:Count-1
+                        if aOut[j] == "("
+                            nDepth++
+                        elseif aOut[j] == ")"
+                            nDepth--
+                            if nDepth == 0
+                                nEnd := j
+                                exit
+                            endif
+                        endif
+                    next
+                endif
+                for var j := i+1 upto Math.Min(nEnd, aOut:Count-1)
+                    if aKind[j] > 0
+                        return null
+                    endif
+                next
+            endif
+        next
+        // without blanks: the translator turns field='x' into a prefix compare (LIKE) only then
+        var sbExpr := StringBuilder{}
+        foreach var cOut in aOut
+            sbExpr:Append(iif(cOut == ".AND." .or. cOut == ".OR.", " " + cOut + " ", cOut))
+        next
+        try
+            var oExp := SqlDbExpression{oOrder, sbExpr:ToString()}
+            if oExp:HasFunctions
+                return null
+            endif
+            var cSql := oExp:SQLKey
+            if String.IsNullOrWhiteSpace(cSql)
+                return null
+            endif
+            for var n := 1 upto aParts:Count
+                var cHolder := Provider:QuoteIdentifier(_FilterPlaceholder(n))
+                if cSql:IndexOf(cHolder, StringComparison.OrdinalIgnoreCase) < 0
+                    return null
+                endif
+                cSql := cSql:Replace(cHolder, "(" + aParts[n-1] + ")")
+            next
+            return cSql
+        catch as Exception
+            return null
+        end try
+    end method
+
+    /// <summary>
+    /// The date of an expression like CTOD('01.10.2026') as SQL literal, evaluated as the client
+    /// evaluates the filter; NULL when it does not give a date or the provider has no date literal.
+    /// An empty date is the value stored for it without UseNulls (see _EmptyDateValue()).
+    /// </summary>
+    private method _DateLiteralSql(cExpr as string) as string
+        try
+            var oValue := SELF:EvalBlock(SELF:Compile(cExpr))
+            local dValue as DateTime
+            if oValue is IDate var oDate
+                dValue := iif(oDate:IsEmpty, DateTime.MinValue, DateTime{oDate:Year, oDate:Month, oDate:Day})
+            elseif oValue is DateTime var dt
+                dValue := dt:Date
+            else
+                return null
+            endif
+            if SELF:Provider is SqlDbProvider var oProvider
+                return oProvider:DateLiteral(dValue)
+            endif
+            return null
+        catch as Exception
+            return null
+        end try
+    end method
+
+    private static method _FilterPlaceholder(n as long) as string
+        return "XSFILTERPART" + n:ToString() + "X"
+
+    /// <summary>
+    /// SQL for a filter's string comparison cField = cLiteral (prefix, SET EXACT OFF) or cField ==
+    /// cLiteral, NULL when it cannot be expressed so that it lets through at least the records the
+    /// runtime accepts.
+    /// </summary>
+    /// <remarks>
+    /// The database compares without case (and ignores trailing blanks), the runtime by the
+    /// characters. The first term finds the rows by an index on the column, the second with the
+    /// provider's BinaryCollation keeps only those the runtime accepts, so the condition counts like
+    /// the filter. == compares the value as the work area returns it: padded to the field length
+    /// (or trimmed with TrimTrailingSpaces), so a literal of another length never matches.
+    /// </remarks>
+    private method _StringCompareSql(cField as string, cOp as string, cLiteral as string) as string
+        var nField := SELF:FieldIndex(cField)
+        if nField <= 0 .or. !SELF:Connection:IsExactStringLiteral(cLiteral)
+            return null
+        endif
+        var nLen := SELF:_Fields[nField-1]:Length
+        var cCol := Provider:QuoteIdentifier(cField)
+        local cBin := "" as string
+        if Provider is SqlDbProvider var oProvider
+            cBin := oProvider:BinaryCollation
+        endif
+        if cOp == "=="
+            if iif(SELF:_trimValues, cLiteral:EndsWith(" "), cLiteral:Length != nLen)
+                return "1=0"
+            endif
+            var cValue := Functions.XsValueToSqlValue(cLiteral)
+            return cCol + " = " + cValue + iif(String.IsNullOrEmpty(cBin), "", " AND " + cCol + cBin + " = " + cValue)
+        endif
+        // a blank at the end of the prefix does not match a value stored without it, but the padded value
+        if cLiteral:EndsWith(" ")
+            return null
+        endif
+        if cLiteral:Length == 0
+            return "1=1"
+        endif
+        var cPattern := Provider:LikePattern(cLiteral)
+        return cCol + " like " + cPattern + iif(String.IsNullOrEmpty(cBin), "", " AND " + cCol + cBin + " like " + cPattern)
+
+    private static method _IsComparison(cToken as string) as logic
+        return cToken == "=" .or. cToken == "==" .or. cToken == "<" .or. cToken == ">" .or. cToken == "<=" ;
+            .or. cToken == ">=" .or. cToken == "<>" .or. cToken == "!=" .or. cToken == "#" .or. cToken == "$"
+
+    /// <summary>
+    /// Use cSql as the server condition of the filter: the buffer is read again with it, the work
+    /// area stays on its record, as after an order change.
+    /// </summary>
+    private method _ApplyServerFilter(cSql as string) as void
+        cSql := cSql ?? ""
+        if cSql == SELF:_serverFilterWhere
+            return
+        endif
+        SELF:GoCold()
+        var lHadData := SELF:_hasData .and. SELF:DataTable != null
+        local nRec := 0 as dword
+        var lWasEof := SELF:_EoF
+        var lWasBof := SELF:_BoF
+        local aCurrentRow := null as object[]
+        if lHadData
+            nRec := SELF:RecNo
+            if !lWasEof .and. SELF:RowNumber >= 1 .and. SELF:RowNumber <= SELF:RowCount
+                aCurrentRow := SELF:CurrentRow:ItemArray
+            endif
+        endif
+        var lTableCountValid := SELF:_tableReccountValid
+        SELF:_CloseCursor()
+        SELF:_serverFilterWhere := cSql
+        SELF:_tableReccountValid := lTableCountValid
+        if lHadData
+            SELF:_RepositionAfterOrderChange(nRec, lWasEof, aCurrentRow)
+            SELF:_RestoreBofAtEof(lWasEof, lWasBof)
+        endif
+        return
+
+    /// <summary>After an order change at EOF keep BOF as it was before, as ADS does.</summary>
+    PRIVATE METHOD _RestoreBofAtEof(lWasEof as logic, lWasBof as logic) AS VOID
+        if lWasEof .and. SELF:_EoF
+            SELF:_SetBOF(lWasBof)
+        endif
+        return
+
+    /// <summary>An empty table with the buffer's structure to load a query result into, or NULL.</summary>
+    PRIVATE METHOD _TakeSpareTable() AS DataTable
+        var oTable := SELF:_spareTable
+        SELF:_spareTable := null
+        return oTable
+
+    /// <summary>
+    /// After a new record lock: read the locked record again when the work area stands on it and has
+    /// no pending changes, as ADS does.
+    /// </summary>
+    /// <remarks>
+    /// Code written for DBF/ADS locks a record, reads it and writes it back. A value read before the
+    /// lock (from the buffer or the result cache) could overwrite a change another user committed in
+    /// the meantime. Only the values of the row are replaced, the buffer and the position stay.
+    /// </remarks>
+    PRIVATE METHOD _RefreshLockedRow(nRecNo as int) AS VOID
+        var row := SELF:CurrentRow
+        if nRecNo <= 0 .or. SELF:_tableMode != TableMode.Table .or. SELF:_recnoColumNo < 0 .or. SELF:_EoF ;
+            .or. row == null .or. row == SELF:_phantomRow .or. row:RowState != DataRowState.Unchanged .or. SELF:_updatedRecNos:Count > 0
+            return
+        endif
+        if Convert.ToInt32(row[SELF:_recnoColumNo]) != nRecNo
+            return
+        endif
+        try
+            SELF:_command:CommandText := _builder:BuildDirectRecnoStatement((DWORD) nRecNo)
+            SELF:_command:ClearParameters()
+            var oTable := SELF:_command:GetDataTable(SELF:Alias, SELF:_tableTemplate, SELF:_TakeSpareTable())
+            if oTable != null
+                if oTable:Rows:Count == 1
+                    var oNew := oTable:Rows[0]
+                    // column by column: the recno column is read only (ItemArray would stop there
+                    // and leave the row in edit mode)
+                    foreach oColumn as DataColumn in row:Table:Columns
+                        if !oColumn:ReadOnly
+                            row[oColumn] := oNew[oColumn:Ordinal]
+                        endif
+                    next
+                    row:AcceptChanges()
+                endif
+                SELF:_ReturnSpareTable(oTable)
+            endif
+        catch as Exception
+            // keep the values read before
+            row:RejectChanges()
+        end try
+        return
+
+    /// <summary>Keep a table that is no longer used (a replaced buffer, a page whose rows were copied into
+    /// the buffer) for the next query, see _TakeSpareTable().</summary>
+    PRIVATE METHOD _ReturnSpareTable(oTable as DataTable) AS VOID
+        if oTable != null .and. oTable != SELF:_table .and. SELF:_tableTemplate != null ;
+            .and. oTable:Columns:Count == SELF:_tableTemplate:Columns:Count
+            oTable:Rows:Clear()
+            SELF:_spareTable := oTable
+        endif
+        return
+
+    /// <summary>
+    /// Replace the buffer with an empty table (aRow NULL) or one row, built from the structure of
+    /// the previous buffer without a query. FALSE when that structure is not known yet.
+    /// </summary>
+    PRIVATE METHOD _SetBufferRows(aRow as object[]) AS LOGIC
+        if SELF:_tableTemplate == null
+            return false
+        endif
+        var oTable := SELF:_TakeSpareTable()
+        if oTable == null
+            oTable := SELF:_tableTemplate:Clone()
+        endif
+        if aRow != null
+            oTable:LoadDataRow(aRow, true)
+        endif
+        SELF:_lazyGotos := 0
+        SELF:_ClearTable()
+        SELF:DataTable := oTable
+        SELF:RowNumber := 1
+        SELF:_outsideOrder := false
+        SELF:_hasEOF := false
+        SELF:_anchorWhere := ""
+        SELF:_bufferStart := 0
+        SELF:_bufferContiguous := true
+        SELF:_readAheadRows := 0
+        SELF:_readBackRows := 0
+        SELF:_serverReccountValid := false
+        SELF:_SetEOF(oTable:Rows:Count == 0)
+        SELF:_SetBOF(FALSE)
+        return true
+
     /// <summary>
     /// When the buffer only holds records whose position in the current order is unknown
     /// (see _LoadSingleRecord()), look that position up for the current record now.
     /// Sets _outsideOrder when the record is not part of the order at all.
+    /// Returns FALSE when pending changes could not be written.
     /// </summary>
-    PRIVATE METHOD _EnsurePositioned() AS VOID
+    PRIVATE METHOD _EnsurePositioned() AS LOGIC
         if SELF:_tableMode == TableMode.Table .and. !SELF:_bufferContiguous .and. !SELF:_outsideOrder ;
             .and. !SELF:_EoF .and. SELF:RowCount > 0 .and. SELF:RowNumber >= 1 .and. SELF:RowNumber <= SELF:RowCount
+            // Loading the window replaces the buffer: write the changes of the record first, or
+            // GoTo(n), FieldPut(), Skip() would lose them.
+            if !SELF:GoCold()
+                return false
+            endif
             SELF:_GotoRecord(Convert.ToUInt32(SELF:CurrentRow[self:_recnoColumNo]))
         endif
-        return
+        return true
 
     PRIVATE METHOD _GotoRow(nRow as LONG) AS LOGIC
         SELF:_Found := FALSE
@@ -1166,7 +2215,7 @@ partial class SQLRDD
         RETURN TRUE
 
     PRIVATE METHOD _UpdateRow(nRecNo AS INT) AS LOGIC
-        local row as DataRow
+        local row := NULL as DataRow
         local lOk := TRUE as logic
         // Reachable via UnLock() -> Close(), which never checks _ForceOpen()/DataTable itself -
         // if the buffer was already torn down (_CloseCursor()) there is nothing left to persist.
@@ -1192,7 +2241,7 @@ partial class SQLRDD
                 dbLockInfo:RecId := row[_oTd:RecnoColumn]
                 var myLock := false
                 var otherLock := false
-                SELF:CheckLock(dbLockInfo, StringBuilder{}, myLock, otherLock)
+                SELF:CheckLock(dbLockInfo, StringBuilder{}, REF myLock, REF otherLock)
                 if otherLock
                     return false
                 endif
@@ -1298,7 +2347,7 @@ partial class SQLRDD
                     workarea = (int)super:Area .and. ;
                     threadId = System.Threading.Thread.CurrentThread.ManagedThreadId)
                 if (lockInfo:Method = XSharp.RDD.Support.DbLockInfo.LockMethod.File .and. recNoTemp = 0) .or. ;
-                    (lockInfo:Method != XSharp.RDD.Support.DbLockInfo.LockMethod.File .and. recNoTemp = SELF:LockRecNo(lockInfo))
+                    (lockInfo:Method != XSharp.RDD.Support.DbLockInfo.LockMethod.File .and. recNoTemp = SELF:LockRecNo(REF lockInfo))
                         myLock := true
                 endif
             else

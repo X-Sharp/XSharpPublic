@@ -35,6 +35,11 @@ CONSTRUCTOR()
     SUPER()
 
 /// <inheritdoc />
+CONSTRUCTOR(aSource as ARRAY)
+    var objs := (OBJECT[]) aSource
+    SELF(objs)
+
+/// <inheritdoc />
 CONSTRUCTOR(capacity AS DWORD)
     SUPER(capacity, TRUE)
 

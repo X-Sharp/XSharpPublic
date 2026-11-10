@@ -1207,6 +1207,7 @@ namespace XSharp.MacroCompiler.Syntax
         internal override Node Bind(Binder b)
         {
             NestedBinder = b.CreateNested();
+            NestedBinder.Parent = b;
             NestedBinder.Bind(ref Codeblock);
             CbIndex = b.AddNestedCodeblock(out Symbol);
             CbList = b.NestedCodeblocks;

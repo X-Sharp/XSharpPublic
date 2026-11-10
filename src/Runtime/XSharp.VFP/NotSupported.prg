@@ -66,11 +66,6 @@ FUNCTION AVCXCLASSES( )
 RETURN NIL
 
 [Obsolete( "This function will not be supported" )];
-[FoxProFunction("BAR", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.NotSupported, FoxCriticality.Medium)];
-FUNCTION BAR( )
-RETURN NIL
-
-[Obsolete( "This function will not be supported" )];
 [FoxProFunction("BARCOUNT", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.NotSupported, FoxCriticality.Medium)];
 FUNCTION BARCOUNT( )
 RETURN NIL
@@ -232,23 +227,8 @@ FUNCTION MEMORY( )
 RETURN NIL
 
 [Obsolete( "This function will not be supported" )];
-[FoxProFunction("MENU", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.NotSupported, FoxCriticality.Medium)];
-FUNCTION MENU( )
-RETURN NIL
-
-[Obsolete( "This function will not be supported" )];
 [FoxProFunction("MESSAGE", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.LanguageCore, FoxFunctionStatus.NotSupported, FoxCriticality.High)];
 FUNCTION MESSAGE( )
-RETURN NIL
-
-[Obsolete( "This function will not be supported" )];
-[FoxProFunction("MRKBAR", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.NotSupported, FoxCriticality.Medium)];
-FUNCTION MRKBAR( )
-RETURN NIL
-
-[Obsolete( "This function will not be supported" )];
-[FoxProFunction("MRKPAD", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.NotSupported, FoxCriticality.Medium)];
-FUNCTION MRKPAD( )
 RETURN NIL
 
 [Obsolete( "This function will not be supported" )];
@@ -272,11 +252,6 @@ FUNCTION ON( )
 RETURN NIL
 
 [Obsolete( "This function will not be supported" )];
-[FoxProFunction("PAD", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.NotSupported, FoxCriticality.Medium)];
-FUNCTION Pad( )
-RETURN NIL
-
-[Obsolete( "This function will not be supported" )];
 [FoxProFunction("PADPROMPT", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.NotSupported, FoxCriticality.Medium)];
 FUNCTION PADPROMPT( )
 RETURN NIL
@@ -292,23 +267,8 @@ FUNCTION PEMSTATUS( )
 RETURN NIL
 
 [Obsolete( "This function will not be supported" )];
-[FoxProFunction("POPUP", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.NotSupported, FoxCriticality.Medium)];
-FUNCTION POPUP( )
-RETURN NIL
-
-[Obsolete( "This function will not be supported" )];
 [FoxProFunction("PRINTSTATUS", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.NotSupported, FoxCriticality.Low)];
 FUNCTION PRINTSTATUS( )
-RETURN NIL
-
-[Obsolete( "This function will not be supported" )];
-[FoxProFunction("PRMBAR", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.NotSupported, FoxCriticality.Medium)];
-FUNCTION PRMBAR( )
-RETURN NIL
-
-[Obsolete( "This function will not be supported" )];
-[FoxProFunction("PRMPAD", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.NotSupported, FoxCriticality.Medium)];
-FUNCTION PRMPAD( )
 RETURN NIL
 
 [Obsolete( "This function will not be supported" )];

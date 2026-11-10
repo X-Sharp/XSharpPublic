@@ -48,23 +48,23 @@ namespace XSharp.LanguageService
     [ProvideAutoLoad(VSConstants.UICONTEXT.ShellInitialized_string, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideService(typeof(XSharpLanguagePackage), ServiceName = XSharpConstants.LanguageServiceName, IsAsyncQueryable = false)]//
     // 109 in the next lines is the resource id of the editor (XSharp Source Code Editor)
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".prg", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), Constants.SourceFileExtension, 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
     [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xs", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ppo", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".vh", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".xh", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
-    [ProvideEditorExtension(typeof(XSharpEditorFactory), ".ch", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), Constants.PPOExtension, 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), Constants.VHExtension, 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), Constants.XHExtension, 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
+    [ProvideEditorExtension(typeof(XSharpEditorFactory), Constants.CHExtension, 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
     [ProvideEditorExtension(typeof(XSharpEditorFactory), ".rc", 0x42, DefaultName = XSharpConstants.EditorName, NameResourceID = 109)]
     // This tells VS that we support Code and Designer view
     // The guids are VS specific and should not be changed
     [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Designer_string, IsTrusted = true)]
     [ProvideEditorLogicalView(typeof(XSharpEditorFactory), VSConstants.LOGVIEWID.Code_string, IsTrusted = true)]
-    [ProvideLanguageExtension(typeof(XSharpLanguagePackage), ".prg")]
+    [ProvideLanguageExtension(typeof(XSharpLanguagePackage), Constants.SourceFileExtension)]
     [ProvideLanguageExtension(typeof(XSharpLanguagePackage), ".xs")]
-    [ProvideLanguageExtension(typeof(XSharpLanguagePackage), ".ppo")]
-    [ProvideLanguageExtension(typeof(XSharpLanguagePackage), ".vh")]
-    [ProvideLanguageExtension(typeof(XSharpLanguagePackage), ".xh")]
-    [ProvideLanguageExtension(typeof(XSharpLanguagePackage), ".ch")]
+    [ProvideLanguageExtension(typeof(XSharpLanguagePackage), Constants.PPOExtension)]
+    [ProvideLanguageExtension(typeof(XSharpLanguagePackage), Constants.CHExtension)]
+    [ProvideLanguageExtension(typeof(XSharpLanguagePackage), Constants.VHExtension)]
+    [ProvideLanguageExtension(typeof(XSharpLanguagePackage), Constants.XHExtension)]
     [ProvideLanguageService(typeof(XSharpLanguagePackage),
                          XSharpConstants.LanguageName,
                          1,                            // resource ID of localized language name
@@ -250,7 +250,6 @@ namespace XSharp.LanguageService
             {
                 shell.AdviseShellPropertyChanges(this, out shellCookie);
             }
-            XSettings.Version = await VS.Shell.GetVsVersionAsync();
             this.RegisterEditorFactory(new XSharpEditorFactory(this));
             IServiceContainer serviceContainer = this;
 

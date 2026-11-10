@@ -91,6 +91,8 @@ partial class SQLRDD
     override method OrderCreate(orderInfo as DbOrderCreateInfo ) as logic
         local result as logic
         if self:_tableMode == TableMode.Table
+            // _CloseCursor() below discards pending FieldPut()s, so write them first.
+            SELF:GoCold()
             var bagName     := orderInfo:BagName
             var tagName     := (string) orderInfo:Order
             if String.IsNullOrEmpty(bagName)
@@ -193,6 +195,15 @@ partial class SQLRDD
             // index/order" pattern used throughout the app, and it must keep flushing even when
             // the order doesn't actually change.
             SELF:GoCold()
+            // The record we stand on (just written by GoCold()) is kept across the order change
+            // instead of being read again, and LastRec() does not change with the order.
+            local aCurrentRow := null as object[]
+            if !lWasEof .and. SELF:_hasData .and. SELF:DataTable != null .and. SELF:RowNumber >= 1 .and. SELF:RowNumber <= SELF:RowCount
+                aCurrentRow := SELF:CurrentRow:ItemArray
+            endif
+            var lTableCountValid := SELF:_tableReccountValid
+            // ADS keeps BOF as it was when the order changes at EOF
+            var lWasBof := SELF:_BoF
             if (orderInfo:Order is long var nOrder0 .and. nOrder0 == 0) .or. ;
                (orderInfo:Order is string var cOrder0 .and. String.IsNullOrEmpty(cOrder0))
                 // Order 0 (or an empty order name) means: switch back to the natural/physical
@@ -209,9 +220,11 @@ partial class SQLRDD
                     self:_CloseCursor()
                 endif
                 SELF:CurrentOrder := null
+                self:_tableReccountValid := lTableCountValid
                 if lReset
-                    self:_RepositionAfterOrderChange(currentRecord, lWasEof)
-                else
+                    self:_RepositionAfterOrderChange(currentRecord, lWasEof, aCurrentRow)
+                    self:_RestoreBofAtEof(lWasEof, lWasBof)
+                elseif !lWasEof
                     self:GoTo(currentRecord)
                 endif
                 result := true
@@ -222,6 +235,7 @@ partial class SQLRDD
                     self:_CloseCursor()
                 endif
                 SELF:CurrentOrder := newOrder
+                self:_tableReccountValid := lTableCountValid
                 result := CurrentOrder != null
                 IF result
                     SELF:CurrentOrder:ClearCache()
@@ -230,8 +244,10 @@ partial class SQLRDD
                     // loaded row. _CloseCursor() above cleared it, so without this there would
                     // be nothing to evaluate.
                     if lReset
-                        self:_RepositionAfterOrderChange(currentRecord, lWasEof)
-                    else
+                        self:_RepositionAfterOrderChange(currentRecord, lWasEof, aCurrentRow)
+                        self:_RestoreBofAtEof(lWasEof, lWasBof)
+                    elseif !lWasEof
+                        // same order: at EOF stay there (GoTo(LastRec()+1) looked the record up again)
                         self:GoTo(currentRecord)
                     endif
                     SELF:CurrentOrder:CalculateKeyLength()
@@ -341,14 +357,16 @@ partial class SQLRDD
         case DBOI_DEFBAGEXT
             info:Result := SqlDbOrderBag.BAG_EXTENSION
         case DBOI_CONDITION
+            // A tag without FOR condition has no Condition (null); DBF/ADS report "" there,
+            // and callers pass the result straight to string functions such as StrTran().
             if workOrder != null
-                info:Result := workOrder:Condition
+                info:Result := workOrder:Condition ?? ""
             else
                 info:Result := ""
             endif
         case DBOI_EXPRESSION
             if workOrder != null
-                info:Result := workOrder:Expression
+                info:Result := workOrder:Expression ?? ""
             else
                 info:Result := ""
             endif
@@ -454,6 +472,7 @@ partial class SQLRDD
                     // Only reset the cursor when there was actually a scope to clear - re-clearing
                     // an already-clear scope (a common defensive pattern) would otherwise pay for a
                     // cursor reset for nothing under SqlRDD, unlike DBF where this is free.
+                    SELF:GoCold()
                     workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
                     self:_CloseCursor()
                 endif
@@ -475,6 +494,7 @@ partial class SQLRDD
                     // the same scope value (a common defensive pattern, e.g. re-scoping on every
                     // keystroke when the underlying value hasn't changed) would otherwise pay for
                     // a cursor reset for nothing under SqlRDD, unlike DBF where this is free.
+                    SELF:GoCold()
                     workOrder:SetOrderScope(info:Result, (DbOrder_Info) nOrdinal)
                     self:_CloseCursor()
                 endif
@@ -528,6 +548,8 @@ partial class SQLRDD
         local oKey as object
         // change behavior when all rows are read.
         // In that case we can search in the local buffer
+        // Reloading the buffer below discards pending FieldPut()s, so write them first (DBF does too).
+        SELF:GoCold()
         SELF:_Found := FALSE
         SELF:_SetEOF(FALSE)
         SELF:_eofPending := FALSE
@@ -543,7 +565,12 @@ partial class SQLRDD
             self:_dbfError(Subcodes.ERDD_DATATYPE, Gencode.EG_NOORDER, "SQLRDD:Seek","No current Order" )
             return false
         endif
+        // a value longer than the key counts with the key length, also for Found and SeekLast
+        seekInfo:Value := CurrentOrder:SeekValue(oKey)
         var cSeekWhere := CurrentOrder:SeekExpression(seekInfo )
+        if seekInfo:Last .and. SELF:_SeekLastDirect(seekInfo)
+            return true
+        endif
         // The buffer is anchored at the soft-seek condition for the same value: the rows a
         // hard seek returns are exactly the leading rows of that result, so paging forward past
         // them (the common "seek to the first record of a key, then Skip() while the key still
@@ -554,14 +581,29 @@ partial class SQLRDD
         softInfo:Last     := FALSE
         var cAnchorWhere := CurrentOrder:SeekExpression(softInfo)
 
+        // A hard seek on records the buffer already holds keeps the buffer, see _SeekInBuffer().
+        local oRows := null as DataTable
+        if !seekInfo:SoftSeek .and. !seekInfo:Last .and. !SELF:_FilterInfo:Active .and. SELF:_tableMode == TableMode.Table ;
+            .and. SELF:_recnoColumNo >= 0 .and. SELF:RowCount > 0 .and. SELF:_bufferContiguous .and. !SELF:_outsideOrder
+            oRows := SELF:_ReadTable(cSeekWhere, 0, _oTd:PageSize)
+            if SELF:_SeekInBuffer(oRows)
+                return true
+            endif
+        endif
+
         SELF:_ClearTable()
-        self:_OpenTable(cSeekWhere, cAnchorWhere)
+        self:_OpenTable(cSeekWhere, cAnchorWhere, oRows)
 
         // _OpenTable() can fail (e.g. the underlying SELECT errors out) and leave DataTable
         // null instead of an empty table - treat that the same as "no rows found" instead of
         // crashing on DataTable:Rows below, same fix as GoTo()/_ClearTable() already got.
         IF (SELF:DataTable == null .or. SELF:DataTable:Rows:Count = 0) .and. !seekInfo.SoftSeek
-            SELF:GoTo(0)
+            // BOF is set below, so no need to count the order for it (GoTo(0) would)
+            IF SELF:DataTable == null
+                SELF:GoTo(0)
+            ELSE
+                SELF:_GoToPhantom()
+            ENDIF
             SELF:_Found := false
             SELF:_SetEOF(true)
             SELF:_SetBOF(false)
@@ -622,6 +664,105 @@ partial class SQLRDD
         ENDIF
 
         // See above: the outcome is in Found, the return value only reports success.
+        return true
+    end method
+
+    /// <summary>
+    /// Position on the records a hard seek returned (oRows) when the buffer already holds them as
+    /// consecutive rows: the buffer, its place in the order and the read-ahead stay. FALSE when
+    /// they are not there; the caller then starts a new buffer with oRows.
+    /// </summary>
+    /// <remarks>
+    /// Code that walks an order and, for some records, seeks the record it stands on through the
+    /// same work area (our ERP's demand planning: Skip() through 450,000 articles, Seek() on the
+    /// article for each of 3,800) started a new buffer with the one found record each time. The
+    /// next Skip() then read pages of 10, 20, 40 ... rows again: 7,928 queries instead of 1,129.
+    /// The found records are taken from oRows, so they are as current as after a new buffer. When
+    /// the key may have more records than oRows holds, the buffer ends after them and the next
+    /// Skip() reads the rest from the server.
+    /// </remarks>
+    PRIVATE METHOD _SeekInBuffer(oRows as DataTable) AS LOGIC
+        if oRows == null .or. oRows:Rows:Count == 0
+            return false
+        endif
+        var nFirst := Convert.ToInt32(oRows:Rows[0][SELF:_recnoColumNo])
+        // mostly the record the work area stands on
+        local nStart := -1 as long
+        var nCurrent := SELF:RowNumber - 1
+        if nCurrent >= 0 .and. nCurrent < SELF:RowCount .and. Convert.ToInt32(SELF:DataTable:Rows[nCurrent][SELF:_recnoColumNo]) == nFirst
+            nStart := nCurrent
+        else
+            for var nRow := 0 upto SELF:RowCount-1
+                if Convert.ToInt32(SELF:DataTable:Rows[nRow][SELF:_recnoColumNo]) == nFirst
+                    nStart := nRow
+                    exit
+                endif
+            next
+        endif
+        if nStart < 0
+            return false
+        endif
+        var nMatched := Math.Min(oRows:Rows:Count, SELF:RowCount - nStart)
+        for var nRow := 1 upto nMatched-1
+            if Convert.ToInt32(SELF:DataTable:Rows[nStart + nRow][SELF:_recnoColumNo]) != Convert.ToInt32(oRows:Rows[nRow][SELF:_recnoColumNo])
+                return false
+            endif
+        next
+        for var nRow := 0 upto nMatched-1
+            var oRow := SELF:DataTable:Rows[nStart + nRow]
+            oRow:ItemArray := oRows:Rows[nRow]:ItemArray
+            oRow:AcceptChanges()
+        next
+        if oRows:Rows:Count >= _oTd:PageSize
+            // the key may have more records: read them from the server, not from the buffer
+            while SELF:RowCount > nStart + nMatched
+                SELF:DataTable:Rows:RemoveAt(SELF:RowCount - 1)
+            enddo
+            SELF:_hasEOF := false
+        endif
+        SELF:_ReturnSpareTable(oRows)
+        SELF:RowNumber := nStart + 1
+        SELF:_outsideOrder := false
+        SELF:_eofPending := false
+        SELF:_SetEOF(false)
+        SELF:_SetBOF(false)
+        SELF:Found := true
+        return true
+    end method
+
+    /// <summary>
+    /// SeekLast: read the last record of the key directly, with the order reversed, and position
+    /// on it. FALSE when that is not possible (filter, no recno column) or the key has no record:
+    /// the caller then continues as before (soft seek, not found).
+    /// </summary>
+    /// <remarks>
+    /// Seek() found the first record of the key and skipped from there to the last one. That reads
+    /// every record of the key, page by page: BelegHdr:GoTop() in our ERP seeks the newest order of
+    /// a type with SeekLast on BEL_ART+DTOS(DAT_HINZU)+BEL_NR, and with 3.8 million orders it had
+    /// not arrived after 80 seconds and 310,000 records. The position of the record in the order is
+    /// looked up when something moves from it, as after GoTo().
+    /// </remarks>
+    PRIVATE METHOD _SeekLastDirect(seekInfo as DbSeekInfo) AS LOGIC
+        if SELF:_FilterInfo:Active .or. SELF:_tableMode != TableMode.Table .or. SELF:_recnoColumNo < 0
+            return false
+        endif
+        // the records of the key also for a soft seek: it only differs when the key has none
+        var hardInfo := seekInfo
+        hardInfo:SoftSeek := FALSE
+        hardInfo:Last     := FALSE
+        var oLast := SELF:_ReadTable(SELF:CurrentOrder:SeekExpression(hardInfo), 0, 1, TRUE)
+        if oLast == null .or. oLast:Rows:Count == 0
+            SELF:_ReturnSpareTable(oLast)
+            return false
+        endif
+        var nRec := Convert.ToUInt32(oLast:Rows[0][SELF:_recnoColumNo])
+        SELF:_ReturnSpareTable(oLast)
+        if !SELF:GoTo(nRec) .or. SELF:_EoF
+            return false
+        endif
+        SELF:_SetEOF(FALSE)
+        SELF:_SetBOF(FALSE)
+        SELF:Found := TRUE
         return true
     end method
 

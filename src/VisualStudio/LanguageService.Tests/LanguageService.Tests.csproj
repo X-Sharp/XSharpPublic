@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyName>XSharp.LanguageService.Tests</AssemblyName>
+    <RootNamespace>XSharp.LanguageService.Tests</RootNamespace>
+    <LangVersion>7.3</LangVersion>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <IsPackable>false</IsPackable>
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile>..\..\Common\XSharp.snk</AssemblyOriginatorKeyFile>
+    <XSharpArtifactsDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\..\Artifacts\'))</XSharpArtifactsDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="XSharp.LanguageService2022">
+      <HintPath>$(XSharpArtifactsDir)2022\$(Configuration)\XSharp.LanguageService2022.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.CodeModel">
+      <HintPath>$(XSharpArtifactsDir)2022\$(Configuration)\XSharp.CodeModel.dll</HintPath>
+    </Reference>
+    <Reference Include="XSharp.VsParser">
+      <HintPath>$(XSharpArtifactsDir)Shared\$(Configuration)\XSharp.VSParser.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

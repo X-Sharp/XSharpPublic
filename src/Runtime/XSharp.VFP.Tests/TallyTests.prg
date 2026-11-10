@@ -563,6 +563,68 @@ BEGIN NAMESPACE XSharp.VFP.Tests
             END TRY
         END METHOD
 
+        [Fact, Trait("Category", "Tally")];
+        METHOD DeleteSqlWithoutWhereDeletesEveryRecord AS VOID
+            LOCAL lOld AS LOGIC
+            LOCAL nDeleted AS USUAL
+            TRY
+                lOld := SetDeleted(FALSE)
+                SELF:CreateTestCursor()
+                GO 3
+                _TALLY := -1
+                DELETE FROM curtally
+                // regression: without WHERE only the current record was deleted
+                Assert.Equal(5, (INT) _TALLY)
+                COUNT FOR Deleted() TO nDeleted
+                Assert.Equal(5, (INT) nDeleted)
+            FINALLY
+                SetDeleted(lOld)
+                USE
+            END TRY
+        END METHOD
+
+        [Fact, Trait("Category", "Tally")];
+        METHOD DeleteSqlWithoutWhereCountsTheAlreadyDeletedRows AS VOID
+            LOCAL lOld AS LOGIC
+            TRY
+                lOld := SetDeleted(FALSE)
+                SELF:CreateTestCursor()
+                GO 5
+                DELETE
+                GO TOP
+                _TALLY := -1
+                DELETE FROM curtally
+                // same as with WHERE: VFP reports the rows that matched, 5
+                Assert.Equal(5, (INT) _TALLY)
+            FINALLY
+                SetDeleted(lOld)
+                USE
+            END TRY
+        END METHOD
+
+        [Fact, Trait("Category", "Tally")];
+        METHOD DeleteSqlWithoutWhereKeepsTheSelectedArea AS VOID
+            LOCAL lOld AS LOGIC
+            LOCAL nDeleted AS USUAL
+            TRY
+                lOld := SetDeleted(FALSE)
+                SELF:CreateTestCursor()
+                SELF:CreateOtherCursor()
+                _TALLY := -1
+                DELETE FROM curtally
+                Assert.Equal("CUROTHER", Upper(Alias()))
+                Assert.Equal(5, (INT) _TALLY)
+                Assert.False(curother->Deleted())
+                SELECT curtally
+                COUNT FOR Deleted() TO nDeleted
+                Assert.Equal(5, (INT) nDeleted)
+            FINALLY
+                SetDeleted(lOld)
+                USE IN curother
+                USE IN curtally
+            END TRY
+        END METHOD
+
         PRIVATE METHOD CreateTestCursor() AS VOID
             CREATE CURSOR curtally (f I)
             INSERT INTO curtally VALUES (1)

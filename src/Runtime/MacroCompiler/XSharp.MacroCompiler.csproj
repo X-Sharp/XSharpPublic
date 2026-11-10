@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Runtime.Sdk.Props" />
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <RootNamespace>XSharp.MacroCompiler</RootNamespace>
+    <AssemblyName>XSharp.MacroCompiler</AssemblyName>
+    <TargetFrameworks>net47;net8.0</TargetFrameworks>
+    <LangVersion>Preview</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(Solutiondir)Common\Constants.cs">
+      <Link>Properties\Constants.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
+      <Name>XSharp.Core</Name>
+      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+    </ProjectReference>
+    <ProjectReference Include="..\XSharp.Harbour\XSharp.Harbour.xsproj" />
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj">
+      <Name>XSharp.RT</Name>
+      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(Solutiondir)Common\StandardHeaders.resx">
+      <Link>Preprocessor\StandardHeaders.resx</Link>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="..\XmlDoc.Props" />
+</Project>

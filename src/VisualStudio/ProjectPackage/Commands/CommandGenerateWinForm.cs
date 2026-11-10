@@ -76,7 +76,7 @@ namespace XSharp.Project
                     await VS.StatusBar.ShowMessageAsync("Creating Windows Form for " + form.tbNewForm.Text);
                     var oldform = currentFile.FullPath;
                     var newclass = form.tbNewForm.Text.Trim();
-                    var newform = Path.Combine(form.Path, newclass+".prg");
+                    var newform = Path.Combine(form.Path, newclass+ Constants.SourceFileExtension);
                     await VS.StatusBar.ShowMessageAsync("");
                     if (!VOWindowEditor.ConvertXsfrmToPrg(oldform, newclass, newform, ns))
                     {
@@ -84,18 +84,21 @@ namespace XSharp.Project
                         await VS.MessageBox.ShowErrorAsync("Failed to create the Windows Form '" + newform + "'","");
                         return;
                     }
-                    var newdesignerform = Path.ChangeExtension(newform, ".designer.prg");
+                    var newdesignerform = Path.ChangeExtension(newform, Constants.DesignerExtension);
                     var x = await project.AddExistingFilesAsync(new[] { newform, newdesignerform });
-                    var prjNode = (XSharpProjectNode) xproject.ProjectNode;
-                    var file = prjNode.FindChild(newform);
-                    if (file is XSharpFileNode fileNode && fileNode.IsLink)
+                    // MPFproj only: remove the Link metadata. CPS projects are not an XSharpProjectNode.
+                    if (xproject.ProjectNode is XSharpProjectNode prjNode)
                     {
-                        file.ItemNode.SetMetadata("Link", null);
-                    }
-                    file = prjNode.FindChild(newdesignerform);
-                    if (file is XSharpFileNode designerfileNode && designerfileNode.IsLink)
-                    {
-                        file.ItemNode.SetMetadata("Link", null);
+                        var file = prjNode.FindChild(newform);
+                        if (file is XSharpFileNode fileNode && fileNode.IsLink)
+                        {
+                            file.ItemNode.SetMetadata("Link", null);
+                        }
+                        file = prjNode.FindChild(newdesignerform);
+                        if (file is XSharpFileNode designerfileNode && designerfileNode.IsLink)
+                        {
+                            file.ItemNode.SetMetadata("Link", null);
+                        }
                     }
 
 

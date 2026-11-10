@@ -115,14 +115,14 @@ FUNCTION Start(args as string[]) AS VOID STRICT
 function IsAdministrator() as logic
     var identity := WindowsIdentity.GetCurrent()
     var principal := WindowsPrincipal{identity}
-    return principal.IsInRole(WindowsBuiltInRole.Administrator)
+    return principal:IsInRole(WindowsBuiltInRole.Administrator)
 
 function GetSettingString<T>(name as string,  result out T, def as T) as logic
     var key := Microsoft.Win32.Registry.LocalMachine
     result := def
     var subkey := key:OpenSubKey(XSharp.Constants.RegistryKey64, true)
     if subkey == null
-        subkey := key.CreateSubKey(XSharp.Constants.RegistryKey64, true)
+        subkey := key:CreateSubKey(XSharp.Constants.RegistryKey64, true)
     endif
     var oResult := subkey:GetValue(name)
     if oResult == null

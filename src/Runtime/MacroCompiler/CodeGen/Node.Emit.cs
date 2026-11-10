@@ -668,14 +668,14 @@ namespace XSharp.MacroCompiler.Syntax
         {
             if (Params != null)
             {
-                foreach (var p in Params)
+                for (int i = 0; i < Params.Count; i++)
                 {
-                    LocalSymbol ls = (LocalSymbol)p.Symbol;
+                    LocalSymbol ls = (LocalSymbol)Params[i].Symbol;
                     ls.Declare(ilg);
 
-                    var idx = Constant.Create(ls.Index);
+                    // Use the parameter position: a captured parameter does not map 1:1 to an IL local
                     var skip = ilg.DefineLabel();
-                    var lidx = Constant.Create(ls.Index);
+                    var lidx = Constant.Create(i);
 
                     ParamArray.EmitGet(ilg);
                     ilg.Emit(OpCodes.Ldlen);
@@ -725,20 +725,35 @@ namespace XSharp.MacroCompiler.Syntax
             var source = Token.ToString();
             NestedBinder.GenerateMethod(source);
             NestedBinder.DeclareAutoLocals();
+            var pcount = NestedBinder.ParamCount;
+            var memvars = NestedBinder.CreatesAutoVars;
             if (usualMacro)
             {
-                var dlg = NestedBinder.Emit(Codeblock) as UsualMacro.MacroCodeblockDelegate;
-                if (NestedBinder.CreatesAutoVars)
-                    CbList[CbIndex] = new UsualMacro.MacroMemVarCodeblock(dlg, NestedBinder.ParamCount, source, true);
+                XSharp.Codeblock create(UsualMacro.MacroCodeblockDelegate dlg) =>
+                    memvars ? new UsualMacro.MacroMemVarCodeblock(dlg, pcount, source, true)
+                            : new UsualMacro.MacroCodeblock(dlg, pcount, source, true);
+                if (NestedBinder.HasCaptures)
+                {
+                    var eval = NestedBinder.Emit(Codeblock) as Binder<__Usual>.ClosureEvalDelegate;
+                    var cbs = NestedBinder.NestedCodeblocks.ToArray();
+                    CbList[CbIndex] = new ClosureTemplate(env => create(args => eval(cbs, env, args)), pcount, source);
+                }
                 else
-                    CbList[CbIndex] = new UsualMacro.MacroCodeblock(dlg, NestedBinder.ParamCount, source, true);
+                    CbList[CbIndex] = create(NestedBinder.Emit(Codeblock) as UsualMacro.MacroCodeblockDelegate);
             }
             else
             {
-                var dlg = NestedBinder.Emit(Codeblock) as ObjectMacro.MacroCodeblockDelegate;
-                ICodeblock rtc = NestedBinder.CreatesAutoVars ? new ObjectMacro.MacroMemVarCodeblock(dlg, NestedBinder.ParamCount)
-                                                              : new ObjectMacro.MacroCodeblock(dlg, NestedBinder.ParamCount);
-                CbList[CbIndex] = new _Codeblock(rtc, source, true, false);
+                XSharp.Codeblock create(ObjectMacro.MacroCodeblockDelegate dlg) =>
+                    new _Codeblock(memvars ? new ObjectMacro.MacroMemVarCodeblock(dlg, pcount)
+                                           : new ObjectMacro.MacroCodeblock(dlg, pcount), source, true, false);
+                if (NestedBinder.HasCaptures)
+                {
+                    var eval = NestedBinder.Emit(Codeblock) as Binder<object>.ClosureEvalDelegate;
+                    var cbs = NestedBinder.NestedCodeblocks.ToArray();
+                    CbList[CbIndex] = new ClosureTemplate(env => create(args => eval(cbs, env, args)), pcount, source);
+                }
+                else
+                    CbList[CbIndex] = create(NestedBinder.Emit(Codeblock) as ObjectMacro.MacroCodeblockDelegate);
             }
 
             // Emit code to retrieve codeblock
@@ -746,6 +761,21 @@ namespace XSharp.MacroCompiler.Syntax
             Symbol.EmitGet(ilg);
             lidx.EmitGet(ilg);
             ilg.Emit(OpCodes.Ldelem, Datatype.Type);
+            if (NestedBinder.HasCaptures)
+            {
+                // Create a new codeblock instance that shares the boxes of the captured locals
+                var captures = NestedBinder.Captures;
+                ilg.Emit(OpCodes.Ldc_I4, captures.Count);
+                ilg.Emit(OpCodes.Newarr, typeof(object));
+                for (int i = 0; i < captures.Count; i++)
+                {
+                    ilg.Emit(OpCodes.Dup);
+                    ilg.Emit(OpCodes.Ldc_I4, i);
+                    captures[i].Source.EmitBox(ilg);
+                    ilg.Emit(OpCodes.Stelem_Ref);
+                }
+                ilg.Emit(OpCodes.Call, typeof(MacroClosure).GetMethod(nameof(MacroClosure.Bind)));
+            }
             if (!preserve)
                 ilg.Emit(OpCodes.Pop);
         }

@@ -1130,7 +1130,7 @@ METHOD Skip( nRecordCount := 1 AS LONG) AS LOGIC
                     IF !(siSelectionStatus == DBSELECTIONBOF .OR. siSelectionStatus == DBSELECTIONEMPTY)
                         IF siSelectionStatus == DBSELECTIONEOF
                             IF wLastSelectionRec > 0
-                                __DBSGoTo( (LONG) wLastSelectionRec, nTries)
+                                __DBSGoTo( wLastSelectionRec, nTries)
                             ELSE
                                 __DBSSeek(uSelectionValue, NIL, FALSE, nTries)
                             ENDIF

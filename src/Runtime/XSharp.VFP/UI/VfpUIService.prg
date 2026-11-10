@@ -55,7 +55,7 @@ BEGIN NAMESPACE XSharp.VFP
 
                 IF oAsm != NULL
                     VAR oType := oAsm:GetType("XSharp.VFP.UI.VfpUIProvider", FALSE, TRUE)
-                    IF oType != NULL AND typeof(IVfpUIProvider):IsAssignableFrom(oType)
+                    IF oType != NULL .AND. typeof(IVfpUIProvider):IsAssignableFrom(oType)
                         _provider := (IVfpUIProvider) Activator.CreateInstance(oType)
                     ENDIF
                 ENDIF

@@ -23,7 +23,7 @@
     <undeclared>true</undeclared>
     <initlocals>true</initlocals>
     <NamedArgs>False</NamedArgs>
-    <TargetFramework Condition="'$(TargetFrameworkOverride)' == ''">net46</TargetFramework>
+    <TargetFramework Condition="'$(TargetFrameworkOverride)' == ''">net47</TargetFramework>
     <TargetFramework Condition="'$(TargetFrameworkOverride)' != ''">TargetFrameworkOverride</TargetFramework>
     <RootNamespace>Company.Namespace1</RootNamespace>
   </PropertyGroup>

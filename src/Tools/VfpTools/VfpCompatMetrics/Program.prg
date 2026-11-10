@@ -446,23 +446,54 @@ BEGIN NAMESPACE VfpCompatMetrics
     // 7. CLI entry point
     // =========================================================================
     CLASS Program
+        STATIC METHOD StatusRank(cStatus AS STRING) AS INT
+            DO CASE
+            CASE cStatus == "Full" .OR. cStatus == "Intrinsic"; RETURN 4
+            CASE cStatus == "Partial"; RETURN 3
+            CASE cStatus == "Stub"; RETURN 2
+            CASE cStatus == "NotSupported"; RETURN 1
+            OTHERWISE; RETURN 0
+            END CASE
+        END METHOD
+
         STATIC METHOD Start(args AS STRING[]) AS INT
 
 	        IF args:Length == 0
-                Console.WriteLine("Usage for Audit: vfpCompatMetrics <path_to_XSharp_VFP_dll> <path_to_universe_json>")
-                Console.WriteLine("Usage for Inventory: vfpCompatMetrics <path_to_XSharp_VFP_dll>")
+                Console.WriteLine("Usage for Audit: vfpCompatMetrics <dll> [<dll> ...] <path_to_universe_json>")
+                Console.WriteLine("Usage for Inventory: vfpCompatMetrics <dll> [<dll> ...]")
                 RETURN 1
             ENDIF
 
-            VAR asmPath := args[0]
-            var isInventoryMode := (args:Length == 1) // Si solo hay 1 argumento, es Inventario
+            // Las funciones VFP no viven solo en XSharp.VFP: las de menus estan en
+            // XSharp.VFP.UI. Se admiten varios ensamblados; el .json es el universo.
+            VAR asmPaths := List<STRING>{}
+            VAR jsonPath := ""
+            FOREACH a AS STRING IN args
+                IF a:ToLower():EndsWith(".json")
+                    jsonPath := a
+                ELSE
+                    asmPaths:Add(a)
+                ENDIF
+            NEXT
+            var isInventoryMode := String.IsNullOrEmpty(jsonPath)
 
             TRY
-                Console.WriteLine("Loading assembly for analysis: " + asmPath)
-                VAR asm := AssemblyLoader.Load(asmPath)
-
-                Console.WriteLine("Extracting runtime metadata...")
-                VAR metadataList := MetadataExtractor.Extract(asm)
+                VAR metadataList := List<FoxFunctionMetadata>{}
+                FOREACH asmPath AS STRING IN asmPaths
+                    Console.WriteLine("Loading assembly for analysis: " + asmPath)
+                    VAR asm := AssemblyLoader.Load(asmPath)
+                    Console.WriteLine("Extracting runtime metadata...")
+                    FOREACH item AS FoxFunctionMetadata IN MetadataExtractor.Extract(asm)
+                        // Una funcion declarada en dos ensamblados cuenta una vez, con el mejor estado
+                        VAR prev := metadataList:Find({ x => x:Name == item:Name })
+                        IF prev == NULL
+                            metadataList:Add(item)
+                        ELSEIF StatusRank(item:Status) > StatusRank(prev:Status)
+                            metadataList:Remove(prev)
+                            metadataList:Add(item)
+                        ENDIF
+                    NEXT
+                NEXT
 
                 IF !Console.IsOutputRedirected
                     Console.Clear()
@@ -471,7 +502,6 @@ BEGIN NAMESPACE VfpCompatMetrics
                 if isInventoryMode
                     ReportPrinter.PrintInventory(metadataList)
                 else
-                    var jsonPath := args[1]
                     Console.WriteLine("Loading theoretical universe from JSON...")
                     var jsonString := File.ReadAllText(jsonPath)
 

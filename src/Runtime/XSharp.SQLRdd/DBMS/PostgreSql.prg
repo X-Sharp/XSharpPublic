@@ -58,7 +58,7 @@ class SqlDbProviderPostgreSQL inherit SqlDbProvider
                         {"LEFT(%1%,%2%)"			,"LEFT(%1%,%2%)"},;
                         {"LOWER(%1%)"			    ,"LOWER(%1%)"},;
                         {"UPPER(%1%)"			    ,"UPPER(%1%)"},;
-                        {"DTOS(%1%)"				,"TO_CHAR(CURRENT_DATE, 'YYYYMMDD')"},;
+                        {"DTOS(%1%)"				,"TO_CHAR(%1%, 'YYYYMMDD')"},;
                         {"DAY(%1%)"					,"EXTRACT('DAY' FROM %1%)"},;
                         {"MONTH(%1%)"				,"EXTRACT('MONTH' FROM %1%)"},;
                         {"YEAR(%1%)"				,"EXTRACT('YEAR' FROM %1%)"},;

@@ -1,147 +1,128 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
-  <Import Project="..\Runtime.props" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Runtime.Sdk.Props" />
   <PropertyGroup>
-    <ProjectGuid>535dff14-efb7-43f5-a4e1-71c1c4280040</ProjectGuid>
     <RootNamespace>XSharp</RootNamespace>
     <AssemblyName>XSharp.Core</AssemblyName>
-    <Name>XSharp.Core</Name>
     <Dialect>Core</Dialect>
-    <OutputName>XSharp.Core</OutputName>
     <AZ>true</AZ>
     <CS>true</CS>
-    <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
-    <StandardDefs />
-    <Allowdot>True</Allowdot>
+    <Allowdot>true</Allowdot>
     <StartupObject />
-    <NamedArgs>True</NamedArgs>
-    <EnforceSelf>True</EnforceSelf>
+    <NamedArgs>true</NamedArgs>
+    <EnforceSelf>true</EnforceSelf>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <WarningLevel>4</WarningLevel>
-    <WarningsAsErrors />
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>Pdbonly</DebugType>
+    <TargetFrameworks>net47;net8.0</TargetFrameworks>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+    <NoWin32Manifest>false</NoWin32Manifest>
+    <VulcanCompatibleResources>true</VulcanCompatibleResources>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IncludePaths />
+    <StandardDefs />
+    <DefineConstants>CPS;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
-  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <NoWarn />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <NoWarn />
+  </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\commonAssemblyInfo.prg">
-      <Link>Properties\commonAssemblyInfo.prg</Link>
-    </Compile>
-    <Compile Include="..\..\Common\constants.prg">
-      <Link>Properties\constants.prg</Link>
-    </Compile>
-    <Compile Include="Collations.Designer.prg">
-      <DependentUpon>Collations.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Defines.prg" />
-    <Compile Include="ErrorEnum.prg" />
-    <Compile Include="Functions\AssemblyLoader.prg" />
-    <Compile Include="Functions\Conversions.prg" />
-    <Compile Include="Functions\Convert.prg" />
-    <Compile Include="Functions\Debug.prg" />
-    <Compile Include="Functions\DT.prg" />
-    <Compile Include="Functions\Error.prg" />
-    <Compile Include="Functions\File.prg" />
-    <Compile Include="Functions\FileIO.prg" />
-    <Compile Include="Functions\FileSearch.prg" />
-    <Compile Include="Functions\Macro.prg" />
-    <Compile Include="Functions\Memo.prg" />
-    <Compile Include="Functions\misc.prg" />
-    <Compile Include="Functions\Numeric.prg" />
-    <Compile Include="Functions\OS.prg" />
-    <Compile Include="Functions\String.prg" />
-    <Compile Include="Functions\StringCompare.prg" />
-    <Compile Include="Functions\Win32.prg" />
-    <Compile Include="Messages.prg" />
-    <Compile Include="Properties\AssemblyInfo.prg" />
-    <Compile Include="RDD\BaseIndex.prg" />
-    <Compile Include="RDD\BaseMemo.prg" />
-    <Compile Include="RDD\CoreDb.prg" />
-    <Compile Include="RDD\CursorProperties.prg" />
-    <Compile Include="RDD\DatabaseProperties.prg" />
-    <Compile Include="RDD\DatabasePropertyCollection.prg" />
-    <Compile Include="RDD\DataSession.prg" />
-    <Compile Include="RDD\DbColumnInfo.prg" />
-    <Compile Include="RDD\DbcSupport.prg" />
-    <Compile Include="RDD\DbCurrency.prg" />
-    <Compile Include="RDD\DbDate.prg" />
-    <Compile Include="RDD\DbFloat.prg" />
-    <Compile Include="RDD\IDbRow.prg" />
-    <Compile Include="RDD\IMemo.prg" />
-    <Compile Include="RDD\IOrder.prg" />
-    <Compile Include="RDD\IRDD.prg" />
-    <Compile Include="RDD\RDDDefines.prg" />
-    <Compile Include="RDD\RddEnums.prg" />
-    <Compile Include="RDD\RddError.prg" />
-    <Compile Include="RDD\RddFieldInfo.prg" />
-    <Compile Include="RDD\RDDNotifications.prg" />
-    <Compile Include="RDD\RDDSupport.prg" />
-    <Compile Include="RDD\RDDWrapper.prg" />
-    <Compile Include="RDD\RegisteredRDD.prg" />
-    <Compile Include="RDD\SQLHelpers.prg" />
-    <Compile Include="RDD\SqlProperties.prg" />
-    <Compile Include="RDD\Workarea.prg" />
-    <Compile Include="RDD\Workareas.prg" />
-    <Compile Include="State\Enums.prg" />
-    <Compile Include="State\EnumSet.prg" />
-    <Compile Include="State\Get.prg" />
-    <Compile Include="State\Set.prg" />
-    <Compile Include="State\State.prg" />
-    <Compile Include="Types\Attributes.prg" />
-    <Compile Include="Types\BufferedFileStream.prg" />
-    <Compile Include="Types\Dialect.prg" />
-    <Compile Include="Types\Error.prg" />
-    <Compile Include="Types\ErrorEnums.prg" />
-    <Compile Include="Types\FileStream.prg" />
-    <Compile Include="Types\Interfaces.prg" />
-    <Compile Include="Types\MacroSupport.prg" />
-    <Compile Include="Types\SharedFileStream.prg" />
-    <Compile Include="Types\StreamExtensions.prg" />
-    <Compile Include="Types\UsualType.prg" />
-    <Compile Include="Types\WrappedException.prg" />
+    <Compile Include="$(CommonInclude)\Constants.prg" />
+    <compile Remove="CollationHelpers\*.prg" />
+    <compile Remove="Collations\*.prg" />
+    <compile Remove="Language\*.prg" />
+    <compile Remove="Types\Win32FileStream.prg" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="**\*.collation" />
-    <None Include="README.md" />
-    <None Include="State\GetSet.xh" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Collations.resx">
+    <EmbeddedResource Update="Language\Croatia.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Czech852.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Danish.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Dutch.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Finnish.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\French.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Generic.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\German.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Hung852.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Italian.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Norwegn.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Pol852.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Port850.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Romania.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Russian.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Serbia.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\SL-W-EE.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Slov852.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Spanish.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Swedish.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Language\Turkish.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Collations.resx">
+      <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Language\*.resx">
-      <SubType>Designer</SubType>
-      <Generator>None</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System</Name>
-      <AssemblyName>System.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System.Core</Name>
-      <AssemblyName>System.Core.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System.Data</Name>
-      <AssemblyName>System.Data.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-  </ItemGroup>
   <Import Project="..\XmlDoc.Props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PostBuildEvent>xcopy $(TargetPath) $(SharedDir) /y</PostBuildEvent>
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PostBuildEvent>xcopy $(TargetPath) $(SharedDir) /y</PostBuildEvent>
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
-  </PropertyGroup>
 </Project>

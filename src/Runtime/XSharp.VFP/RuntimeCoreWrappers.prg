@@ -23,7 +23,34 @@ FUNCTION File(cFileSpec AS STRING) AS LOGIC
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/directory/*" />
 [FoxProFunction("DIRECTORY", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION Directory(cDirectoryName AS STRING, nFlags := 0 AS INT) AS LOGIC
-    RETURN XSharp.RT.Functions.ALen(XSharp.RT.Functions.Directory(cDirectoryName)) > 0
+    LOCAL lFound := FALSE AS LOGIC
+    LOCAL cFullPath AS STRING
+    LOCAL oAttributes AS System.IO.FileAttributes
+
+    IF String.IsNullOrWhiteSpace(cDirectoryName)
+        RETURN FALSE
+    ENDIF
+
+    TRY
+        // SET DEFAULT syncs the process directory in the FoxPro dialect, so a
+        // relative name resolves against the VFP default directory
+        cFullPath := System.IO.Path.GetFullPath(cDirectoryName)
+        IF System.IO.Directory.Exists(cFullPath)
+            // only nFlags 1 ignores the attributes, and Windows marks a drive
+            // root Hidden and System while VFP still reports it
+            IF nFlags == 1 .OR. String.Compare(cFullPath, System.IO.Path.GetPathRoot(cFullPath), TRUE) == 0
+                lFound := TRUE
+            ELSE
+                oAttributes := System.IO.File.GetAttributes(cFullPath)
+                lFound := ! (oAttributes:HasFlag(System.IO.FileAttributes.Hidden) .OR. ;
+                             oAttributes:HasFlag(System.IO.FileAttributes.System))
+            ENDIF
+        ENDIF
+    CATCH
+        lFound := FALSE
+    END TRY
+
+    RETURN lFound
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/getenv/*" />
 [FoxProFunction("GETENV", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
@@ -158,7 +185,7 @@ FUNCTION FSize(cFieldName AS STRING, eWorkArea := NIL AS USUAL) AS INT
     IF XSharp.RuntimeState.Compatible .AND. IsNil(eWorkArea)
         VAR cSearchFile := cFieldName
 
-        IF String.IsNullOrEmpty(System.IO.Path.GetExtension(cSearchFile)) AND XSharp.Core.Functions.File(cSearchFile + ".dbf")
+        IF String.IsNullOrEmpty(System.IO.Path.GetExtension(cSearchFile)) .AND. XSharp.Core.Functions.File(cSearchFile + ".dbf")
             cSearchFile += ".dbf"
         ENDIF
 
@@ -284,7 +311,39 @@ FUNCTION DiskSpace(cDriveName := "" AS STRING, nSpaceType := 1 AS INT) AS REAL8
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/curdir/*" />
 [FoxProFunction("CURDIR", FoxFunctionCategory.FileAndIO, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION CurDir(cDrive := "" AS STRING) AS STRING
-    RETURN XSharp.Core.Functions.CurDir(cDrive)
+    // VFP returns the folder in upper case between backslashes: \FOLDER\SUB\, and just \ for a root.
+    // With a drive it returns the current folder of that drive, or an empty string when the drive does not exist.
+    LOCAL cDir AS STRING
+    LOCAL nIndex AS INT
+    IF String.IsNullOrWhiteSpace(cDrive)
+        cDir := System.Environment.CurrentDirectory
+    ELSE
+        cDrive := cDrive:Trim():Substring(0, 1) + ":"
+        TRY
+            // Windows keeps a current folder per drive, and GetFullPath("C:") resolves to it
+            cDir := System.IO.Path.GetFullPath(cDrive)
+        CATCH
+            RETURN ""
+        END TRY
+        IF ! System.IO.Directory.Exists(cDir)
+            RETURN ""
+        ENDIF
+    ENDIF
+    IF cDir:StartsWith("\\")
+        // a UNC path has no drive to strip, we leave it as it is
+        RETURN cDir
+    ENDIF
+    nIndex := cDir:IndexOf(System.IO.Path.VolumeSeparatorChar)
+    IF nIndex >= 0
+        cDir := cDir:Substring(nIndex + 1)
+    ENDIF
+    IF ! cDir:StartsWith("\")
+        cDir := "\" + cDir
+    ENDIF
+    IF ! cDir:EndsWith("\")
+        cDir += "\"
+    ENDIF
+    RETURN cDir:ToUpperInvariant()
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/os/*" />
 [FoxProFunction("OS", FoxFunctionCategory.EnvironmentAndSystem, FoxEngine.RuntimeCore, FoxFunctionStatus.Full, FoxCriticality.Low)];

@@ -16,7 +16,7 @@ FUNCTION AddProperty (oObjectName AS OBJECT, cPropertyName AS STRING, eNewValue 
         oDynamic:_AddProperty(cPropertyName, eNewValue,1,"")
     else
         Send(oObjectName,#AddProperty,cPropertyName, eNewValue)
-    endi
+    endif
     return true
 
 
@@ -120,7 +120,7 @@ FUNCTION AClass(ArrayName AS USUAL, oExpression AS USUAL) AS DWORD
     ENDIF
 
     IF IsObject(oExpression)
-        oType = ((OBJECT)oExpression):GetType()
+        oType := ((OBJECT)oExpression):GetType()
     ELSEIF IsString(oExpression)
         VAR cName := (STRING)oExpression
         oType := Type.GetType(cName, FALSE, TRUE)
@@ -175,8 +175,8 @@ FUNCTION ASessions (ArrayName AS USUAL) AS DWORD
     LOCAL nIdx := 0 AS DWORD
     FOREACH VAR oSession IN sessions
         VAR nBase := (INT)(nIdx * 2)
-        aFoxArray.__SetElement(oSession:Id,   nBase)
-        aFoxArray.__SetElement(oSession:Name, nBase + 1)
+        aFoxArray:__SetElement(oSession:Id,   nBase)
+        aFoxArray:__SetElement(oSession:Name, nBase + 1)
         nIdx += 1
     NEXT
 

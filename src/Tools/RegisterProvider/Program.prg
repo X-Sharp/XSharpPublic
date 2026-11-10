@@ -232,7 +232,7 @@ FUNCTION GetConfigFiles AS IList<STRING>
 
 FUNCTION WriteToLog(sLine AS STRING) AS LOGIC
     TRY
-        sLine := DateTime.Now.ToString() + " " + sLine+e"\r\n"
+        sLine := DateTime.Now:ToString() + " " + sLine+e"\r\n"
         System.IO.File.AppendAllText("Patch-MachineConfig.Log", sLine)
         RETURN TRUE
     CATCH E AS Exception

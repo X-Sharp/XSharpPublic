@@ -486,7 +486,7 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
         END IF
 
         TRY
-            cPrgFileName := Funcs.GetModuleFilenameFromBinary(cVNfsFileName) + ".prg"
+            cPrgFileName := Funcs.GetModuleFilenameFromBinary(cVNfsFileName) + Constants.SourceFileExtension
 
             lError := FALSE
             IF !lVnfrmOnly
@@ -551,8 +551,8 @@ PARTIAL CLASS VOFieldSpecEditor INHERIT DesignerBase
         IF nAt != -1 // strip out window name
         cFileName := cFileName:Substring(0 , nAt)
         ENDIF
-        cPrgFileName := cBaseDir + "\" + cFileName + ".prg"
-        cAlternative := oBaseDir:Parent:FullName + "\" + cFileName + ".prg"
+        cPrgFileName := cBaseDir + "\" + cFileName + Constants.SourceFileExtension
+        cAlternative := oBaseDir:Parent:FullName + "\" + cFileName + Constants.SourceFileExtension
         IF !File.Exists(cPrgFileName) .and. File.Exists(cAlternative)
         cPrgFileName := cAlternative
         ENDIF

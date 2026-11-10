@@ -17,16 +17,39 @@ CLASS TestClass
 	DbAppend( ); FieldPut(1, 1)
 	DbAppend( ); FieldPut(1, 0)
 	DbGoTop()
+	
+	LOCAL nCount AS INT
+	
+	LOCAL cb AS Codeblock
+	cb := { || this.expfld == 0 }
+	nCount := __VfpCount( cb )
+	? nCount
+	xAssert(nCount == 3) // OK
 
-	LOCAL n,n2 AS INT
-	COUNT TO n FOR this.expfld == FLD
-	? n
-	xAssert(n==2)
+	cb := { || this.expfld == FLD }
+	nCount := __VfpCount( cb )
+	? nCount
+	xAssert(nCount == 2) // OK
+	
+	COUNT TO nCount FOR this:expfld == 0
+	? nCount
+	xAssert(nCount == 3) // OK
 
-	COUNT TO n2 FOR this:expfld == 0
-	? n2
-    
-	xAssert(n2==3)
+	COUNT TO nCount FOR this:expfld == FLD
+	? nCount
+	xAssert(nCount == 2) // OK
+
+	COUNT TO nCount FOR TRUE
+	? nCount
+	xAssert(nCount == 3) // OK
+
+	// these result to zero:
+	COUNT TO nCount FOR this.expfld == 0
+	? nCount // 0
+	xAssert(nCount == 3)
+	COUNT TO nCount FOR this.expfld == FLD
+	? nCount // 0
+	xAssert(nCount == 2)
 	
 END CLASS
 

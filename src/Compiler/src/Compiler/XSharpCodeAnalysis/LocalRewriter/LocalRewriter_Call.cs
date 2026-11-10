@@ -123,7 +123,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 int count = 0;
                 foreach (var sym in localsymbols)
                 {
-                    if (sym.Name.IndexOf("$") == -1)
+                    if (sym.Name.IndexOf('$') == -1)
                         count++;
                 }
                 if (count == 0 && isStatic)
@@ -156,7 +156,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 foreach (var symbol in localsymbols)
                 {
                     var name = symbol.Name;
-                    if (name.IndexOf("$") >= 0)
+                    if (name.IndexOf('$') >= 0)
                         continue;
                     BoundExpression? localvar = null;
                     if (symbol is LocalSymbol ls)

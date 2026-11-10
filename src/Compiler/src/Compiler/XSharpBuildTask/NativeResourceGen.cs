@@ -279,7 +279,7 @@ namespace XSharp.Build
                         }
                         if (found)
                         {
-                            if (!alreadychecked.Contains(foundfile.ToLower()))
+                            if (!alreadychecked.Contains(foundfile.ToLowerInvariant()))
                             {
                                 DateTime includeTime = File.GetLastWriteTime(foundfile);
                                 base.Log.LogMessage("Input file: \"{0}\"  depends on include file \"{1}\"", fileName, foundfile);
@@ -288,7 +288,7 @@ namespace XSharp.Build
                                     base.Log.LogMessage("Include file: \"{0}\" is newer than output file \"{1}\" as was last updated on {2:f}", foundfile, outputFileName, includeTime);
                                     return true;
                                 }
-                                alreadychecked.Add(foundfile.ToLower());
+                                alreadychecked.Add(foundfile.ToLowerInvariant());
                             }
                         }
                         else
@@ -438,7 +438,7 @@ namespace XSharp.Build
 
         protected override void LogEventsFromTextOutput(string singleLine, MessageImportance messageImportance)
         {
-            bool isWarning = singleLine.IndexOf(" warning RC4005") != -1;
+            bool isWarning = singleLine.IndexOf(" warning RC4005", StringComparison.OrdinalIgnoreCase) != -1;
             if (SuppressRCWarnings && isWarning)
             {
                 ; // do nothing

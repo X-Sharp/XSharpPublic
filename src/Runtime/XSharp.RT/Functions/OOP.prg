@@ -252,12 +252,15 @@ internal static class OOPHelpers
         if cache:TryGetValue(cName, out ret)
             return ret
         end if
+        // Read the generation before we take the list of assemblies. Otherwise an assembly that is
+        // loaded in between is not in the list, but would still allow us to cache a NULL for a class
+        // that is inside that assembly
+        var gen := asmGeneration
         if lOurAssembliesOnly
             aAssemblies := OOPHelpers.FindOurAssemblies()
         else
             aAssemblies := AppDomain.CurrentDomain:GetAssemblies()
         end if
-        var gen := asmGeneration
         var ns  := searchNameSpaces
 
         foreach asm as Assembly in aAssemblies
@@ -2373,5 +2376,16 @@ function EnableLBOptimizations(lSet as logic) as logic
     OOPHelpers.EnableOptimizations := lSet
     return lOld
 
+/// <summary>
+/// Returns the cache that the runtime uses to look up classes in the assemblies with a ClassLibraryAttribute.
+/// </summary>
+/// <returns>The cache itself, not a copy. The keys are compared case insensitive.</returns>
+/// <remarks>
+/// A value of NULL means that the runtime has already looked for this class name without success.
+/// These negative entries are removed when a new assembly is loaded into the AppDomain, because that
+/// assembly may contain the class. So a successful TryGetValue() does not mean that the class exists:
+/// always check the value for NULL. <br/>
+/// Adding a class with TryAdd() does not replace a NULL entry; use AddOrUpdate() or the indexer for that.
+/// </remarks>
 public function GetCacheClassesOurAssemblies() as ConcurrentDictionary<string, Type>
     return OOPHelpers.cacheClassesOurAssemblies

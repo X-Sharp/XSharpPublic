@@ -48,7 +48,7 @@ FUNCTION Descending( uIndex, uArea) AS USUAL CLIPPER
 [FoxProFunction("FIELD", FoxFunctionCategory.CursorAndTable, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION Field( uField , uArea, nFlag) AS STRING CLIPPER
     LOCAL nInfo as LONG
-    @@Default(@nFlag, 0)
+    Default( REF nFlag, 0)
     IF nFlag == 1
         nInfo := DBS_CAPTION
     ELSE
@@ -288,7 +288,7 @@ FUNCTION SetFldState(uField, nFieldState, uArea) AS LOGIC CLIPPER
 /// <include file="VFPDocs.xml" path="Runtimefunctions/indexseek/*" />
 [FoxProFunction("INDEXSEEK", FoxFunctionCategory.Database, FoxEngine.WorkArea, FoxFunctionStatus.Full, FoxCriticality.High)];
 FUNCTION IndexSeek( eExpression , lMovePointer , uArea, uIndex) AS LOGIC CLIPPER
-    @@Default(@lMovePointer, FALSE)
+    Default(REF lMovePointer, FALSE)
 
     LOCAL nArea := _AreaFromParam(uArea) AS DWORD
     IF nArea == 0
@@ -349,7 +349,7 @@ INTERNAL FUNCTION _AreaFromParam(uArea AS USUAL) AS DWORD
     IF IsNil(uArea)
         RETURN RuntimeState.CurrentWorkarea
     ELSEIF IsString(uArea)
-        RETURN RuntimeState.Workareas.FindAlias((STRING) uArea)
+        RETURN RuntimeState.Workareas:FindAlias((STRING) uArea)
     ELSEIF IsNumeric(uArea)
         RETURN (DWORD) uArea
     ENDIF

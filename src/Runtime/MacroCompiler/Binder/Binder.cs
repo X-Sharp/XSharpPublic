@@ -62,6 +62,9 @@ namespace XSharp.MacroCompiler
         internal TypeSymbol ObjectType;
         internal Type DelegateType;
         internal List<XSharp.Codeblock> NestedCodeblocks;
+        internal Binder Parent = null;
+        internal List<CapturedLocalSymbol> Captures = null;
+        internal ArgumentSymbol ClosureEnv = null;
         internal bool CreatesAutoVars = false;
         internal Stack<Stmt> StmtStack = new Stack<Stmt>();
         internal Stack<int> ScopeStack = new Stack<int>();
@@ -414,6 +417,12 @@ namespace XSharp.MacroCompiler
                 if (v != null)
                     return v;
             }
+            if (Parent != null)
+            {
+                Symbol v = CaptureLocal(name);
+                if (v != null)
+                    return v;
+            }
             {
                 Symbol v = LookupName(name);
                 if (v != null)
@@ -421,6 +430,46 @@ namespace XSharp.MacroCompiler
             }
             return null;
         }
+
+        // Make a local of an enclosing macro or codeblock visible inside this nested codeblock
+        internal CapturedLocalSymbol CaptureLocal(string name)
+        {
+            var outer = Parent.FindCapturableLocal(name);
+            if (outer == null)
+                return null;
+            if (Captures == null)
+            {
+                // A capturing codeblock always gets the signature (Codeblock[] nested, object[] env, T[] args)
+                if (NestedCodeblocks == null)
+                {
+                    NestedCodeblocks = new List<XSharp.Codeblock>();
+                    InsertParam(XSharpSpecialNames.NestedCodeblockArgs, ArrayOf(Compilation.Get(WellKnownTypes.XSharp_Codeblock)), 0);
+                }
+                Captures = new List<CapturedLocalSymbol>();
+                ClosureEnv = InsertParam(XSharpSpecialNames.ClosureEnv, ArrayOf(Compilation.Get(NativeType.Object)), 1);
+            }
+            var captured = new CapturedLocalSymbol(outer, ClosureEnv, Captures.Count);
+            Captures.Add(captured);
+            LocalCache.Add(name, captured);
+            return captured;
+        }
+
+        LocalSymbol FindCapturableLocal(string name)
+        {
+            if (LocalCache.TryGetValue(name, out var s))
+            {
+                // Memvars, fields, constants and arguments keep their existing (late bound) resolution
+                if (s is LocalSymbol l && l.CanBeCaptured)
+                {
+                    l.IsCaptured = true;
+                    return l;
+                }
+                return null;
+            }
+            return Parent != null ? CaptureLocal(name) : null;
+        }
+
+        internal bool HasCaptures { get => Captures != null; }
 
         internal Symbol Lookup(Symbol decl, string name)
         {
@@ -528,14 +577,14 @@ namespace XSharp.MacroCompiler
         }
         internal ArgumentSymbol AddParam(string name, TypeSymbol type, bool first = false)
         {
-            var arg = new ArgumentSymbol(name, type, first ? 0 : Args.Count);
-            if (first)
-            {
-                for (int i = 0; i < Args.Count; i++) Args[i].Index += 1;
-                Args.Insert(0,arg);
-            }
-            else
-                Args.Add(arg);
+            return InsertParam(name, type, first ? 0 : Args.Count);
+        }
+
+        internal ArgumentSymbol InsertParam(string name, TypeSymbol type, int position)
+        {
+            var arg = new ArgumentSymbol(name, type, position);
+            for (int i = position; i < Args.Count; i++) Args[i].Index += 1;
+            Args.Insert(position, arg);
             if (!string.IsNullOrEmpty(name))
             {
                 if (LocalCache.ContainsKey(name))
@@ -707,6 +756,9 @@ namespace XSharp.MacroCompiler
             }
         }
 
+        // Open delegate of a codeblock that captures locals; it is bound to a closure environment per evaluation
+        internal delegate T ClosureEvalDelegate(XSharp.Codeblock[] cbs, object[] env, params T[] args);
+
         internal U Bind<U>(U macro) where U : Node
         {
             Bind(ref macro);
@@ -725,7 +777,9 @@ namespace XSharp.MacroCompiler
 
         protected virtual DynamicMethod CreateMethod(string source)
         {
-            if (HasNestedCodeblocks)
+            if (HasCaptures)
+                return new DynamicMethod(source, typeof(T), new Type[] { typeof(XSharp.Codeblock[]), typeof(object[]), typeof(T[]) });
+            else if (HasNestedCodeblocks)
                 return new DynamicMethod(source, typeof(T), new Type[] { typeof(XSharp.Codeblock[]), typeof(T[]) });
             else
                 return new DynamicMethod(source, typeof(T), new Type[] { typeof(T[]) });
@@ -733,7 +787,9 @@ namespace XSharp.MacroCompiler
 
         protected virtual Delegate CreateDelegate(DynamicMethod dm)
         {
-            if (HasNestedCodeblocks)
+            if (HasCaptures)
+                return dm.CreateDelegate(typeof(ClosureEvalDelegate));
+            else if (HasNestedCodeblocks)
             {
                 var eval_dlg = dm.CreateDelegate(typeof(NestedWrapper.EvalDelegate)) as NestedWrapper.EvalDelegate;
                 return Delegate.CreateDelegate(DelegateType, new NestedWrapper(NestedCodeblocks.ToArray(), eval_dlg), "Eval", false);

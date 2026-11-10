@@ -124,7 +124,7 @@ class LanguagePropertyPagePanel
     const CMDCaption := "Extra Command Line Options" as string
     const AZCaption := "Use Zero Based Arrays" as string
     const CSCaption := "Case Sensitive" as string
-    const INSCaption := "Enable Implicit Namespace lookup" as string
+    const INSCaption := "Implicit Namespace lookup" as string
     const LBCaption := "Allow Late Binding" as string
     const NamedArgCaption := "Allow Named Arguments" as string
     const NSCaption := "Prefix classes with default Namespace" as string
@@ -137,9 +137,9 @@ class LanguagePropertyPagePanel
     const EnforceOverrideCaption := "Enforce VIRTUAL / OVERRIDE" as string
     const allowDotCaption := "Allow DOT for instance members" as string
     const allowOldStyleCaption := "Allow Old Style assignments" as string
-    const CSDescription := "Enable/Disable case sensitivity (/cs)" as string
+    const CSDescription := "Enable Case sensitivity (/cs)" as string
     const AZDescription := "Use Zero Based Arrays (/az)" as string
-    const INSDescription := "Enable the implicit lookup of classes defined in assemblies with an Implicit Namespace attribute (/ins)" as string
+    const INSDescription := "The implicit lookup of classes defined in assemblies with an Implicit Namespace attribute (/ins)" as string
     const LBDescription := "Allow property access and method calls on expressions of type OBJECT and USUAL (/lb)" as string
     const NamedArgDescription := "Allow named arguments (Default = TRUE for the Core dialect and FALSE for the other dialects). Changing the dialect may also automatically change this setting. (/namedargs)" as string
     const NSDescription := "Prefix all classes that do not have a namespace prefix and are not in a begin namespace ... end namespace block with the namespace of the assembly (/ns:<Namespace>)" as string

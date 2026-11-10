@@ -1,0 +1,28 @@
+<platformui:DialogWindow x:Class="XSharp.LanguageService.Rename.RenameDialog"
+        x:ClassModifier="internal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:platformui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+        xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
+        toolkit:Themes.UseVsTheme="True"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        HasMinimizeButton="False"
+        HasMaximizeButton="False"
+        ShowInTaskbar="False">
+    <StackPanel Margin="12" MinWidth="360">
+        <Label Content="_New name:" Target="{Binding ElementName=_name}" Padding="0,0,0,4"/>
+        <TextBox x:Name="_name" Margin="0,0,0,10"/>
+        <CheckBox x:Name="_comments" Content="Include _comments" Margin="0,2"/>
+        <CheckBox x:Name="_strings" Content="Include _strings" Margin="0,2"/>
+        <CheckBox x:Name="_lateBound" Margin="0,2"/>
+        <CheckBox x:Name="_preview" Content="_Preview changes" Margin="0,2"/>
+        <CheckBox x:Name="_renameFile" Content="Rename _file" Margin="0,2"/>
+        <TextBlock x:Name="_status" Text="Searching..." Margin="0,8" TextWrapping="Wrap" MaxWidth="420"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="_apply" Content="_Apply" IsDefault="True" IsEnabled="False" MinWidth="75" Margin="0,0,8,0"/>
+            <Button Content="Cancel" IsCancel="True" MinWidth="75"/>
+        </StackPanel>
+    </StackPanel>
+</platformui:DialogWindow>

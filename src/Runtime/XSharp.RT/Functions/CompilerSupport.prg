@@ -20,7 +20,12 @@ FUNCTION  __StringEquals(strLHS AS STRING, strRHS AS STRING) AS LOGIC
     IF Object.ReferenceEquals(strLHS, strRHS)
         IsEqual := TRUE
     ELSEIF RuntimeState.Exact
-        IsEqual := String.Equals(strLHS , strRHS)
+        IF RuntimeState.Dialect == XSharpDialect.FoxPro
+            // VFP pads the shorter string with blanks, so "L3 " = "L3" is TRUE with SET EXACT ON
+            IsEqual := ExactStringHelpers.EqualsIgnoringTrailingBlanks(strLHS, strRHS)
+        ELSE
+            IsEqual := String.Equals(strLHS , strRHS)
+        ENDIF
     ELSEIF strLHS != NULL .AND. strRHS != NULL
         lengthRHS := strRHS:Length
         IF lengthRHS == 0
@@ -41,7 +46,11 @@ FUNCTION  __StringNotEquals(strLHS AS STRING, strRHS AS STRING) AS LOGIC
     IF Object.ReferenceEquals(strLHS, strRHS)
         notEquals := FALSE
     ELSEIF RuntimeState.Exact
-        notEquals := !String.Equals(strLHS , strRHS)
+        IF RuntimeState.Dialect == XSharpDialect.FoxPro
+            notEquals := !ExactStringHelpers.EqualsIgnoringTrailingBlanks(strLHS, strRHS)
+        ELSE
+            notEquals := !String.Equals(strLHS , strRHS)
+        ENDIF
     ELSEIF strLHS != NULL .AND. strRHS != NULL
         // shortcut: chec first char
         lengthRHS := strRHS:Length
@@ -273,13 +282,6 @@ FUNCTION __FieldSetWa2(wa AS STRING, fldName AS STRING, uValue AS USUAL,lAllowUn
         catch as Exception
             nop
         end try
-        err := Error{EG_NOVAR, nameof(fldName), ErrString(EG_NOVAR) + ": " + fldName}
-        err:FuncSym := __function__
-        err:ArgNum := 2
-        err:Args := <OBJECT>{wa, fldName}
-        THROW err
-
-
 
     ENDIF
     if (lAllowUndeclared)
@@ -534,3 +536,30 @@ FUNCTION __UsualEnumerator(u IN USUAL) AS ARRAY
     VAR error := __Usual.ConversionError("ARRAY",TYPEOF(ARRAY),u)
     error:Description := "The usual value cannot be enumerated because it does not contain an array"
     THROW error
+
+
+/// <summary>String comparison that follows the VFP rules for SET EXACT ON.</summary>
+INTERNAL STATIC CLASS ExactStringHelpers
+
+    // VFP pads the shorter string with blanks before comparing, so the trailing blanks
+    // of both strings do not count. Only blanks: a Chr(0) or a tab is a character.
+    INTERNAL STATIC METHOD EqualsIgnoringTrailingBlanks(strLHS AS STRING, strRHS AS STRING) AS LOGIC
+        LOCAL nLHS, nRHS AS INT
+        IF strLHS == NULL .OR. strRHS == NULL
+            RETURN strLHS == NULL .AND. strRHS == NULL
+        ENDIF
+        nLHS := LengthWithoutTrailingBlanks(strLHS)
+        nRHS := LengthWithoutTrailingBlanks(strRHS)
+        RETURN nLHS == nRHS .AND. String.CompareOrdinal(strLHS, 0, strRHS, 0, nLHS) == 0
+    END METHOD
+
+    INTERNAL STATIC METHOD LengthWithoutTrailingBlanks(strValue AS STRING) AS INT
+        LOCAL nLength AS INT
+        nLength := strValue:Length
+        DO WHILE nLength > 0 .AND. strValue[nLength - 1] == c' '
+            nLength--
+        ENDDO
+        RETURN nLength
+    END METHOD
+
+END CLASS

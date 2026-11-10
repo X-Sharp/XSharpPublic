@@ -9,7 +9,6 @@
  *
  * ***************************************************************************/
 
-using Community.VisualStudio.Toolkit;
 
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -30,14 +29,14 @@ namespace Microsoft.VisualStudio.Project
     public abstract class ProjectFactory : Microsoft.VisualStudio.Shell.Flavor.FlavoredProjectFactoryBase
     {
         #region fields
-        private Microsoft.VisualStudio.Shell.Package package;
-        private System.IServiceProvider site;
+        private Shell.Package package;
+        private IServiceProvider site;
         private static readonly IVsTaskSchedulerService taskSchedulerService  ;
 
         static ProjectFactory()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            taskSchedulerService= Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SVsTaskSchedulerService)) as IVsTaskSchedulerService;
+            taskSchedulerService = AsyncProjectPackage.GetGlobalService(typeof(SVsTaskSchedulerService)) as IVsTaskSchedulerService;
         }
         /// <summary>
         /// The msbuild engine that we are going to use.
@@ -55,7 +54,7 @@ namespace Microsoft.VisualStudio.Project
         {
             get
             {
-                return this.package;
+                return this.Package1;
             }
         }
 
@@ -92,12 +91,14 @@ namespace Microsoft.VisualStudio.Project
                 this.buildProject = value;
             }
         }
+
+        public Shell.Package Package1 { get => package; set => package = value; }
         #endregion
 
         #region ctor
         protected ProjectFactory(Microsoft.VisualStudio.Shell.Package package)
         {
-            this.package = package;
+            this.Package1 = package;
             this.site = package;
 
             // Please be aware that this methods needs that ServiceProvider is valid, thus the ordering of calls in the ctor matters.
@@ -107,7 +108,6 @@ namespace Microsoft.VisualStudio.Project
 
         #region abstract methods
         protected abstract ProjectNode CreateProject();
-        protected abstract ProjectNode CreateSdkProject();
         #endregion
 
         #region overriden methods
@@ -169,20 +169,13 @@ namespace Microsoft.VisualStudio.Project
             // Please be very carefull what is initialized here on the ProjectNode. Normally this should only instantiate and return a project node.
             // The reason why one should very carefully add state to the project node here is that at this point the aggregation has not yet been created and anything that would cause a CCW for the project to be created would cause the aggregation to fail
             // Our reasoning is that there is no other place where state on the project node can be set that is known by the Factory and has to execute before the Load method.
-            bool IsSdkProject = !String.IsNullOrEmpty(this.buildProject.Xml.Sdk);
-            ProjectNode node;
-            if (IsSdkProject)
-            {
-                node = this.CreateSdkProject();
-            }
-            else
-            {
-                node = this.CreateProject();
-            }
+            // SDK-style projects are rejected before this point (XSharpProjectFactory.CreateProject): they are
+            // loaded by the CPS project system.
+            ProjectNode node = this.CreateProject();
             Utilities.CheckNotNull(node, "The project failed to be created");
             node.BuildEngine = this.buildEngine;
             node.BuildProject = this.buildProject;
-            node.Package = this.package as AsyncProjectPackage;
+            node.Package = this.Package1 as AsyncProjectPackage;
             node.InitializeGlobals();
             return node;
         }
@@ -216,7 +209,7 @@ namespace Microsoft.VisualStudio.Project
         #region helpers
         private IProjectEvents GetProjectEventsProvider()
         {
-            AsyncProjectPackage projectPackage = this.package as AsyncProjectPackage;
+            AsyncProjectPackage projectPackage = this.Package1 as AsyncProjectPackage;
             Debug.Assert(projectPackage != null, "Package not inherited from framework");
             if(projectPackage != null)
             {

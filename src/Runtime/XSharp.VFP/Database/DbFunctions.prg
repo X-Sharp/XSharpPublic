@@ -152,9 +152,9 @@ INTERNAL FUNCTION __DbFieldListHelper(aFieldList AS ARRAY, cIncludedFields AS ST
         next
     ENDIF
     lAll := ALen(aFieldList) == 0 .and. String.IsNullOrEmpty(cIncludedFields)
-    LOCAL fCount as DWORD
-    fCount := FCount()
-    FOR VAR nFld := 1u to fCount
+    LOCAL ffCount as DWORD
+    ffCount := FCount()
+    FOR VAR nFld := 1u to ffCount
         LOCAL lInclude AS LOGIC
         LOCAL oVar := NULL AS OBJECT
         VoDb.FieldInfo( DBS_STRUCT, nFld, REF oVar)
@@ -507,7 +507,7 @@ FUNCTION DbUseAreaFox(uArea, cDataFile, cAlias, lShared, lReadOnly, ;
         endif
         // locate the area with the same filename
         for var i := 1u to Workareas.MaxWorkareas
-            var area := RuntimeState.DataSession.GetRDD(i)
+            var area := RuntimeState.DataSession:GetRDD(i)
             if area is Workarea var wa .and. String.Compare(wa:FileName, cDataFile, TRUE) == 0
                 lShared := wa:Shared
                 lReadOnly := wa:ReadOnly
@@ -518,7 +518,7 @@ FUNCTION DbUseAreaFox(uArea, cDataFile, cAlias, lShared, lReadOnly, ;
     if IsNil(cAlias)
         cAlias := System.IO.Path.GetFileNameWithoutExtension( cDataFile ):ToUpper()
         if VoDbGetSelect(cAlias) > 0
-            cAlias := Chr(64+RuntimeState.DataSession.CurrentWorkareaNO)
+            cAlias := Chr(64+RuntimeState.DataSession:CurrentWorkareaNO)
             DO WHILE VoDbGetSelect(cAlias) > 0
                 cAlias := Chr(Asc(cAlias)+1)
             ENDDO

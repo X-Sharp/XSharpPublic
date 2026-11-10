@@ -141,7 +141,7 @@ INTERNAL STATIC CLASS GuiWin32
     STATIC INTERNAL METHOD ClientToScreen(hWnd AS IntPtr, oPoint REF WINPOINT) AS LOGIC STRICT
 
     [DllImport("User32.dll")];
-    STATIC METHOD LoadAccelerators( hInstance AS IntPtr, lpTableName AS PSZ) AS IntPtr
+    STATIC METHOD LoadAccelerators( hInstance AS IntPtr, lpTableName AS IntPtr) AS IntPtr
 
     [DllImport("User32.dll")];
     STATIC INTERNAL METHOD CopyAcceleratorTable( hAccelSrc AS IntPtr, lpAccelDst AS _winAccel,	cAccelEntries AS INT) AS INT
@@ -212,7 +212,7 @@ INTERNAL STATIC CLASS GuiWin32
 
 
     [DllImport("User32.dll", EntryPoint := "LoadImageA")];
-    STATIC METHOD LoadImage(hinst AS IntPtr, lpszName AS PSZ, uType AS DWORD, cxDesired AS INT, cydesired AS INT, fuLoad AS DWORD) AS IntPtr PASCAL
+    STATIC METHOD LoadImage(hinst AS IntPtr, lpszName AS IntPtr, uType AS DWORD, cxDesired AS INT, cydesired AS INT, fuLoad AS DWORD) AS IntPtr PASCAL
 
 
     [DllImport("User32.dll")];

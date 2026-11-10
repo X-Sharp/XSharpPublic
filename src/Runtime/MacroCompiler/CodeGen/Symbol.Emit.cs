@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 using XSharp.RDD;
 
 namespace XSharp.MacroCompiler
@@ -33,14 +34,71 @@ namespace XSharp.MacroCompiler
     }
     internal partial class LocalSymbol : TypedSymbol
     {
-        internal override void EmitGet(ILGenerator ilg) { ilg.Emit(Index < 256 ? OpCodes.Ldloc_S : OpCodes.Ldloc, Index); }
-        internal override void EmitSet(ILGenerator ilg) { ilg.Emit(Index < 256 ? OpCodes.Stloc_S : OpCodes.Stloc, Index); }
-        internal override void EmitAddr(ILGenerator ilg) { ilg.Emit(Index < 256 ? OpCodes.Ldloca_S : OpCodes.Ldloca, Index); }
+        internal override void EmitGet(ILGenerator ilg)
+        {
+            if (IsCaptured)
+            {
+                EmitBox(ilg);
+                ilg.Emit(OpCodes.Ldfld, BoxValue);
+            }
+            else
+                ilg.Emit(Index < 256 ? OpCodes.Ldloc_S : OpCodes.Ldloc, Index);
+        }
+        internal override void EmitSet(ILGenerator ilg)
+        {
+            if (IsCaptured)
+            {
+                var v = ilg.DeclareLocal(Type.Type);
+                ilg.Emit(OpCodes.Stloc, v);
+                EmitBox(ilg);
+                ilg.Emit(OpCodes.Ldloc, v);
+                ilg.Emit(OpCodes.Stfld, BoxValue);
+            }
+            else
+                ilg.Emit(Index < 256 ? OpCodes.Stloc_S : OpCodes.Stloc, Index);
+        }
+        internal override void EmitAddr(ILGenerator ilg)
+        {
+            if (IsCaptured)
+            {
+                EmitBox(ilg);
+                ilg.Emit(OpCodes.Ldflda, BoxValue);
+            }
+            else
+                ilg.Emit(Index < 256 ? OpCodes.Ldloca_S : OpCodes.Ldloca, Index);
+        }
         internal virtual void Declare(ILGenerator ilg)
         {
-            var lb = ilg.DeclareLocal(Type.Type);
-            Index = lb.LocalIndex;
+            if (IsCaptured)
+            {
+                var lb = ilg.DeclareLocal(BoxType);
+                Index = lb.LocalIndex;
+                ilg.Emit(OpCodes.Newobj, BoxType.GetConstructor(System.Type.EmptyTypes));
+                ilg.Emit(OpCodes.Stloc, lb);
+            }
+            else
+            {
+                var lb = ilg.DeclareLocal(Type.Type);
+                Index = lb.LocalIndex;
+            }
         }
+        // Pushes the StrongBox<T> that holds the value of a captured local
+        internal virtual void EmitBox(ILGenerator ilg) { ilg.Emit(OpCodes.Ldloc, (short)Index); }
+
+        System.Type _boxType = null;
+        internal System.Type BoxType =>_boxType ?? (_boxType = typeof(StrongBox<>).MakeGenericType(Type.Type));
+        internal FieldInfo BoxValue => BoxType.GetField(nameof(StrongBox<object>.Value));
+    }
+    internal partial class CapturedLocalSymbol : LocalSymbol
+    {
+        internal override void EmitBox(ILGenerator ilg)
+        {
+            Env.EmitGet(ilg);
+            ilg.Emit(OpCodes.Ldc_I4, Index);
+            ilg.Emit(OpCodes.Ldelem_Ref);
+            ilg.Emit(OpCodes.Castclass, BoxType);
+        }
+        internal override void Declare(ILGenerator ilg) { }
     }
     internal partial class ArgumentSymbol : LocalSymbol
     {

@@ -18,11 +18,11 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Windows.Forms;
+
 using Microsoft.VisualStudio.Designer.Interfaces;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using static Microsoft.VisualStudio.VSConstants;
 
 namespace Microsoft.VisualStudio.Project
 {
@@ -148,7 +148,7 @@ namespace Microsoft.VisualStudio.Project
             //{
             //    string property;
             //    //bool found = this.ProjectMgr.BuildProject.GlobalProperties.TryGetValue(propertyName, out property);
-                
+
             //    if(found)
             //    {
             //        return property;
@@ -306,28 +306,6 @@ namespace Microsoft.VisualStudio.Project
 #endif
                 UpdateObjects();
             }
-            RegisterProjectEvents();
-        }
-        //private bool isRegistered = false;
-        private void RegisterProjectEvents()
-        {
-            //if (this.project != null && ! isRegistered)
-            //{
-            //    this.project.OnProjectPropertyChanged += Project_OnProjectPropertyChanged;
-            //    isRegistered = true;
-            //}
-        }
-        private void UnRegisterProjectEvents()
-        {
-            //if (this.project != null)
-            //{
-            //    this.project.OnProjectPropertyChanged -= Project_OnProjectPropertyChanged;
-            //}
-            //isRegistered = false;
-        }
-        protected virtual void Project_OnProjectPropertyChanged(object sender, ProjectPropertyChangedArgs e)
-        {
-
         }
 
 
@@ -348,7 +326,6 @@ namespace Microsoft.VisualStudio.Project
                 this.panel = null;
             }
             this.active = false;
-            UnRegisterProjectEvents();
         }
 
         public virtual void GetPageInfo(PROPPAGEINFO[] arrInfo)
@@ -412,9 +389,7 @@ namespace Microsoft.VisualStudio.Project
 
                         if (this.project == null || (this.project != pconfig.ProjectMgr))
                         {
-                            UnRegisterProjectEvents();
                             this.project = config.ProjectMgr;
-                            RegisterProjectEvents();
                         }
 
                         configs.Add(config);
@@ -427,9 +402,7 @@ namespace Microsoft.VisualStudio.Project
                 {
                     if (this.project == null || (this.project != props.Node.ProjectMgr))
                     {
-                        UnRegisterProjectEvents();
                         this.project = props.Node.ProjectMgr;
-                        RegisterProjectEvents();
                     }
 
                     var configsMap = new Dictionary<string, IVsProjectCfg2>();

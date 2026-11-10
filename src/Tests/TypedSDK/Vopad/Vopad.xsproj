@@ -7,7 +7,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Vopad</RootNamespace>
     <AssemblyName>Vopad</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <Name>Vopad</Name>
     <Nologo>true</Nologo>
     <GenerateFullPaths>true</GenerateFullPaths>
@@ -40,7 +40,6 @@
     <VO14>false</VO14>
     <VO15>true</VO15>
     <VO16>true</VO16>
-    <XSharpProjectversion>2.6.0.0</XSharpProjectversion>
     <Nostandarddefs>false</Nostandarddefs>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" Label="Configuration">

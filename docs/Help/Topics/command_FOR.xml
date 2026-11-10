@@ -19,7 +19,7 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Executes a block of statements a specified number of times.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Code with box">FOR [&lt;idCounter&gt; := &lt;nStart&gt; | VAR &lt;idCounter&gt; := &lt;nStart&gt; | LOCAL &lt;idCounter&gt; := &lt;nStart&gt; AS &lt;idType&gt; ] [TO | UPTO | DOWNTO] &lt;nEnd&gt; [STEP &lt;nDelta&gt;]<br/> &#160; &lt;Statements&gt;...<br/> &#160; [EXIT]<br/> &#160; &lt;Statements&gt;...<br/> &#160; [LOOP]<br/>NEXT</para>
+    <para styleclass="Code with box">FOR &lt;idCounter&gt; := &lt;nStart&gt; | [LOCAL] IMPLIED &lt;idCounter&gt; := &lt;nStart&gt; | VAR &lt;idCounter&gt; := &lt;nStart&gt; | LOCAL &lt;idCounter&gt; := &lt;nStart&gt; [AS &lt;idType&gt;] TO | UPTO | DOWNTO &lt;nEnd&gt; [STEP &lt;nDelta&gt;]<br/> &#160; &lt;Statements&gt;...<br/> &#160; [EXIT]<br/> &#160; &lt;Statements&gt;...<br/> &#160; [LOOP]<br/>NEXT | ENDFOR</para>
     <para styleclass="Heading2"><text style="color:#0000ff;">Note</text></para>
     <para styleclass="Normal">In the FoxPro and Xbase++ dialect, ENDFOR is allowed as alternative for NEXT</para>
     <para styleclass="Heading1">Arguments</para>

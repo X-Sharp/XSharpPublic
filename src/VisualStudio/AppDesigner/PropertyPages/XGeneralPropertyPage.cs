@@ -6,20 +6,15 @@
 
 using Community.VisualStudio.Toolkit;
 
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Project;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-
-using VsMenus = Microsoft.VisualStudio.Project.VsMenus;
 
 using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
 using XSharp.Settings;
-
-using XSharpModel;
 namespace XSharp.Project
 {
     /// <summary>
@@ -79,11 +74,11 @@ namespace XSharp.Project
                     value = (string)converterDialect.ConvertTo(dialect, typeof(string));
                     break;
 
-                case XSharpProjectFileConstants.TargetFramework when IsSdkProject:
-                    if (! value.Contains("-"))
-                        value = ConvertFrameworkName(value);
-                    break;
-                case XSharpProjectFileConstants.TargetFrameworkVersion when !IsSdkProject:
+                //case XSharpProjectFileConstants.TargetFramework //when IsSdkProject:
+                //    //if (! value.Contains("-"))
+                        //value = ConvertFrameworkName(value);
+                //    break;
+                case XSharpProjectFileConstants.TargetFrameworkVersion: //when !IsSdkProject:
                     value = ConvertFrameworkName(value);
                     break;
                 case XSharpProjectFileConstants.StartupObject when string.IsNullOrEmpty(value):
@@ -94,42 +89,15 @@ namespace XSharp.Project
             return value;
         }
 
-        internal string ConvertRuntimeIdentifier(string value)
-        {
-            try
-            {
-                var converter = new RuntimeIdentifierConverter(ProjectMgr.BuildProject);
-                value = (string) converter.ConvertFrom(value);
-            }
-            catch
-            {
-                ;
-            }
-            return value;
-        }
         internal string ConvertFrameworkName(string value)
         {
             try
             {
-                if (IsSdkProject)
-                {
-                    var converterSdkFramework = new SdkFrameworkNameConverter(ProjectMgr.BuildProject);
-                    var sdkframework = (SdkFrameworkName)converterSdkFramework.ConvertFrom(value);
-                    if (sdkframework != null)
-                    {
-                        if (value == sdkframework.Value)
-                            value = sdkframework.DisplayName;
-                        else
-                            value = sdkframework.Value;
-                    }
-                }
-                else
-                {
-                    var converterFramework = new FrameworkNameConverter();
-                    if (!value.StartsWith(".NETFramework"))
-                        value = ".NETFramework,Version =" + value;
-                    value = converterFramework.ConvertFrom(value).ToString();
-                }
+
+                var converterFramework = new FrameworkNameConverter();
+                if (!value.StartsWith(".NETFramework"))
+                    value = ".NETFramework,Version =" + value;
+                value = converterFramework.ConvertFrom(value).ToString();
             }
             catch
             {
@@ -188,9 +156,9 @@ namespace XSharp.Project
                     }
                 }
             }
-            else if (propertyName == XSharpProjectFileConstants.TargetFramework)
+            else if (propertyName == ProjectFileConstants.TargetFramework)
             {
-                oldValue = base.GetProperty(XSharpProjectFileConstants.TargetFramework);
+                oldValue = base.GetProperty(ProjectFileConstants.TargetFramework);
                 if (value.StartsWith(" ") || value.Contains(" "))
                 {
                     value = ConvertFrameworkName(value);
@@ -222,8 +190,7 @@ namespace XSharp.Project
 
             if (changed)
             {
-                if (propertyName == XSharpProjectFileConstants.TargetFramework ||
-				    propertyName == XSharpProjectFileConstants.TargetFrameworkVersion)
+                if (propertyName == ProjectFileConstants.TargetFrameworkVersion)
                 {
                     string message = "Changing the target framework requires that the current project be closed and then reopened.\n"
                      + "Any unsaved changes within the project will be automatically saved.\n\n"
@@ -231,16 +198,11 @@ namespace XSharp.Project
                      + "Are you sure you want to change the Target Framework for this project?";
                     if (!VS.MessageBox.ShowConfirm(message))
                     {
-                        // For WinForms panels: reset the combo back to the old display value.
-                        // For XAML hosts (SDK projects): the ViewModel's TargetFramework observable
-                        // property handles UI rollback automatically — no manual reset is needed.
-                        var genPanel = PropertyPagePanel as XGeneralPropertyPagePanel;
-                        genPanel?.resetFramework(oldValue);
-                        return;
+                         return;
                     }
 
                     base.SetProperty(propertyName, value);
-                    ProjectReloader.Reload(newValue, this.ProjectMgr, IsSdkProject);
+                    ProjectReloader.Reload(newValue, this.ProjectMgr, false /*IsSdkProject*/);
                 }
                 else
                 {
@@ -248,7 +210,7 @@ namespace XSharp.Project
                 }
             }
         }
-
+		private XGeneralPropertyPageXamlHost panel;
         /// <summary>
         /// Creates the controls that constitute the property page. This should be safe to re-entrancy.
         /// </summary>
@@ -259,12 +221,8 @@ namespace XSharp.Project
         /// </returns>
         protected override IPropertyPagePanel CreatePropertyPagePanel()
         {
-#if DEV17
-            if (IsSdkProject)
-                return new XGeneralPropertyPageXamlHost(this);
-#endif
-
-            return new XGeneralPropertyPagePanelWinForms(this);
+            panel = new XGeneralPropertyPageXamlHost(this);
+			return panel;
         }
     }
     internal static class ProjectReloader

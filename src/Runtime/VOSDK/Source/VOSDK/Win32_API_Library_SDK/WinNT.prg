@@ -1093,7 +1093,7 @@ FUNCTION SORTVERSIONFROMLCID(lcid AS DWORD) AS WORD
 
 FUNCTION MAKESORTLCID(lgid AS DWORD, srtid AS DWORD, ver AS DWORD) AS DWORD
    ver := _AND(ver , NLS_VALID_LOCALE_MASK)
-   RETURN (WORD) _OR((ver << 20) ,  MAKELCID((WORD) lgid, (WORD) srtid))
+   RETURN (WORD) _OR((ver << 20) ,  MyMAKELCID((WORD) lgid, (WORD) srtid))
 //
 //  Default System and User IDs for language and locale.
 //

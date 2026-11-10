@@ -778,21 +778,25 @@ namespace Microsoft.CodeAnalysis.CSharp
                         if (expr.Kind != BoundKind.BadExpression)
                         {
                             newDiag.Clear();
-                            foreach (var error in diagnostics.DiagnosticBag?.AsEnumerable())
+                            // diagnostics has no DiagnosticBag when a public SemanticModel query binds
+                            if (diagnostics.AccumulatesDiagnostics)
                             {
-                                bool suppress = false;
-                                var loc = error.Location;
-                                if (loc.IsInSource)
+                                foreach (var error in diagnostics.DiagnosticBag.AsEnumerable())
                                 {
-                                    var start = loc.GetLineSpan().StartLinePosition;
-                                    var curLine = expr.Syntax.Location.GetLineSpan().StartLinePosition;
-                                    suppress = (start.Line == curLine.Line && error.Code == (int)ErrorCode.ERR_NoSuchMemberOrExtension);
+                                    bool suppress = false;
+                                    var loc = error.Location;
+                                    if (loc.IsInSource)
+                                    {
+                                        var start = loc.GetLineSpan().StartLinePosition;
+                                        var curLine = expr.Syntax.Location.GetLineSpan().StartLinePosition;
+                                        suppress = (start.Line == curLine.Line && error.Code == (int)ErrorCode.ERR_NoSuchMemberOrExtension);
+                                    }
+                                    if (!suppress)
+                                        newDiag.Add(error);
                                 }
-                                if (!suppress)
-                                    newDiag.Add(error);
+                                diagnostics.Clear();
+                                diagnostics.AddRange(newDiag.DiagnosticBag);
                             }
-                            diagnostics.Clear();
-                            diagnostics.AddRange(newDiag.DiagnosticBag);
                         }
                     }
                 }
@@ -1029,7 +1033,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             }
             var name = node.Identifier.ValueText;
             var useSiteInfo = GetNewCompoundUseSiteInfo(diagnostics);
-            var memvarorfield = name.IndexOf("->") > 0;
+            var memvarorfield = name.IndexOf("->", StringComparison.Ordinal) > 0;
             // no need to look for our special names
             if (!memvarorfield)
             {

@@ -22,17 +22,18 @@ FUNCTION Sys(nSetting, uNewValue, uContextParam3) AS USUAL CLIPPER
 
     CASE 3
         // Legal File Name
-        VAR tempFileName = System.Guid.NewGuid():ToString()
-        retVal := tempFileName:Replace("-", "")
-        retVal := Left(retVal,8)
+        VAR tempFileName := System.Guid.NewGuid():ToString()
+        tempFileName := tempFileName:Replace("-", "")
+        retVal := Left(tempFileName,8)
 
     CASE 5 // Default drive or volume.
-        retVal := GetDefault()
-        IF ( String.IsNullOrEmpty(retVal))
+        var strRet := GetDefault()
+        retVal := strRet
+        IF ( String.IsNullOrEmpty(strRet ))
             retVal := CurDrive() + ":"
         ELSE
             // "SET DEFAULT TO" can contain a Path, get the Drive
-            retVal := ((string) retVal):Substring(0,1) + ":"
+            retVal := ( strRet ):Substring(0,1) + ":"
         ENDIF
 
     CASE 16 // Executing program file name.
@@ -42,17 +43,17 @@ FUNCTION Sys(nSetting, uNewValue, uContextParam3) AS USUAL CLIPPER
         // retVal := path
         VAR level := 1
         // Add one, due to Issue #1704
-        VAR calling = ProcName(level + 1)
+        VAR calling := ProcName(level + 1)
         // Change Colon to Dot, to provide a VFP-Compatible result
-        calling = calling:Replace(":", ".")
+        calling := calling:Replace(":", ".")
         // Remove the static FUNCTIONS class from X#
         IF calling:StartsWith("FUNCTIONS.")
-            calling = calling:Substring(10)
+            calling := calling:Substring(10)
         ENDIF
         // Where ?
-        VAR file = ProcFile(level)
-        retVal := "PROCEDURE " + calling + " " + file
-        retVal := ((string) retVal):ToUpper()
+        VAR file := ProcFile(level)
+        file := "PROCEDURE " + calling + " " + file
+        retVal := file:ToUpper()
 
     CASE 987 // Map Remote Data to ANSI.
         RETURN FALSE
@@ -65,8 +66,8 @@ FUNCTION Sys(nSetting, uNewValue, uContextParam3) AS USUAL CLIPPER
         retVal := strRetVal
 
     CASE 2015 // Returns a unique 10-character procedure name that begins with an underscore followed by a combination of letters and numbers.
-        VAR str := "_" + Sys(3)
-        retVal := Left(str,10)
+        VAR strRet := "_" + Sys(3)
+        retVal := Left(strRet,10)
 
     CASE 2023 // Temporary Path.
         retVal := __GetEnv("TEMP")

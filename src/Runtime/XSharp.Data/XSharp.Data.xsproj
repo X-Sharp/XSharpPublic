@@ -1,101 +1,41 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
-  <Import Project="..\Runtime.props" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Runtime.Sdk.Props" />
   <PropertyGroup>
-    <ProjectGuid>db9ad987-ebd9-4f0c-8604-608a9028585c</ProjectGuid>
     <RootNamespace>XSharp.Data</RootNamespace>
     <AssemblyName>XSharp.Data</AssemblyName>
-    <Name>XSharp.Data</Name>
-    <Dialect>VO</Dialect>
-    <OutputName>XSharp.Data</OutputName>
+    <Dialect>XBaseNet</Dialect>
     <CS>true</CS>
-    <VulcanCompatibleResources>True</VulcanCompatibleResources>
-    <IncludePaths>$(CommonInclude)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
-    <StandardDefs />
-    <StartupObject />
     <EnforceSelf>True</EnforceSelf>
     <Allowdot>false</Allowdot>
+    <TargetFrameworks>net47;net8.0</TargetFrameworks>
+    <NamedArgs>true</NamedArgs>
   </PropertyGroup>
-  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+  </PropertyGroup>
   <ItemGroup>
-    <Compile Include="CursorAdapter.prg" />
-    <Compile Include="DbDataFunctions.prg" />
-    <Compile Include="FoxPro\Enums.prg" />
-    <Compile Include="FoxPro\SQLConnection.prg" />
-    <Compile Include="FoxPro\SQLFunctions.prg" />
-    <Compile Include="FoxPro\SQLReflection.prg" />
-    <Compile Include="FoxPro\SQLStatement.prg" />
-    <Compile Include="FoxPro\SQLSupport.prg" />
-    <Compile Include="Parser\Context.Expression.prg" />
-    <Compile Include="Parser\Context.prg" />
-    <Compile Include="Parser\SQLParser.Expression.prg" />
-    <Compile Include="Parser\SQLParser.prg" />
-    <Compile Include="Parser\Token.prg" />
-    <Compile Include="Parser\TokenType.prg" />
-    <Compile Include="Parser\XbaseLexer.prg" />
-    <Compile Include="Parser\XLexer.prg" />
-    <Compile Include="Parser\XSqlLexer.prg" />
-    <Compile Include="Parser\XTokenList.prg" />
-    <Compile Include="Properties\AssemblyInfo.prg">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="..\..\Common\commonAssemblyInfo.prg">
-      <Link>Properties\commonAssemblyInfo.prg</Link>
-    </Compile>
-    <Compile Include="..\..\Common\constants.prg">
+    <Compile Include="$(Solutiondir)Common\constants.prg">
       <Link>Properties\constants.prg</Link>
     </Compile>
-    <Compile Include="RDD\DbDataColumn.prg" />
-    <Compile Include="RDD\DbDataRow.prg" />
-    <Compile Include="RDD\DbDataSource.prg" />
-    <Compile Include="RDD\DbDataTable.prg" />
-    <Compile Include="RDD\DbField.prg" />
-    <Compile Include="RDD\DbRecord.prg" />
-    <Compile Include="SQL\ISQLFactory.prg" />
-    <Compile Include="SQL\SqlFactoryAbstract.prg" />
-    <Compile Include="SQL\SqlFactoryODBC.prg" />
-    <Compile Include="SQL\SqlFactoryOleDb.prg" />
-    <Compile Include="SQL\SqlFactorySQLServer.prg" />
-    <Compile Include="Win32.prg" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="FoxPro" />
-    <Folder Include="Parser" />
-    <Folder Include="RDD" />
-    <Folder Include="SQL" />
-    <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj">
-      <Name>XSharp.Core</Name>
-      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj">
-      <Name>XSharp.RT</Name>
-      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
-      <Private>True</Private>
-    </ProjectReference>
+    <ProjectReference Include="..\XSharp.Core\XSharp.Core.xsproj" />
+    <ProjectReference Include="..\XSharp.RT\XSharp.RT.xsproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Data.Common">
       <Version>4.3.0</Version>
     </PackageReference>
-    <PackageReference Include="System.Runtime">
-      <Version>4.3.1</Version>
+    <PackageReference Include="System.Data.Odbc">
+      <Version>10.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="System.Data.OleDb">
+      <Version>10.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="System.Data.SqlClient">
+      <Version>4.9.0</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="..\XmlDoc.Props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
 </Project>

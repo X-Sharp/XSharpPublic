@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-02-06T11:58:09.176Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-10-20T13:44:44.885Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>The X# Runtime</title>
   <body>
     <header>
@@ -20,7 +20,7 @@
       <li styleclass="Normal">We want the code to compile in &quot;Safe&quot; mode, and avoid unsafe code except when strictly needed. The biggest problem/challenge here is the PTR type. With a PTR you can access memory directly and read/write from memory, even if you don&apos;t &quot;own&quot; that memory. However, the same PTR type is also used as &quot;unique identifier&quot;, for example in the low level file i/o, and in the GUI classes for Window and Control handles. These PTR values are never used to read or write memory, but are like object references. We have decided to use the .Net IntPtr type for these types of handles. Of course the compiler can transparently convert between PTR and IntPtr.</li>
       <li styleclass="Normal">We want to prove that the X# language is a first class .Net development language, which is why we decided to write the X# runtime in X#. By doing that, we also create a large codebase to test the compiler, making it a win-win situation.</li>
       <li styleclass="Normal">We want the runtime to be thread safe. Each thread has its own &quot;global&quot; state and its own list of open work areas. When a new thread is started, it inherits the state of the main thread, but it not the main thread&apos;s work areas.</li>
-      <li styleclass="Normal">At this moment, the X# Runtime is compiled against .Net Framework 4.6.</li>
+      <li styleclass="Normal">At this moment, the X# Runtime is compiled against .Net Framework 4.7.</li>
     </list>
     <para styleclass="Heading2">Assemblies in the X# Runtime</para>
     <para styleclass="Normal"></para>
@@ -52,7 +52,7 @@
           <para styleclass="Normal">X# Core</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6 / 8.0</para>
+          <para styleclass="Normal">4.7 / 8.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -66,7 +66,7 @@
           <para styleclass="Normal">X# Core</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6 / 8.0</para>
+          <para styleclass="Normal">4.7 / 8.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -80,7 +80,7 @@
           <para styleclass="Normal">X# non - core</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6 / 8.0</para>
+          <para styleclass="Normal">4.7 / 8.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -94,7 +94,7 @@
           <para styleclass="Normal">X# core</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6 / 8.0</para>
+          <para styleclass="Normal">4.7 / 8.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -108,7 +108,7 @@
           <para styleclass="Normal">X# VO and X# Vulcan</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6 / 8.0</para>
+          <para styleclass="Normal">4.7 / 8.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -122,7 +122,7 @@
           <para styleclass="Normal">X# XPP</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6 / 8.0</para>
+          <para styleclass="Normal">4.7 / 8.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -136,7 +136,7 @@
           <para styleclass="Normal">X# FoxPro</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6 / 8.0</para>
+          <para styleclass="Normal">4.7 / 8.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -150,7 +150,7 @@
           <para styleclass="Normal">X# Core</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6 / 8.0</para>
+          <para styleclass="Normal">4.7 / 8.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -164,7 +164,7 @@
           <para styleclass="Normal">X# Core</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6 / 8.0</para>
+          <para styleclass="Normal">4.7 / 8.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -178,7 +178,7 @@
           <para styleclass="Normal">X# Core</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6 / 8.0</para>
+          <para styleclass="Normal">4.7 / 8.0</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -199,7 +199,7 @@
           <para styleclass="Normal">X# VO and X# Vulcan</para>
         </td>
         <td>
-          <para styleclass="Normal">4.6</para>
+          <para styleclass="Normal">4.7</para>
         </td>
       </tr>
     </table></para>

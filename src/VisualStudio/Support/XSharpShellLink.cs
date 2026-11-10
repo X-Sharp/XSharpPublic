@@ -263,6 +263,12 @@ namespace XSharp.Support
                 _missingProjects.Clear();
 
             }
+            // The database is normally opened in OnBeforeOpenSolution. When this package was loaded after that
+            // event (e.g. a solution with only CPS based X# projects), it is still closed here.
+            if (!XSolution.IsOpen && !string.IsNullOrEmpty(solutionName) && File.Exists(solutionName))
+            {
+                XSolution.Open(solutionName);
+            }
             XSolution.AfterOpen();
         }
         private void SolutionEvents_OnAfterBackgroundSolutionLoadComplete()
@@ -438,20 +444,11 @@ namespace XSharp.Support
         {
             Logger.Information("Solution Build Cancelled");
             building = false;
-#if DEV17
-            NuGetSettingsHelper.SetOption("PackageRestoreIsAutomatic", restoreDuringBuild);
-#endif
         }
         bool building;
-#if DEV17
-        bool restoreDuringBuild = false;
-#endif
         private void BuildEvents_SolutionBuildDone(bool result)
         {
             Logger.Information($"Solution Build Done, result {result}");
-#if DEV17
-            NuGetSettingsHelper.SetOption("PackageRestoreIsAutomatic", restoreDuringBuild);
-#endif
             building = false;
 
         }
@@ -460,9 +457,6 @@ namespace XSharp.Support
         {
             Logger.Information("Solution Build Started");
             // Save Nuget Setting
-#if DEV17
-            restoreDuringBuild = NuGetSettingsHelper.GetOption("PackageRestoreIsAutomatic", false);
-#endif
             building = true;
         }
 #endregion

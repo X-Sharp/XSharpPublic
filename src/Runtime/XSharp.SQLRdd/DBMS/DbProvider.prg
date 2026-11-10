@@ -201,6 +201,77 @@ abstract class SqlDbProvider inherit SqlDbObject implements ISqlDbProvider
         return cFunction
     end method
 
+    /// <summary>Escape character used by LikePattern()</summary>
+    public const LikeEscapeChar := c'!' as char
+
+    /// <summary>
+    /// Characters that have a special meaning inside a LIKE pattern of this database.
+    /// The default implementation returns the standard wildcards % and _.
+    /// </summary>
+    virtual property LikeWildcards as string => "%_"
+
+    /// <inheritdoc/>
+    virtual method LikePattern(cPrefix as string) as string
+        // Seek and scope values are literal key prefixes: a value like "[AKTUELL]" or "A_B"
+        // must not be read as a character class or a single character wildcard.
+        var sb := StringBuilder{cPrefix:Length + 4}
+        var lEscaped := false
+        foreach var c in cPrefix
+            if c == LikeEscapeChar .or. SELF:LikeWildcards:IndexOf(c) >= 0
+                sb:Append(LikeEscapeChar)
+                lEscaped := true
+            endif
+            sb:Append(c)
+        next
+        sb:Append('%')
+        var cPattern := Functions.XsValueToSqlValue(sb:ToString())
+        if lEscaped
+            cPattern += " escape '" + LikeEscapeChar:ToString() + "'"
+        endif
+        return cPattern
+    end method
+
+    /// <summary>
+    /// A date without a time of day as a SQL literal that compares exactly like the stored value, or
+    /// NULL when there is no such literal (the RDD then reads the value with a subquery).
+    /// The default implementation returns NULL: how a string converts to a date depends on the
+    /// database and the settings of the session.
+    /// </summary>
+    virtual method DateLiteral(dValue as DateTime) as string
+        return null
+    end method
+
+    /// <summary>
+    /// Appended to a query of the RDD whose condition has OR, LIKE or range terms (the keyset condition
+    /// of a page, a soft seek, a scope), on a table with at least RangeQueryHintMinRows rows. The default
+    /// implementation returns an empty string.
+    /// </summary>
+    virtual property RangeQueryHint as string => ""
+
+    /// <summary>
+    /// Appended to a column to compare it with a string by its characters, with case and accents, as
+    /// the runtime compares strings (used for filters sent to the server). The default implementation
+    /// returns an empty string: the database's own comparison is used, which may let more rows through.
+    /// </summary>
+    virtual property BinaryCollation as string => ""
+
+    /// <summary>
+    /// Statement that returns the code page in which the database stores the string literals of a
+    /// statement (characters outside it are changed). The default implementation returns an empty
+    /// string (unknown: the RDD only writes ASCII strings as literals).
+    /// </summary>
+    virtual property CodePageStatement as string => ""
+
+    /// <summary>Minimum number of rows of a table (see TableRowsStatement) for RangeQueryHint.</summary>
+    virtual property RangeQueryHintMinRows as long => 100000
+
+    /// <summary>
+    /// Statement that returns the approximate number of rows of the table TableNameMacro from the
+    /// statistics of the database, without counting them. The default implementation returns an
+    /// empty string (unknown).
+    /// </summary>
+    virtual property TableRowsStatement as string => ""
+
     /// <summary>
     /// Create a new SqlDbProvider object
     /// </summary>

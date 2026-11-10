@@ -93,7 +93,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SET
 				IF VALUE > 0
 					VAR existing := IIF(SELF:Style:Font != NULL, SELF:Style:Font, SystemFonts.DefaultFont)
-					SELF:Style:Font := Font{existing:FontFamily, (SINGLE) VALUE, existing:Style}
+					SELF:Style:Font := Font{existing:FontFamily, (Single) VALUE, existing:Style}
 				ENDIF
 			END SET
 		END PROPERTY

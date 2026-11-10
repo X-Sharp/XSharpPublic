@@ -4,7 +4,7 @@
 //     Runtime version: 4.0.30319.42000
 //     Generator      : XSharp.CodeDomProvider 2.20.0.3
 //     Timestamp      : 03/07/2024 19:25:36
-//     
+//
 //     Changes to this file may cause incorrect behavior and may be lost if
 //     the code is regenerated.
 //  </auto-generated>
@@ -31,7 +31,7 @@ BEGIN NAMESPACE XSharp.VFP.UI.Properties
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)] ;
                 INTERNAL STATIC PROPERTY ResourceManager AS global::System.Resources.ResourceManager
-        
+
             GET
                 IF System.Object.ReferenceEquals(resourceMan, NULL)
                     LOCAL temp := global::System.Resources.ResourceManager{"XSharp.VFP.UI.Properties.Resources", typeof(Resources):Assembly} AS global::System.Resources.ResourceManager
@@ -39,32 +39,42 @@ BEGIN NAMESPACE XSharp.VFP.UI.Properties
                 ENDIF
                 RETURN resourceMan
             END GET
-        END PROPERTY 
+        END PROPERTY
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)] ;
                 INTERNAL STATIC PROPERTY Culture AS global::System.Globalization.CultureInfo
-        
+
             GET
                 RETURN resourceCulture
             END GET
-        
+
             SET
                 resourceCulture := value
             END SET
-        END PROPERTY 
+        END PROPERTY
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         INTERNAL STATIC PROPERTY XSharp AS System.Drawing.Bitmap
-        
+
             GET
                 LOCAL obj := ResourceManager:GetObject("XSharp", resourceCulture) AS System.Object
                 RETURN ((System.Drawing.Bitmap)(obj))
             END GET
-        END PROPERTY 
-    
-    END CLASS 
+        END PROPERTY
+        INTERNAL STATIC PROPERTY TypeConvert AS System.String
+
+            GET
+                LOCAL obj := ResourceManager:GetObject("TypeConvert", resourceCulture) AS System.Object
+                RETURN ((System.String)(obj))
+            END GET
+        END PROPERTY
+
+
+
+
+    END CLASS
 END NAMESPACE

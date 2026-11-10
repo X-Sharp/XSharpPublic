@@ -12,7 +12,7 @@ namespace XSharp.CodeDom
     public interface IXCodeObject
     {
     }
-   
+
     /// <summary>
     /// Enhanced Type reference with System.Type property, since CodeTypeReference does not hold on to the type
     /// </summary>
@@ -29,7 +29,7 @@ namespace XSharp.CodeDom
 
     [DebuggerDisplay("{Name,nq}")]
     internal class XCodeTypeReferenceExpression : CodeTypeReferenceExpression, IXCodeObject
-    { 
+    {
         internal string Name { get; private set; }
         internal XCodeTypeReferenceExpression(System.Type type) : base(type)
         {
@@ -115,7 +115,7 @@ namespace XSharp.CodeDom
     {
         public XCodeNamespace(string name) : base(name)
         {
-            
+
         }
     }
 
@@ -144,7 +144,7 @@ namespace XSharp.CodeDom
 
         }
     }
-    
+
     [DebuggerDisplay("{Name,nq}")]
     public class XCodeMemberEvent : CodeMemberEvent, IXCodeObject
     {
@@ -178,7 +178,7 @@ namespace XSharp.CodeDom
 
         }
     }
-    [DebuggerDisplay("{FieldName,nq}")]
+    [DebuggerDisplay("{TargetObject}.{FieldName,nq}")]
     internal class XCodeFieldReferenceExpression : CodeFieldReferenceExpression, IXCodeObject
     {
         internal XCodeFieldReferenceExpression(CodeExpression lhs, string name) : base(lhs, name)
@@ -189,7 +189,7 @@ namespace XSharp.CodeDom
 
     internal class XCodeSnippetTypeMember : CodeSnippetTypeMember, IXCodeObject
     {
-   
+
         internal XCodeSnippetTypeMember(string text) : base(text)
         {
 

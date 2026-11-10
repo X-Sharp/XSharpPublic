@@ -19,7 +19,7 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Body Text">The <text style="font-weight:bold;">BEGIN</text> (<text style="font-weight:bold;">UN</text>)<text style="font-weight:bold;">CHECKED</text> and <text style="font-weight:bold;">END</text> (<text style="font-weight:bold;">UN</text>)<text style="font-weight:bold;">CHECKED</text> keywords mark a block of statements that are compiled with overflow checking enabled or disabled.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Code with box">BEGIN CHECKED<br/> &#160; statements<br/>END CHECKED<br/><br/>BEGIN UNCHECKED<br/> &#160; statements<br/>END CHECKED</para>
+    <para styleclass="Code with box">BEGIN CHECKED<br/> &#160; statements<br/>END CHECKED<br/><br/>BEGIN UNCHECKED<br/> &#160; statements<br/>END UNCHECKED</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="Body Text"></para>
     <para styleclass="List"><text style="font-style:italic;">statements</text>&#32;<tab />One or more statements or expressions that are compiled with the specified overflow checking</para>

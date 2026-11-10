@@ -1,144 +1,33 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(XSharpMsBuildDir)\XSharp.Default.props" />
-  <Import Project="..\VOSDK.Props" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\VOSDK.SDK.Props" />
   <!-- Please note that most important settings are read from VOSDK.Props -->
   <PropertyGroup>
+    <Description>XSharp Typed VO GUI Classes</Description>
     <Dialect>Vulcan</Dialect>
-    <ProjectGuid>{cd26f249-2d4b-138b-e78a-565442ddf136}</ProjectGuid>
-    <AssemblyName>XSharp.VOGUIClasses</AssemblyName>
-    <Name>XSharp.VO.GUIClasses</Name>
-    <OutputName>XSharp.VO.GUIClasses</OutputName>
-    <Includepaths>$(Solutiondir)Common</Includepaths>
-    <Nostandarddefs>false</Nostandarddefs>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <LB>False</LB>
-    <unsafe>true</unsafe>
-    <CS>false</CS>
+    <UseWindowsForms>true</UseWindowsForms>
+    <NS>true</NS>
+    <Ins>true</Ins>
+    <VO7>True</VO7>
+    <VO14>False</VO14>
     <vo15>true</vo15>
-    <NoWarn>165, 168</NoWarn>
-    <NamedArgs>false</NamedArgs>
-    <InitLocals>false</InitLocals>
+    <EnforceSelf>true</EnforceSelf>
+    <TargetFrameworks>net47;net8.0-windows</TargetFrameworks>
+    <AZ>false</AZ>
+    <CS>False</CS>
+    <!-- Note that there are a lot of locals that are not initialized.
+        This takes care of that but of course costs a little performance.-->
+    <InitLocals>true</InitLocals>
+    <AssemblyName>XSharp.VOGuiClasses</AssemblyName>
     <RootNamespace>XSharp.VO.SDK</RootNamespace>
-    <NoWin32Manifest>False</NoWin32Manifest>
-    <Vo14>False</Vo14>
-    <EnforceSelf>True</EnforceSelf>
-    <EnforceOverride>False</EnforceOverride>
-    <Vo7>True</Vo7>
-    <Vo5>False</Vo5>
-    <Allowdot>false</Allowdot>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <Optimize>false</Optimize>
-    <WarningLevel>4</WarningLevel>
-    <SignAssembly>true</SignAssembly>
-    <DelaySign>false</DelaySign>
-    <AssemblyOriginatorKeyFile />
-    <CommandLineOption />
-    <PPO>false</PPO>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>False</Prefer32Bit>
-    <RegisterForComInterop>False</RegisterForComInterop>
-    <NoWarn>165, 168</NoWarn>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-  </PropertyGroup>
-  <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
-    <NoWarn>165, 168, 1591,649,414,169,67,9015</NoWarn>
-  </PropertyGroup>
-  <Import Project="$(XSharpMsBuildDir)\XSharp.targets" />
+   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\SharedSource\SDKAssemblyinfo.prg">
-      <Link>SDKAssemblyinfo.prg</Link>
-    </Compile>
-    <Compile Include="**\*.prg" />
+    <Compile Remove="Properties\AssemblyInfo.prg" />
   </ItemGroup>
   <ItemGroup>
-    <NativeResource Include="Resources\CurHand.rc" />
-    <NativeResource Include="Resources\CursorHelp.rc" />
-    <NativeResource Include="Resources\DragMultip.rc" />
-    <NativeResource Include="Resources\DragSingle.rc" />
-    <NativeResource Include="Resources\GeneralHelp.rc" />
-    <NativeResource Include="Resources\HelpCursor.rc" />
-    <NativeResource Include="Resources\IDB_DEFTOOLBAR.rc" />
-    <NativeResource Include="Resources\IDD_DEFDLG.rc" />
-    <NativeResource Include="Resources\IDD_DEFDLG2.rc" />
-    <NativeResource Include="Resources\IDI_DEFICON.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\HAND.CUR" />
-    <Content Include="Resources\MULTI.CUR" />
-    <Content Include="Resources\SINGLE.CUR" />
-    <Content Include="Resources\HELP.CUR" />
-    <Content Include="Resources\CAVOTB.BMP" />
-    <Content Include="Resources\WINS.ICO" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Drawing" />
-    <Folder Include="Controls" />
-    <Folder Include="Events" />
-    <Folder Include="Menu\" />
-    <Folder Include="Win32" />
-    <Folder Include="Printing" />
-    <Folder Include="Ole" />
-    <Folder Include="Support" />
-    <Folder Include="Windows" />
-    <Folder Include="Properties" />
-    <Folder Include="ResourceReader" />
-    <Folder Include="WinForm" />
-    <Folder Include="Resources\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-      <Name>System</Name>
-      <AssemblyName>System.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.ComponentModel.Primitives" />
-    <Reference Include="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Name>System.Drawing</Name>
-      <AssemblyName>System.Drawing.dll</AssemblyName>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Windows.Forms" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassMapping.xlsx" />
-    <None Include="WinForm\PropControl.xh" />
-    <None Include="WinForm\PropControlStyle.xh" />
-    <None Include="_readme.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\XSharp.Core\XSharp.Core.xsproj">
-      <Name>XSharp.Core</Name>
-      <Project>{535dff14-efb7-43f5-a4e1-71c1c4280040}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\XSharp.RT\XSharp.RT.xsproj">
-      <Name>XSharp.RT</Name>
-      <Project>{ef8d2bf2-e81a-479a-ba4f-294c4c348b66}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\XSharp.VO\XSharp.VO.xsproj">
-      <Name>XSharp.VO</Name>
-      <Project>{06099c3d-1697-4eb1-9f53-8a9a50b9eacd}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\System_Classes_SDK\XSharp.VO.SystemClasses.xsproj">
-      <Name>XSharp.VO.SystemClasses</Name>
-      <Project>{5ac3e55d-f2bd-45eb-9cc2-dd8bd36240ea}</Project>
-      <Private>True</Private>
-    </ProjectReference>
+    <ProjectReference Include="$(RuntimeDir)XSharp.Core\XSharp.Core.xsproj" />
+    <ProjectReference Include="$(RuntimeDir)XSharp.RT\XSharp.RT.xsproj" />
+    <ProjectReference Include="$(RuntimeDir)XSharp.VO\XSharp.VO.xsproj" />
+    <ProjectReference Include="..\System_Classes_SDK\XSharp.VO.SystemClasses.xsproj" />
   </ItemGroup>
   <Import Project="..\VOSDKDocs.Props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <PreBuildEvent />
-    <PostBuildEvent />
-    <RunPostBuildEvent />
-  </PropertyGroup>
 </Project>

@@ -77,6 +77,12 @@ namespace XSharp.MacroCompiler.Syntax
                         el.Exprs[i] = e;
                 }
             }
+            else
+            {
+                if (FixOldStyleAssignment(Expr, b) is Expr e)
+                    Expr = e;
+
+            }
             b.Bind(ref Expr);
             return null;
         }

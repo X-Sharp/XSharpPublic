@@ -104,7 +104,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			SUPER:OnPaint(e)
 			VAR g     := e:Graphics
 			VAR color := SELF:_borderColor
-			VAR pen   := Pen{ color, (SINGLE) SELF:_borderWidth }
+			VAR pen   := Pen{ color, (Single) SELF:_borderWidth }
 			SWITCH SELF:_borderStyle
 			CASE 1 ; pen:DashStyle := DashStyle.Dash
 			CASE 2 ; pen:DashStyle := DashStyle.Dot

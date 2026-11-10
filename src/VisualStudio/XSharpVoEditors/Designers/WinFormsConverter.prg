@@ -73,7 +73,7 @@ PARTIAL CLASS VOWindowEditor INHERIT WindowDesignerBase
 			cNameSpace := cNameSpace:Replace(cChar:ToString(), "")
 		next*/
 
-//		cPrg := cFolder + "\" + cFileName + ".prg"
+//		cPrg := cFolder + "\" + cFileName + Constants.SourceFileExtension
 
 		LOCAL oWriter := NULL AS StreamWriter
 

@@ -44,9 +44,6 @@ namespace XSharp.Project
             if (isInitialized)
                 return;
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-#if DEV17
-            VS.Events.SolutionEvents.OnAfterOpenSolution += SolutionEvents_OnAfterOpenSolution;
-#endif
             VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_OnBeforeCloseSolution;
             VS.Events.SolutionEvents.OnAfterBackgroundSolutionLoadComplete += SolutionEvents_OnAfterBackgroundSolutionLoadComplete;
 
@@ -56,14 +53,6 @@ namespace XSharp.Project
 
             _ = await VS.Commands.InterceptAsync(KnownCommands.File_CloseSolution, CloseDesignerWindows);
             _ = await VS.Commands.InterceptAsync(KnownCommands.File_Exit, CloseDesignerWindows);
-            var sol = await VS.Solutions.GetCurrentSolutionAsync();
-#if DEV17
-            if (sol is Solution)
-            {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                SolutionEvents_OnAfterOpenSolution(sol);
-            }
-#endif
             isInitialized = true;
             if (!hasEnvironmentvariable)
             {
@@ -73,27 +62,6 @@ namespace XSharp.Project
 
 
 #region Solution Events
-#if DEV17
-        private void SolutionEvents_OnAfterOpenSolution(Solution solution)
-        {
-            FixIncompleteReferences();
-        }
-
-        /// <summary>
-        /// Complete the project references of SDK style projects that could not be resolved while the
-        /// project was loading, because the referenced project was not loaded yet.
-        /// </summary>
-        private void FixIncompleteReferences()
-        {
-            foreach (var project in XSharpProjectNode.AllProjects)
-            {
-                if (project.HasIncompleteReferences)
-                {
-                    project.FixReferences();
-                }
-            }
-        }
-#endif
         private void SolutionEvents_OnBeforeCloseSolution()
         {
             // close OUR documents that are opened in design mode.
@@ -125,11 +93,6 @@ namespace XSharp.Project
         private void SolutionEvents_OnAfterBackgroundSolutionLoadComplete()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-#if DEV17
-            // Projects may have been loaded after OnAfterOpenSolution, so check again now that all
-            // projects of the solution are available.
-            FixIncompleteReferences();
-#endif
             RestoreDesignerWindows();
             RestoreStartupProject();
         }

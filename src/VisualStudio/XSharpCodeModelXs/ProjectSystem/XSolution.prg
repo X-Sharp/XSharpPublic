@@ -21,6 +21,9 @@ BEGIN NAMESPACE XSharpModel
     STATIC PRIVATE _fileName   AS STRING
     STATIC PRIVATE _sqldb      AS STRING
     STATIC PRIVATE _commentTokens AS List<XCommentToken>
+    STATIC PRIVATE _afterOpenDone AS LOGIC      // AfterOpen() ran for the open solution, see Close()
+    // Project files of CPS projects whose code models (one per TargetFramework) are not all created yet, see Close()
+    STATIC PRIVATE _pendingModels AS ConcurrentDictionary<STRING, LOGIC>
     STATIC PROPERTY IsClosing  AS LOGIC AUTO
     STATIC PROPERTY IsShuttingDown  AS LOGIC AUTO
 
@@ -45,6 +48,7 @@ BEGIN NAMESPACE XSharpModel
         // Methods
     STATIC CONSTRUCTOR
         _projects := ConcurrentDictionary<STRING, XProject>{StringComparer.OrdinalIgnoreCase}
+        _pendingModels := ConcurrentDictionary<STRING, LOGIC>{StringComparer.OrdinalIgnoreCase}
         IsClosing   := FALSE
         _commentTokens := List < XCommentToken >{}
 	END CONSTRUCTOR
@@ -117,6 +121,7 @@ BEGIN NAMESPACE XSharpModel
             ENDIF
             Close()
         ENDIF
+        _afterOpenDone := FALSE
         _fileName := cFile
         var folder := Path.GetDirectoryName(_fileName)
         folder     := Path.Combine(folder, ".vs")
@@ -138,26 +143,31 @@ BEGIN NAMESPACE XSharpModel
 	END METHOD
 
     STATIC METHOD AfterOpen() AS VOID
-        VAR dbprojectList := XDatabase.GetProjectFileNames()
+        // Projects that are no longer part of the solution are deleted when it closes, see Close()
         FOREACH var project in _projects:Values
             XDatabase.Read(project)
             ModelWalker.AddProject(project)
-            FOREACH VAR dbproject  in dbprojectList
-                if String.Compare(dbproject, project:FileName+"|"+project:Framework, StringComparison.OrdinalIgnoreCase) == 0
-                    dbprojectList:Remove(dbproject)
-                    EXIT
-                ENDIF
-            NEXT
             IF System.IO.File.Exists(BuiltInFunctions)
                 project:AddFile(BuiltInFunctions)
             ENDIF
         NEXT
-        if dbprojectList:Count > 0
-            FOREACH var dbproject in dbprojectList
-                XDatabase.DeleteProject(dbproject)
-            NEXT
-        endif
+        _afterOpenDone := TRUE
         ModelWalker.Start()
+	END METHOD
+
+    /// <summary>
+    /// Called by the CPS project system: TRUE while code models of the project are still to be created. The models
+    /// of the TargetFrameworks of a cross targeting project are created asynchronously, after AfterOpen().
+    /// </summary>
+    STATIC METHOD SetModelsPending(projectFile AS STRING, pending AS LOGIC) AS VOID
+        IF String.IsNullOrEmpty(projectFile)
+            RETURN
+        ENDIF
+        IF pending
+            _pendingModels[projectFile] := TRUE
+        ELSE
+            _pendingModels:TryRemove(projectFile, OUT VAR _)
+        ENDIF
 	END METHOD
 
     STATIC METHOD AddOrphan(fileName as STRING) AS XFile
@@ -187,18 +197,47 @@ BEGIN NAMESPACE XSharpModel
     STATIC METHOD Close() AS VOID
         IF IsOpen
             XSettings.Information("XModel.Solution.CloseSolution()" + _fileName)
-            ModelWalker.Stop()
-            XDatabase.CloseDatabase(_sqldb)
+            // VS ignores exceptions from the close events without logging them. An exception here used to leave
+            // the solution half closed: the database closed but IsOpen still TRUE, so opening the same solution
+            // again did not open the database. Log every exception and always reset the solution state.
+            TRY
+                ModelWalker.Stop()
+                // Projects removed from the solution and TargetFrameworks that are no longer used. Not when the
+                // solution closes while it is still loading: then projects that are still part of it were not read yet.
+                IF ! _afterOpenDone
+                    XSettings.Information("XModel.Solution.CloseSolution() still loading, no projects deleted")
+                ELSEIF ! _pendingModels:IsEmpty
+                    XSettings.Information("XModel.Solution.CloseSolution() code models still pending for " + ;
+                        String.Join(", ", _pendingModels:Keys) + ", no projects deleted")
+                ELSE
+                    XDatabase.DeleteProjectsNotInSession()
+                ENDIF
+                XDatabase.CloseDatabase(_sqldb)
 
-            FOREACH VAR pair IN _projects:ToArray()
-                var project := (XProject) pair:Value
-                project:UnLoad()
-                project:Close()
-            NEXT
-            _projects:Clear()
-            SystemTypeController.Clear()
-            _orphanedFilesProject := NULL
-            _fileName  := NULL
+                // Empty the project list before closing the projects. XProject:Close() calls XSolution.Remove(),
+                // which then returns immediately instead of removing the project from every other project's
+                // references. That cleanup is useless when the whole solution goes away, and each removed
+                // assembly reference re-resolved the references of that project, which took minutes in large solutions.
+                VAR projects := _projects:Values:ToArray()
+                _projects:Clear()
+                FOREACH VAR project IN projects
+                    // One project that fails to close must not keep the others open
+                    TRY
+                        project:Close()
+                    CATCH e AS Exception
+                        XSettings.Information("XModel.Solution.CloseSolution() failed to close project " + project:Name)
+                        XSettings.Exception(e)
+                    END TRY
+                NEXT
+            CATCH e AS Exception
+                XSettings.Exception(e)
+            FINALLY
+                _afterOpenDone := FALSE
+                _pendingModels:Clear()
+                SystemTypeController.Clear()
+                _orphanedFilesProject := NULL
+                _fileName  := NULL
+            END TRY
         ENDIF
 	END METHOD
 

@@ -360,6 +360,21 @@ CLASS RddFieldInfo
         GET SELF:_GetPropertyValue<STRING>(DatabasePropertyType.RuleText)    DEFAULT String.Empty ;
         SET SELF:Properties:Add(DatabasePropertyType.RuleText, value)
 
+    PROPERTY NeedsNullColumn AS LOGIC
+        GET
+        SWITCH SELF:FieldType
+        CASE DbFieldType.VarChar
+        CASE DbFieldType.VarBinary
+            RETURN TRUE
+        OTHERWISE
+            RETURN FALSE
+        END SWITCH
+        END GET
+    END PROPERTY
+
+
+
 END CLASS
 
 END NAMESPACE
+

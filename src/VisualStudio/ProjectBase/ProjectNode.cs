@@ -656,12 +656,46 @@ namespace Microsoft.VisualStudio.Project
                     EnvDTE.Project automationObject = this.GetAutomationObject() as EnvDTE.Project;
                     if (automationObject != null)
                     {
-                        var platform = Utilities.GetActivePlatformName(automationObject);
-                        var name = new ConfigCanonicalName(Utilities.GetActiveConfigurationName(automationObject), platform);
+                        var name = GetActiveConfigCanonicalName(automationObject);
                         return new ProjectConfig(this, name);
                     }
                     return null;
                 });
+            }
+        }
+
+        private bool activeConfigFallbackLogged;
+        /// <summary>
+        /// Gets the name of the active configuration of this project.
+        /// When the solution configuration maps the project to a configuration that the project does not have
+        /// (for example "Debug|AnyCPU" instead of "Debug|Any CPU" in a hand written .sln file), the
+        /// ConfigurationManager throws E_INVALIDARG. We then fall back to the configuration that MSBuild
+        /// evaluates the project with, so callers (such as the parse options) get the project's real settings.
+        /// </summary>
+        protected ConfigCanonicalName GetActiveConfigCanonicalName(EnvDTE.Project automationObject)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            try
+            {
+                var platform = Utilities.GetActivePlatformName(automationObject);
+                return new ConfigCanonicalName(Utilities.GetActiveConfigurationName(automationObject), platform);
+            }
+            catch (ArgumentException e)
+            {
+                var configName = this.buildProject?.GetPropertyValue(ProjectFileConstants.Configuration);
+                var platform = this.buildProject?.GetPropertyValue(ProjectFileConstants.Platform);
+                if (string.IsNullOrEmpty(configName))
+                    configName = "Debug";
+                if (string.IsNullOrEmpty(platform))
+                    platform = ProjectConfig.AnyCPU;
+                var name = new ConfigCanonicalName(configName, platform);
+                if (!activeConfigFallbackLogged)
+                {
+                    activeConfigFallbackLogged = true;
+                    Logger.Information($"Project {this.Url}: cannot retrieve the active configuration ({e.Message}). " +
+                        $"Check the project configuration mapping in the solution file. Using '{name.ConfigName}|{name.Platform}'.");
+                }
+                return name;
             }
         }
 
@@ -1000,8 +1034,6 @@ namespace Microsoft.VisualStudio.Project
                 return this.site;
             }
         }
-
-        public virtual bool IsSdkProject => false;
 
         /// <summary>
         /// Gets an ImageHandler for the project node.
@@ -2571,6 +2603,20 @@ namespace Microsoft.VisualStudio.Project
             if (cleanBuild && this.ProjectInstance.Targets.ContainsKey(MsBuildTarget.Clean))
             {
                 this.InvokeMsBuild(MsBuildTarget.Clean);
+			    // Clean intermediate window to get rid of 'Nasty' Nuget files
+                var outputDir = this.GetProjectProperty("BaseIntermediateOutputPath");
+                if (!string.IsNullOrEmpty(outputDir) && Directory.Exists(outputDir))
+                {
+                    try
+                    {
+                        Directory.Delete(outputDir, true);
+                        Directory.CreateDirectory(outputDir);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Exception(ex, "PrepareBuild");
+                    }
+                }
             }
 
             PackageUtilities.EnsureOutputPath(outputPath);
@@ -7466,15 +7512,6 @@ namespace Microsoft.VisualStudio.Project
         public int UpdateTargetFramework(IVsHierarchy pHier, string currentTargetFramework, string newTargetFramework)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            ThreadHelper.ThrowIfNotOnUIThread();
-            if (this.IsSdkProject)
-            {
-                // Let the .NET SDK infer TargetFrameworkIdentifier/Version/Profile and the
-                // TargetPlatform* properties from the full moniker. Setting them here would
-                // suppress that inference and drop the platform suffix (e.g. net8.0-windows7.0).
-                SetProjectProperty("TargetFramework", newTargetFramework);
-                return VSConstants.S_OK;
-            }
             FrameworkName moniker = new FrameworkName(newTargetFramework);
             SetProjectProperty(ProjectFileConstants.TargetFrameworkIdentifier, moniker.Identifier);
             SetProjectProperty(ProjectFileConstants.TargetFrameworkVersion, "v" + moniker.Version);

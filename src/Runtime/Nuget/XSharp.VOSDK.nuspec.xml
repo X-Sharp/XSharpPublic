@@ -15,10 +15,10 @@
     <tags>XSharp, VOSDK</tags>
     <repository type="git" url="https://github.com/X-Sharp/XSharpPublic.git" />
     <contentFiles>
-      <files include="any/net46/*.dll" buildAction="None" copyToOutput="true"  />
+      <files include="any/net47/*.dll" buildAction="None" copyToOutput="true"  />
     </contentFiles>
     <dependencies>
-      <group targetFramework=".NETFramework4.6">
+      <group targetFramework=".NETFramework4.7">
         <dependency id="XSharp.VO" version="$Version"  include="All"/>
       </group>
       <group targetFramework="net8.0">
@@ -32,6 +32,6 @@
     <file src="$SourceFolder\VO*.dll"       target= "lib\$TFM" />
     <file src="$XmlFolder\VO*.xml"          target= "lib\$TFM" />
     <file src="$XmlCnFolder\VO*.xml"        target= "lib\$TFM\zh-Hans" />
-    <file src="..\voredist\*.DLL"           target= "contentFiles\any\net46" />
+    <file src="..\voredist\*.DLL"           target= "contentFiles\any\net47" />
   </files>
 </package>

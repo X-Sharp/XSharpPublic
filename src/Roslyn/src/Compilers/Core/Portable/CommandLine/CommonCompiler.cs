@@ -1032,8 +1032,16 @@ namespace Microsoft.CodeAnalysis
             int i = 0;
             foreach (var syntaxTree in syntaxTrees)
             {
+#if XSHARP
+                // The compilation can contain more than one compiler generated tree (the tree from ProcessTrees
+                // and the default tree from AddXSharpSyntaxTree), but sourceFileAnalyzerConfigOptions only has one
+                // extra entry ("generatedcode.prg") for generated code. Use that entry for all generated trees.
+                var index = Math.Min(i, sourceFileAnalyzerConfigOptions.Length - 1);
+                var options = sourceFileAnalyzerConfigOptions[index].AnalyzerOptions;
+#else
 
                 var options = sourceFileAnalyzerConfigOptions[i].AnalyzerOptions;
+#endif
 
                 // Optimization: don't create a bunch of entries pointing to a no-op
                 if (options.Count > 0)

@@ -192,7 +192,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			IF isThemed
 				SELF:PaintThemedBorder(g)
 			ELSEIF pw > 0 .AND. SELF:_borderStyle != 0
-				VAR pen := Pen{ SELF:_borderColor, (SINGLE) pw }
+				VAR pen := Pen{ SELF:_borderColor, (Single) pw }
 				IF pw == 1
 					SWITCH SELF:_borderStyle
 					CASE 2 ; pen:DashStyle := DashStyle.Dash

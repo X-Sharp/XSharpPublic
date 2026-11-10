@@ -4,28 +4,23 @@
 // See License.txt in the project root for license information.
 //
 
+using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.Design;
+using System.Drawing;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+
+using XSharp.Project;
+
 namespace Microsoft.VisualStudio.Project
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.ComponentModel;
-    using System.ComponentModel.Design;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Drawing;
-    using System.Globalization;
-    using System.Reflection;
-    using System.Runtime.InteropServices;
-    using System.Windows.Forms;
-    using Microsoft.Build;
-    using Microsoft.VisualStudio;
-    using Microsoft.VisualStudio.OLE.Interop;
-    using Microsoft.VisualStudio.Package;
-    using Microsoft.VisualStudio.Shell.Interop;
-    using Microsoft.VisualStudio.Project;
-    using Microsoft.VisualStudio.Shell;
-    using XSharp.Project;
-
     /// <summary>
     /// Abstract base class for a project property page.
     /// </summary>
@@ -51,7 +46,6 @@ namespace Microsoft.VisualStudio.Project
 
         protected bool PerConfig { get; set; } = false;
 
-        protected bool IsSdkProject => !string.IsNullOrEmpty(ProjectMgr?.BuildProject.Xml.Sdk);
 
         // =========================================================================================
         // Constructors
@@ -172,8 +166,6 @@ namespace Microsoft.VisualStudio.Project
 
             // we need to create the control so the handle is valid
             this.PropertyPagePanel.Control.CreateControl();
-
-            //this.PropertyPagePanel.Control.HelpRequested += new HelpEventHandler(this.PropertyPagePanel_HelpRequested);
 
             // set our parent
             NativeMethods.SetParent(this.PropertyPagePanel.Control.Handle, hwndParent);
@@ -927,7 +919,7 @@ namespace Microsoft.VisualStudio.Project
                     {
                         try
                         {
-                            var shell2 = Package.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell2;
+                            var shell2 = AsyncProjectPackage.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell2;
                             if (shell2 != null && shell2.GetVSSysColorEx(
                                     -105, // __VSSYSCOLOREX.VSCOLOR_TOOLWINDOW_BACKGROUND
                                     out uint colorRef) == VSConstants.S_OK)
@@ -1005,14 +997,6 @@ namespace Microsoft.VisualStudio.Project
 
             return String.Empty;
         }
-        /// <summary>
-        /// Handles the help event by displaying the property pages
-        /// </summary>
-        /// <param name="sender">The control sending the event.</param>
-        /// <param name="hlpevent">Event parameters.</param>
-        //private void PropertyPagePanel_HelpRequested(object sender, HelpEventArgs hlpevent)
-        //{
-        //    //XHelperMethods.ShowWixHelp(this.PropertyPagePanel, @"html\votive_property_pages.htm");
-        //}
+
     }
 }

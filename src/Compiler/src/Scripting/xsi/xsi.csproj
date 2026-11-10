@@ -14,7 +14,7 @@
     <LargeAddressAware>true</LargeAddressAware>
     <RootNamespace>XSharpInteractive</RootNamespace>
     <UseAppHost>false</UseAppHost>
-    <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants);NET46;NET472;</DefineConstants>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net472'">$(DefineConstants);NET472;</DefineConstants>
     <DefineConstants>$(DefineConstants);XSHARP;COMMITHASH</DefineConstants>
     <GenerateMicrosoftCodeAnalysisCommitHashAttribute>true</GenerateMicrosoftCodeAnalysisCommitHashAttribute>
     <!--Use the C# compiler created in this solution-->
@@ -54,7 +54,7 @@
   <Import Project="$(RepositoryEngineeringDir)targets\DiaSymReaderNative.targets" />
   <Target Name="DeleteCSFiles" AfterTargets="Build" Condition="'$(TargetFramework)' != '' ">
     <ItemGroup>
-      <FilesToDelete Include="$(OutputPath)\CS*.*" /> 
+      <FilesToDelete Include="$(OutputPath)\CS*.*" />
     </ItemGroup>
     <Delete Files="@(FilesToDelete)" />
   </Target>

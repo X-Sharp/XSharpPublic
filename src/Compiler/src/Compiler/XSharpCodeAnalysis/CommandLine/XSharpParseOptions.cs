@@ -109,6 +109,7 @@ namespace Microsoft.CodeAnalysis.CSharp
         public XSharpTargetDLL TargetDLL { get; private set; }
         public bool DebugEnabled { get; private set; }
         public XSharpDialect Dialect { get; private set; }
+        public bool Net5orHigher { get; private set; }
         public bool NoStdDef { get; private set; }
         public bool NoThisForm { get; private set; }
         public bool DumpAST { get; private set; }
@@ -209,6 +210,7 @@ namespace Microsoft.CodeAnalysis.CSharp
                 LateBinding = opt.LateBinding;
                 MemVars = opt.MemVars;
                 ModernSyntax = opt.ModernSyntax;
+                Net5orHigher = opt.Net5orHigher;
                 NoClipCall = opt.NoClipCall;
                 NoStdDef = opt.NoStdDef;
                 NoThisForm = opt.NoThisForm;
@@ -288,6 +290,7 @@ namespace Microsoft.CodeAnalysis.CSharp
             FoxArraySupport = opt.FoxArraySupport;      // fox2
             FoxCursorSupport = opt.FoxCursorSupport;        // fox3
             ImplicitNamespace = opt.ImplicitNamespace;
+            Net5orHigher = opt.Net5orHigher;
             IncludePaths = opt.IncludePaths;
             InitLocals = opt.InitLocals;
             LanguageVersion = defaultLanguageVersion;

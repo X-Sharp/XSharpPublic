@@ -4,13 +4,14 @@
 // See License.txt in the project root for license information.
 //
 
+using System;
+using System.Runtime.InteropServices;
+
+using Microsoft.VisualStudio.Project;
+using Microsoft.VisualStudio.Shell;
+
 namespace XSharp.Project
 {
-    using System;
-    using System.Runtime.InteropServices;
-    using Microsoft.VisualStudio.Project;
-    using Microsoft.VisualStudio.Shell;
-
     /// <summary>
     /// Property page for the Build settings.
     /// </summary>
@@ -48,6 +49,8 @@ namespace XSharp.Project
             base.SetProperty(propertyName, value);
         }
 
+
+		private XBuildPropertyPageXamlHost panel;
         /// <summary>
         /// Creates the UI panel for this property page.
         /// SDK-style projects get the XAML/WPF host; legacy projects get the WinForms panel.
@@ -55,11 +58,8 @@ namespace XSharp.Project
         /// <returns>An <see cref="IPropertyPagePanel"/> implementation.</returns>
         protected override IPropertyPagePanel CreatePropertyPagePanel()
         {
-#if DEV17
-        if (IsSdkProject)
-                return new XBuildPropertyPageXamlHost(this);
-#endif
-            return new XBuildPropertyPagePanelWinForms(this);
+			panel = new XBuildPropertyPageXamlHost(this);
+			return panel;
         }
 
         /// <summary>
@@ -76,12 +76,8 @@ namespace XSharp.Project
 
             if (string.Compare(e.PropertyName, XSharpProjectFileConstants.PlatformTarget, StringComparison.OrdinalIgnoreCase) == 0)
             {
-                // WinForms path
-                (PropertyPagePanel as XBuildPropertyPagePanel)?.Project_OnProjectPropertyChanged(sender, e);
-#if DEV17
                 // XAML path
-                (PropertyPagePanel as XBuildPropertyPageXamlHost)?.NotifyPlatformTargetChanged(e.NewValue);
-#endif
+                panel?.NotifyPlatformTargetChanged(e.NewValue);
             }
         }
     }

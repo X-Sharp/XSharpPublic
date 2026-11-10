@@ -49,7 +49,7 @@ FUNCTION SqlSetStmtConcurrency( nNew ) AS INT CLIPPER
 /// <include file="Sql.xml" path="doc/SqlSetStmtCursorType/*" />
 [Obsolete];
 FUNCTION SqlSetStmtCursorType( nNew ) AS INT CLIPPER
-	STATIC nValue := __CAVO_SQL_CURSOR_TYPE AS INT
+	STATIC nValue := (LONG) __CAVO_SQL_CURSOR_TYPE AS INT
 	LOCAL nResult AS INT
 	nResult := nValue
 	IF IsNumeric( nNew )
@@ -61,7 +61,7 @@ FUNCTION SqlSetStmtCursorType( nNew ) AS INT CLIPPER
 /// <include file="Sql.xml" path="doc/SqlSetStmtSimulateCursor/*" />
 [Obsolete];
 FUNCTION SqlSetStmtSimulateCursor( nNew ) AS INT CLIPPER
-	STATIC nValue := __CAVO_SQL_SIMULATE_CURSOR  AS INT
+	STATIC nValue := (LONG) __CAVO_SQL_SIMULATE_CURSOR  AS INT
 	LOCAL nResult AS INT
 	nResult := nValue
 	IF IsNumeric( nNew )

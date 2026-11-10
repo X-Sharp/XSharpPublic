@@ -10,7 +10,7 @@ namespace XSharp
         internal const string LanguageName = "XSharp";
         internal const string Company = "XSharp BV";
         internal const string RegCompany = "XSharpBV";
-        internal const string ProductName = "XSharp Gaia (\u0393\u03B1\u1FD6\u03B1)";
+        internal const string ProductName = "XSharp Empordà";
         internal const string Product = "XSharp";
         // NOTE: DO NOT FORGET THE VERSION NUMBER IN THE BUILDNUMBER.H FILE and the Versions.Props file
 #if RUNTIME
@@ -18,8 +18,8 @@ namespace XSharp
 #else
         internal const string Version = FileVersion;
 #endif
-        internal const string FileVersion = "3.0.2.0";
-        internal const string ProductVersion = "XSharp Gaia  (\u0393\u03B1\u1FD6\u03B1) 3.0 Release";
+        internal const string FileVersion = "3.1.0.0";
+        internal const string ProductVersion = "XSharp Empordà 3.1";
         internal const string PublicKey = "ed555a0467764586";
         internal const string Copyright = "Copyright © XSharp BV 2015-2026";
 
@@ -36,6 +36,11 @@ namespace XSharp
         internal const string EnvironmentXSharpDev = "XSHARPDEV";
         internal const string StandardHeaderFile = "XSharpDefs.xh";
         internal const string SourceFileExtension = ".prg";
+        internal const string PPOExtension = ".ppo";
+        internal const string VHExtension = ".vh";
+        internal const string XHExtension = ".xh";
+        internal const string CHExtension = ".ch";
+        internal const string DesignerExtension = ".designer.prg";
         internal const string PublicKeyLong = "0024000004800000940000000602000000240000525341310004000001000100b16a35b62bb33ce476c595e75bcc83fe4566c0a7cb9c093ce23e7add61fe1fc8a6edca2e542f0dc9ce41ec6b4260a73dda598c81f61a6f9522653ebfeae098a3bdb641020e843cbab825afe1c3910d42d17a1dcf211abb1cba4fc5e19569307c67a11c92b848d2df23f454d5ed1ab8b479afa4ece799445292b11012225aee96";
         internal const string XSharpVendorString = "{363398fa-76ad-44bb-a750-0abdc02bf4de}";
         internal const string XSharpLanguageString = "{f579403a-d3d3-47a0-bf03-9709575bee69}";

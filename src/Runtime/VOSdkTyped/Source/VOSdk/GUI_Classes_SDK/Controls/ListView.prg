@@ -8,6 +8,7 @@ USING System.Diagnostics
 USING System.Collections
 USING System.Reflection
 USING Swf := System.Windows.Forms
+#pragma options ("vo4", on) // implicit signed/unsigned conversions. Needed by some defines
 
 INTERNAL STATIC CLASS LVWin32
 
@@ -1274,7 +1275,6 @@ CLASS ListViewColumn INHERIT VObject
 
     /// <include file="Gui.xml" path="doc/ListViewColumn.GetPixWidth/*" />
     METHOD GetPixWidth() AS LONG
-        LOCAL iCol 		AS DWORD
         LOCAL iPixWidth	AS LONG
         iPixWidth := LVWin32.GetColumnWidth( oOwner:Handle(), SELF:Index)
         RETURN iPixWidth

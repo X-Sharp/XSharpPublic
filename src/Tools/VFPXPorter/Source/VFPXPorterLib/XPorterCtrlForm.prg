@@ -213,7 +213,7 @@ BEGIN NAMESPACE VFPXPorterLib
             LOCAL colorProps AS List<STRING>
             colorProps := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.ColorPropertiesFile) )
             // Suspended along with ChangeAliasTypeCollisions() itself, kept for reference (2026-07-27)
-            LOCAL aliasTypeCollisions AS List<STRING>
+            LOCAL aliasTypeCollisions := NULL AS List<STRING>
             // aliasTypeCollisions := JsonConvert.DeserializeObject<List<STRING>>( File.ReadAllText(XPorterSettings.AliasTypeCollisionsFile) )
             //
             LOCAL items AS List<BaseItem>

@@ -598,11 +598,6 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                     info = new MemVarFieldInfo(name, Alias, context);
                     Fields.Add(info);
                 }
-                if (!info.IsMacroMemvar)
-                {
-                    if (info.Name != info.FullName && !Fields.ContainsKey(info.FullName))
-                        Fields.Add(info.FullName, info);
-                }
                 return info;
             }
             internal MemVarFieldInfo GetField(string name)
@@ -1288,8 +1283,8 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             internal FoxFlags foxFlags = FoxFlags.None;
             internal bool IsFox => foxFlags != FoxFlags.None;
             internal bool HasMPrefix => foxFlags.HasFlag(FoxFlags.MPrefix);
-            internal string AreaName => Expr == null ? "" : Expr.GetText().ToUpper();
-            internal string FieldName => Name.GetText().ToUpper();
+            internal string AreaName => Expr == null ? "" : Expr.GetText().ToUpperInvariant();
+            internal string FieldName => Name.GetText().ToUpperInvariant();
             internal bool HasThisReference => Op.Type == XSharpLexer.DOT && Expr != null &&
                 this.Expr.Start == this.Expr.Stop &&
                 (this.Expr.Start.Type == XSharpParser.SELF);
@@ -1471,8 +1466,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 if (fileName != null)
                     return fileName;
-                var ct = (Symbol as XSharpToken);
-                if (ct != null)
+                if (Symbol is XSharpToken ct)
                 {
                     if (ct.TokenSource != null && !String.IsNullOrEmpty(ct.TokenSource.SourceName))
                         return ct.TokenSource.SourceName;
@@ -1539,11 +1533,12 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
         [Flags]
         enum FieldFlags : byte
         {
-            IsFileWidePublic,
-            IsCreated,
-            IsParameter,
-            IsWritten,
-            IsPublic
+            None = 0x00,
+            IsFileWidePublic = 0x01,
+            IsCreated = 0x02,
+            IsParameter = 0x04,
+            IsWritten = 0x08,
+            IsPublic = 0x10
         }
         private readonly MemvarType _fieldType;
         public string Name { get; private set; }
@@ -1554,10 +1549,10 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 if (_fieldType == MemvarType.MacroMemvar)
                 {
-                    var name = Name.Substring(0, Name.IndexOf(":"));
+                    var name = Name.Substring(0, Name.IndexOf(':'));
                     return Alias + "->" + name;
                 }
-                if (Alias != null)
+                if (Alias != null && _fieldType != MemvarType.Unknown)
                 {
                     return Alias + "->" + Name;
                 }
@@ -1568,7 +1563,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             }
         }
 
-        private FieldFlags _flags;
+        private FieldFlags _flags = FieldFlags.None;
         private FieldFlags SetFlag(FieldFlags newFlag, bool set)
         {
             if (set)
@@ -1615,7 +1610,7 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 if (alias.StartsWith("@@"))
                     alias = alias.Substring(2);
-                switch (alias.ToUpper())
+                switch (alias.ToUpperInvariant())
                 {
                     case "&":
                         _fieldType = MemvarType.MacroMemvar;

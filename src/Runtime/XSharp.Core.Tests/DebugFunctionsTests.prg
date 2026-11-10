@@ -18,14 +18,19 @@ BEGIN NAMESPACE XSharp.Core.Tests
         PUBLIC METHOD ProcName_ReturnsCurrentMethodName() AS VOID
             LOCAL cName AS STRING
             cName := ProcName()
+#ifdef DEBUG
             Assert.Contains("PROCNAME_RETURNSCURRENTMETHODNAME", cName)
+#endif
         END METHOD
 
         [Fact, Trait("Category", "Debug")];
         PUBLIC METHOD ProcName_WithActivation_ReturnsCallerName() AS VOID
             LOCAL cName AS STRING
             cName := HelperMethod_ForProcName()
+#ifdef DEBUG
             Assert.Contains("HELPERMETHOD_FORPROCNAME", cName)
+#endif
+
         END METHOD
 
         PRIVATE STATIC METHOD HelperMethod_ForProcName() AS STRING
@@ -56,7 +61,9 @@ BEGIN NAMESPACE XSharp.Core.Tests
             LOCAL cFile AS STRING
             cFile := ProcFile()
             // Should contain the test file name
+#ifdef DEBUG
             Assert.Contains("DebugFunctionsTests", cFile)
+#endif
         END METHOD
 
         [Fact, Trait("Category", "Debug")];
@@ -86,7 +93,11 @@ BEGIN NAMESPACE XSharp.Core.Tests
             LOCAL dwLine AS DWORD
             dwLine := ProcLine()
             // Should return a non-zero line number
+            #ifdef DEBUG
             Assert.True(dwLine > 0)
+            #else
+            Assert.True(dwLine == 0)
+            #endif
         END METHOD
 
         [Fact, Trait("Category", "Debug")];

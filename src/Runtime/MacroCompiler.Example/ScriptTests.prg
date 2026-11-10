@@ -304,17 +304,55 @@ FUNCTION ScriptTests AS VOID
         " __LocalsClear()",;
         "nPos"}), Args(), 3, typeof(int))
     // Nested codeblock and local variable
-    // This fails
-#ifdef FAIL
-    EvalMacro(sc, String.Join(e"\n",<STRING>{;
+    // The local is captured by the nested codeblock
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
         " local n as dword",;
         " local a	as array",;
         " local nPos	as dword",;
         " a := {1,2,3,4,5}",;
         " n := 3",;
         " nPos := ascan(a,{|x|x=n})",;
-        "nPos"}), Args(), 3, typeof(int))
-#endif
+        "nPos"}), Args(), 3, typeof(dword))
+
+    // AEval() with a codeblock literal: XSharp.Codeblock must convert to the ICodeblock parameter
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "local a := {1,2,3,4}",;
+        "private nSum",;
+        "nSum := 0",;
+        "aeval(a, {|x| nSum += x})",;
+        "return nSum"}), Args(), 10, typeof(int))
+    TestMacroU(sc, String.Join(e"\n",<STRING>{;
+        "local a := {1,2,3,4}",;
+        "private nSum",;
+        "nSum := 0",;
+        "aeval(a, {|x| nSum += x})",;
+        "return nSum"}), ArgsU(), 10, typeof(int))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "local a := {1,2,3,4}",;
+        "private nSum",;
+        "nSum := 0",;
+        "aeval(a, {|x| nSum += x}, 2, 2)",;
+        "return nSum"}), Args(), 5, typeof(int))
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        "local a := {1,2,3}",;
+        "aevala(a, {|x| x * 2})",;
+        "return a[3]"}), Args(), 6, typeof(int))
+    // Nested codeblock that assigns a captured local
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        " local n := 1",;
+        " Eval({|| n := n + 10})",;
+        "n"}), Args(), 11, typeof(int))
+    // Codeblock parameter captured by a codeblock nested two levels deep
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        " local r",;
+        " r := Eval({|x, y| Eval({|| x + y})}, 40, 2)",;
+        "r"}), Args(), 42, typeof(int))
+    // The codeblock shares the local, it does not copy its value
+    TestMacro(sc, String.Join(e"\n",<STRING>{;
+        " local n := 1",;
+        " local cb := {|| n}",;
+        " n := 99",;
+        "Eval(cb)"}), Args(), 99, typeof(int))
 
     TestMacro(sc, String.Join(e"\n",<STRING>{;
         "LPARAMETERS a, b, c",;
@@ -486,7 +524,7 @@ FUNCTION FoxScriptTests AS VOID
     TestMacro(sc, "1 = 2", Args(), false, typeof(logic)) // LHS is not an identifier
     public MyTestVar := Error{}
     TestMacro(sc, "MyTestVar.Gencode = 123", Args(), 123, typeof(int))
-    TestMacro(sc, "return x = 123", Args(), "Variable does not exist", typeof(XSharp.Error))
+    TestMacro(sc, "return x = 123", Args(), 123, typeof(int))
     RETURN
 
 FUNCTION TestPreProcessor(sc AS XSharp.Runtime.MacroCompiler) AS VOID

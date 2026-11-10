@@ -72,8 +72,8 @@ CLASS XSharp_VOMenuEditor INHERIT VOMenuEditor
             IF nAt != -1 // strip out window name
                 cFileName := cFileName:Substring(0 , nAt)
             ENDIF
-            cPrgFileName := cBaseDir + "\" + cFileName + ".prg"
-            cAlternative := oBaseDir:Parent:FullName + "\" + cFileName + ".prg"
+            cPrgFileName := cBaseDir + "\" + cFileName + Constants.SourceFileExtension
+            cAlternative := oBaseDir:Parent:FullName + "\" + cFileName + Constants.SourceFileExtension
             IF !File.Exists(cPrgFileName) .and. File.Exists(cAlternative)
                 cPrgFileName := cAlternative
             ENDIF

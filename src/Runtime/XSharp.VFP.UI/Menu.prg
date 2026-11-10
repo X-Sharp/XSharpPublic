@@ -38,7 +38,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 				SUPER:Name := VALUE
 				IF !String.IsNullOrEmpty(VALUE)
 					IF _registry == NULL
-						_registry := Dictionary<STRING, Menu>{}
+						_registry := Dictionary<STRING, Menu>{ System.StringComparer.OrdinalIgnoreCase }
 					ENDIF
 					_registry[VALUE] := SELF
 				ENDIF
@@ -140,6 +140,9 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		// ── Release ───────────────────────────────────────────────────────────
 		METHOD Release() AS USUAL CLIPPER
 			SELF:Deactivate()
+			IF !String.IsNullOrEmpty(SELF:Name) .AND. _registry != NULL
+				_registry:Remove(SELF:Name)
+			ENDIF
 			SELF:Dispose()
 			RETURN NIL
 

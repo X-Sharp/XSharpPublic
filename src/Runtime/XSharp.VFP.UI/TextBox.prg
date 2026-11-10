@@ -249,7 +249,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PROPERTY Value AS USUAL
 			GET
 				IF IsNil(_uValue) .AND. !String.IsNullOrEmpty(SELF:NullDisplay)
-					RETURN (USUAL) SELF:NullDisplay
+					RETURN SELF:NullDisplay
 				ENDIF
 				RETURN _uValue
 			END GET

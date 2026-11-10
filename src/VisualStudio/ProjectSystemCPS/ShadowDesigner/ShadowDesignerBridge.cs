@@ -15,7 +15,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
-using EnvDTE80;
 using Microsoft.CSharp;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OperationProgress;
@@ -110,11 +109,6 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 {
                     return (false, $"The companion project {location.CompanionCsprojPath} was not restored.");
                 }
-                var dte = await AsyncServiceProvider.GlobalProvider.GetServiceAsync(typeof(SDTE)) as DTE2;
-                if (dte == null)
-                {
-                    return (false, "Could not obtain the DTE service.");
-                }
                 // Open the plain "{ClassName}.cs" stub, not "{ClassName}.Designer.cs":
                 // the companion .csproj has no <DependentUpon>/<SubType> item metadata (pure
                 // implicit SDK globbing), so the out-of-process Designer falls back to naming
@@ -123,7 +117,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 // "Form1.resx". Opening the main partial instead matches ordinary C# WinForms
                 // project convention and fixes both the resx naming and the misleading
                 // "Form1.Designer.cs [Design]" tab caption.
-                bool opened = SolutionWiring.TryOpenInDesigner(dte, location.CompanionFormCsPath, out error);
+                bool opened = SolutionWiring.TryOpenInDesigner(location.CompanionFormCsPath, out error);
                 if (!opened)
                 {
                     Logger.Error($"ShadowDesignerBridge.TryOpenAsync: {error}");
@@ -141,9 +135,9 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         private static readonly TimeSpan CompanionFilesTimeout = TimeSpan.FromSeconds(10);
 
         /// <remarks>
-        /// Verified in VS: the companion project did not pick up new files through its globs even after 10 s.
-        /// So the missing files are added explicitly (ProjectItems.AddFromFile); for a file that a glob of the
-        /// SDK-style project already covers, CPS does not write an explicit item into the .csproj.
+        /// The companion project did not pick up new files through its globs even after 10 s in VS.
+        /// Missing files are added explicitly through IVsProject3.AddItemWithSpecific without opening code views.
+        /// For a file already covered by an SDK glob, CPS does not write an explicit item into the .csproj.
         /// </remarks>
         private static async Task WaitForCompanionFilesAsync(CompanionLocation location)
         {
@@ -162,12 +156,24 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             }
             try
             {
-                var dte = await AsyncServiceProvider.GlobalProvider.GetServiceAsync(typeof(SDTE)) as DTE2;
-                var dteProject = dte == null ? null : SolutionWiring.FindProjectByFullPath(dte, location.CompanionCsprojPath);
+                if (!(project is IVsProject3 project3))
+                {
+                    throw new InvalidOperationException("The companion project does not support adding generated files without opening them.");
+                }
                 foreach (var file in missing)
                 {
                     Logger.Information($"ShadowDesignerBridge: adding {file} to the companion project");
-                    dteProject?.ProjectItems.AddFromFile(file);
+                    var result = new VSADDRESULT[1];
+                    Guid editor = Guid.Empty;
+                    Guid view = Guid.Empty;
+                    // Omitting VSSPECIFICEDITOR_DoOpen keeps the generated C# code hidden.
+                    ErrorHandler.ThrowOnFailure(project3.AddItemWithSpecific(VSConstants.VSITEMID_ROOT,
+                        VSADDITEMOPERATION.VSADDITEMOP_OPENFILE, file, 1, new[] { file }, IntPtr.Zero,
+                        0, ref editor, null, ref view, result));
+                    if (result[0] != VSADDRESULT.ADDRESULT_Success)
+                    {
+                        throw new InvalidOperationException($"Could not add '{file}' to the companion project ({result[0]}).");
+                    }
                 }
             }
             catch (Exception ex)
@@ -279,13 +285,6 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                     return false;
                 }
 
-                var dte = ServiceProvider.GlobalProvider.GetService(typeof(SDTE)) as DTE2;
-                if (dte == null)
-                {
-                    error = "Could not obtain the DTE service.";
-                    return false;
-                }
-
                 // The parser resolves System.Windows.Forms.Form & co. through the project's assembly references.
                 // Shortly after the solution loaded they can still be queued (XProject.ResolveReferences runs at
                 // most every 15 seconds); unresolved types make the parser drop the right-hand side of assignments
@@ -334,7 +333,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 CompanionSaveWatcher.Watch(ServiceProvider.GlobalProvider, location);
                 ShadowDesignerCleanup.Track(companion.CsprojPath);
 
-                SolutionWiring.EnsureProjectInSolution(dte, companion.CsprojPath);
+                SolutionWiring.EnsureProjectInSolution(companion.CsprojPath);
                 error = null;
                 return true;
             }
@@ -603,26 +602,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         private static IVsHierarchy FindHierarchy(string projectFile)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            if (!(ServiceProvider.GlobalProvider.GetService(typeof(SVsSolution)) is IVsSolution solution))
-            {
-                return null;
-            }
-            Guid ignored = Guid.Empty;
-            if (ErrorHandler.Failed(solution.GetProjectEnum((uint)__VSENUMPROJFLAGS.EPF_LOADEDINSOLUTION, ref ignored, out IEnumHierarchies hierarchies)) || hierarchies == null)
-            {
-                return null;
-            }
-            var buffer = new IVsHierarchy[1];
-            while (hierarchies.Next(1, buffer, out uint fetched) == VSConstants.S_OK && fetched == 1)
-            {
-                if (buffer[0] is IVsProject project &&
-                    ErrorHandler.Succeeded(project.GetMkDocument(VSConstants.VSITEMID_ROOT, out string mkDocument)) &&
-                    string.Equals(mkDocument, projectFile, StringComparison.OrdinalIgnoreCase))
-                {
-                    return buffer[0];
-                }
-            }
-            return null;
+            return SolutionWiring.FindProjectByFullPath(projectFile);
         }
 
         /// <summary>

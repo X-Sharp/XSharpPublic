@@ -12,8 +12,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using EnvDTE;
-using EnvDTE80;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio;
@@ -62,14 +60,13 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             new Dictionary<string, List<ShadowDesignerBridge.CompanionLocation>>(StringComparer.OrdinalIgnoreCase);
 
         private readonly IVsRunningDocumentTable _rdt;
-        private readonly DTE2 _dte;
         private bool _syncing;
 
-        private CompanionSaveWatcher(IVsRunningDocumentTable rdt, DTE2 dte)
+        private CompanionSaveWatcher(IVsRunningDocumentTable rdt)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             _rdt = rdt;
-            _dte = dte;
-            _rdt.AdviseRunningDocTableEvents(this, out _);
+            ErrorHandler.ThrowOnFailure(_rdt.AdviseRunningDocTableEvents(this, out _));
         }
 
         /// <summary>
@@ -87,13 +84,9 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 {
                     if (_instance == null)
                     {
-                        var rdt = services.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
-                        var dte = services.GetService(typeof(SDTE)) as DTE2;
-                        if (rdt == null || dte == null)
-                        {
-                            return;
-                        }
-                        _instance = new CompanionSaveWatcher(rdt, dte);
+                        var rdt = services.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable
+                            ?? throw new InvalidOperationException("Could not obtain the running document table for shadow designer synchronization.");
+                        _instance = new CompanionSaveWatcher(rdt);
                     }
                 }
             }
@@ -118,9 +111,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             ThreadHelper.ThrowIfNotOnUIThread();
             if (_syncing)
             {
-                // Re-entrancy guard: File.SaveAll below can itself trigger further
-                // OnAfterSave callbacks (for other dirty documents) -- without this, that
-                // could recurse indefinitely.
+                // Saving other dirty RDT documents triggers further OnAfterSave callbacks.
                 return VSConstants.S_OK;
             }
 
@@ -148,7 +139,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 // different editor tab (e.g. a new handler stub in Form1.cs while only
                 // Form1.Designer.cs was just saved). Force both current first, same safety
                 // net the manual sync commands already use.
-                _dte.ExecuteCommand("File.SaveAll");
+                SaveDirtyDocuments();
                 EventHandlerSync.Sync(location);
                 DesignerChangesSync.Sync(location);
                 CompanionResourceSync.Sync(location);
@@ -209,6 +200,18 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             }
         }
 
+        private void SaveDirtyDocuments()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            int hr = _rdt.SaveDocuments((uint)__VSRDTSAVEOPTIONS.RDTSAVEOPT_SaveIfDirty,
+                null, VSConstants.VSITEMID_NIL, VSConstants.VSCOOKIE_NIL);
+            ErrorHandler.ThrowOnFailure(hr);
+            if (hr != VSConstants.S_OK)
+            {
+                throw new InvalidOperationException("Saving documents was cancelled; shadow designer synchronization was not performed.");
+            }
+        }
+
         private string GetDocumentMoniker(uint docCookie)
         {
             int hr = _rdt.GetDocumentInfo(docCookie, out _, out _, out _, out string moniker, out _, out _, out _);
@@ -254,7 +257,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 // Same reasoning as OnAfterSave: the sync command reads from disk, and the
                 // Designer's own navigation flow may have flushed its pending edits into the
                 // companion buffer without that being on disk yet.
-                _dte.ExecuteCommand("File.SaveAll");
+                SaveDirtyDocuments();
                 result = EventHandlerSync.Sync(location);
                 CompanionResourceSync.Sync(location);
             }
@@ -366,13 +369,14 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 Logger.Exception(ex, "CompanionSaveWatcher.RedirectNowAsync: CloseFrame failed");
             }
 
-            _dte.ItemOperations.OpenFile(location.MainPrgPath, EnvDTE.Constants.vsViewKindTextView);
+            VsShellUtilities.OpenDocument(ServiceProvider.GlobalProvider, location.MainPrgPath,
+                VSConstants.LOGVIEWID.TextView_guid, out _, out _, out IVsWindowFrame frame);
 
             if (handlerName == null)
             {
                 Logger.Information("CompanionSaveWatcher.RedirectNowAsync: could not resolve a target handler -- left caret at file open position.");
             }
-            else if (!await NavigateToMethodAsync(location.MainPrgPath, handlerName))
+            else if (!await NavigateToMethodAsync(frame, location.MainPrgPath, handlerName))
             {
                 Logger.Error($"CompanionSaveWatcher.RedirectNowAsync: could not navigate to handler '{handlerName}' -- left caret at file open position.");
             }
@@ -425,7 +429,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
 
         /// <summary>
         /// Positions the caret one line INSIDE "METHOD handlerName(...)" in the just-opened
-        /// active document (the line right after the declaration), rather than on the
+        /// source document (the line right after the declaration), rather than on the
         /// declaration line itself -- lands inside the handler body for both a freshly
         /// generated stub (whose template's next line is always the "// TODO: implement"
         /// comment) and a typical single-line existing handler declaration. Falls back to the
@@ -435,11 +439,10 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// came from a real parse of the companion file already), not meant as a
         /// general-purpose code navigator.
         ///
-        /// _dte.ActiveDocument.Selection isn't necessarily populated the instant the document
-        /// was opened (the editor view can still be finishing initialization) -- poll briefly
-        /// rather than fail on the first null read.
+        /// The returned frame's text view may still be initializing; poll that frame briefly
+        /// rather than navigating whichever document happens to be active.
         /// </summary>
-        private async Task<bool> NavigateToMethodAsync(string prgPath, string handlerName)
+        private async Task<bool> NavigateToMethodAsync(IVsWindowFrame frame, string prgPath, string handlerName)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             string[] lines = File.ReadAllLines(prgPath);
@@ -450,26 +453,45 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 return false;
             }
 
-            TextSelection selection = null;
-            for (int attempt = 0; attempt < 20 && selection == null; attempt++)
+            IVsTextView textView = null;
+            for (int attempt = 0; attempt < 20 && textView == null; attempt++)
             {
-                selection = _dte.ActiveDocument?.Selection as TextSelection;
-                if (selection == null)
+                textView = VsShellUtilities.GetTextView(frame);
+                if (textView == null)
                 {
                     await Task.Delay(50);
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 }
             }
 
-            if (selection == null)
+            if (textView == null)
             {
-                Logger.Error($"CompanionSaveWatcher.NavigateToMethodAsync: gave up waiting for a TextSelection on {prgPath}.");
+                Logger.Error($"CompanionSaveWatcher.NavigateToMethodAsync: gave up waiting for the text view of {prgPath}.");
                 return false;
             }
 
-            int targetLine = (declLineIndex + 1 < lines.Length) ? declLineIndex + 2 : declLineIndex + 1; // 1-based; +2 = the line after the declaration
-            selection.MoveToLineAndOffset(targetLine, 1);
-            selection.SelectLine();
+            int targetLine = (declLineIndex + 1 < lines.Length) ? declLineIndex + 1 : declLineIndex;
+            ErrorHandler.ThrowOnFailure(textView.GetBuffer(out IVsTextLines buffer));
+            ErrorHandler.ThrowOnFailure(buffer.GetLineCount(out int lineCount));
+            int endLine = targetLine;
+            int endColumn;
+            if (targetLine + 1 < lineCount)
+            {
+                endLine++;
+                endColumn = 0;
+            }
+            else
+            {
+                ErrorHandler.ThrowOnFailure(buffer.GetLengthOfLine(targetLine, out endColumn));
+            }
+            ErrorHandler.ThrowOnFailure(textView.SetSelection(targetLine, 0, endLine, endColumn));
+            ErrorHandler.ThrowOnFailure(textView.EnsureSpanVisible(new TextSpan
+            {
+                iStartLine = targetLine,
+                iStartIndex = 0,
+                iEndLine = endLine,
+                iEndIndex = endColumn,
+            }));
             return true;
         }
 

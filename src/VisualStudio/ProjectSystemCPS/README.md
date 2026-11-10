@@ -288,12 +288,16 @@ designer therefore opens X# forms through a generated **companion C# project**:
    companion project `<Project>.ShadowDesigner\<Project>.ShadowDesigner.csproj` next to the project folder
    (`CompanionProjectWriter`). The companion gets the target framework of the loaded project and its resolved
    references. `XSharp.SDK.Props` excludes `**/*.ShadowDesigner/**` from X# projects.
-2. **Solution:** `SolutionWiring` adds the companion to the solution folder "Shadow Designer (generated)" and opens
-   `Form1.Designer.cs` in the designer.
+2. **Solution:** `SolutionWiring` uses `IVsSolution6` to add the companion to the solution folder
+   "Shadow Designer (generated)" and `VsShellUtilities.OpenDocument` to open `Form1.cs` in the designer.
+   Solution folders and stale project references are managed through `IVsSolution` and hierarchy interfaces,
+   without EnvDTE automation. Missing generated files are included through `IVsProject3.AddItemWithSpecific`
+   without opening their code views.
 3. **Saving:** `CompanionSaveWatcher` and `DesignerChangesSync` write the designer's changes back as X#
    (`Form1.Designer.prg`) with the X# CodeDOM generator; `EventHandlerSync` adds event handlers to `Form1.prg`.
    The context menu commands "Sync Designer Changes From Shadow Designer" and "Sync Event Handlers From Shadow Designer"
-   do the same on demand.
+   do the same on demand. Automatic synchronization first flushes dirty documents through `IVsRunningDocumentTable`.
+   Event-handler navigation opens the real `.prg` and selects the handler line through its frame's `IVsTextView`.
 4. **Cleanup:** `ShadowDesignerCleanup` removes the companion projects and their folders when the solution closes
    (with retries while the designer host still locks a folder, and cancellation when the companion is used again).
 
@@ -470,6 +474,19 @@ database `X#Model.xsdb`).
   characters.
 - **GAC'd assemblies** (3.4) can be tested outside Visual Studio with a small console program that has
   `<developmentMode developerInstallation="true"/>` in its `.config` and `DEVPATH` pointing to the build output.
+
+### 7.4 Shadow designer smoke checks
+
+Use the WinForms test bed in the experimental instance with the rebuilt extension:
+
+- Open a form twice, then a second form: one generated solution folder and one companion project should be reused;
+  the designer should open without leaving generated C# code tabs visible.
+- Change a control and create an event handler, then save: both companion buffers must be saved before synchronization,
+  the X# designer code must update, and navigation must select the line inside the handler in the real `.prg`.
+- Navigate to an existing handler and switch active documents during deferred navigation: only the target `.prg`
+  should receive the selection. Check both a normal handler and a declaration on the last line of a file.
+- Reopen a test solution containing a stale/missing companion reference: opening the designer should recover it.
+  Close the solution and check that generated projects and their empty solution folder are removed.
 
 ---
 

@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using System;
 using XSharpModel;
+using XSharp.LanguageService.ForeignSource;
 using XSharp.Settings;
 using XSharp.Support;
 namespace XSharp.LanguageService
@@ -66,6 +67,14 @@ namespace XSharp.LanguageService
                         }
                         else
                         {
+                            return;
+                        }
+                        // a symbol from a C# or VB project of the solution: its source
+                        var foreign = ForeignNavigator.Find(petype, pesymbol);
+                        if (foreign.Count > 0)
+                        {
+                            foreach (var target in foreign)
+                                peekableItems.Add(new XSharpDefinitionPeekItem(target, _peekResultFactory));
                             return;
                         }
                         var entity = XSharpGotoDefinition.FindSystemElement(petype, pesymbol);

@@ -99,6 +99,64 @@ BEGIN NAMESPACE XSharp.VFP.UI.Tests
             END TRY
         END METHOD
 
+        // CNTBAR() is the highest bar number, not how many bars were defined
+        [Fact, Trait("Category", "MenuFunctions")];
+        METHOD CntBarReturnsTheHighestBarNumber AS VOID
+            DEFINE POPUP mdt_pop5
+            DEFINE BAR 1 OF mdt_pop5 PROMPT "\<Open"
+            DEFINE BAR 2 OF mdt_pop5 PROMPT "\-"
+            DEFINE BAR 5 OF mdt_pop5 PROMPT "Exit"
+            DEFINE POPUP mdt_pop6
+            DEFINE BAR 10 OF mdt_pop6 PROMPT "Ten"
+            DEFINE BAR 20 OF mdt_pop6 PROMPT "Twenty"
+            TRY
+                Assert.Equal(5, (INT) CNTBAR("mdt_pop5"))
+                Assert.Equal(5, (INT) CNTBAR("MDT_POP5"))
+                Assert.Equal(20, (INT) CNTBAR("mdt_pop6"))
+            FINALLY
+                RELEASE POPUPS mdt_pop5, mdt_pop6
+            END TRY
+        END METHOD
+
+        [Fact, Trait("Category", "MenuFunctions")];
+        METHOD CntBarCountsASeparatorAtTheEnd AS VOID
+            DEFINE POPUP mdt_pop7
+            DEFINE BAR 1 OF mdt_pop7 PROMPT "Open"
+            DEFINE BAR 2 OF mdt_pop7 PROMPT "Save"
+            DEFINE BAR 3 OF mdt_pop7 PROMPT "\-"
+            TRY
+                Assert.Equal(3, (INT) CNTBAR("mdt_pop7"))
+            FINALLY
+                RELEASE POPUPS mdt_pop7
+            END TRY
+        END METHOD
+
+        [Fact, Trait("Category", "MenuFunctions")];
+        METHOD CntBarIsZeroForAnEmptyOrUnknownPopup AS VOID
+            DEFINE POPUP mdt_pop8
+            TRY
+                Assert.Equal(0, (INT) CNTBAR("mdt_pop8"))
+                Assert.Equal(0, (INT) CNTBAR("nosuchpopup"))
+            FINALLY
+                RELEASE POPUPS mdt_pop8
+            END TRY
+        END METHOD
+
+        [Fact, Trait("Category", "MenuFunctions")];
+        METHOD CntPadReturnsTheNumberOfPads AS VOID
+            DEFINE MENU mdt_m4 BAR
+            TRY
+                Assert.Equal(0, (INT) CNTPAD("mdt_m4"))
+                DEFINE PAD mdt_p1 OF mdt_m4 PROMPT "\<File"
+                DEFINE PAD mdt_p2 OF mdt_m4 PROMPT "Edit"
+                Assert.Equal(2, (INT) CNTPAD("mdt_m4"))
+                Assert.Equal(2, (INT) CNTPAD("MDT_M4"))
+                Assert.Equal(0, (INT) CNTPAD("nosuchmenu"))
+            FINALLY
+                RELEASE MENUS mdt_m4
+            END TRY
+        END METHOD
+
         // BAR(), POPUP(), PAD() and MENU() describe the last selection, inside the
         // handler and after it. BAR() is the bar number from DEFINE BAR.
         [Fact, Trait("Category", "MenuFunctions")];

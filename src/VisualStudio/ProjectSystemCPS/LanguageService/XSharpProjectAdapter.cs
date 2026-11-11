@@ -816,8 +816,7 @@ namespace XSharp.ProjectSystem.LanguageService
             // References to other projects arrive as /reference: to their output assembly in the command line.
             var current = new HashSet<string>(
                 snapshot.Items.Keys
-                    .Select(item => XSharpCommandLine.MakeFullPath(item, ProjectFolder))
-                    .Where(XProject.IsXSharpProject),
+                    .Select(item => XSharpCommandLine.MakeFullPath(item, ProjectFolder)),
                 StringComparer.OrdinalIgnoreCase);
             foreach (var removed in projectReferences.Where(r => !current.Contains(r)).ToList())
             {

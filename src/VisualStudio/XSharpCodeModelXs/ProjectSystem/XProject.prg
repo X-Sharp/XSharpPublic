@@ -1714,6 +1714,13 @@ CLASS XProject
         END GET
     END PROPERTY
 
+    /// <summary>The referenced projects and their output DLLs (key = project file, value = output DLL).</summary>
+    PROPERTY ProjectOutputs AS KeyValuePair<STRING, STRING>[]
+        GET
+            RETURN SELF:_projectOutputDLLs:ToArray()
+        END GET
+    END PROPERTY
+
 #endregion
 
     PRIVATE METHOD WriteOutputMessage(message AS STRING) AS VOID

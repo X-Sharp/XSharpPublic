@@ -14,6 +14,7 @@ using Microsoft.VisualStudio.Shell.FindAllReferences;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Threading;
 using XSharp.LanguageService.FindReferences;
+using XSharp.LanguageService.ForeignSource;
 using XSharp.LanguageService.GoToImplementation;
 using XSharp.Settings;
 using XSharp.Support;
@@ -172,6 +173,22 @@ namespace XSharp.LanguageService.Commands
                 XSharpGotoDefinition.Goto(symbol, textView, state);
         }
 
+        /// <summary>One row for a DLL symbol from a C# or VB project of the solution: its declaration in that source.</summary>
+        private static ReferenceHit ForeignHit(IXSymbol symbol)
+        {
+            IReadOnlyList<ForeignLocation> found = null;
+            if (symbol is XPETypeSymbol peType)
+                found = ForeignNavigator.Find(peType, peType);
+            else if (symbol is XPEMemberSymbol peMember && peMember.Parent is XPETypeSymbol parent)
+                found = ForeignNavigator.Find(parent, peMember);
+            if (found == null || found.Count == 0)
+                return null;
+            var first = found[0];
+            var lineText = System.IO.File.Exists(first.FilePath)
+                ? System.IO.File.ReadLines(first.FilePath).Skip(first.StartLine).FirstOrDefault() : null;
+            return DeclarationHit.Create(first.FilePath, null, first.StartLine, first.StartColumn, lineText, first.Name, first.ContainerName);
+        }
+
         /// <summary>One row: the declaration, for a DLL symbol in the generated source F12 opens.</summary>
         private static ReferenceHit Hit(object result, SourceHierarchy hierarchy)
         {
@@ -182,6 +199,9 @@ namespace XSharp.LanguageService.Commands
                     row.StartLine, row.StartColumn, row.SourceCode, node.Name, node.FullName);
             }
             var symbol = result as IXSymbol;
+            var foreign = ForeignHit(symbol);
+            if (foreign != null)
+                return foreign;
             var entity = symbol as XSourceEntity;
             if (entity == null && symbol is XPETypeSymbol peType)
                 entity = XSharpGotoDefinition.FindSystemElement(peType, peType);

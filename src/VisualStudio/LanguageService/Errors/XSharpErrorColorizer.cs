@@ -14,6 +14,7 @@ using Microsoft.VisualStudio.Text.Adornments;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 using XSharpModel;
+using LanguageService.SyntaxTree;
 
 namespace XSharp.LanguageService
 {
@@ -136,20 +137,37 @@ namespace XSharp.LanguageService
             {
                 return false;
             }
-
             var line = snapshot.GetLineFromLineNumber(lineNumber);
             if (line.Length == 0)
             {
                 return false;
             }
-
             int start = line.Start.Position + Math.Max((int)error.Column - 1, 0);
             if (start >= line.End.Position)
             {
                 start = line.End.Position - 1;
             }
 
+            var doc = snapshot.TextBuffer.GetDocument();
+            var tokens = doc?.GetTokensInSingleLine(line, true);
+
+            // find token for line & column number
+            IToken token = null;
+            if ( tokens != null)
+            {
+                foreach (var t in tokens)
+                {
+                    if (t.Line == lineNumber + 1 && t.StartIndex <= start && start < t.StopIndex)
+                    {
+                        token = t;
+                        break;
+                    }
+                }
+            }
+
             int length = Math.Max((int)error.Length, 1);
+            if (token != null)
+                length = token.Text.Length;
             int end = Math.Min(start + length, line.End.Position);
             if (end <= start)
             {

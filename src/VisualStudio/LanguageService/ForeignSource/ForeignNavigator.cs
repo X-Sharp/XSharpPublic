@@ -89,6 +89,7 @@ namespace XSharp.LanguageService.ForeignSource
         /// <summary>Several declarations (partial classes): the Find All References list, as Go To Implementation shows them.</summary>
         internal static void Present(IReadOnlyList<ForeignLocation> locations, IXSymbol target, string title)
         {
+#pragma warning disable VSSDK007
             ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
             {
                 try
@@ -109,10 +110,12 @@ namespace XSharp.LanguageService.ForeignSource
                 }
             }).FileAndForget("XSharp/ForeignNavigator/Present");
         }
-
+#pragma warning restore VSSDK007
         private static VisualStudioWorkspace Workspace()
         {
+#pragma warning disable VSTHRD010
             var componentModel = ServiceProvider.GlobalProvider.GetService(typeof(SComponentModel)) as IComponentModel;
+#pragma warning restore VSTHRD010
             return componentModel?.GetService<VisualStudioWorkspace>();
         }
 

@@ -288,6 +288,7 @@ designer therefore opens X# forms through a generated **companion C# project**:
    companion project `<Project>.ShadowDesigner\<Project>.ShadowDesigner.csproj` next to the project folder
    (`CompanionProjectWriter`). The companion gets the target framework of the loaded project and its resolved
    references. `XSharp.SDK.Props` excludes `**/*.ShadowDesigner/**` from X# projects.
+<<<<<<< HEAD
 2. **Solution:** `SolutionWiring` uses `IVsSolution6` to add the companion to the solution folder
    "Shadow Designer (generated)" and `VsShellUtilities.OpenDocument` to open `Form1.cs` in the designer.
    Solution folders and stale project references are managed through `IVsSolution` and hierarchy interfaces,
@@ -298,6 +299,14 @@ designer therefore opens X# forms through a generated **companion C# project**:
    The context menu commands "Sync Designer Changes From Shadow Designer" and "Sync Event Handlers From Shadow Designer"
    do the same on demand. Automatic synchronization first flushes dirty documents through `IVsRunningDocumentTable`.
    Event-handler navigation opens the real `.prg` and selects the handler line through its frame's `IVsTextView`.
+=======
+2. **Solution:** `SolutionWiring` adds the companion to the solution folder "Shadow Designer (generated)" and opens
+   `Form1.Designer.cs` in the designer.
+3. **Saving:** `CompanionSaveWatcher` and `DesignerChangesSync` write the designer's changes back as X#
+   (`Form1.Designer.prg`) with the X# CodeDOM generator; `EventHandlerSync` adds event handlers to `Form1.prg`.
+   The context menu commands "Sync Designer Changes From Shadow Designer" and "Sync Event Handlers From Shadow Designer"
+   do the same on demand.
+>>>>>>> remotes/origin/main
 4. **Cleanup:** `ShadowDesignerCleanup` removes the companion projects and their folders when the solution closes
    (with retries while the designer host still locks a folder, and cancellation when the companion is used again).
 
@@ -475,6 +484,7 @@ database `X#Model.xsdb`).
 - **GAC'd assemblies** (3.4) can be tested outside Visual Studio with a small console program that has
   `<developmentMode developerInstallation="true"/>` in its `.config` and `DEVPATH` pointing to the build output.
 
+<<<<<<< HEAD
 ### 7.4 Shadow designer smoke checks
 
 Use the WinForms test bed in the experimental instance with the rebuilt extension:
@@ -488,6 +498,8 @@ Use the WinForms test bed in the experimental instance with the rebuilt extensio
 - Reopen a test solution containing a stale/missing companion reference: opening the designer should recover it.
   Close the solution and check that generated projects and their empty solution folder are removed.
 
+=======
+>>>>>>> remotes/origin/main
 ---
 
 ## 8. Troubleshooting

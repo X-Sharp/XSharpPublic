@@ -118,6 +118,11 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             string path = GetDocumentMoniker(docCookie);
             if (string.IsNullOrEmpty(path))
             {
+                // Not Form1.cs/Form1.Designer.cs -- still worth checking whether this is a
+                // .resx living directly in a known companion folder (e.g. a new
+                // Form1.nl.resx from changing the form's Language property), since that can
+                // be saved without either code file ever becoming dirty.
+                TryHandleResxOnlySave(path);
                 return VSConstants.S_OK;
             }
 

@@ -19,6 +19,7 @@ namespace XSharp.LanguageService.Tests
             var type = new XSourceTypeSymbol("Crate", Kind.Class, Modifiers.Public, new TextRange(1, 1, 10, 1), new TextInterval(0, 100), null, null);
             Assert.Equal(new IXSymbol[] { type }, XSharpGotoDefinition.Targets(new List<IXSymbol> { new XKeywordSymbol("CLASS"), type }));
         }
+<<<<<<< HEAD
 
         private static XSourceMemberSymbol Method(string name, params (string Name, string Type)[] parameters)
         {
@@ -74,5 +75,7 @@ namespace XSharp.LanguageService.Tests
         {
             Assert.Equal(new IXSymbol[] { OpenKey }, PickAt("c:Open()\n", "Open", OpenKey));
         }
+=======
+>>>>>>> remotes/origin/main
     }
 }

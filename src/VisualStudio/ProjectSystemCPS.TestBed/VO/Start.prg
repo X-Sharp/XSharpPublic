@@ -10,15 +10,15 @@ FUNCTION Start() AS INT
 RETURN 0
 
 CLASS XApp INHERIT App
-METHOD Start() 
+METHOD Start()
     LOCAL oMainWindow AS StandardSDIWindow
 
     oMainWindow := StandardSDIWindow{SELF}
     oMainWindow:Show(SHOWCENTERED)
 
     SELF:Exec()
-    
-RETURN SELF    
+
+RETURN SELF
 
 
 END CLASS

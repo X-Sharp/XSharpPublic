@@ -41,6 +41,9 @@
     <XSharpAssembliesDir>$([MSBuild]::EnsureTrailingSlash('$(XSharpInstallDir)'))Assemblies\</XSharpAssembliesDir>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ClassLibrary1\ClassLibrary1.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="XSharp.Core" HintPath="$(XSharpAssembliesDir)XSharp.Core.dll" />
     <Reference Include="XSharp.RT" HintPath="$(XSharpAssembliesDir)XSharp.RT.dll" />
     <Reference Include="XSharp.VO" HintPath="$(XSharpAssembliesDir)XSharp.VO.dll" />

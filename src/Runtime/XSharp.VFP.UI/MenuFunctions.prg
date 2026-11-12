@@ -7,7 +7,8 @@
 // VFP-compatible menu information functions.
 // BAR(), PAD(), POPUP(), MENU() read from MenuState, which Bar.OnVFPClick
 // populates before dispatching each handler.
-// MRKBAR/MRKPAD/PRMBAR/PRMPAD look up the named registry on Popup/Menu.
+// MRKBAR/MRKPAD/PRMBAR/PRMPAD and CNTBAR/CNTPAD look up the named registry
+// on Popup/Menu.
 
 USING XSharp.VFP.UI
 
@@ -102,6 +103,47 @@ FUNCTION PRMPAD( cMenuName AS STRING, cPadName AS STRING ) AS STRING
 		NEXT
 	ENDIF
 	RETURN ""
+
+/// <summary>
+/// Returns the number of bars of a popup. VFP reports the highest bar number given in
+/// DEFINE BAR, so a separator and a gap in the numbering count as well.
+/// Returns 0 for an empty or unknown popup.
+/// <paramref name="cPopupName"/> — name of the Popup.
+/// </summary>
+[FoxProFunction("CNTBAR", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
+FUNCTION CNTBAR( cPopupName AS STRING ) AS INT
+	LOCAL nCount := 0 AS INT
+	IF String.IsNullOrEmpty( cPopupName )
+		RETURN 0
+	ENDIF
+	// the separators are items of the popup but not Bar objects, so go through the items
+	IF __VFPFindPopupContainer( cPopupName ) IS System.Windows.Forms.ToolStrip VAR oStrip
+		LOCAL i AS INT
+		FOR i := 0 TO oStrip:Items:Count - 1
+			LOCAL nNumber AS INT
+			// a bar created from code without a numeric name counts by its position
+			IF ! Int32.TryParse( oStrip:Items[i]:Name, OUT nNumber )
+				nNumber := i + 1
+			ENDIF
+			nCount := Math.Max( nCount, nNumber )
+		NEXT
+	ENDIF
+	RETURN nCount
+
+/// <summary>
+/// Returns the number of pads of a menu. Returns 0 for an empty or unknown menu.
+/// <paramref name="cMenuName"/> — name of the Menu.
+/// </summary>
+[FoxProFunction("CNTPAD", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
+FUNCTION CNTPAD( cMenuName AS STRING ) AS INT
+	IF String.IsNullOrEmpty( cMenuName )
+		RETURN 0
+	ENDIF
+	LOCAL oMenu := Menu.Find( cMenuName ) AS Menu
+	IF oMenu != NULL
+		RETURN oMenu:PadCount
+	ENDIF
+	RETURN 0
 
 
 /// <summary>The prompt of a bar or pad the way PRMBAR() and PRMPAD() report it.</summary>

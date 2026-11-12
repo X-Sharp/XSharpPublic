@@ -4,16 +4,6 @@
 // See License.txt in the project root for license information.
 //
 
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/cntbar/*" />
-[FoxProFunction("CNTBAR", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
-FUNCTION CntBar(cPopupName AS STRING) AS INT
-    THROW NotImplementedException{}
-
-/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/cntpad/*" />
-[FoxProFunction("CNTPAD", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Stub, FoxCriticality.Medium)];
-FUNCTION CntPad(cMenuName AS STRING) AS INT
-    THROW NotImplementedException{}
-
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/col/*" />
 [FoxProFunction("COL", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION Col() AS INT

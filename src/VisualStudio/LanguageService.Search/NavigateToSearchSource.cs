@@ -7,10 +7,13 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Core.Imaging;
 using Microsoft.VisualStudio.Search.Data;
+using Microsoft.VisualStudio.Search.UI.PreviewPanel.Models;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Threading;
 using Microsoft.VisualStudio.Utilities;
 using XSharp.Settings;
@@ -51,7 +54,43 @@ namespace XSharp.LanguageService.NavigateTo
 
         public Task<IReadOnlyList<SearchResultPreviewPanelBase>> GetPreviewPanelsAsync(SearchResult searchResult, SearchResultViewBase searchResultView)
         {
-            return Task.FromResult<IReadOnlyList<SearchResultPreviewPanelBase>>(Array.Empty<SearchResultPreviewPanelBase>());
+            IReadOnlyList<SearchResultPreviewPanelBase> panels = Array.Empty<SearchResultPreviewPanelBase>();
+            if (searchResult is XSharpSearchResult result && !string.IsNullOrEmpty(result.Entry.FilePath))
+            {
+                try
+                {
+                    panels = new SearchResultPreviewPanelBase[] { new XSharpSearchResultPreviewPanel(result.Entry, searchResultView) };
+                }
+                catch (Exception ex)
+                {
+                    // a path that is no Uri: no preview
+                    Logger.Exception(ex, "Navigate To: preview failed");
+                }
+            }
+            return Task.FromResult(panels);
+        }
+    }
+
+    /// <summary>
+    /// The preview of a result: the file in the editor of the search window, at the declaration. The search window
+    /// hosts it, so the focus stays in the search box.
+    /// </summary>
+    internal sealed class XSharpSearchResultPreviewPanel : SearchResultPreviewPanelBase
+    {
+        public override UIBaseModel UserInterface { get; }
+
+        internal XSharpSearchResultPreviewPanel(NavigateToEntry entry, SearchResultViewBase view)
+            : base(view?.Title?.Text ?? entry.Name, view?.PrimaryIcon ?? default)
+        {
+            // lines and columns are 0 based, as in the code model; no project: the file may be in several
+            var location = new TextDocumentLocation(new Uri(entry.FilePath), Guid.Empty, entry.Line, entry.Column, entry.Line, entry.Column);
+            // new CodeEditorModel(id, new AsyncLazy<TextDocumentLocation>(...), isEditable: true), by reflection:
+            // Microsoft.VisualStudio.Search.dll is built against the Microsoft.VisualStudio.Threading of its own
+            // Visual Studio, newer than the one of our SDK package, and the compiler refuses that AsyncLazy (CS1705)
+            var constructor = typeof(CodeEditorModel).GetConstructors().First(c => c.GetParameters().Length == 3);
+            Func<Task<TextDocumentLocation>> factory = () => Task.FromResult(location);
+            var lazy = Activator.CreateInstance(constructor.GetParameters()[1].ParameterType, factory, ThreadHelper.JoinableTaskFactory);
+            UserInterface = (UIBaseModel)constructor.Invoke(new object[] { nameof(XSharpSearchResultPreviewPanel), lazy, true });
         }
     }
 

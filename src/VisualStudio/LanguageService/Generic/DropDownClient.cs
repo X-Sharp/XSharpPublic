@@ -174,6 +174,9 @@ namespace XSharp.LanguageService
             });
         }
 
+        /// <summary>The role of the editor in the preview of the Code Search window.</summary>
+        private const string SearchPreviewRole = "SEARCH_RESULT_PREVIEW";
+
         internal void addTextView(ITextView textView, IVsTextView textViewAdapter)
         {
             if (!_textViews.ContainsKey(textView))
@@ -185,9 +188,10 @@ namespace XSharp.LanguageService
                 textView.Closed += TextView_Closed;
                 if (textView.Caret != null)
                     textView.Caret.PositionChanged += Caret_PositionChanged;
-                StartOnIdleAsync(textViewAdapter).FireAndForget();
-
-
+                // The preview of the Code Search (Ctrl+T) must not take the focus (InitCaret sends it to the new
+                // view when the file is already open in an editor): the keys typed for the search would change the code.
+                if (!textView.Roles.Contains(SearchPreviewRole))
+                    StartOnIdleAsync(textViewAdapter).FireAndForget();
             }
         }
         // This moves the caret to trigger initial drop down load

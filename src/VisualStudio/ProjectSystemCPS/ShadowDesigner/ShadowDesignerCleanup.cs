@@ -11,9 +11,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Xml;
+
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+
+using Community.VisualStudio.Toolkit;
+
 
 namespace XSharp.ProjectSystem.ShadowDesigner
 {
@@ -73,7 +78,86 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             }
             _vsSolution = (IVsSolution)solutionService;
             ErrorHandler.ThrowOnFailure(_vsSolution.AdviseSolutionEvents(this, out _eventsCookie));
+			// Trigger cleanup before solution is closed
+            VS.Commands.InterceptAsync(VSConstants.VSStd97CmdID.CloseSolution, () =>
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                CleanupAndSave();
+                return CommandProgression.Continue;
+            }).FileAndForget("XSharp/ShadowDesigner/CloseSolution");
+            VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_OnBeforeCloseSolution;
+            VS.Events.SolutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
         }
+
+        string solutionName = "";
+        private void SolutionEvents_OnBeforeCloseSolution()
+        {
+            solutionName = VS.Solutions.GetCurrentSolution().FullPath;
+        }
+
+        private void SolutionEvents_OnAfterCloseSolution()
+        {
+            const string folderName = "Shadow Designer (generated)";
+            if (File.Exists(solutionName))
+            {
+                var files = new List<string>();
+                foreach (var file in _companionCsprojPaths)
+                {
+                    files.Add(System.IO.Path.GetFileName(file));
+                }
+
+                var text = File.ReadAllText(solutionName);
+                // Slnx?
+                if (text.StartsWith("<"))
+                {
+                    var reader = new StreamReader(solutionName);
+                    var doc = new System.Xml.XmlDocument();
+                    doc.Load(reader);
+                    reader.Close();
+                    XmlNode root = doc.DocumentElement;
+                    var nodes = root.SelectNodes("Folder");
+                    foreach (XmlNode node in nodes)
+                    {
+                        if (node.OuterXml.Contains(folderName))
+                        {
+                            root.RemoveChild(node);
+                        }
+                    }
+                    doc.Save(solutionName);
+                    return;
+
+                }
+                // Sln
+                var lines = File.ReadAllLines(solutionName);
+
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    var line = lines[i];
+                    foreach (var file in files)
+                    {
+                        if (line.IndexOf(file, StringComparison.OrdinalIgnoreCase) >= 0)
+                        {
+                            lines[i] = "";
+                            lines[i + 1] = "";
+                        }
+                    }
+                    if (line.IndexOf(folderName, StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        lines[i] = "";
+                        lines[i + 1] = "";
+                    }
+                }
+                File.WriteAllLines(solutionName, lines);
+            }
+            solutionName = "";
+        }
+
+        private void CleanupAndSave()
+        {
+            CleanupSolution();
+            VS.Commands.ExecuteAsync(VSConstants.VSStd97CmdID.SaveSolution).FileAndForget("XSharp/ShadowDesigner/SaveSolution");
+        }
+
 
         /// <summary>
         /// Registers a companion project for cleanup on solution close, lazily advising
@@ -117,13 +201,8 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             }
         }
 
-        public int OnQueryCloseSolution(object reserved, ref int cancel)
+        private void CleanupSolution()
         {
-            // Another listener already cancelled the close: the solution stays open, keep the companions.
-            if (cancel != 0)
-            {
-                return VSConstants.S_OK;
-            }
             if (_vsSolution != null)
             {
                 foreach (string csprojPath in _companionCsprojPaths)
@@ -156,6 +235,10 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                     Logger.Exception(ex, "ShadowDesignerCleanup: could not remove the Solution Folder");
                 }
             }
+        }
+
+        public int OnQueryCloseSolution(object reserved, ref int cancel)
+        {
             return VSConstants.S_OK;
         }
 

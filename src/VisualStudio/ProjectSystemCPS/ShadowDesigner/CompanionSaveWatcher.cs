@@ -6,12 +6,15 @@
 // Moved from ProjectPackage, which suppresses VSTHRD010 for the whole project: the UI thread
 // requirements of this code are handled explicitly (ThreadHelper) and were not rewritten.
 #pragma warning disable VSTHRD010
+
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio;
@@ -19,6 +22,12 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.Threading;
+
+using Community.VisualStudio.Toolkit;
+
+
+using static XSharp.ProjectSystem.ShadowDesigner.ShadowDesignerBridge;
+
 
 namespace XSharp.ProjectSystem.ShadowDesigner
 {
@@ -47,8 +56,8 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         // Keyed by normalized full path of either companion file (Form1.cs or
         // Form1.Designer.cs) -> the location to sync. A single process-wide table since the
         // RDT event itself is process/session-wide, not per-project.
-        private static readonly Dictionary<string, ShadowDesignerBridge.CompanionLocation> _watched =
-            new Dictionary<string, ShadowDesignerBridge.CompanionLocation>(StringComparer.OrdinalIgnoreCase);
+        private static readonly ConcurrentDictionary<string, CompanionLocation> _watched =
+            new ConcurrentDictionary<string, CompanionLocation>(StringComparer.OrdinalIgnoreCase);
 
         // Keyed by the companion project's folder -> every form's location known to live
         // there. A .resx the Designer writes (e.g. a newly added Form1.nl.resx from changing
@@ -56,8 +65,8 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         // at all, so it's never a key in _watched above -- this lets OnAfterSave still
         // recognize "a resx under a known companion folder was just saved" and resolve which
         // form it belongs to by filename prefix, via CompanionResourceSync.
-        private static readonly Dictionary<string, List<ShadowDesignerBridge.CompanionLocation>> _companionDirs =
-            new Dictionary<string, List<ShadowDesignerBridge.CompanionLocation>>(StringComparer.OrdinalIgnoreCase);
+        private static readonly ConcurrentDictionary<string, List<CompanionLocation>> _companionDirs =
+            new ConcurrentDictionary<string, List<CompanionLocation>>(StringComparer.OrdinalIgnoreCase);
 
         private readonly IVsRunningDocumentTable _rdt;
         private bool _syncing;
@@ -67,6 +76,23 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             ThreadHelper.ThrowIfNotOnUIThread();
             _rdt = rdt;
             ErrorHandler.ThrowOnFailure(_rdt.AdviseRunningDocTableEvents(this, out _));
+            // Make sure that Debug/Start saves documents first to trigger generating the PRG from the CS file
+            VS.Commands.InterceptAsync(VSConstants.VSStd97CmdID.Start, () =>
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                SaveDirtyDocuments();
+                return CommandProgression.Continue;
+            }).FileAndForget("XSharp/ShadowDesigner/Start");
+
+            VS.Events.SolutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
+
+        }
+
+
+        private void SolutionEvents_OnAfterCloseSolution()
+        {
+            _watched.Clear();
+            _companionDirs.Clear();
         }
 
         /// <summary>
@@ -75,7 +101,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// ShadowDesignerBridge.TryOpenAsync prepares the companion -- idempotent (overwrites any existing
         /// entry for the same paths).
         /// </summary>
-        public static void Watch(IServiceProvider services, ShadowDesignerBridge.CompanionLocation location)
+        public static void Watch(IServiceProvider services, CompanionLocation location)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             if (_instance == null)
@@ -98,7 +124,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             {
                 if (!_companionDirs.TryGetValue(companionDir, out var locations))
                 {
-                    locations = new List<ShadowDesignerBridge.CompanionLocation>();
+                    locations = new List<CompanionLocation>();
                     _companionDirs[companionDir] = locations;
                 }
                 locations.RemoveAll(l => string.Equals(l.MainPrgPath, location.MainPrgPath, StringComparison.OrdinalIgnoreCase));
@@ -204,16 +230,23 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 _syncing = false;
             }
         }
-
+        static bool saving = false;
         private void SaveDirtyDocuments()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            int hr = _rdt.SaveDocuments((uint)__VSRDTSAVEOPTIONS.RDTSAVEOPT_SaveIfDirty,
-                null, VSConstants.VSITEMID_NIL, VSConstants.VSCOOKIE_NIL);
-            ErrorHandler.ThrowOnFailure(hr);
-            if (hr != VSConstants.S_OK)
+			// Prevent recursive calls
+            if (! saving)
             {
-                throw new InvalidOperationException("Saving documents was cancelled; shadow designer synchronization was not performed.");
+                saving = true;
+                int hr = _rdt.SaveDocuments((uint)__VSRDTSAVEOPTIONS.RDTSAVEOPT_SaveIfDirty,
+                    null, VSConstants.VSITEMID_NIL, VSConstants.VSCOOKIE_NIL);
+                ErrorHandler.ThrowOnFailure(hr);
+                if (hr != VSConstants.S_OK)
+                {
+                    throw new InvalidOperationException("Saving documents was cancelled; shadow designer synchronization was not performed.");
+                }
+                saving = false;
+
             }
         }
 
@@ -361,7 +394,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// why the new-handler and existing-handler cases resolve the name differently (one
         /// immediately, one via a deferred continuation).
         /// </summary>
-        private async Task RedirectNowAsync(ShadowDesignerBridge.CompanionLocation location, IVsWindowFrame companionFrame, string handlerName)
+        private async Task RedirectNowAsync(CompanionLocation location, IVsWindowFrame companionFrame, string handlerName)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             try

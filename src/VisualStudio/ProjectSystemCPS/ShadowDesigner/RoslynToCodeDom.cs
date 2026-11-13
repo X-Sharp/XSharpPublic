@@ -114,18 +114,30 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             // Left side is always "target.EventName" (or implicit-this "EventName" -- not
             // observed in practice since events always belong to a field, e.g. oButton1.Click,
             // but handled for robustness).
-            if (!(assignment.Left is MemberAccessExpressionSyntax eventAccess))
+            CodeEventReferenceExpression eventRef;
+            if (assignment.Left is MemberAccessExpressionSyntax eventAccess)
+            {
+                var eventTarget = TranslateExpression(eventAccess.Expression, ctx);
+                if (eventTarget == null)
+                {
+                    ctx.SkippedStatements.Add(assignment.ToString().Trim());
+                    return null;
+                }
+                eventRef = new CodeEventReferenceExpression(eventTarget, eventAccess.Name.Identifier.Text);
+            }
+            else if (assignment.Left is IdentifierNameSyntax eventId)
+            {
+                // A bare identifier on the left of "+=" is an event on the designed type
+                // itself: resolve it as SELF:EventName. It must bypass TranslateExpression's
+                // "unknown identifier -> type reference" fallback, since events are never in
+                // KnownFieldNames.
+                eventRef = new CodeEventReferenceExpression(new CodeThisReferenceExpression(), eventId.Identifier.Text);
+            }
+            else
             {
                 ctx.SkippedStatements.Add(assignment.ToString().Trim());
                 return null;
             }
-            var eventTarget = TranslateExpression(eventAccess.Expression, ctx);
-            if (eventTarget == null)
-            {
-                ctx.SkippedStatements.Add(assignment.ToString().Trim());
-                return null;
-            }
-            var eventRef = new CodeEventReferenceExpression(eventTarget, eventAccess.Name.Identifier.Text);
 
             // Right side: bare method-group ("oButton1_Click") or "new EventHandler(oButton1_Click)".
             ExpressionSyntax handlerExpr = assignment.Right;

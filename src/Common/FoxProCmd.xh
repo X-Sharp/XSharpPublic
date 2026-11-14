@@ -384,6 +384,33 @@
              )); _TALLY := RuntimeState.Tally
 
 
+// DELETE and RECALL with an IN clause take the other clauses in any order in VFP:
+// DELETE ALL FOR x IN t, DELETE NEXT 2 FOR x IN t, RECALL REST WHILE x IN t.
+// The preprocessor accepts the optional clauses of a rule in any order only when
+// nothing mandatory follows them, and in the scoped rules below the IN clause does.
+// These rules are tried when the scoped ones do not match. They move the IN clause
+// to the front, and from there the scoped rules take the rest as it comes.
+// They have no optional markers on purpose: with one in the rule the wild marker
+// would stop at the first FOR or ALL instead of at IN. That is why NOOPTIMIZE after
+// the IN clause has its own rule. The first clause is restricted to the keywords of
+// the command so that DELETE TAG <tag> IN <file> is left alone. The alias goes out
+// as it came in, <a> and not <(a)>, or IN (cAlias) would end up as the name "cAlias".
+#command DELETE <first:ALL,FOR,WHILE,NEXT,RECORD,REST,NOOPTIMIZE>       ;
+         <*clauses*> IN <(a)>                                           ;
+      => DELETE IN <a> <first> <clauses>
+
+#command DELETE <first:ALL,FOR,WHILE,NEXT,RECORD,REST,NOOPTIMIZE>       ;
+         <*clauses*> IN <(a)> NOOPTIMIZE                                ;
+      => DELETE IN <a> <first> <clauses> NOOPTIMIZE
+
+#command RECALL <first:ALL,FOR,WHILE,NEXT,RECORD,REST,NOOPTIMIZE>       ;
+         <*clauses*> IN <(a)>                                           ;
+      => RECALL IN <a> <first> <clauses>
+
+#command RECALL <first:ALL,FOR,WHILE,NEXT,RECORD,REST,NOOPTIMIZE>       ;
+         <*clauses*> IN <(a)> NOOPTIMIZE                                ;
+      => RECALL IN <a> <first> <clauses> NOOPTIMIZE
+
 #command DELETE                                                         ;
          [FOR <lfor>]                                                   ;
          [WHILE <lwhile>]                                               ;

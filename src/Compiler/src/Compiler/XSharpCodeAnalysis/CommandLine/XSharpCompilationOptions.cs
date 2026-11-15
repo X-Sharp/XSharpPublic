@@ -28,7 +28,12 @@ namespace Microsoft.CodeAnalysis.CSharp
 
         #endregion
 
-        internal bool SuppressVo4;
+        [System.ThreadStatic]
+        private static int t_suppressVo4;
+        internal static bool SuppressVo4 => t_suppressVo4 > 0;
+        internal static void EnterSuppressVo4() => t_suppressVo4++;
+        internal static void ExitSuppressVo4() => t_suppressVo4--;
+
         public bool MacroScript { get; private set; }
         public bool VirtualInstanceMethods { get; private set; }
         public bool VOAllowMissingReturns { get; private set; }

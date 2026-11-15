@@ -251,14 +251,14 @@ namespace Microsoft.CodeAnalysis.CSharp
                     try
                     {
                         diagnostics.Clear();
-                        Compilation.Options.SuppressVo4 = true;
+                        CSharpCompilationOptions.EnterSuppressVo4();
                         result = BindXsInvocationExpression(node, diagnostics);
                     }
                     finally
                     {
                         if (originalErrors is not null)
                             diagnostics.AddRange(originalErrors);
-                        Compilation.Options.SuppressVo4 = false;
+                        CSharpCompilationOptions.ExitSuppressVo4();
                     }
                 }
             }

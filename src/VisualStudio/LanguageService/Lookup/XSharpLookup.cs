@@ -694,10 +694,12 @@ namespace XSharp.LanguageService
         {
             Debug.Assert(xVar.ImpliedKind == ImpliedKind.Assignment || xVar.ImpliedKind == ImpliedKind.Using);
             var tokenList = xVar.Expression;
+            if (tokenList?.Count == 0)
+                return null;
             // read before the typecast handling below changes the token list
             var createdName = CreatedTypeName(tokenList);
             // delete tokens between {} and other operators so we get the return type of the outer construct
-            if (tokenList.First().Type == XSharpLexer.LPAREN)
+            if (tokenList?.First().Type == XSharpLexer.LPAREN)
             {
                 // starts with typecast
                 var temp = new List<IToken>();

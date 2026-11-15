@@ -2897,6 +2897,9 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
                     ENDIF
                     SELF:GetSourceInfo(start, LastToken, OUT VAR range, OUT VAR interval, OUT VAR _)
                     VAR xVar := XSourceImpliedVariableSymbol{SELF:CurrentEntity, id, range, interval }
+                    if expr == null
+                        expr := List<IToken>{}
+                    endif
                     xVar:Expression  := expr
                     xVar:ImpliedKind := kind
                     xVar:TypeName    := SELF:TokensAsString(expr):Trim()

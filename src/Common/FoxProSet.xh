@@ -19,6 +19,16 @@
 #command  SET DIRECTORY TO <*path*>   => Set( Set.Default, <(path)> )
 #command  SET DIRECTORY TO            => Set( Set.Default, "" )
 
+// SET PATH TO <path> ADDITIVE
+// VFP reads ADDITIVE as a clause only when the path is an expression: a string,
+// a function call or something between parentheses. After a plain name the
+// word is part of the path, SET PATH TO data ADDITIVE sets the path to
+// "DATA ADDITIVE". The last rule keeps it like that.
+#command  SET PATH TO <path> ADDITIVE     => __VfpSetPathAdditive( <path> )
+#command  SET PATH TO <path:&> ADDITIVE   => __VfpSetPathAdditive( <(path)> )
+#command  SET PATH TO <%path%> ADDITIVE   => Set( Set.Path, <"path"> + " ADDITIVE" )
+#command  SET PATH TO \[ <*path*> \] ADDITIVE  => __VfpSetPathAdditive( #<path> )
+
 ///////////////////////////////////////////////////////////////////////////////
 // SET commands for the Old Get system and Console output
 ///////////////////////////////////////////////////////////////////////////////

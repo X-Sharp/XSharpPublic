@@ -329,6 +329,14 @@ ENDIF
 cPath := SetPath()
 IF String.IsNullOrEmpty(cPath)
     cPath := GetEnv("PATH")
+ELSEIF RuntimeState.Dialect == XSharpDialect.FoxPro
+    // SET PATH in FoxPro also takes a comma between the folders, and blanks around them
+    FOREACH VAR cElement IN cPath:Split(<CHAR>{ ';', ',' }, StringSplitOptions.RemoveEmptyEntries )
+        IF !String.IsNullOrWhiteSpace(cElement)
+            aPaths:Add(cElement:Trim())
+        ENDIF
+    NEXT
+    cPath := NULL
 ENDIF
 IF !String.IsNullOrEmpty(cPath)
     VAR aElements := cPath:Split(<CHAR>{ ';' }, StringSplitOptions.RemoveEmptyEntries )

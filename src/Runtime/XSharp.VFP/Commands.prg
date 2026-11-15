@@ -276,3 +276,53 @@ FUNCTION __VfpRecallRecord() AS LOGIC
         _TALLY := 0
     ENDIF
     RETURN __DbRecall()
+
+/// <exclude/>
+/// <summary>
+/// Runtime implementation of SET PATH TO expr ADDITIVE
+/// Adds the folders that are not in the path yet. The path that was there
+/// is kept as it is and the new folders are added with a semicolon.
+/// </summary>
+FUNCTION __VfpSetPathAdditive(uPath AS USUAL) AS VOID
+    IF !IsString(uPath)
+        THROW Error.ArgumentError(__FUNCTION__, nameof(uPath), ;
+            __VfpStr(VFPErrors.VFP_INVALID_PARAMETER, nameof(uPath), "'STRING'"), 1, <OBJECT>{uPath})
+    ENDIF
+
+    VAR aSeparators := <CHAR>{c';', c','}
+    VAR cPath := SetPath()
+    IF cPath == NULL
+        cPath := ""
+    ENDIF
+
+    // VFP takes the quotes away when they come inside the value. The help
+    // tells to write a macro like that: xx = ["Folder2"] and then
+    // SET PATH TO &xx ADDITIVE
+    VAR cNew := (STRING) uPath
+    VAR cTrimmed := cNew:Trim()
+    IF cTrimmed:Length > 1
+        IF (cTrimmed:StartsWith(e"\"") .AND. cTrimmed:EndsWith(e"\"")) .OR. ;
+           (cTrimmed:StartsWith("'") .AND. cTrimmed:EndsWith("'")) .OR. ;
+           (cTrimmed:StartsWith("[") .AND. cTrimmed:EndsWith("]"))
+            cNew := cTrimmed:Substring(1, cTrimmed:Length - 2)
+        ENDIF
+    ENDIF
+
+    // VFP compares the full name of the folders, so "data\" and ".\data"
+    // are the same folder as "data"
+    VAR aFolders := HashSet<STRING>{StringComparer.OrdinalIgnoreCase}
+    FOREACH VAR cFolder IN cPath:Split(aSeparators, StringSplitOptions.RemoveEmptyEntries)
+        aFolders:Add(PathHelpers.FullFolderName(cFolder))
+    NEXT
+
+    FOREACH VAR cFolder IN cNew:Split(aSeparators, StringSplitOptions.RemoveEmptyEntries)
+        IF String.IsNullOrWhiteSpace(cFolder) .OR. aFolders:Contains(PathHelpers.FullFolderName(cFolder))
+            LOOP
+        ENDIF
+        IF cPath:Length > 0 .AND. !cPath:EndsWith(";") .AND. !cPath:EndsWith(",")
+            cPath += ";"
+        ENDIF
+        cPath += cFolder
+    NEXT
+    SetPath(cPath)
+    RETURN

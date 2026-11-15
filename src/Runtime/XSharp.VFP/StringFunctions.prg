@@ -18,6 +18,18 @@ INTERNAL STATIC CLASS PathHelpers
     INTERNAL STATIC PROPERTY PathChar AS STRING AUTO
     STATIC CONSTRUCTOR()
         PathChar := Path.DirectorySeparatorChar:ToString()
+
+    // The full name of a folder without the last separator, to compare two
+    // folders of SET PATH that may be written in a different way
+    INTERNAL STATIC METHOD FullFolderName(cFolder AS STRING) AS STRING
+        cFolder := cFolder:Trim()
+        TRY
+            cFolder := Path.GetFullPath(cFolder)
+        CATCH
+            // not a valid folder name, compare it as it was written
+            NOP
+        END TRY
+        RETURN cFolder:TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
 END CLASS
 
 

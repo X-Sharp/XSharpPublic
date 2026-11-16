@@ -189,6 +189,7 @@
       <BuildType Solution="Public|*" Project="Release" />
     </Project>
     <Project Path="Tools/UDCTester/UDCTester.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" Id="f9579349-9b33-44a3-a615-d091ab45dbb8">
+      <BuildDependency Project="Compiler/src/Compiler/XSharpCodeAnalysis/XSharpCodeAnalysis.csproj" />
       <BuildType Solution="Public|*" Project="Release" />
     </Project>
     <Project Path="Tools/XPorter/XPorter.xsproj" Type="ab494dce-a11b-4583-851e-d4a86775b3f0" Id="8a49a47c-ade7-416c-8b28-cd3b401cbc25">

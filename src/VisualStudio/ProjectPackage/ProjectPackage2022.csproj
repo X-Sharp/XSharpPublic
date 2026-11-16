@@ -55,7 +55,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <NoWarn>1762;VSTHRD010;NU1903</NoWarn>
-    <DeployExtension>True</DeployExtension>
+    <DeployExtension Condition="'$(VisualStudioVersion)' == '17.0'">True</DeployExtension>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

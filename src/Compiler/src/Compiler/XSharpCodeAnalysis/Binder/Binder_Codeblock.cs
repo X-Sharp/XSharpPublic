@@ -28,6 +28,11 @@ namespace Microsoft.CodeAnalysis.CSharp
             {
                 if (destination.IsUsualType() || destination.IsObjectType())
                 {
+                    var delegateConversion = BindLambdaToInferredDelegate(syntax, unboundLambda, isCast, destination, diagnostics);
+                    if (delegateConversion != null)
+                    {
+                        return delegateConversion;
+                    }
                     diagnostics.Add(ErrorCode.ERR_LambdaConversionNotPossible, syntax.Location, destination);
                 }
                 return null;
@@ -122,6 +127,24 @@ namespace Microsoft.CodeAnalysis.CSharp
                 constantValueOpt: null,
                 type: destination)
             { WasCompilerGenerated = unboundLambda.WasCompilerGenerated };
+        }
+        // A lambda without a real target type (object or usual) is converted to its natural delegate type
+        // (Func<...> or Action<...>) first, and that delegate is then converted to the destination.
+        private BoundExpression BindLambdaToInferredDelegate(SyntaxNode syntax, UnboundLambda unboundLambda, bool isCast, TypeSymbol destination, BindingDiagnosticBag diagnostics)
+        {
+            var useSiteInfo = GetNewCompoundUseSiteInfo(diagnostics);
+            var delegateType = unboundLambda.GetInferredDelegateType(ref useSiteInfo);
+            if (delegateType is null)
+                return null;
+            var lambdaConversion = Conversions.ClassifyConversionFromExpression(unboundLambda, delegateType, isChecked: CheckOverflowAtRuntime, ref useSiteInfo);
+            if (!lambdaConversion.Exists)
+                return null;
+            var expr = CreateConversion(syntax, unboundLambda, lambdaConversion, isCast: false, conversionGroupOpt: null, delegateType, diagnostics);
+            var finalConversion = Conversions.ClassifyConversionFromExpression(expr, destination, isChecked: CheckOverflowAtRuntime, ref useSiteInfo);
+            if (!finalConversion.Exists)
+                return null;
+            diagnostics.Add(syntax, useSiteInfo);
+            return CreateConversion(syntax, expr, finalConversion, isCast, conversionGroupOpt: null, destination, diagnostics);
         }
         internal static BoundBlock FixCodeBlockProblems(LambdaSymbol lambdaSymbol, Binder lambdaBodyBinder, BoundBlock block, BindingDiagnosticBag diagnostics)
         {

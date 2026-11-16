@@ -9862,12 +9862,9 @@
       Returns the text of a menu title.
     </summary>
     <param name="cMenuName">
-
       Specifies the name of the menu bar containing the menu title.
-
     </param>
-    <param name="cPadName ">
-
+    <param name="cPadName">
       Specifies the menu title.
     </param>
     <returns>

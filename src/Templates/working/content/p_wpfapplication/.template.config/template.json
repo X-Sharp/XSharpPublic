@@ -30,6 +30,7 @@
     "Framework": {
       "type": "parameter",
       "description": "Target .NET version",
+      "displayName": "Target framework",
       "datatype": "choice",
       "choices": [
         {
@@ -53,10 +54,17 @@
       "defaultvalue": "net8.0"
     },
     "DefaultNamespace": {
-      "type": "parameter",
-      "datatype": "string",
-      "replaces": "Company.Namespace1",
-      "defaultvalue": "Company.Namespace1"
+      "type": "derived",
+      "valueSource": "name",
+      "valueTransform": "safe_namespace",
+      "replaces": "Company.Namespace1"
+    }
+  },
+  "forms": {
+    "safe_namespace": {
+      "identifier": "replace",
+      "pattern": "[^A-Za-z0-9_.]",
+      "replacement": "_"
     }
   }
 }

@@ -11,7 +11,7 @@ GLOBAL documents AS Dictionary<STRING, XmlDocument>
 FUNCTION Start AS VOID
     gaFiles := <STRING>{"XSharp.Core.DLL", "XSharp.RT.DLL","XSharp.VO.DLL", ;
         "XSharp.Data.DLL","XSharp.VFP.DLL","XSharp.RDD.DLL","XSharp.XPP.DLL",;
-        "XSharp.Harbour.DLL",;
+        "XSharp.Harbour.DLL","XSharp.VFP.UI.DLL",;
         "VOSystemClasses.DLL", "VORDDClasses.DLL","VOGUIClasses.DLL", ;
         "VOSQLClasses.DLL","VOInternetClasses.DLL", "VOConsoleClasses.DLL",;
         "XSharp.RT.Debugger.DLL", "XSharp.VOSystemClasses.DLL", ;
@@ -19,7 +19,7 @@ FUNCTION Start AS VOID
     // note: this must be the documentation folder, because we are not using clipper calling convention
     // in the doc file
     var base := "E:\XSharp\Dev\"
-    gsBinPath    := base+"Artifacts\Documentation\net46\"
+    gsBinPath    := base+"Artifacts\Documentation\net47\"
     gsDocPath := base+"src\Runtime\RtDocs\"
     gsCatPath := gsDOcPath+"Categories\"
     documents := Dictionary<STRING, XmlDocument>{StringComparer.OrdinalIgnoreCase}

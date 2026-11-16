@@ -16,8 +16,9 @@
     <AllowOldStyleAssignments>False</AllowOldStyleAssignments>
     <NoWarn>$(NoWarn);$(DisabledWarnings);108,114</NoWarn>
     <TargetFrameworks>net47;net8.0-windows</TargetFrameworks>
-    <IncludePaths>$(IncludePaths);$(ProjectDir)..\XSharp.VFP;$(ProjectDir)\Headers</IncludePaths>
+    <IncludePaths>$(IncludePaths);$(ProjectDir)..\XSharp.VFP;$(MsBuildProjectDirectory)\Headers</IncludePaths>
     <UseWindowsForms>true</UseWindowsForms>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="AutoCloseMessageBox.prg" />

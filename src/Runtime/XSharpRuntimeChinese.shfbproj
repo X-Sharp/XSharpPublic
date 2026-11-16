@@ -16,60 +16,63 @@
     <RootNamespace>Documentation</RootNamespace>
     <Name>Documentation</Name>
     <ArtifactsDir>..\..\Artifacts\</ArtifactsDir>
-    <DocDir>$(ArtifactsDir)DocChinese\net46</DocDir>
+    <DocDir>$(ArtifactsDir)DocChinese\net47</DocDir>
+    <RtDocsDir>RtDocsChinese</RtDocsDir>
     <!-- SHFB properties -->
-    <FrameworkVersion>.NET Framework 4.6</FrameworkVersion>
+    <FrameworkVersion>.NET Framework 4.7.2</FrameworkVersion>
     <OutputPath>$(ArtifactsDir)Help_ZH-CN</OutputPath>
     <HtmlHelpName>XSharpRef_ZH-CN</HtmlHelpName>
     <Language>zh-CN</Language>
     <DocumentationSources>
       <DocumentationSource sourceFile="$(DocDir)\XSharp.Rdd.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Core.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Core.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RDD.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RT.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RT.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.Core.XML" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.Core.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.RDD.XML" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.RT.XML" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.RT.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.XML" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.UI.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.UI.xml" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VO.XML" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VO.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.XPP.XML" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.XPP.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.Data.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.Data.xml" />
+<DocumentationSource sourceFile="$(DocDir)\VOConsoleClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\VOConsoleClasses.Xml" />
+<DocumentationSource sourceFile="$(DocDir)\VOGUIClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\VOGUIClasses.xml" />
+<DocumentationSource sourceFile="$(DocDir)\VOInternetClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\VOInternetClasses.xml" />
+<DocumentationSource sourceFile="$(DocDir)\VORDDClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\VORDDClasses.xml" />
+<DocumentationSource sourceFile="$(DocDir)\VOSQLClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\VOSQLClasses.xml" />
+<DocumentationSource sourceFile="$(DocDir)\VOSystemClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\VOSystemClasses.xml" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.RT.Debugger.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.RT.Debugger.Xml" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOSystemClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOSQLClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VORDDClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOConsoleClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOConsoleClasses.xml" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VORDDClasses.Xml" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOSQLClasses.Xml" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOSystemClasses.Xml" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOGUIClasses.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.VOGUIClasses.Xml" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.Harbour.dll" />
+<DocumentationSource sourceFile="$(DocDir)\XSharp.Harbour.xml" />
+<DocumentationSource sourceFile="$(DocDir)\VOReportClasses.dll" />
+      <DocumentationSource sourceFile="$(DocDir)\VOReportClasses.xml" />
       <DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.UI.dll" />
       <DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.UI.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VO.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VO.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.XPP.XML" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.XPP.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Data.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Data.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VOConsoleClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOConsoleClasses.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VOGUIClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOGUIClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VOInternetClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOInternetClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VORDDClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VORDDClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VOSQLClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOSQLClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VOSystemClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOSystemClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RT.Debugger.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.RT.Debugger.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOSystemClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOSQLClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VORDDClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOConsoleClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOConsoleClasses.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VORDDClasses.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOSQLClasses.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOSystemClasses.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOGUIClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.VOGUIClasses.Xml" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Harbour.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\XSharp.Harbour.xml" />
-      <DocumentationSource sourceFile="$(DocDir)\VOReportClasses.dll" />
-      <DocumentationSource sourceFile="$(DocDir)\VOReportClasses.xml" />
     </DocumentationSources>
     <HelpTitle>X# Runtime Reference</HelpTitle>
-    <HelpFileVersion>3.0.1.0</HelpFileVersion>
+    <HelpFileVersion>3.1.0.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>BelowNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
@@ -79,7 +82,7 @@
     <HelpFileFormat>HtmlHelp1</HelpFileFormat>
     <SyntaxFilters>C#, X#</SyntaxFilters>
     <PresentationStyle>VS2013XSharp</PresentationStyle>
-    <CleanIntermediates>True</CleanIntermediates>
+    <CleanIntermediates>False</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
     <IndentHtml>True</IndentHtml>
@@ -126,7 +129,7 @@
                 These classes were originally created by Paul Piko for Vulcan.Net and are included with his permission.
             </NamespaceSummaryItem>
       <NamespaceSummaryItem name="VOConsoleClasses" isDocumented="False" />
-      <NamespaceSummaryItem name="XSharp_VFP_UI" isDocumented="False" />
+      <NamespaceSummaryItem name="XSharp_VFP_UI" isDocumented="True">This namespace contains the functions class with the functions and defines from the XSharp.VFP.UI assembly</NamespaceSummaryItem>
       <NamespaceSummaryItem name="VOGUIClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the VOGUIClasses assembly</NamespaceSummaryItem>
       <NamespaceSummaryItem name="VOInternetClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the VOInternetClasses assembly</NamespaceSummaryItem>
       <NamespaceSummaryItem name="VOSystemClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the VOSystemClasses assembly</NamespaceSummaryItem>
@@ -290,86 +293,87 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="icons\" />
-    <Folder Include="RtDocsChinese\Categories\" />
-    <Folder Include="RtDocsChinese\" />
+    <Folder Include="$(RtDocsDir)\Categories\" />
+    <Folder Include="$(RtDocsDir)\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="RtDocsChinese\Categories\Metadata_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\display_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\attributes_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\ads_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\file_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\event_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\error_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\application_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\dbc_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\data_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\dialog_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\draw_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\button_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\control_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\xpp_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\window_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\vfp_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\textcontrol_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\support_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\state_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\sql_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\rdd_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\printer_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\ole_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\menu_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\macro_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\internet_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\international_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\image_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\help_Classes.aml" />
-    <None Include="RtDocsChinese\Categories\gdi_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\datetime_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Codeblock_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\template.aml" />
-    <None Include="RtDocsChinese\Categories\XML_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Usual_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Time_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Terminal_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Symbol_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Support_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Sql_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Settings_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Registry_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\RDD_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\PSZ_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Programming_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Printing_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Numeric_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Network_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Memvar_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Memory_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Memo_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Macro_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Locking_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\International_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Index_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\File_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Error_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Encryption_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Disk_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Dialog_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Debug_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\DbfTyped_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Dbf_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Dbc_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Cursor_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Conversion_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Blob_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Binary_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Array_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Ads_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\Date_Functions.aml" />
-    <None Include="RtDocsChinese\Categories\String_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\vfp_uiclasses.aml" />
+    <None Include="$(RtDocsDir)\Categories\Metadata_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\display_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\attributes_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\ads_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\file_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\event_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\error_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\application_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\dbc_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\data_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\dialog_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\draw_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\button_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\control_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\xpp_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\window_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\vfp_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\textcontrol_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\support_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\state_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\sql_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\rdd_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\printer_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\ole_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\menu_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\macro_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\internet_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\international_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\image_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\help_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\gdi_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\datetime_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Codeblock_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\template.aml" />
+    <None Include="$(RtDocsDir)\Categories\XML_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Usual_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Time_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Terminal_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Symbol_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Support_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Sql_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Settings_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Registry_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\RDD_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\PSZ_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Programming_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Printing_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Numeric_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Network_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Memvar_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Memory_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Memo_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Macro_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Locking_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\International_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Index_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\File_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Error_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Encryption_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Disk_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Dialog_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Debug_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\DbfTyped_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Dbf_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Dbc_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Cursor_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Conversion_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Blob_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Binary_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Array_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Ads_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Date_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\String_Functions.aml" />
   </ItemGroup>
   <ItemGroup>
-    <ContentLayout Include="RtDocsChinese\Content.content" />
+    <ContentLayout Include="$(RtDocsDir)\Content.content" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="icons\logo100.jpg">

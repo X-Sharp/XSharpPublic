@@ -2917,7 +2917,7 @@
     <summary>
       Returns the number of menu items on a user-defined menu or the X# system menu.
     </summary>
-    <param name="cMenuName">
+    <param name="cPopupName">
       Specifies the name of the menu for which <b>CNTBAR( )</b> returns the number of menu items. For a list of the X# system menu names, see the System Menu Names topic.
     </param>
     <returns>
@@ -3029,8 +3029,7 @@
     <summary>
       Returns the number of menu titles on a user-defined menu bar or the X# system menu bar.
     </summary>
-    <param name="cMenuBarName">
-
+    <param name="cMenuName">
       Specifies the name of the menu bar for which <b>CNTPAD( )</b> returns the number of menu titles.
     </param>
     <returns>
@@ -8783,12 +8782,12 @@
     <summary>
       Determines whether a menu item on a user-defined or X# system menu is marked.
     </summary>
-    <param name="cMenuName">
+    <param name="cPopupName">
 
       Specifies the name of the menu containing the menu item. The menu can be a X# system menu (such as _MFILE, MEDIT, or _MDATA).
 
     </param>
-    <param name="nMenuItemNumber">
+    <param name="nBar">
 
       Specifies the number of a menu item in a user-defined menu. A menu item's number is specified when the menu item is created with DEFINE BAR.
 
@@ -8811,12 +8810,12 @@
     <summary>
       Determines whether a menu title on a user-defined menu bar or on the X# system menu bar is marked.
     </summary>
-    <param name="cMenuBarName">
+    <param name="cMenuName">
 
       Specifies the name of the menu bar containing the menu title.
 
     </param>
-    <param name="cMenuTitleName">
+    <param name="cPadName">
 
       Specifies the name of the menu title.
     </param>
@@ -9841,12 +9840,12 @@
     <summary>
       Returns the text of a menu item.
     </summary>
-    <param name="cMenuName">
+    <param name="cPopupName">
 
       Specifies the menu name.
 
     </param>
-    <param name="nMenuItemNumber">
+    <param name="nBar">
 
       Specifies the number of the menu item whose text PRMBAR( ) returns. For example, if nMenuItemNumber is 1, the text of the first menu item is returned; if nMenuItemNumber is 2, the text of the second menu item is returned, and so on. The expression must be at least 1 and no greater than the number of menu items in the menu.
     </param>
@@ -9862,12 +9861,12 @@
     <summary>
       Returns the text of a menu title.
     </summary>
-    <param name="MenuBarName">
+    <param name="cMenuName">
 
       Specifies the name of the menu bar containing the menu title.
 
     </param>
-    <param name="MenuTitleName">
+    <param name="cPadName ">
 
       Specifies the menu title.
     </param>

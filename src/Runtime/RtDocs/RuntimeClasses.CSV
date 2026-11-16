@@ -277,6 +277,7 @@ XSharp.Core.DLL,XSharp,IClosedRDD,RDD,
 XSharp.Core.DLL,XSharp,ICodeblock,Support,
 XSharp.Core.DLL,XSharp,ICodeblock2,Support,
 XSharp.Core.DLL,XSharp,ICurrency,Support,
+XSharp.RT.DLL,XSharp,IDataSession
 XSharp.Core.DLL,XSharp,IDate,Support,
 XSharp.Core.DLL,XSharp,IDbConnectionClient,Support,
 XSharp.Core.DLL,XSharp,IDbNotify,Support,
@@ -360,6 +361,7 @@ XSharp.Data.DLL,XSharp.Data,ISqlFactory,SQL,
 XSharp.Data.DLL,XSharp.Data,OdbcFactory,SQL,
 XSharp.Data.DLL,XSharp.Data,OleDbFactory,SQL,
 XSharp.Data.DLL,XSharp.Data,SqlServerFactory,SQL,
+XSharp.Data.DLL,XSharp.Data,VFPErrorMessage
 XSharp.RT.Debugger.DLL,XSharp.Debugger,GlobalsWindow,Application,
 XSharp.RT.Debugger.DLL,XSharp.Debugger,MemVarsWindow,Application,
 XSharp.RT.Debugger.DLL,XSharp.Debugger,SettingsWindow,Application,
@@ -373,6 +375,7 @@ XSharp.Core.DLL,XSharp.Internal,ClipperCallingConventionAttribute,Attributes,
 XSharp.RT.DLL,XSharp.Internal,CompilerServices,Support,
 XSharp.Core.DLL,XSharp.Internal,CompilerVersionAttribute,Attributes,
 XSharp.Core.DLL,XSharp.Internal,DefaultParameterValueAttribute,Attributes,
+XSharp.Core.DLL,XSharp.Internal,FoxArrayInputParameterAttribute
 XSharp.Core.DLL,XSharp.Internal,IsInstanceAttribute,Attributes,
 XSharp.Core.DLL,XSharp.Internal,NeedsAccessToLocalsAttribute,Attributes,
 XSharp.Core.DLL,XSharp.Internal,TypesChangedAttribute,Attributes,
@@ -387,7 +390,15 @@ XSharp.Data.DLL,XSharp.Parsers,FoxColumnContext,SQL,
 XSharp.Data.DLL,XSharp.Parsers,FoxCreateTableContext,SQL,
 XSharp.Data.DLL,XSharp.Parsers,FoxDeleteContext,SQL,
 XSharp.Data.DLL,XSharp.Parsers,FoxUpdateContext,SQL,
+XSharp.Data.DLL,XSharp.Parsers,SqlBinaryExpressionContext
+XSharp.Data.DLL,XSharp.Parsers,SqlCompareExpressionContext
+XSharp.Data.DLL,XSharp.Parsers,SqlCompsiteExpressionContext
+XSharp.Data.DLL,XSharp.Parsers,SqlExpressionContext
+XSharp.Data.DLL,XSharp.Parsers,SqlLogicExpressionContext
+XSharp.Data.DLL,XSharp.Parsers,SqlParenExpressionContext
 XSharp.Data.DLL,XSharp.Parsers,SQLParser,SQL,
+XSharp.Data.DLL,XSharp.Parsers,SqlPrefixExpressionContext
+XSharp.Data.DLL,XSharp.Parsers,SqlSimpleExpressionContext
 XSharp.Data.DLL,XSharp.Parsers,TokenAttr,,
 XSharp.Data.DLL,XSharp.Parsers,XBaseLexer,,
 XSharp.Data.DLL,XSharp.Parsers,XChannel,,
@@ -456,6 +467,7 @@ XSharp.RDD.DLL,XSharp.RDD,InputBuffer,Data,
 XSharp.Core.DLL,XSharp.RDD,IOrder,Support,
 XSharp.Core.DLL,XSharp.RDD,IRawData,Data,
 XSharp.Core.DLL,XSharp.RDD,IRdd,Support,
+XSharp.Core.DLL,XSharp.RDD,IVfpLinked
 XSharp.RDD.DLL,XSharp.RDD,LockTimer,RDD,
 XSharp.RDD.DLL,XSharp.RDD,OsCodepage,RDD,
 XSharp.Core.DLL,XSharp.RDD,RddError,Error,
@@ -514,6 +526,7 @@ XSharp.VFP.DLL,XSharp.VFP,FoxEngine,,
 XSharp.VFP.DLL,XSharp.VFP,FoxFunctionCategory,,
 XSharp.VFP.DLL,XSharp.VFP,FoxFunctionStatus,,
 XSharp.VFP.DLL,XSharp.VFP,FoxProFunctionAttribute,,
+XSharp.VFP.DLL,XSharp.VFP,HeadlessUIProvider
 XSharp.VFP.DLL,XSharp.VFP,IVfpUIProvider,,
 XSharp.VFP.DLL,XSharp.VFP,NameValuePair,Application,
 XSharp.VFP.DLL,XSharp.VFP,PropertyContainer,Application,

@@ -8,7 +8,7 @@
     <NS>true</NS>
     <vo15>False</vo15>
     <VulcanCompatibleResources>true</VulcanCompatibleResources>
-    <IncludePaths>$(ProjectDir)</IncludePaths>
+    <IncludePaths>$(MsBuildProjectDirectory)</IncludePaths>
     <Nostandarddefs>true</Nostandarddefs>
     <EnforceSelf>true</EnforceSelf>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>

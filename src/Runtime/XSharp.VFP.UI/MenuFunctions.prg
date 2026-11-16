@@ -12,42 +12,27 @@
 
 USING XSharp.VFP.UI
 
-/// <summary>
-/// Returns the 1-based number of the most recently selected menu bar item.
-/// Returns 0 if no item was selected or the user pressed ESC.
-/// </summary>
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/bar/*" />
 [FoxProFunction("BAR", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION BAR() AS INT
 	RETURN MenuState.LastBar
 
-/// <summary>
-/// Returns the name of the most recently selected menu pad (top-level title).
-/// Returns an empty string if no pad was selected.
-/// </summary>
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/pad/*" />
 [FoxProFunction("PAD", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION PAD() AS STRING
 	RETURN MenuState.LastPad
 
-/// <summary>
-/// Returns the name of the popup that contained the last selected bar.
-/// Returns an empty string if no popup was active.
-/// </summary>
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/popup/*" />
 [FoxProFunction("POPUP", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION POPUP() AS STRING
 	RETURN MenuState.LastPopup
 
-/// <summary>
-/// Returns the name of the menu bar that was active when the last selection occurred.
-/// Returns an empty string if no menu was active.
-/// </summary>
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/menu/*" />
 [FoxProFunction("MENU", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION MENU() AS STRING
 	RETURN MenuState.LastMenu
 
-/// <summary>
-/// Returns .T. if the specified bar item is currently checked (marked).
-/// <paramref name="cPopupName"/> — name of the Popup; <paramref name="nBar"/> — 1-based bar number.
-/// </summary>
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/mrkbar/*" />
 [FoxProFunction("MRKBAR", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION MRKBAR( cPopupName AS STRING, nBar AS INT ) AS LOGIC
 	// nBar is the number given in DEFINE BAR, not the position: a separator or a gap
@@ -58,10 +43,7 @@ FUNCTION MRKBAR( cPopupName AS STRING, nBar AS INT ) AS LOGIC
 	ENDIF
 	RETURN FALSE
 
-/// <summary>
-/// Returns .T. if the specified pad is currently checked (marked).
-/// <paramref name="cMenuName"/> — name of the Menu; <paramref name="cPadName"/> — pad name.
-/// </summary>
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/mrkpad/*" />
 [FoxProFunction("MRKPAD", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION MRKPAD( cMenuName AS STRING, cPadName AS STRING ) AS LOGIC
 	LOCAL oMenu := Menu.Find(cMenuName) AS Menu
@@ -75,10 +57,7 @@ FUNCTION MRKPAD( cMenuName AS STRING, cPadName AS STRING ) AS LOGIC
 	ENDIF
 	RETURN FALSE
 
-/// <summary>
-/// Returns the prompt (caption) text of the specified bar item.
-/// <paramref name="cPopupName"/> — name of the Popup; <paramref name="nBar"/> — 1-based bar number.
-/// </summary>
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/prmbar/*" />
 [FoxProFunction("PRMBAR", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION PRMBAR( cPopupName AS STRING, nBar AS INT ) AS STRING
 	LOCAL oBar := __VFPFindBarByNumber( __VFPFindPopupContainer( cPopupName ), nBar ) AS Bar
@@ -87,10 +66,7 @@ FUNCTION PRMBAR( cPopupName AS STRING, nBar AS INT ) AS STRING
 	ENDIF
 	RETURN ""
 
-/// <summary>
-/// Returns the prompt (caption) text of the specified pad.
-/// <paramref name="cMenuName"/> — name of the Menu; <paramref name="cPadName"/> — pad name.
-/// </summary>
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/prmpad/*" />
 [FoxProFunction("PRMPAD", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION PRMPAD( cMenuName AS STRING, cPadName AS STRING ) AS STRING
 	LOCAL oMenu := Menu.Find(cMenuName) AS Menu
@@ -104,12 +80,7 @@ FUNCTION PRMPAD( cMenuName AS STRING, cPadName AS STRING ) AS STRING
 	ENDIF
 	RETURN ""
 
-/// <summary>
-/// Returns the number of bars of a popup. VFP reports the highest bar number given in
-/// DEFINE BAR, so a separator and a gap in the numbering count as well.
-/// Returns 0 for an empty or unknown popup.
-/// <paramref name="cPopupName"/> — name of the Popup.
-/// </summary>
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/cntbar/*" />
 [FoxProFunction("CNTBAR", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION CNTBAR( cPopupName AS STRING ) AS INT
 	LOCAL nCount := 0 AS INT
@@ -130,10 +101,7 @@ FUNCTION CNTBAR( cPopupName AS STRING ) AS INT
 	ENDIF
 	RETURN nCount
 
-/// <summary>
-/// Returns the number of pads of a menu. Returns 0 for an empty or unknown menu.
-/// <paramref name="cMenuName"/> — name of the Menu.
-/// </summary>
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/cntpad/*" />
 [FoxProFunction("CNTPAD", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
 FUNCTION CNTPAD( cMenuName AS STRING ) AS INT
 	IF String.IsNullOrEmpty( cMenuName )

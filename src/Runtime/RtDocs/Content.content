@@ -2,7 +2,7 @@
 <Topics>
   <Topic id="75f9037d-2930-47ac-b247-0344736fbd6a" visible="True" noFile="true" isExpanded="true" apiParentMode="InsertBefore" title="Classes By Category">
     <Topic id="cat-Application_Classes" visible="True" isExpanded="true" title="Application Classes">
-      <Topic id="cat-State_Classes" visible="True" isSelected="true" title="Settings Classes" />
+      <Topic id="cat-State_Classes" visible="True" title="Settings Classes" />
       <Topic id="cat-Support_Classes" visible="True" title="Support Classes" />
       <Topic id="cat-Macro_Classes" visible="True" title="Macro Classes" />
       <Topic id="cat-Attributes_Classes" visible="True" title="Attributes Classes" />
@@ -17,16 +17,33 @@
         </HelpKeywords>
       </Topic>
     </Topic>
-    <Topic id="cat-Data_Classes" visible="True" title="Data Classes">
-      <Topic id="cat-RDD_Classes" visible="True" title="RDD Classes" />
+    <Topic id="cat-Data_Classes" visible="True" isExpanded="true" title="Data Classes">
+      <Topic id="cat-RDD_Classes" visible="True" isSelected="true" title="RDD Classes">
+        <HelpKeywords>
+          <HelpKeyword index="K" term="RDD Classes" />
+        </HelpKeywords>
+      </Topic>
       <Topic id="cat-ADS_Classes" visible="True" title="ADS Classes" />
       <Topic id="cat-DBC_Classes" visible="True" title="DBC Classes" />
       <Topic id="cat-SQL_Classes" visible="True" title="SQL Classes" />
     </Topic>
-    <Topic id="cat-Internet_Classes" visible="True" title="Internet Classes" />
-    <Topic id="cat-VFP_Classes" visible="True" title="VFP classes" />
-    <Topic id="4cf5f628-5b1f-4d69-98c7-512d4e0cd9e0" visible="True" noFile="true" isExpanded="true" title="VO UI Classes">
-      <Topic id="cat-Control_Classes" visible="True" title="Control Classes">
+    <Topic id="cat-Internet_Classes" visible="True" title="Internet Classes">
+      <HelpKeywords>
+        <HelpKeyword index="K" term="Internet Classes" />
+      </HelpKeywords>
+    </Topic>
+    <Topic id="cat-VFP_Classes" visible="True" isExpanded="true" title="VFP classes">
+      <HelpKeywords>
+        <HelpKeyword index="K" term="VFP Classes" />
+      </HelpKeywords>
+      <Topic id="cat-VFP_UI_Classes" visible="True" title="VFP UI CLasses">
+        <HelpKeywords>
+          <HelpKeyword index="K" term="VFP UI Classes" />
+        </HelpKeywords>
+      </Topic>
+    </Topic>
+    <Topic id="4cf5f628-5b1f-4d69-98c7-512d4e0cd9e0" visible="True" noFile="true" title="VO UI Classes">
+      <Topic id="cat-Control_Classes" visible="True" isExpanded="true" title="Control Classes">
         <Topic id="cat-Button_Classes" visible="True" title="Button Classes" />
         <Topic id="cat-Draw_Classes" visible="True" title="Draw Classes" />
         <Topic id="cat-Image_Classes" visible="True" title="Image Classes" />
@@ -45,7 +62,7 @@
     </Topic>
     <Topic id="cat-XPP_Classes" visible="True" title="XPP Classes" />
   </Topic>
-  <Topic id="6c99f5a5-8245-4b4f-b31e-70eb0e84db1e" visible="True" noFile="true" title="Functions By Category">
+  <Topic id="6c99f5a5-8245-4b4f-b31e-70eb0e84db1e" visible="True" noFile="true" isExpanded="true" title="Functions By Category">
     <Topic id="60810de0-2ceb-4ade-9e38-d6501cf7c216" visible="True" noFile="true" isExpanded="true" title="Data Types">
       <Topic id="cat-Array_Functions" visible="True" title="Array Functions">
         <HelpKeywords>

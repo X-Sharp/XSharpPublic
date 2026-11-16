@@ -3,7 +3,7 @@
   <PropertyGroup>
     <AssemblyName>VOReportClasses</AssemblyName>
     <EnforceSelf>True</EnforceSelf>
-    <TargetFramework>net47</TargetFramework>
+    <TargetFrameworks>net47</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
     <Lb>true</Lb>
     <Dialect>Vulcan</Dialect>

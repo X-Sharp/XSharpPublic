@@ -2,9 +2,6 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
 	<SHFBRoot>c:\XSharp\SHFB\SHFB\Deploy</SHFBRoot>
-    <BaseOutputPath>$(SolutionDir)Binaries</BaseOutputPath>
-    <IntermediateOutputPath>$(BaseOutputPath)\Obj\$(Configuration)\$(MSBuildProjectName)\</IntermediateOutputPath>
-    <OutputPath>$(SHFBRoot)</OutputPath>
     <SHFBPD>$(ProgramData)\EWSoftware\Sandcastle Help File Builder\Components and Plug-Ins\</SHFBPD>
   </PropertyGroup>
 </Project>

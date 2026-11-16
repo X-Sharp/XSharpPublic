@@ -9,6 +9,7 @@
     <cs>True</cs>
     <NS>true</NS>
     <DefineConstants>$(DefineConstants);NETNEXT;RUNTIME</DefineConstants>
+    <ImplicitlyExpandNETStandardFacades>false</ImplicitlyExpandNETStandardFacades>
   </PropertyGroup>
   <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
     <DocumentationFile>$(MSBuildProjectName).Xml</DocumentationFile>

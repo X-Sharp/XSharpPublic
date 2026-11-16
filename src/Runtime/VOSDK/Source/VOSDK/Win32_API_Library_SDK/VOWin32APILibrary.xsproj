@@ -3,7 +3,7 @@
   <PropertyGroup>
     <AssemblyName>VOWin32APILibrary</AssemblyName>
     <EnforceSelf>True</EnforceSelf>
-    <TargetFramework>net47</TargetFramework>
+    <TargetFrameworks>net47</TargetFrameworks>
     <Dialect>Vulcan</Dialect>
     <cs>false</cs>
     <ns>true</ns>

@@ -16,9 +16,10 @@
     <RootNamespace>Documentation</RootNamespace>
     <Name>Documentation</Name>
     <ArtifactsDir>..\..\Artifacts\</ArtifactsDir>
-    <DocDir>$(ArtifactsDir)Documentation\net46</DocDir>
+    <DocDir>$(ArtifactsDir)Documentation\net47</DocDir>
+    <RtDocsDir>RtDocs</RtDocsDir>
     <!-- SHFB properties -->
-    <FrameworkVersion>.NET Framework 4.6</FrameworkVersion>
+    <FrameworkVersion>.NET Framework 4.7.2</FrameworkVersion>
     <OutputPath>$(ArtifactsDir)Help</OutputPath>
     <HtmlHelpName>XSharpRef</HtmlHelpName>
     <Language>en-US</Language>
@@ -67,9 +68,11 @@
       <DocumentationSource sourceFile="$(DocDir)\XSharp.Harbour.xml" />
       <DocumentationSource sourceFile="$(DocDir)\VOReportClasses.dll" />
       <DocumentationSource sourceFile="$(DocDir)\VOReportClasses.xml" />
+      <DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.UI.dll" />
+      <DocumentationSource sourceFile="$(DocDir)\XSharp.VFP.UI.xml" />
     </DocumentationSources>
     <HelpTitle>X# Runtime Reference</HelpTitle>
-    <HelpFileVersion>3.0.1.0</HelpFileVersion>
+    <HelpFileVersion>3.1.0.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>BelowNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
@@ -82,7 +85,7 @@
     <CleanIntermediates>False</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
-    <IndentHtml>True</IndentHtml>
+    <IndentHtml>False</IndentHtml>
     <BuildAssemblerVerbosity>OnlyErrors</BuildAssemblerVerbosity>
     <VisibleItems>Attributes, ExplicitInterfaceImplementations, PublicCompilerGenerated, NonBrowsable</VisibleItems>
     <NamespaceSummaries>
@@ -126,7 +129,7 @@
                 These classes were originally created by Paul Piko for Vulcan.Net and are included with his permission.
             </NamespaceSummaryItem>
       <NamespaceSummaryItem name="VOConsoleClasses" isDocumented="False" />
-      <NamespaceSummaryItem name="XSharp_VFP_UI" isDocumented="False" />
+      <NamespaceSummaryItem name="XSharp_VFP_UI" isDocumented="True">This namespace contains the functions class with the functions and defines from the XSharp.VFP.UI assembly</NamespaceSummaryItem>
       <NamespaceSummaryItem name="VOGUIClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the VOGUIClasses assembly</NamespaceSummaryItem>
       <NamespaceSummaryItem name="VOInternetClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the VOInternetClasses assembly</NamespaceSummaryItem>
       <NamespaceSummaryItem name="VOSystemClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the VOSystemClasses assembly</NamespaceSummaryItem>
@@ -180,25 +183,17 @@
     </ComponentConfigurations>
     <MissingTags>AutoDocumentCtors, Namespace, AutoDocumentDispose</MissingTags>
     <TransformComponentArguments>
-      <Argument Key="RobotsMetadata" Value="" />
-      <Argument Key="BibliographyDataFile" Value="" />
       <Argument Key="logoFile" Value="logo100.jpg" />
       <Argument Key="logoHeight" Value="50" />
       <Argument Key="logoWidth" Value="" />
       <Argument Key="logoAltText" Value="X#" />
       <Argument Key="logoPlacement" Value="right" />
       <Argument Key="logoAlignment" Value="center" />
-      <Argument Key="LogoUrl" Value="" />
       <Argument Key="maxVersionParts" Value="" />
       <Argument Key="defaultLanguage" Value="xs" />
       <Argument Key="includeEnumValues" Value="true" />
-      <Argument Key="EnumMemberSortOrder" Value="Value" />
-      <Argument Key="FlagsEnumValueFormat" Value="IntegerValue" />
-      <Argument Key="FlagsEnumSeparatorSize" Value="0" />
-      <Argument Key="IncludeIntegerEnumSeparators" Value="true" />
       <Argument Key="baseSourceCodeUrl" Value="https://github.com/X-Sharp/XSharpPublic/blob/main/src/" />
       <Argument Key="requestExampleUrl" Value="mailto:info@xsharp.eu" />
-      <Argument Key="ShowParametersOnAllMethods" Value="False" />
     </TransformComponentArguments>
     <HtmlSdkLinkType>Msdn</HtmlSdkLinkType>
     <BinaryTOC>True</BinaryTOC>
@@ -224,39 +219,41 @@
     <TopicVersion>100</TopicVersion>
     <MSHelpViewerSdkLinkType>Msdn</MSHelpViewerSdkLinkType>
     <CatalogName>VisualStudio15</CatalogName>
-    <ProjectSummary>            This is the generated documentation for the XSharp Runtime and VO SDK.&amp;lt%3bbr/&amp;gt%3b
-            Please note that DotNet does not know the concept of a function. Therefore the compiler converts functions to static methods of a compiler generated functions class. &amp;lt%3bbr/&amp;gt%3b
-            The same is true for DEFINES. These are added as constants fields in the functions class.&amp;lt%3bbr/&amp;gt%3b
-            The XSharp runtime has a couple of these classes:&amp;lt%3bbr/&amp;gt%3b
-            &amp;lt%3blist type=&amp;quot%3bbullet&amp;quot%3b&amp;gt%3b
-            &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_Core_Functions.htm&amp;quot%3b&amp;gt%3bXSharp.Core.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
-            &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_RT_Functions.htm&amp;quot%3b&amp;gt%3bXSharp.RT.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
-            &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_VO_Functions.htm&amp;quot%3b&amp;gt%3bXSharp.VO.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
-            &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_XPP_Functions.htm&amp;quot%3b&amp;gt%3bXSharp.XPP.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
-            &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_VFP_Functions.htm&amp;quot%3b&amp;gt%3bXSharp.VFP.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
-            &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_Data_Functions.htm&amp;quot%3b&amp;gt%3bXSharp.Data.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
-            &amp;lt%3bitem&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bT_XSharp_Harbour_Functions.htm&amp;quot%3b&amp;gt%3bXSharp.Harbour.Functions&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/item&amp;gt%3b
-            &amp;lt%3b/list&amp;gt%3b &amp;lt%3bbr /&amp;gt%3b
+    <ProjectSummary>            This is the generated documentation for the XSharp Runtime and VO SDK.&amp;lt;br/&amp;gt;
+            Please note that DotNet does not know the concept of a function. Therefore the compiler converts functions to static methods of a compiler generated functions class. &amp;lt;br/&amp;gt;
+            The same is true for DEFINES. These are added as constants fields in the functions class.&amp;lt;br/&amp;gt;
+            The XSharp runtime has a couple of these classes:&amp;lt;br/&amp;gt;
+            &amp;lt;list type=&amp;quot;bullet&amp;quot;&amp;gt;
+            &amp;lt;item&amp;gt;&amp;lt;a href=&amp;quot;T_XSharp_Core_Functions.htm&amp;quot;&amp;gt;XSharp.Core.Functions&amp;lt;/a&amp;gt;&amp;lt;/item&amp;gt;
+            &amp;lt;item&amp;gt;&amp;lt;a href=&amp;quot;T_XSharp_RT_Functions.htm&amp;quot;&amp;gt;XSharp.RT.Functions&amp;lt;/a&amp;gt;&amp;lt;/item&amp;gt;
+            &amp;lt;item&amp;gt;&amp;lt;a href=&amp;quot;T_XSharp_VO_Functions.htm&amp;quot;&amp;gt;XSharp.VO.Functions&amp;lt;/a&amp;gt;&amp;lt;/item&amp;gt;
+            &amp;lt;item&amp;gt;&amp;lt;a href=&amp;quot;T_XSharp_XPP_Functions.htm&amp;quot;&amp;gt;XSharp.XPP.Functions&amp;lt;/a&amp;gt;&amp;lt;/item&amp;gt;
+            &amp;lt;item&amp;gt;&amp;lt;a href=&amp;quot;T_XSharp_VFP_Functions.htm&amp;quot;&amp;gt;XSharp.VFP.Functions&amp;lt;/a&amp;gt;&amp;lt;/item&amp;gt;
+            &amp;lt;item&amp;gt;&amp;lt;a href=&amp;quot;T_XSharp_VFP_UI_Functions.htm&amp;quot;&amp;gt;XSharp.VFP.UI.Functions&amp;lt;/a&amp;gt;&amp;lt;/item&amp;gt;
+            &amp;lt;item&amp;gt;&amp;lt;a href=&amp;quot;T_XSharp_Harbour_Functions.htm&amp;quot;&amp;gt;XSharp.Harbour.Functions&amp;lt;/a&amp;gt;&amp;lt;/item&amp;gt;
+            &amp;lt;item&amp;gt;&amp;lt;a href=&amp;quot;T_XSharp_Data_Functions.htm&amp;quot;&amp;gt;XSharp.Data.Functions&amp;lt;/a&amp;gt;&amp;lt;/item&amp;gt;
+            &amp;lt;item&amp;gt;&amp;lt;a href=&amp;quot;T_XSharp_Harbour_Functions.htm&amp;quot;&amp;gt;XSharp.Harbour.Functions&amp;lt;/a&amp;gt;&amp;lt;/item&amp;gt;
+            &amp;lt;/list&amp;gt; &amp;lt;br /&amp;gt;
 
 			and more.
             There is no need to do anything special when writing code. The compiler will automatically resolve function calls, such as:
-            &amp;lt%3bc&amp;gt%3bLeft%28cString,10%29 &amp;lt%3b/c&amp;gt%3b and will generate the following output  &amp;lt%3bc&amp;gt%3bXSharp.Core.Functions.Left%28cString,10%29&amp;lt%3b/c&amp;gt%3b.
-            The compiler will also translate a define such as  &amp;lt%3bc&amp;gt%3bFA_NORMAL &amp;lt%3b/c&amp;gt%3b  to   &amp;lt%3bc&amp;gt%3bXSharp.Core.Functions.FA_NORMAL&amp;lt%3b/c&amp;gt%3b.&amp;lt%3bbr/&amp;gt%3b
+            &amp;lt;c&amp;gt;Left(cString,10) &amp;lt;/c&amp;gt; and will generate the following output  &amp;lt;c&amp;gt;XSharp.Core.Functions.Left(cString,10)&amp;lt;/c&amp;gt;.
+            The compiler will also translate a define such as  &amp;lt;c&amp;gt;FA_NORMAL &amp;lt;/c&amp;gt;  to   &amp;lt;c&amp;gt;XSharp.Core.Functions.FA_NORMAL&amp;lt;/c&amp;gt;.&amp;lt;br/&amp;gt;
             In fact the compiler will include the value of this DEFINE in the generated code.
-            You will not be able to see in the generated code that the value  &amp;lt%3bc&amp;gt%3b0x00000080 &amp;lt%3b/c&amp;gt%3bwas read from the &amp;lt%3bc&amp;gt%3bFA_NORMAL&amp;lt%3b/c&amp;gt%3b define.&amp;lt%3bbr/&amp;gt%3b
-            The source code for the XSharp Runtime is available &amp;lt%3ba href=&amp;quot%3bhttps://github.com/X-Sharp/XSharpPublic/tree/main/&amp;quot%3b _target=&amp;quot%3b_blank&amp;quot%3b &amp;gt%3bon GitHub. &amp;lt%3b/a&amp;gt%3b &amp;lt%3bbr/&amp;gt%3b
-            If you find bugs with this code, please report them  by sending an email to  bugreports%40xsharp.eu.&amp;lt%3bbr/&amp;gt%3b
-            Or even better,  locate the bug and send us a bugfix.&amp;lt%3bbr/&amp;gt%3b
-            The best way to do that is :&amp;lt%3bbr/&amp;gt%3b
-            &amp;lt%3blist type=&amp;quot%3bbullet&amp;quot%3b&amp;gt%3b
-            &amp;lt%3bitem&amp;gt%3bCreate a Fork of our Github repository&amp;lt%3b/item&amp;gt%3b
-            &amp;lt%3bitem&amp;gt%3bCreate a unit test in the appropriate unit tests project&amp;lt%3b/item&amp;gt%3b
-            &amp;lt%3bitem&amp;gt%3bFix the problem&amp;lt%3b/item&amp;gt%3b
-            &amp;lt%3bitem&amp;gt%3bSend us a pull request for the unit test and the bug fix&amp;lt%3b/item&amp;gt%3b
-            &amp;lt%3b/list&amp;gt%3b
-            Of course you can also discuss issues you have or send us your comments on the forum &amp;lt%3ba href=&amp;quot%3bhttps://www.xsharp.eu&amp;quot%3b  _target=&amp;quot%3b_blank&amp;quot%3b &amp;gt%3bon our website &amp;lt%3b/a&amp;gt%3b&amp;lt%3bbr/&amp;gt%3b
-            Finally, if you like what you are seeing, you can help to support the X# development by subscribing to the &amp;quot%3bFriends Of XSharp&amp;quot%3b %28FOX%29 program. &amp;lt%3bbr/&amp;gt%3b
-            More information about that program can be found at our website as well.&amp;lt%3bbr/&amp;gt%3b
+            You will not be able to see in the generated code that the value  &amp;lt;c&amp;gt;0x00000080 &amp;lt;/c&amp;gt;was read from the &amp;lt;c&amp;gt;FA_NORMAL&amp;lt;/c&amp;gt; define.&amp;lt;br/&amp;gt;
+            The source code for the XSharp Runtime is available &amp;lt;a href=&amp;quot;https://github.com/X-Sharp/XSharpPublic/tree/main/&amp;quot; _target=&amp;quot;_blank&amp;quot; &amp;gt;on GitHub. &amp;lt;/a&amp;gt; &amp;lt;br/&amp;gt;
+            If you find bugs with this code, please report them  by sending an email to  bugreports@xsharp.eu.&amp;lt;br/&amp;gt;
+            Or even better,  locate the bug and send us a bugfix.&amp;lt;br/&amp;gt;
+            The best way to do that is :&amp;lt;br/&amp;gt;
+            &amp;lt;list type=&amp;quot;bullet&amp;quot;&amp;gt;
+            &amp;lt;item&amp;gt;Create a Fork of our Github repository&amp;lt;/item&amp;gt;
+            &amp;lt;item&amp;gt;Create a unit test in the appropriate unit tests project&amp;lt;/item&amp;gt;
+            &amp;lt;item&amp;gt;Fix the problem&amp;lt;/item&amp;gt;
+            &amp;lt;item&amp;gt;Send us a pull request for the unit test and the bug fix&amp;lt;/item&amp;gt;
+            &amp;lt;/list&amp;gt;
+            Of course you can also discuss issues you have or send us your comments on the forum &amp;lt;a href=&amp;quot;https://www.xsharp.eu&amp;quot;  _target=&amp;quot;_blank&amp;quot; &amp;gt;on our website &amp;lt;/a&amp;gt;&amp;lt;br/&amp;gt;
+            Finally, if you like what you are seeing, you can help to support the X# development by subscribing to the &amp;quot;Friends Of XSharp&amp;quot; (FOX) program. &amp;lt;br/&amp;gt;
+            More information about that program can be found at our website as well.&amp;lt;br/&amp;gt;
         </ProjectSummary>
     <WorkingPath>$(Artifactsdir)\obj\Help\</WorkingPath>
     <SearchResultsDisplayVersion>X#</SearchResultsDisplayVersion>
@@ -297,86 +294,87 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="icons\" />
-    <Folder Include="RtDocs\Categories\" />
-    <Folder Include="RtDocs\" />
+    <Folder Include="$(RtDocsDir)\Categories\" />
+    <Folder Include="$(RtDocsDir)\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="RtDocs\Categories\Metadata_Functions.aml" />
-    <None Include="RtDocs\Categories\display_Classes.aml" />
-    <None Include="RtDocs\Categories\attributes_Classes.aml" />
-    <None Include="RtDocs\Categories\ads_Classes.aml" />
-    <None Include="RtDocs\Categories\file_Classes.aml" />
-    <None Include="RtDocs\Categories\event_Classes.aml" />
-    <None Include="RtDocs\Categories\error_Classes.aml" />
-    <None Include="RtDocs\Categories\application_Classes.aml" />
-    <None Include="RtDocs\Categories\dbc_Classes.aml" />
-    <None Include="RtDocs\Categories\data_Classes.aml" />
-    <None Include="RtDocs\Categories\dialog_Classes.aml" />
-    <None Include="RtDocs\Categories\draw_Classes.aml" />
-    <None Include="RtDocs\Categories\button_Classes.aml" />
-    <None Include="RtDocs\Categories\control_Classes.aml" />
-    <None Include="RtDocs\Categories\xpp_Classes.aml" />
-    <None Include="RtDocs\Categories\window_Classes.aml" />
-    <None Include="RtDocs\Categories\vfp_Classes.aml" />
-    <None Include="RtDocs\Categories\textcontrol_Classes.aml" />
-    <None Include="RtDocs\Categories\support_Classes.aml" />
-    <None Include="RtDocs\Categories\state_Classes.aml" />
-    <None Include="RtDocs\Categories\sql_Classes.aml" />
-    <None Include="RtDocs\Categories\rdd_Classes.aml" />
-    <None Include="RtDocs\Categories\printer_Classes.aml" />
-    <None Include="RtDocs\Categories\ole_Classes.aml" />
-    <None Include="RtDocs\Categories\menu_Classes.aml" />
-    <None Include="RtDocs\Categories\macro_Classes.aml" />
-    <None Include="RtDocs\Categories\internet_Classes.aml" />
-    <None Include="RtDocs\Categories\international_Classes.aml" />
-    <None Include="RtDocs\Categories\image_Classes.aml" />
-    <None Include="RtDocs\Categories\help_Classes.aml" />
-    <None Include="RtDocs\Categories\gdi_Functions.aml" />
-    <None Include="RtDocs\Categories\datetime_Functions.aml" />
-    <None Include="RtDocs\Categories\Codeblock_Functions.aml" />
-    <None Include="RtDocs\Categories\template.aml" />
-    <None Include="RtDocs\Categories\XML_Functions.aml" />
-    <None Include="RtDocs\Categories\Usual_Functions.aml" />
-    <None Include="RtDocs\Categories\Time_Functions.aml" />
-    <None Include="RtDocs\Categories\Terminal_Functions.aml" />
-    <None Include="RtDocs\Categories\Symbol_Functions.aml" />
-    <None Include="RtDocs\Categories\Support_Functions.aml" />
-    <None Include="RtDocs\Categories\Sql_Functions.aml" />
-    <None Include="RtDocs\Categories\Settings_Functions.aml" />
-    <None Include="RtDocs\Categories\Registry_Functions.aml" />
-    <None Include="RtDocs\Categories\RDD_Functions.aml" />
-    <None Include="RtDocs\Categories\PSZ_Functions.aml" />
-    <None Include="RtDocs\Categories\Programming_Functions.aml" />
-    <None Include="RtDocs\Categories\Printing_Functions.aml" />
-    <None Include="RtDocs\Categories\Numeric_Functions.aml" />
-    <None Include="RtDocs\Categories\Network_Functions.aml" />
-    <None Include="RtDocs\Categories\Memvar_Functions.aml" />
-    <None Include="RtDocs\Categories\Memory_Functions.aml" />
-    <None Include="RtDocs\Categories\Memo_Functions.aml" />
-    <None Include="RtDocs\Categories\Macro_Functions.aml" />
-    <None Include="RtDocs\Categories\Locking_Functions.aml" />
-    <None Include="RtDocs\Categories\International_Functions.aml" />
-    <None Include="RtDocs\Categories\Index_Functions.aml" />
-    <None Include="RtDocs\Categories\File_Functions.aml" />
-    <None Include="RtDocs\Categories\Error_Functions.aml" />
-    <None Include="RtDocs\Categories\Encryption_Functions.aml" />
-    <None Include="RtDocs\Categories\Disk_Functions.aml" />
-    <None Include="RtDocs\Categories\Dialog_Functions.aml" />
-    <None Include="RtDocs\Categories\Debug_Functions.aml" />
-    <None Include="RtDocs\Categories\DbfTyped_Functions.aml" />
-    <None Include="RtDocs\Categories\Dbf_Functions.aml" />
-    <None Include="RtDocs\Categories\Dbc_Functions.aml" />
-    <None Include="RtDocs\Categories\Cursor_Functions.aml" />
-    <None Include="RtDocs\Categories\Conversion_Functions.aml" />
-    <None Include="RtDocs\Categories\Blob_Functions.aml" />
-    <None Include="RtDocs\Categories\Binary_Functions.aml" />
-    <None Include="RtDocs\Categories\Array_Functions.aml" />
-    <None Include="RtDocs\Categories\Ads_Functions.aml" />
-    <None Include="RtDocs\Categories\Date_Functions.aml" />
-    <None Include="RtDocs\Categories\String_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\vfp_uiclasses.aml" />
+    <None Include="$(RtDocsDir)\Categories\Metadata_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\display_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\attributes_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\ads_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\file_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\event_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\error_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\application_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\dbc_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\data_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\dialog_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\draw_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\button_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\control_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\xpp_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\window_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\vfp_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\textcontrol_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\support_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\state_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\sql_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\rdd_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\printer_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\ole_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\menu_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\macro_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\internet_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\international_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\image_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\help_Classes.aml" />
+    <None Include="$(RtDocsDir)\Categories\gdi_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\datetime_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Codeblock_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\template.aml" />
+    <None Include="$(RtDocsDir)\Categories\XML_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Usual_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Time_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Terminal_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Symbol_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Support_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Sql_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Settings_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Registry_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\RDD_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\PSZ_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Programming_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Printing_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Numeric_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Network_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Memvar_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Memory_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Memo_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Macro_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Locking_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\International_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Index_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\File_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Error_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Encryption_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Disk_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Dialog_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Debug_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\DbfTyped_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Dbf_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Dbc_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Cursor_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Conversion_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Blob_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Binary_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Array_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Ads_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\Date_Functions.aml" />
+    <None Include="$(RtDocsDir)\Categories\String_Functions.aml" />
   </ItemGroup>
   <ItemGroup>
-    <ContentLayout Include="RtDocs\Content.content" />
+    <ContentLayout Include="$(RtDocsDir)\Content.content" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="icons\logo100.jpg">

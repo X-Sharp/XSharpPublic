@@ -16,18 +16,18 @@
     <RootNamespace>Documentation</RootNamespace>
     <Name>Documentation</Name>
     <ArtifactsDir>..\..\Artifacts\</ArtifactsDir>
-    <DocDir>$(ArtifactsDir)Documentation</DocDir>
+    <DocDir>$(ArtifactsDir)Documentation\net47</DocDir>
     <!-- SHFB properties -->
-    <FrameworkVersion>.NET Framework 4.6</FrameworkVersion>
+    <FrameworkVersion>.NET Framework 4.7.2</FrameworkVersion>
     <OutputPath>$(ArtifactsDir)Help</OutputPath>
     <HtmlHelpName>XSharpRef</HtmlHelpName>
     <Language>en-US</Language>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\..\Artifacts\Documentation\XSharp.Rdd.dll" />
-      <DocumentationSource sourceFile="..\..\Artifacts\Documentation\XSharp.Rdd.xml" />
+      <DocumentationSource sourceFile="$(DocDir)\XSharp.Core.XML" />
+      <DocumentationSource sourceFile="$(DocDir)\XSharp.Core.dll" />
     </DocumentationSources>
-    <HelpTitle>X# Runtime and VO SDK Reference</HelpTitle>
-    <HelpFileVersion>2.23.0.0</HelpFileVersion>
+    <HelpTitle>X# Runtime Reference</HelpTitle>
+    <HelpFileVersion>3.1.0.0</HelpFileVersion>
     <NamingMethod>MemberName</NamingMethod>
     <ContentPlacement>BelowNamespaces</ContentPlacement>
     <RootNamespaceContainer>True</RootNamespaceContainer>
@@ -40,9 +40,9 @@
     <CleanIntermediates>False</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
-    <IndentHtml>False</IndentHtml>
+    <IndentHtml>True</IndentHtml>
     <BuildAssemblerVerbosity>OnlyErrors</BuildAssemblerVerbosity>
-    <VisibleItems>Attributes, ExplicitInterfaceImplementations, InheritedMembers, PublicCompilerGenerated, NonBrowsable</VisibleItems>
+    <VisibleItems>Attributes, ExplicitInterfaceImplementations, PublicCompilerGenerated, NonBrowsable</VisibleItems>
     <NamespaceSummaries>
       <NamespaceSummaryItem name="Advantage" isDocumented="True">This namespace contains the exposed RDDs for Advantage.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="XSharp" isDocumented="True">This namespace contains the classes and structures that are used to implement the XBase types, such as USUAL, SYMBOL DATE and FLOAT.</NamespaceSummaryItem>
@@ -84,7 +84,7 @@
                 These classes were originally created by Paul Piko for Vulcan.Net and are included with his permission.
             </NamespaceSummaryItem>
       <NamespaceSummaryItem name="VOConsoleClasses" isDocumented="False" />
-      <NamespaceSummaryItem name="XSharp_VFP_UI" isDocumented="False" />
+      <NamespaceSummaryItem name="XSharp_VFP_UI" isDocumented="True">This namespace contains the functions class with the functions and defines from the XSharp.VFP.UI assembly</NamespaceSummaryItem>
       <NamespaceSummaryItem name="VOGUIClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the VOGUIClasses assembly</NamespaceSummaryItem>
       <NamespaceSummaryItem name="VOInternetClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the VOInternetClasses assembly</NamespaceSummaryItem>
       <NamespaceSummaryItem name="VOSystemClasses" isDocumented="True">This namespace contains the functions class with the functions and defines from the VOSystemClasses assembly</NamespaceSummaryItem>
@@ -163,15 +163,15 @@
     <IncludeFavorites>True</IncludeFavorites>
     <WebsiteSdkLinkType>Msdn</WebsiteSdkLinkType>
     <AppendMarkdownFileExtensionsToUrls>False</AppendMarkdownFileExtensionsToUrls>
-    <FeedbackEMailAddress>info%40xsharp.eu</FeedbackEMailAddress>
-    <FeedbackEMailLinkText>info%40xsharp.eu</FeedbackEMailLinkText>
+    <FeedbackEMailAddress>info@xsharp.eu</FeedbackEMailAddress>
+    <FeedbackEMailLinkText>info@xsharp.eu</FeedbackEMailLinkText>
     <FooterText>
     </FooterText>
     <SourceCodeBasePath>E:\XSharp\Dev\src\</SourceCodeBasePath>
     <WarnOnMissingSourceContext>False</WarnOnMissingSourceContext>
-    <RootNamespaceTitle>X# Runtime and SDK Reference</RootNamespaceTitle>
+    <RootNamespaceTitle>X# Runtime Reference</RootNamespaceTitle>
     <CopyrightHref>https://www.xsharp.eu/licensing/xsharp-open-software-license</CopyrightHref>
-    <CopyrightText>Copyright &amp;#169%3b 2015-2025 XSharp BV, All rights reserved. The VO SDK classes are Copyright &amp;#169%3b Computer Associates.</CopyrightText>
+    <CopyrightText>Copyright &amp;#169; 2015-2026 XSharp BV, All rights reserved. The VO SDK classes are Copyright &amp;#169; Computer Associates.</CopyrightText>
     <BuildLogFile>$(Artifactsdir)\Obj\Help\BuildLog.log</BuildLogFile>
     <CatalogProductId>VS</CatalogProductId>
     <CatalogVersion>100</CatalogVersion>
@@ -225,16 +225,7 @@
       <PlugInConfig id="XSharp Function Output" enabled="True">
         <configuration />
       </PlugInConfig>
-      <PlugInConfig id="XPath Reflection File Filter" enabled="True">
-        <configuration>
-          <expressions>
-            <expression>/reflection/apis/api[contains(@id,"N:") and string-length(@id)=2]</expression>
-            <expression>/reflection/apis/api[starts-with(apidata/@name,"$")]</expression>
-            <expression>/reflection/apis/api[starts-with(apidata/@name,"__") and not(starts-with(@id,"T:"))]</expression>
-          </expressions>
-        </configuration>
-      </PlugInConfig>
-    </PlugInConfigurations>
+<PlugInConfig id="XPath Reflection File Filter" enabled="True"><configuration><expressions><expression>/reflection/apis/api[contains(@id,"N:") and string-length(@id)=2]</expression><expression>/reflection/apis/api[starts-with(apidata/@name,"$")]</expression><expression>/reflection/apis/api[starts-with(apidata/@name,"__") and not(starts-with(@id,"T:"))]</expression></expressions></configuration></PlugInConfig></PlugInConfigurations>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->
@@ -254,7 +245,7 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="RtDocs\icons\" />
+    <Folder Include="icons\" />
     <Folder Include="RtDocs\Categories\" />
     <Folder Include="RtDocs\" />
   </ItemGroup>
@@ -337,7 +328,7 @@
     <ContentLayout Include="RtDocs\Content.content" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="RtDocs\icons\logo100.jpg">
+    <Content Include="icons\logo100.jpg">
       <ImageId>logo100</ImageId>
       <AlternateText>logo 100</AlternateText>
     </Content>

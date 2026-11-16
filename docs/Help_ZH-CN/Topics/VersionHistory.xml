@@ -37,6 +37,8 @@
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">修复了 .NET 5 及更高版本中带 PSZ 参数的 _DLL FUNCTION 相关问题（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2097" target="_blank">#2097</link>）</li>
       <li styleclass="List1">修复了在 X# 源文件中包含 C# 文件时出现的两个问题（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2151" target="_blank">#2151</link> 和 <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2153" target="_blank">#2153</link>）</li>
+      <li styleclass="List1">修复了将 lambda 表达式赋值给声明为 USUAL 或 OBJECT 的变量时的问题。没有实际目标类型的 lambda 现在会先转换为其自然委托类型（Func&lt;...&gt; 或 Action&lt;...&gt;），然后再将该委托转换为目标类型</li>
+      <li styleclass="List1">修复了使用 /vo4 编译时由于 SuppressVo4 设置在编译器线程之间共享而导致的随机 XS0266、XS1503 和 XS0121 错误（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2173" target="_blank">#2173</link>）</li>
     </list>
     <para styleclass="Heading2">构建系统</para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -45,6 +47,7 @@
       <li styleclass="List1">输出文件夹现已从默认通配符中排除</li>
       <li styleclass="List1">防止 Windows 平台对 SDK 项目进行自动设置</li>
       <li styleclass="List1">现已包含一个包含 XAML 文件的“Rules”文件夹，以支持 SDK 风格项目中基于规则的新属性对话框</li>
+      <li styleclass="List1">不再在 Visual Studio 内部启动共享编译器，因此 XsCompiler.exe 不会被 IDE 锁定</li>
     </list>
     <para styleclass="Heading2">运行时</para>
     <para styleclass="Heading3">新功能</para>
@@ -56,6 +59,7 @@
       <li styleclass="List1">为 COUNT、REPLACE、DELETE、RECALL、SUM 和 AVERAGE 添加了 _TALLY 支持（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2062" target="_blank">#2062</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2074" target="_blank">#2074</link>）</li>
       <li styleclass="List1">通过 CLOSE DATABASES/CLOSE TABLES 以及 ADD TABLE、REMOVE TABLE 和 RENAME TABLE 等 DBC 命令扩展了对 VFP 数据库的支持，并支持长 DBC 字段名</li>
       <li styleclass="List1">扩展了 XSharp.VFP.UI，支持 ON KEY LABEL、FormSet 构造函数、额外的控件属性、动态颜色，以及更广泛的网格（Grid）和菜单（Menu）支持</li>
+      <li styleclass="List1">实现了 VFP 函数 CNTBAR() 和 CNTPAD()（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2172" target="_blank">#2172</link>）</li>
     </list>
     <para styleclass="Heading3">错误修复</para>
     <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -79,6 +83,10 @@
       <li styleclass="List1">VFP 方言中的 SET EXACT ON 现在会忽略尾随空格（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2160" target="_blank">#2160）</link></li>
       <li styleclass="List1">VFP 方言中的 CURDIR() 函数返回的目录格式与 VFP 一致 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2160" target="_blank">#2160)</link></li>
       <li styleclass="List1">修复了针对不存在的文件的 STRTOFILE() 附加子句（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2160" target="_blank">#2160）</link></li>
+      <li styleclass="List1">不带 WHERE 子句的 DELETE FROM 现在会删除所有记录（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2167" target="_blank">#2167</link>）</li>
+      <li styleclass="List1">XSharp.VFP.UI 中的 CursorAdapter.DataSource 现在接受非字符串值（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2169" target="_blank">#2169</link>）</li>
+      <li styleclass="List1">带 IN 子句的 DELETE 和 RECALL 现在可以按任意顺序接受各子句（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2174" target="_blank">#2174</link>）</li>
+      <li styleclass="List1">带 ADDITIVE 子句的 SET PATH TO 现在会将文件夹添加到现有路径中（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2175" target="_blank">#2175</link>）</li>
     </list>
     <para styleclass="Heading2">Visual Studio 集成</para>
     <para styleclass="Heading3">新功能</para>
@@ -100,6 +108,10 @@
         <li styleclass="List1">新增对<text style="font-weight:bold;">重命名类型</text>和成员的支持（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2154" target="_blank">#2154</link>）</li>
         <li styleclass="List1">新增对类型和成员的<text style="font-weight:bold;">转到（Ctrl-T）</text>功能的支持（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2155" target="_blank">#2155</link>）（仅限 VS2022 及更高版本）</li>
         <li styleclass="List1">新增对<text style="font-weight:bold;">类型</text>和成员的<text style="font-weight:bold;">转到实现功能</text>的支持（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2156" target="_blank">#2156</link>）</li>
+        <li styleclass="List1">新增<text style="font-weight:bold;">内联提示（Inlay hints）</text>，显示参数名称和 VAR 类型（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2164" target="_blank">#2164</link>）</li>
+        <li styleclass="List1">新增<text style="font-weight:bold;">快速操作（Quick actions）</text>：添加 USING 语句、生成方法、生成重写以及将字段转换为属性（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2166" target="_blank">#2166</link>）</li>
+        <li styleclass="List1"><text style="font-weight:bold;">转到定义</text>现在也适用于解决方案中 C# 和 VB 项目里的类型和成员，F12 会选择正确的重载（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2170" target="_blank">#2170</link>）</li>
+        <li styleclass="List1">代码搜索窗口（Ctrl-T）现在会显示 X# 结果的预览，并且预览不再抢占焦点（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2171" target="_blank">#2171</link>）</li>
       </list>
     </list>
     <para styleclass="Heading3">错误修复</para>
@@ -124,6 +136,13 @@
     </list>
     <list id="13" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">修复了其他项目中部分类的“转到定义”功能存在的问题（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2110" target="_blank">#2110</link>）</li>
+      <li styleclass="List1">修复了合并“查找所有引用”和“转到实现”之后“查找引用”的目标选择问题（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2161" target="_blank">#2161</link>）</li>
+      <li styleclass="List1">“重命名”对话框现在使用 XAML 实现，在项目树中重命名文件不再引发异常（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2163" target="_blank">#2163</link>）</li>
+      <li styleclass="List1">修复了 WinForms 设计器影子项目的问题：窗体事件现在会从 C# 迁移到 X#，清理了对影子设计器项目的过期引用，并且在调试开始前会将 C# 窗体保存为 X#</li>
+      <li styleclass="List1">SDK 风格项目现在也会将对其他语言项目的引用添加到代码模型中</li>
+      <li styleclass="List1">错误波浪线现在与错误位置处标记（token）的长度一致</li>
+      <li styleclass="List1">修复了不完整的 VAR 语句引发的异常</li>
+      <li styleclass="List1">IDE 不再使用 EnvDTE 来查找启动项目</li>
     </list>
     <para styleclass="Heading2">VFPExporter</para>
     <para styleclass="Heading3">新功能</para>

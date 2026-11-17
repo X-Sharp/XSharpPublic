@@ -19,6 +19,8 @@
     <para styleclass="Normal">更改显示数字时小数点左侧显示位数的设置。</para>
     <para styleclass="Heading1">语法</para>
     <para styleclass="Normal">SET DIGITS TO [&lt;<text styleclass="Italic">nDigits</text>&gt;]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List"><text styleclass="Italic">nDigits</text><tab />位数。省略该值时使用 10。</para>
     <para styleclass="Heading1">描述</para>
     <para styleclass="Normal">SET DIGITS 在功能上等同于 SetDigit()。 </para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>

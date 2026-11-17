@@ -17,7 +17,9 @@
     <para styleclass="Heading1">用途</para>
     <para styleclass="Normal">更改备注文件的块大小</para>
     <para styleclass="Heading1">语法</para>
-    <para styleclass="Code with box">SET MEMOBLOCK TO &lt;<text styleclass="Italic">nSize</text>&gt;</para>
+    <para styleclass="Code with box">SET MEMOBLOCK TO &lt;<text styleclass="Italic">nSize</text>&gt;<br/>SET MEMOBLOCKSIZE TO [&lt;<text styleclass="Italic">nSize</text>&gt;]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List"><text styleclass="Italic">nSize</text><tab />备注文件的块大小。不带值的 SET MEMOBLOCKSIZE TO 会将块大小设置为 512。</para>
     <para styleclass="Heading1">描述</para>
     <para styleclass="Normal">初始备注文件块大小取决于 RDD。 对于大多数支持 .DBT 备注文件格式的驱动程序来说，它是 512 字节。 但是，如果通过从 DBFBLOB 驱动程序继承使用 BLOB 文件（.DBV），默认值为 1。</para>
     <para styleclass="Normal">SET MEMOBLOCK 在功能上等同于调用 RDDInfo(_SET_MEMOBLOCKSIZE, &lt;nSize&gt;)。 </para>

@@ -39,6 +39,8 @@
     <para styleclass="Heading1"><text styleclass="Body Text">SCAN 会自动将记录指针移动到符合指定条件的下一条记录，并执行命令块。</text></para>
     <para styleclass="Body Text">您可以在同一行的ENDSCAN后面添加注释。在程序编译和执行过程中，注释将被忽略。</para>
     <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">预处理器将 SCAN 转换为对 DbLocate() 的调用，随后是 DO WHILE Found() 循环。ENDSCAN 被转换为对 DbContinue() 的调用，随后是 ENDDO。因此，扫描遵循与 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCATE">LOCATE</link> 和 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CONTINUE">CONTINUE</link> 命令相同的规则。END SCAN 是 ENDSCAN 的同义词。</para>
+    <para styleclass="Body Text"></para>
     <para styleclass="Body Text">SCAN ... ENDSCAN确保在达到ENDSCAN时，Visual FoxPro 重新选择 SCAN ... ENDSCAN循环开始时的当前表。</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Heading1">示例</para>
@@ -51,5 +53,9 @@
     <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FOR">FOR Statement</link></para>
     <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FOREACH">FOREACH </link><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_CASE">Statement</link></para>
     <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SWITCH">SWITCH Statement</link></para>
+    <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCATE">LOCATE Command</link></para>
+    <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CONTINUE">CONTINUE Command</link></para>
+    <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbLocate.htm" domain="XSharpRef.chm">DbLocate()</link></para>
+    <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbContinue.htm" domain="XSharpRef.chm">DbContinue()</link></para>
   </body>
 </topic>

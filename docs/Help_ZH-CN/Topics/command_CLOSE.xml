@@ -38,6 +38,7 @@
     <para styleclass="Normal">不带选项的 CLOSE 关闭当前数据库和相关文件。 其他一些操作也会关闭文件，但最好在使用完毕后明确关闭文件。</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
     <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal">FoxPro 版本：<link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLOSE_DATABASES">CLOSE DATABASES</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLOSE_TABLES">CLOSE TABLES</link></para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbCloseArea.htm" domain="XSharpRef.chm">DBCloseArea()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_Core_Functions_FClose.htm" domain="XSharpRef.chm">FClose()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_INDEX">SET INDEX</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE">USE</link></para>
     <para styleclass="Normal"></para>
   </body>

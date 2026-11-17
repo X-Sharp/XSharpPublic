@@ -1281,7 +1281,7 @@
                     <description>返回特殊列，即使它们可以具有NULL值。</description>
                 </item>
             </list>
-            Level 1 
+            级别 1 
         </remarks>
     </SQLListSpecialColumns.ctor>
 

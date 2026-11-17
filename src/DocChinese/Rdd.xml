@@ -4375,7 +4375,7 @@
       每个子数组由四个元素组成，包含以下顺序键信息：
       <list type="table">
         <listheader>
-          <term>Constant</term>
+          <term>常量</term>
           <description>描述</description>
         </listheader>
         <item>

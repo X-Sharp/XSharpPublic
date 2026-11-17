@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-11-06T16:14:07.887Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-11-17T10:59:00.283Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>#2127</keyword>
@@ -46,7 +46,6 @@
       <li styleclass="List1">Output folders are now excluded from the default globs</li>
       <li styleclass="List1">Prevent automatic setting from Windows platform for SDK projects</li>
       <li styleclass="List1">The Rules folder with XAML files is now included to support the new Rules based property dialog for SDK style projects</li>
-      <li styleclass="List1">The shared compiler is no longer started inside Visual Studio, so XsCompiler.exe is not locked by the IDE</li>
     </list>
     <para styleclass="Heading2">Runtime</para>
     <para styleclass="Heading3">New Features</para>
@@ -150,6 +149,13 @@
       <li styleclass="List1">Fixed PropRules for RightToLeft, BorderStyle, DisabledColors, Icon, Picture, and dotted child-property overrides</li>
       <li styleclass="List1">Fixed event-handler generation for multi-line LPARAMETERS and OptionGroup sub-control event names</li>
       <li styleclass="List1">Fixed FormSet, form and menu export problems, menu MNX parsing and captions, generated project-reference paths, and DBC and DBF runtime path handling for free tables and OPEN DATABASE</li>
+    </list>
+    <para styleclass="Heading2">Miscellaneous</para>
+    <para styleclass="Heading3">New Features</para>
+    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List1">The templates for SDK projects now include .Net 11. Our preliminary tests show that our code and compile work fine with .Net 11.</li>
+      <li styleclass="List1">The rootnamespace property in the SDK projects is no longer &quot;Company.Namespace1&quot;, but is derived from the name of the application</li>
+      <li styleclass="List1">The installer now adds the commandline option /queue:1 to the call to the ngen process for native code generation.</li>
     </list>
     <para styleclass="Heading1">Changes in XSharp 3</para>
     <para styleclass="Normal">X# 3 has some breaking changes, so you should take the time to recompile and test all your existing projects and solutions.</para>

@@ -46,7 +46,7 @@
       "replaces": "net47",
       "defaultvalue": "net47"
     },
-    "RootNamespace": {
+    "DefaultNamespace": {
       "type": "derived",
       "valueSource": "name",
       "valueTransform": "safe_namespace",

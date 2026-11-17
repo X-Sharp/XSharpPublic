@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Error XS8951</title>
+<keywords>
+<keyword>XS8951</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS8951</para>
+  </header>
+  <para styleclass="Normal">Parameter '{0}' is not explicitly provided, but is used as an argument to the interpolated string handler conversion on parameter '{1}'. Specify the value of '{0}' before '{1}'.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

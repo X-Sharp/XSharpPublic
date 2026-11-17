@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Warning XS9270</title>
+<keywords>
+<keyword>XS9270</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Warning XS9270</para>
+  </header>
+  <para styleclass="Normal">'InterceptsLocationAttribute(string, int, int)' is not supported. Move to 'InterceptableLocation'-based generation of these attributes instead. (https://github.com/dotnet/roslyn/issues/72133)</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

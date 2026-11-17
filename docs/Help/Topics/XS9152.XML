@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Error XS9152</title>
+<keywords>
+<keyword>XS9152</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS9152</para>
+  </header>
+  <para styleclass="Normal">Cannot intercept a call in file with path '{0}' because multiple files in the compilation have this path.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

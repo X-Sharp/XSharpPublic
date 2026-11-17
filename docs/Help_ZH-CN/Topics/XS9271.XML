@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Error XS9271</title>
+<keywords>
+<keyword>XS9271</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS9271</para>
+  </header>
+  <para styleclass="Normal">The type 'Microsoft.CodeAnalysis.EmbeddedAttribute' must be non-generic, internal, sealed, non-static, have a parameterless constructor, inherit from System.Attribute, and be able to be applied to any type.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Warning XS9184</title>
+<keywords>
+<keyword>XS9184</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Warning XS9184</para>
+  </header>
+  <para styleclass="Normal">'Inline arrays' language feature is not supported for an inline array type that is not valid as a type argument, or has element type that is not valid as a type argument.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

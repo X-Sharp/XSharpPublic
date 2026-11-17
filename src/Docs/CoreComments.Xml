@@ -200,20 +200,20 @@
         </summary>
         <returns>
             This function returns a numeric value to indicate the order in which the strings should be sorted: <br/>
-            <table>
-                <tr>
-                    <td>-1</td>
-                    <td>LHS precedes RHS in the sort order. </td>
-                </tr>
-                <tr>
-                    <td>0</td>
-                    <td>LHS occurs in the same position as RHS in the sort order.</td>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td>LHS follows RHS in the sort order.</td>
-                </tr>
-            </table>
+            <list type="table">
+              <item>
+                <term>-1</term>
+                <description>LHS precedes RHS in the sort order.</description>
+              </item>
+              <item>
+                <term>0</term>
+                <description>LHS occurs in the same position as RHS in the sort order.</description>
+              </item>
+              <item>
+                <term>1</term>
+                <description>LHS follows RHS in the sort order.</description>
+              </item>
+            </list>
         </returns>
     </StringCompare>
     <TrueOrFalse>

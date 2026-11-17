@@ -703,10 +703,24 @@
       </code>
       Remember to restore the scope afterwards: the scope is persistent and applies to all following scope-based methods until reset. The convenience of this style of specifying a scope comes with the danger of leaving it active for too long. The scope can be reset with the DBServer:ClearScope() method, or by assigning NIL to the individual components.
       The general server scope can be set with:
-      Property 	Meaning
-      ForBlock	A string or codeblock specifying the FOR condition.
-      Scope	DBSCOPEALL, DBSCOPEREST or a number <paramref name="nRecords"/> (meaning NEXT <paramref name="nRecords"/>).
-      WhileBlock	A string or codeblock specifying the WHILE condition.
+      <list type="table">
+        <listheader>
+          <term>Property</term>
+          <description>Meaning</description>
+        </listheader>
+        <item>
+          <term>ForBlock</term>
+          <description>A string or codeblock specifying the FOR condition.</description>
+        </item>
+        <item>
+          <term>Scope</term>
+          <description>DBSCOPEALL, DBSCOPEREST or a number <paramref name="nRecords"/> (meaning NEXT <paramref name="nRecords"/>).</description>
+        </item>
+        <item>
+          <term>WhileBlock</term>
+          <description>A string or codeblock specifying the WHILE condition.</description>
+        </item>
+      </list>
       Note that there is no provision for specifying a specific record number with this approach. There is rarely a need to process a specific record (e.g., the average of the salary of record 5). In cases where there is, such as for Delete(), use RecNo := <paramref name="n"/>, GoTo(<paramref name="n"/>) or Seek(<paramref name="Value"/>) to position the server, and then invoke Delete().
       The methods that are subject to the general server scope are:
       <list type="table">
@@ -807,10 +821,24 @@
         </item>
       </list>
       But note that if a selective relation has been specified, the default source scope is the selection, not the entire file. Thus, we have four levels of inheritance with regard to the scope of an operation:
-      1.	The scope that explicitly specified through arguments of the call
-      2.	If none was provided, the scope that is set through the ForBlock, WhileBlock and Scope properties
-      3.	If none was set, the selection specified with the selective relation
-      4.	If no selective relation is active, the entire file
+      <list type="table">
+        <item>
+          <term>1</term>
+          <description>The scope that explicitly specified through arguments of the call</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>If none was provided, the scope that is set through the ForBlock, WhileBlock and Scope properties</description>
+        </item>
+        <item>
+          <term>3</term>
+          <description>If none was set, the selection specified with the selective relation</description>
+        </item>
+        <item>
+          <term>4</term>
+          <description>If no selective relation is active, the entire file</description>
+        </item>
+      </list>
       The exceptions Delete() and Recall() use options 1 and 2, then default to the current record. DeleteAll() and RecallAll() apply to the current selection, if any; otherwise, to the entire file. Of course, a selection scope is not relevant to the Append... methods, for which the conditions apply to the source file, not this server.
 
       The DBServer Editor generates a subclass of the generic DBServer class, one with specific information such as file names and virtual fields created as access/assign methods.
@@ -3340,8 +3368,16 @@
       DBServer:Seek() moves to the first logical record whose key value is equal to <paramref name="uKey"/>. If such a record is found, it becomes the current record and DBServer:Seek() returns TRUE. Otherwise, DBServer:Seek() returns FALSE and the positioning of the data server is as follows: for a normal (not soft) seek, the data server is positioned to DBServer:LastRec + 1 and DBServer:EOF returns TRUE; for a soft seek, the data server is positioned to the first record whose key value is greater than the specified key value. If no such record exists, the data server is positioned to DBServer:LastRec + 1 and DBServer:EOF returns TRUE.
       For a data server with no controlling order, DBServer:Seek() has no effect.
       <note type="tip">
-        Logical records:	DBServer:Seek() operates on logical records. Records are processed in controlling order. If a filter is set, only records which meet the filter condition are considered.
-        Shared mode:	For a shared file, moving to a different record can cause updates to the current record to become visible to other processes. For more information, refer to "Concurrency Control" in the Programmer's Guide.
+        <list type="table">
+          <item>
+            <term>Logical records</term>
+            <description>DBServer:Seek() operates on logical records. Records are processed in controlling order. If a filter is set, only records which meet the filter condition are considered.</description>
+          </item>
+          <item>
+            <term>Shared mode</term>
+            <description>For a shared file, moving to a different record can cause updates to the current record to become visible to other processes. For more information, refer to "Concurrency Control" in the Programmer's Guide.</description>
+          </item>
+        </list>
       </note>
     </remarks>
     <example>

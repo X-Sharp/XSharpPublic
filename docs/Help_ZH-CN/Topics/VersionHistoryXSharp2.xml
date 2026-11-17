@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-03-19T20:10:15.829+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-11-17T15:33:48.827Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>历史：XSharp 2</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -14,7 +14,7 @@
       <para styleclass="Heading1">历史：XSharp 2</para>
     </header>
     <para styleclass="Heading1">2.24.0.1 中的更改</para>
-    <para styleclass="Heading1"><text styleclass="Heading2">编译器</text><br/><text styleclass="Heading3">Bug修复</text></para>
+    <para styleclass="Heading1"><text styleclass="Heading2">编译器 </text><br/><text styleclass="Heading3">Bug修复</text></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">为不带可见性修饰符的 VFP 类成员生成文档的功能失效（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1664" target="_blank">#1664</link>）</li>
     </list>

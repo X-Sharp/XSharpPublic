@@ -283,9 +283,6 @@
     </topicref>
     <topicref type="topic" id="423888143662582" build="ALL" modified="2016-05-04T10:32:31.762Z" icon="0" href="VersionHistory">
       <caption translate="true">Version History</caption>
-      <topicref type="topic" id="460575145617501" build="ALL" modified="2026-02-04T08:51:28.814Z" icon="0" href="Known-Issues-in-XSharp-3">
-        <caption translate="true">Known Issues in XSharp 3</caption>
-      </topicref>
       <topicref type="topic" id="460571586406113" build="ALL" modified="2026-02-04T12:08:33.894Z" icon="0" href="VersionHistoryXSharp2">
         <caption translate="true">History XSharp 2</caption>
       </topicref>

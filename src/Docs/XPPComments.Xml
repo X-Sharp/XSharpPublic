@@ -43,7 +43,7 @@
           <term>CLASS_DESCR_MEMBERS</term>
           <description>
             Two dimensional array with 3-columns holding information about member variables. <br/>
-            <list>
+            <list type="table">
               <item>
                 <term>CLASS_MEMBER_NAME</term>
                 <description>Character string representing the name of a single member variable</description>
@@ -63,7 +63,7 @@
           <term>CLASS_DESCR_METHODS</term>
           <description>
             Two dimensional array with 3-columns array holding information about methods.
-            <list>
+            <list type="table">
               <item>
                 <term>CLASS_METHOD_NAME</term>
                 <description>Character string with the name of the method</description>

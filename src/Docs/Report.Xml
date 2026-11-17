@@ -118,16 +118,40 @@
 <ReportQueue.EventType>
       <summary>
         One of the following constants representing an event:
-        <pre>
-          Constant					Description
-          REPORTCLOSEEVENT			Current report has been closed.
-          REPORTCOMPLETEERROREVENT	A print or export task has aborted.
-          REPORTCOMPLETEEVENT		A print or export task has completed.
-          REPORTFILESAVEEVENT		A report definition has been closed.
-          REPORTOPENEVENT			Requested report has been opened.
-          REPORTSERVERCLOSEEVENT	Report Editor has been closed.
-          REPORTVIEWCLOSEEVENT		A report preview has been closed (but the report itself remains open).
-        </pre>
+        <list type="table">
+          <listheader>
+            <term>Constant</term>
+            <description>Description</description>
+          </listheader>
+          <item>
+            <term>REPORTCLOSEEVENT</term>
+            <description>Current report has been closed.</description>
+          </item>
+          <item>
+            <term>REPORTCOMPLETEERROREVENT</term>
+            <description>A print or export task has aborted.</description>
+          </item>
+          <item>
+            <term>REPORTCOMPLETEEVENT</term>
+            <description>A print or export task has completed.</description>
+          </item>
+          <item>
+            <term>REPORTFILESAVEEVENT</term>
+            <description>A report definition has been closed.</description>
+          </item>
+          <item>
+            <term>REPORTOPENEVENT</term>
+            <description>Requested report has been opened.</description>
+          </item>
+          <item>
+            <term>REPORTSERVERCLOSEEVENT</term>
+            <description>Report Editor has been closed.</description>
+          </item>
+          <item>
+            <term>REPORTVIEWCLOSEEVENT</term>
+            <description>A report preview has been closed (but the report itself remains open).</description>
+          </item>
+        </list>
         It should be used only in any AppWindow:ReportNotification() method you add to your window class that owns this ReportQueue object.
       </summary>
       <value>
@@ -158,16 +182,37 @@
         One of the following constants representing the report style for the new report:
       </param>
       <remarks>
-        <pre>
-          Constant				Description
-          RPTSTYLE_CROSSTAB		Creates a cross-tabular report.
-          RPTSTYLE_FORM			Creates a form-based report
-          RPTSTYLE_FREESTYLE	Creates a free-style report
-          RPTSTYLE_LABEL		Creates a label report
-          RPTSTYLE_LETTER		Creates a letter report
-          RPTSTYLE_TABULAR		Creates a tabular report
-          If no report style is specified, a dialog box containing all the above report styles will appear.
-        </pre>
+        <list type="table">
+          <listheader>
+            <term>Constant</term>
+            <description>Description</description>
+          </listheader>
+          <item>
+            <term>RPTSTYLE_CROSSTAB</term>
+            <description>Creates a cross-tabular report.</description>
+          </item>
+          <item>
+            <term>RPTSTYLE_FORM</term>
+            <description>Creates a form-based report</description>
+          </item>
+          <item>
+            <term>RPTSTYLE_FREESTYLE</term>
+            <description>Creates a free-style report</description>
+          </item>
+          <item>
+            <term>RPTSTYLE_LABEL</term>
+            <description>Creates a label report</description>
+          </item>
+          <item>
+            <term>RPTSTYLE_LETTER</term>
+            <description>Creates a letter report</description>
+          </item>
+          <item>
+            <term>RPTSTYLE_TABULAR</term>
+            <description>Creates a tabular report</description>
+          </item>
+        </list>
+        If no report style is specified, a dialog box containing all the above report styles will appear.
         This method allows the user to edit the report definition (.RET) file and provides the same environment as the IDE.
       </remarks>
       <example>
@@ -290,48 +335,176 @@
         If omitted, the default is 1 (Letter 8 1/2 x 11 in).
       </param>
       <remarks>
-        Paper Size	&lt;&gt;
-        A3 297 x 420 mm	  8
-        A4 210 x 297 mm	  9
-        A4 Small 210 x 297 mm	10
-        A5 148 x 210 mm	11
-        B4 250 x 354	12
-        B5 182 x 257 mm	13
-        C size sheet	24
-        D size sheet	25
-        E size sheet	26
-        Envelope B4  250 x 353 mm	33
-        Envelope B5  176 x 250 mm	34
-        Envelope B6  176 x 125 mm	35
-        Envelope C5 162 x 229 mm	28
-        Envelope C3  324 x 458 mm	29
-        Envelope C4  229 x 324 mm	30
-        Envelope C6  114 x 162 mm	31
-        Envelope C65 114 x 229 mm	32
-        Envelope DL 110 x 220 mm	27
-        Envelope 110 x 230 mm	36
-        Envelope Monarch 3.875 x 7.5 in	37
-        6 3/4 Envelope 3 5/8 x 6 1/2 in	38
-        Envelope #9 3 7/8 x 8 7/8	19
-        Envelope #10 4 1/8 x 9 1/2	20
-        Envelope #11 4 1/2 x 10 3/8	21
-        Envelope #12 4 \276 x 11	22
-        Envelope #14 5 x 11 1/2	23
-        Executive 7 1/4 x 10 1/2 in	  7
-        Folio 8 1/2 x 13 in	14
-        German Std Fanfold 8 1/2 x 12 in	40
-        German Legal Fanfold 8 1/2 x 13 in	41
-        Ledger 17 x 11 in	  4
-        Legal 8 1/2 x 14 in	  5
-        Letter 8 1/2 x 11 in	  1
-        Letter Small 8 1/2 x 11 in	  2
-        Note 8 1/2 x 11 in	18
-        Quarto 215 x 275 mm	15
-        Statement 5 1/2 x 8 1/2 in	  6
-        Tabloid 11 x 17 in	  3
-        US Std Fanfold 14 7/8 x 11 in	39
-        10x14 in	16
-        11x17 in	17
+        <list type="table">
+          <listheader>
+            <term>Paper Size</term>
+            <description>Value</description>
+          </listheader>
+          <item>
+            <term>A3 297 x 420 mm</term>
+            <description>8</description>
+          </item>
+          <item>
+            <term>A4 210 x 297 mm</term>
+            <description>9</description>
+          </item>
+          <item>
+            <term>A4 Small 210 x 297 mm</term>
+            <description>10</description>
+          </item>
+          <item>
+            <term>A5 148 x 210 mm</term>
+            <description>11</description>
+          </item>
+          <item>
+            <term>B4 250 x 354</term>
+            <description>12</description>
+          </item>
+          <item>
+            <term>B5 182 x 257 mm</term>
+            <description>13</description>
+          </item>
+          <item>
+            <term>C size sheet</term>
+            <description>24</description>
+          </item>
+          <item>
+            <term>D size sheet</term>
+            <description>25</description>
+          </item>
+          <item>
+            <term>E size sheet</term>
+            <description>26</description>
+          </item>
+          <item>
+            <term>Envelope B4  250 x 353 mm</term>
+            <description>33</description>
+          </item>
+          <item>
+            <term>Envelope B5  176 x 250 mm</term>
+            <description>34</description>
+          </item>
+          <item>
+            <term>Envelope B6  176 x 125 mm</term>
+            <description>35</description>
+          </item>
+          <item>
+            <term>Envelope C5 162 x 229 mm</term>
+            <description>28</description>
+          </item>
+          <item>
+            <term>Envelope C3  324 x 458 mm</term>
+            <description>29</description>
+          </item>
+          <item>
+            <term>Envelope C4  229 x 324 mm</term>
+            <description>30</description>
+          </item>
+          <item>
+            <term>Envelope C6  114 x 162 mm</term>
+            <description>31</description>
+          </item>
+          <item>
+            <term>Envelope C65 114 x 229 mm</term>
+            <description>32</description>
+          </item>
+          <item>
+            <term>Envelope DL 110 x 220 mm</term>
+            <description>27</description>
+          </item>
+          <item>
+            <term>Envelope 110 x 230 mm</term>
+            <description>36</description>
+          </item>
+          <item>
+            <term>Envelope Monarch 3.875 x 7.5 in</term>
+            <description>37</description>
+          </item>
+          <item>
+            <term>6 3/4 Envelope 3 5/8 x 6 1/2 in</term>
+            <description>38</description>
+          </item>
+          <item>
+            <term>Envelope #9 3 7/8 x 8 7/8</term>
+            <description>19</description>
+          </item>
+          <item>
+            <term>Envelope #10 4 1/8 x 9 1/2</term>
+            <description>20</description>
+          </item>
+          <item>
+            <term>Envelope #11 4 1/2 x 10 3/8</term>
+            <description>21</description>
+          </item>
+          <item>
+            <term>Envelope #12 4 \276 x 11</term>
+            <description>22</description>
+          </item>
+          <item>
+            <term>Envelope #14 5 x 11 1/2</term>
+            <description>23</description>
+          </item>
+          <item>
+            <term>Executive 7 1/4 x 10 1/2 in</term>
+            <description>7</description>
+          </item>
+          <item>
+            <term>Folio 8 1/2 x 13 in</term>
+            <description>14</description>
+          </item>
+          <item>
+            <term>German Std Fanfold 8 1/2 x 12 in</term>
+            <description>40</description>
+          </item>
+          <item>
+            <term>German Legal Fanfold 8 1/2 x 13 in</term>
+            <description>41</description>
+          </item>
+          <item>
+            <term>Ledger 17 x 11 in</term>
+            <description>4</description>
+          </item>
+          <item>
+            <term>Legal 8 1/2 x 14 in</term>
+            <description>5</description>
+          </item>
+          <item>
+            <term>Letter 8 1/2 x 11 in</term>
+            <description>1</description>
+          </item>
+          <item>
+            <term>Letter Small 8 1/2 x 11 in</term>
+            <description>2</description>
+          </item>
+          <item>
+            <term>Note 8 1/2 x 11 in</term>
+            <description>18</description>
+          </item>
+          <item>
+            <term>Quarto 215 x 275 mm</term>
+            <description>15</description>
+          </item>
+          <item>
+            <term>Statement 5 1/2 x 8 1/2 in</term>
+            <description>6</description>
+          </item>
+          <item>
+            <term>Tabloid 11 x 17 in</term>
+            <description>3</description>
+          </item>
+          <item>
+            <term>US Std Fanfold 14 7/8 x 11 in</term>
+            <description>39</description>
+          </item>
+          <item>
+            <term>10x14 in</term>
+            <description>16</description>
+          </item>
+          <item>
+            <term>11x17 in</term>
+            <description>17</description>
+          </item>
+        </list>
         The paper size should be set before calling Print() or Preview().
         <note type="tip">Not all paper sizes are supported on all printers.  Consult your printer documentation for supported paper sizes.</note></remarks>
       <example>
@@ -399,12 +572,24 @@
         The state in which the Report Editor window area should be displayed.  Specify one of the following constants:
       </param>
       <remarks>
-        <pre>
-          Constant		Description
-          SHOWICONIZED	Iconizes or minimizes the Report Editor window.
-          SHOWNORMAL	Normalizes the Report Editor window.  This is the default.
-          SHOWZOOMED	Maximizes the Report Editor window to a full screen.
-        </pre>
+        <list type="table">
+          <listheader>
+            <term>Constant</term>
+            <description>Description</description>
+          </listheader>
+          <item>
+            <term>SHOWICONIZED</term>
+            <description>Iconizes or minimizes the Report Editor window.</description>
+          </item>
+          <item>
+            <term>SHOWNORMAL</term>
+            <description>Normalizes the Report Editor window.  This is the default.</description>
+          </item>
+          <item>
+            <term>SHOWZOOMED</term>
+            <description>Maximizes the Report Editor window to a full screen.</description>
+          </item>
+        </list>
       </remarks>
 </ReportQueue.Show>
 <ReportQueue.Size>

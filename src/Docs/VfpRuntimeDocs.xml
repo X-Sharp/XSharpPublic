@@ -1207,21 +1207,20 @@
         <param name="nArrayAttribute">
 
             Determines whether ALEN( ) returns the number of elements, rows or columns in the array according to the following values for nArrayAttribute:
-            <table border="1">
-                <tr>
-                    <td>0</td>
-            <td>Returns the number of elements in the array. Omitting nArrayAttribute is identical to specifying 0.</td>
-                </tr>
-                <tr>
-                    <td>1</td>
-            <td>Returns the number of rows in the array.</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-
-            <td>Returns the number of columns in the array. If the array is a one-dimensional array, ALEN( ) returns 0 (no columns).</td>
-                </tr>
-            </table>
+            <list type="table">
+              <item>
+                <term>0</term>
+                <description>Returns the number of elements in the array. Omitting nArrayAttribute is identical to specifying 0.</description>
+              </item>
+              <item>
+                <term>1</term>
+                <description>Returns the number of rows in the array.</description>
+              </item>
+              <item>
+                <term>2</term>
+                <description>Returns the number of columns in the array. If the array is a one-dimensional array, ALEN( ) returns 0 (no columns).</description>
+              </item>
+            </list>
         </param>
         <returns>
             Numeric

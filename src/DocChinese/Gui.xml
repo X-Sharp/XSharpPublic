@@ -15439,24 +15439,24 @@
       如果添加了项目，将返回列表框中的位置(值为1表示列表框中的第一个位置)。如果无法添加项目，将返回0。
     </returns>
     <remarks>
-      <table>
-        <tr>
-          <th>值</th>
-          <th>位置</th>
-        </tr>
-        <tr>
-          <td>0</td>
-          <td>在未排序的列表框中，将新项目添加到列表的末尾；如果已排序，将新项目插入由列表框确定的位置。这是默认值。</td>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>列表框中的第一个位置。</td>
-        </tr>
-        <tr>
-          <td>n</td>
-          <td>列表框中的第n个位置。</td>
-        </tr>
-      </table>
+      <list type="table">
+        <listheader>
+          <term>值</term>
+          <description>位置</description>
+        </listheader>
+        <item>
+          <term>0</term>
+          <description>在未排序的列表框中，将新项目添加到列表的末尾；如果已排序，将新项目插入由列表框确定的位置。这是默认值。</description>
+        </item>
+        <item>
+          <term>1</term>
+          <description>列表框中的第一个位置。</description>
+        </item>
+        <item>
+          <term>n</term>
+          <description>列表框中的第n个位置。</description>
+        </item>
+      </list>
     </remarks>
   </ListBox.AddItem>
 
@@ -15546,24 +15546,24 @@
     <param name="nItem">要删除的项目的编号。指定下面列出的值之一</param>
     <include file="Gui.xml" path="doc/ReturnsLogic/*"/>
     <remarks>
-      <table>
-        <tr>
-          <th>值</th>
-          <th>位置</th>
-        </tr>
-        <tr>
-          <td>0</td>
-          <td>当前选择的项目。这是默认值。</td>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>列表框中的第一个项目。</td>
-        </tr>
-        <tr>
-          <td>n</td>
-          <td>列表框中的第n个项目。</td>
-        </tr>
-      </table>
+      <list type="table">
+        <listheader>
+          <term>值</term>
+          <description>位置</description>
+        </listheader>
+        <item>
+          <term>0</term>
+          <description>当前选择的项目。这是默认值。</description>
+        </item>
+        <item>
+          <term>1</term>
+          <description>列表框中的第一个项目。</description>
+        </item>
+        <item>
+          <term>n</term>
+          <description>列表框中的第n个项目。</description>
+        </item>
+      </list>
     </remarks>
   </ListBox.DeleteItem>
 
@@ -15676,24 +15676,24 @@
       指定项目的关联值。
     </returns>
     <remarks>
-      <table>
-        <tr>
-          <th>值</th>
-          <th>位置</th>
-        </tr>
-        <tr>
-          <td>0</td>
-          <td>当前选择的项目。</td>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>列表框中的第一个项目。</td>
-        </tr>
-        <tr>
-          <td>n</td>
-          <td>列表框中的第n个项目。</td>
-        </tr>
-      </table>
+      <list type="table">
+        <listheader>
+          <term>值</term>
+          <description>位置</description>
+        </listheader>
+        <item>
+          <term>0</term>
+          <description>当前选择的项目。</description>
+        </item>
+        <item>
+          <term>1</term>
+          <description>列表框中的第一个项目。</description>
+        </item>
+        <item>
+          <term>n</term>
+          <description>列表框中的第n个项目。</description>
+        </item>
+      </list>
     </remarks>
     <example>
       <code language="X#">
@@ -18662,7 +18662,7 @@
     </summary>
     <param name="nLineNumber">
       多行编辑控件中的位置，指定所需字符串所在的行。指定以下值之一：
-      <list type="table">
+      <list>
         <item>
           <term>0</term>
           <description>多行编辑控件中的当前行(即，当前包含文本光标的行)。这是默认值。</description>
@@ -21244,7 +21244,7 @@
         </item>
         <item>
           <term>DMPAPER_LETTERSMALL</term>
-          <description>Letter Small，8 1/2 x 11 英寸。</description>
+          <description>Letter Small, 8 1/2 x 11 in.</description>
         </item>
         <item>
           <term>DMPAPER_TABLOID</term>
@@ -21268,7 +21268,7 @@
         </item>
         <item>
           <term>DMPAPER_A3</term>
-          <description>A3，297 x 420 毫米</description>
+          <description>A3, 297 x 420 mm</description>
         </item>
         <item>
           <term>DMPAPER_A4</term>
@@ -21276,7 +21276,7 @@
         </item>
         <item>
           <term>DMPAPER_A4SMALL</term>
-          <description>A4 Small，210 x 297 毫米</description>
+          <description>A4 Small, 210 x 297 mm</description>
         </item>
         <item>
           <term>DMPAPER_A5</term>
@@ -24163,44 +24163,44 @@
       例如，对于菜单命令： Save &amp;As\tF3
       是 Menu_Save_As  HELPWINDOW  request 生成下表中列出的关键字之一，
       取决于拥有焦点的窗口区域。
-      <table>
-        <tr>
-          <th>Keyword</th>
-          <th>Region</th>
-        </tr>
-        <tr>
-          <td>Window</td>
-          <td>窗口中未在此表中明确标识的任何区域</td>
-        </tr>
-        <tr>
-          <td>Window_Border</td>
-          <td>Border</td>
-        </tr>
-        <tr>
-          <td>Window_Caption</td>
-          <td>标题栏</td>
-        </tr>
-        <tr>
-          <td>Window_MaxBox</td>
-          <td>最大化按钮</td>
-        </tr>
-        <tr>
-          <td>Window_MinBox</td>
-          <td>最小化按钮</td>
-        </tr>
-        <tr>
-          <td>Window_SysMenuBox</td>
-          <td>系统菜单按钮</td>
-        </tr>
-        <tr>
-          <td>Window_Unknown</td>
-          <td>窗口中未在此表中明确标识的任何区域</td>
-        </tr>
-        <tr>
-          <td>Window_WindowCanvas</td>
-          <td>画布区域</td>
-        </tr>
-      </table>
+      <list type="table">
+        <listheader>
+          <term>Keyword</term>
+          <description>Region</description>
+        </listheader>
+        <item>
+          <term>Window</term>
+          <description>Any area of the window not explicitly identified in this table</description>
+        </item>
+        <item>
+          <term>Window_Border</term>
+          <description>Border</description>
+        </item>
+        <item>
+          <term>Window_Caption</term>
+          <description>Title bar</description>
+        </item>
+        <item>
+          <term>Window_MaxBox</term>
+          <description>Maximize button</description>
+        </item>
+        <item>
+          <term>Window_MinBox</term>
+          <description>Minimize button</description>
+        </item>
+        <item>
+          <term>Window_SysMenuBox</term>
+          <description>System menu button</description>
+        </item>
+        <item>
+          <term>Window_Unknown</term>
+          <description>Any area of the window not explicitly identified in this table</description>
+        </item>
+        <item>
+          <term>Window_WindowCanvas</term>
+          <description>Canvas area</description>
+        </item>
+      </list>
       <note type="tip">
         如果生成 Window_Unknown 关键字，HelpRequest() 的默认行为是显示 HelpDisplay 中定义的 Contents 主题(即，HelpDisplay:Show("HelpIndex"))。
       </note>

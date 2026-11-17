@@ -1104,20 +1104,20 @@ X# 在调试器中显示调试器窗口的停靠信息。如果窗口未停靠�
     </param>
     <param name="nArrayAttribute">
       根据nArrayAttribute的以下值，确定ALEN( ) 返回数组中的元素、行或列的数量：<br/>
-      <table border="1">
-        <tr>
-          <td>0</td>
-          <td>返回数组中的元素数量。省略nArrayAttribute与指定0相同。</td>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>返回数组中的行数。</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>返回数组中的列数。如果数组是一维数组，ALEN( ) 返回0(无列)。</td>
-        </tr>
-      </table>
+      <list type="table">
+        <item>
+          <term>0</term>
+          <description>返回数组中的元素数量。省略nArrayAttribute与指定0相同。</description>
+        </item>
+        <item>
+          <term>1</term>
+          <description>返回数组中的行数。</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>返回数组中的列数。如果数组是一维数组，ALEN( ) 返回0(无列)。</description>
+        </item>
+      </list>
     </param>
     <returns>
       数值型

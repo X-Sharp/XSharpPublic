@@ -2770,7 +2770,7 @@
     <param name="kStyle">组合框的样式，指定为以下 Windows API 常量之一：</param>
     <param name="nResourceID">组合框的资源 ID。</param>
     <remarks>
-      <list>
+      <list type="table">
         <listheader>
           <term>常量</term>
           <description>创建</description>
@@ -4880,7 +4880,7 @@
       kBorderType 的值
       <list type="table">
         <listheader>
-          <term>Constant</term>
+          <term>常量</term>
           <description>描述</description>
         </listheader>
         <item>
@@ -9824,7 +9824,7 @@
     <param name="dwDrawStyle">要设置的样式。请参阅备注部分的表格。</param>
     <param name="lEnable">一个逻辑值，用于设置样式。TRUE 打开样式，FALSE 关闭样式。</param>
     <remarks>
-      <list>
+      <list type="table">
         <listheader>
           <term>值</term>
           <description>描述</description>
@@ -9935,7 +9935,7 @@
     </summary>
     <param name="kTextStyle">
       文本对齐样式，指定为以下常量之一：
-      <list type="Table">
+      <list type="table">
         <listheader>
           <term>常量</term>
           <description>描述</description>
@@ -10407,7 +10407,7 @@
             GetAppObject():Quit()
       </code>
     </example>
-    <seealso cref="T:VO.App">App Class</seealso>
+    <seealso cref="T:VO.App">App 类</seealso>
     <seealso cref="O:VOGUIClasses.Functions.GetObjectByHandle">GetObjectByHandle</seealso>
   </GetAppObject>
 
@@ -10430,7 +10430,7 @@
       </code>
     </example>
     <seealso cref="T:VO.Control">CLASS Control</seealso>
-    <seealso cref="T:VO.Window">Class Window</seealso>
+    <seealso cref="T:VO.Window">Window 类</seealso>
     <seealso cref="O:VOGUIClasses.Functions.GetAppObject">GetAppObject</seealso>
     <seealso cref="O:VOGUIClasses.Functions.GetObjectByHandle">GetObjectByHandle</seealso>
   </GetFocusedObject>
@@ -10463,7 +10463,7 @@
       </code>
     </example>
     <seealso cref="T:VO.Control">CLASS Control</seealso>
-    <seealso cref="T:VO.Window">Class Window</seealso>
+    <seealso cref="T:VO.Window">Window 类</seealso>
     <seealso cref="O:VOGUIClasses.Functions.GetAppObject">GetAppObject</seealso>
     <seealso cref="O:VOGUIClasses.Functions.GetFocusedObject">GetAppObject</seealso>
   </GetObjectByHandle>
@@ -10473,7 +10473,7 @@
       获取当前应用程序中控制视觉样式应用于哪些部分的标志
     </summary>
     <returns>
-      <list>
+      <list type="table">
         <item>
           <term>STAP_ALLOW_NONCLIENT</term>
           <description>指定应用程序窗口的非客户区应用视觉样式</description>
@@ -10694,13 +10694,13 @@
           </description>
         </item>
         <item>
-          <term># followed by a number.</term>
+          <term># 后跟一个数字。</term>
           <description>
             数字代表测试弹出帮助的ID。仅适用于 HTML 帮助，并且必须启用 Win32Processing 模式。
           </description>
         </item>
         <item>
-          <term>~ followed by a keyword.</term>
+          <term>~ 后跟一个关键字。</term>
           <description>
             这强制执行 HH_ALINK_LOOKUP。用于调用帮助文件中的关联链接。关联链接不显示在索引中，关键字显示。仅适用于 HTML 帮助。
           </description>
@@ -12545,7 +12545,7 @@
 
                 RETURN SELF:Response:_Write(cRet)
       </code>
-      ASP code:
+      ASP 代码：
       <code language="asp">
         &lt;%
         Set oComp = Server.CreateObject("VoAsp.Component")
@@ -13992,7 +13992,7 @@
                 SELF:Request:GetServerVariable("PATH_TRANSLATED")
                 RETURN SELF:Response:_Write("Path name: " + cRet)
       </code>
-      HTML code:
+      HTML 代码：
       <code language="X#">
         &lt;html&gt;
         &lt;p&gt;
@@ -14002,7 +14002,7 @@
         ...
         &lt;/html&gt;
       </code>
-      ASP code (response.asp):
+      ASP 代码 (response.asp)：
       <code language="X#">
         &lt;%
         Set oComp = Server.CreateObject("VoAsp.Component")
@@ -14040,7 +14040,7 @@
 
                 RETURN SELF:Response:_Write(cRet)
       </code>
-      HTML code:
+      HTML 代码：
       <code language="html">
         &lt;html&gt;
         &lt;p&gt;
@@ -14050,7 +14050,7 @@
         ...
         &lt;/html&gt;
       </code>
-      ASP code (response.asp):
+      ASP 代码 (response.asp)：
       <code language="asp">
         &lt;%
         Set oComp = Server.CreateObject("VoAsp.Component")
@@ -15736,8 +15736,8 @@
     <remarks>
       <list type="table">
         <listheader>
-          <term>Windows API Constant </term>
-          <description>Description</description>
+          <term>Windows API 常量 </term>
+          <description>描述</description>
         </listheader>
         <item>
           <term>DDL_ARCHIVE</term>
@@ -16012,8 +16012,8 @@
     <remarks>
       <list type="table">
         <listheader>
-          <term>Constant</term>
-          <description>Description</description>
+          <term>常量</term>
+          <description>描述</description>
         </listheader>
         <item>
           <term>LVA_ALIGNLEFT</term>
@@ -18635,7 +18635,7 @@
     </summary>
     <param name="nLineNumber">
       多行编辑控件中的位置，指定所需字符串所在的行。指定以下值之一：
-      <list>
+      <list type="table">
         <item>
           <term>0</term>
           <description>多行编辑控件中的当前行(即，当前包含文本光标的行)。这是默认值。</description>
@@ -18662,7 +18662,7 @@
     </summary>
     <param name="nLineNumber">
       多行编辑控件中的位置，指定所需字符串所在的行。指定以下值之一：
-      <list>
+      <list type="table">
         <item>
           <term>0</term>
           <description>多行编辑控件中的当前行(即，当前包含文本光标的行)。这是默认值。</description>
@@ -19516,7 +19516,7 @@
     </summary>
     <param name="symViewMode">
       指定要使用的视图模式。使用以下符号之一：
-      <list>
+      <list type="table">
         <item>
           <term>符号</term>
           <description>描述</description>
@@ -20648,7 +20648,7 @@
       如果省略 nHandle 参数，0是唯一支持的选项，也是默认值。
     </param>
     <remarks>
-      <list>
+      <list type="table">
         <item>
           <term>Pointer</term>
           <description>描述</description>
@@ -21240,47 +21240,47 @@
         </item>
         <item>
           <term>DMPAPER_LETTER</term>
-          <description>Letter, 8 1/2 x 11 in.</description>
+          <description>Letter，8 1/2 x 11 英寸。</description>
         </item>
         <item>
           <term>DMPAPER_LETTERSMALL</term>
-          <description>Letter Small, 8 1/2 x 11 in.</description>
+          <description>Letter Small，8 1/2 x 11 英寸。</description>
         </item>
         <item>
           <term>DMPAPER_TABLOID</term>
-          <description>Tabloid, 11 x 17 in.</description>
+          <description>Tabloid，11 x 17 英寸。</description>
         </item>
         <item>
           <term>DMPAPER_LEDGER</term>
-          <description> Ledger, 17 x 11 in.</description>
+          <description> Ledger，17 x 11 英寸。</description>
         </item>
         <item>
           <term>DMPAPER_LEGAL</term>
-          <description>Legal, 8 1/2 x 14 in.</description>
+          <description>Legal，8 1/2 x 14 英寸。</description>
         </item>
         <item>
           <term>DMPAPER_STATEMENT</term>
-          <description>Statement, 5 1/2 x 8 1/2 in.</description>
+          <description>Statement，5 1/2 x 8 1/2 英寸。</description>
         </item>
         <item>
           <term>DMPAPER_EXECUTIVE</term>
-          <description>Executive, 7 1/2 x 10 1/2 in.</description>
+          <description>Executive，7 1/2 x 10 1/2 英寸。</description>
         </item>
         <item>
           <term>DMPAPER_A3</term>
-          <description>A3, 297 x 420 mm</description>
+          <description>A3，297 x 420 毫米</description>
         </item>
         <item>
           <term>DMPAPER_A4</term>
-          <description>A4, 210 x 297 mm</description>
+          <description>A4，210 x 297 毫米</description>
         </item>
         <item>
           <term>DMPAPER_A4SMALL</term>
-          <description>A4 Small, 210 x 297 mm</description>
+          <description>A4 Small，210 x 297 毫米</description>
         </item>
         <item>
           <term>DMPAPER_A5</term>
-          <description>A5, 148 x 210 mm</description>
+          <description>A5，148 x 210 毫米</description>
         </item>
         <item>
           <term>DMPAPER_B4</term>
@@ -21292,7 +21292,7 @@
         </item>
         <item>
           <term>DMPAPER_FOLIO</term>
-          <description>Folio, 8 1/2 x 13 in.</description>
+          <description>Folio，8 1/2 x 13 英寸。</description>
         </item>
         <item>
           <term>DMPAPER_QUARTO</term>
@@ -21308,27 +21308,27 @@
         </item>
         <item>
           <term>DMPAPER_NOTE</term>
-          <description>Note, 8 1/2 x 11 in.</description>
+          <description>Note，8 1/2 x 11 英寸。</description>
         </item>
         <item>
           <term>DMPAPER_ENV_9</term>
-          <description>Envelope #9, 3 7/8 x 87/8in.</description>
+          <description>9 号信封，3 7/8 x 87/8 英寸。</description>
         </item>
         <item>
           <term>DMPAPER_ENV_10</term>
-          <description>Envelope #10, 4 1/8 x 91/2in.</description>
+          <description>10 号信封，4 1/8 x 91/2 英寸。</description>
         </item>
         <item>
           <term>DMPAPER_ENV_11</term>
-          <description>Envelope #11, 4 1/2 x 103/8in.</description>
+          <description>11 号信封，4 1/2 x 103/8 英寸。</description>
         </item>
         <item>
           <term>DMPAPER_ENV_12</term>
-          <description>Envelope #12, 4 1/2 x 11 in.</description>
+          <description>12 号信封，4 1/2 x 11 英寸。</description>
         </item>
         <item>
           <term>DMPAPER_ENV_14</term>
-          <description>Envelope #14, 5 x 11 1/2 in.</description>
+          <description>14 号信封，5 x 11 1/2 英寸。</description>
         </item>
         <item>
           <term>DMPAPER_CSHEET</term>
@@ -21384,27 +21384,27 @@
         </item>
         <item>
           <term>DMPAPER_ENV_MONARCH</term>
-          <description>Envelope Monarch, 3 7/8 x 71/2 in.</description>
+          <description>Monarch 信封，3 7/8 x 71/2 英寸。</description>
         </item>
         <item>
           <term>DMPAPER_ENV_PERSONAL</term>
-          <description>Envelope, 3 5/8 x 6 1/2 in.</description>
+          <description>信封，3 5/8 x 6 1/2 英寸。</description>
         </item>
         <item>
           <term>DMPAPER_FANFOLD_US</term>
-          <description>U.S. Standard Fanfold, 147/8 x 11 in.</description>
+          <description>美国标准连续纸（U.S. Standard Fanfold），147/8 x 11 英寸。</description>
         </item>
         <item>
           <term>DMPAPER_FANFOLD_STD_GERMAN</term>
-          <description>German Standard Fanfold, 81/2 x 12 in.</description>
+          <description>德国标准连续纸（German Standard Fanfold），81/2 x 12 英寸。</description>
         </item>
         <item>
           <term>DMPAPER_FANFOLD_LGL_GERMAN</term>
-          <description>German Legal Fanfold, 81/2 x 13 in.</description>
+          <description>德国法律连续纸（German Legal Fanfold），81/2 x 13 英寸。</description>
         </item>
         <item>
           <term>DMPAPER_LAST</term>
-          <description>German Legal Fanfold, 81/2 x 13 in.</description>
+          <description>德国法律连续纸（German Legal Fanfold），81/2 x 13 英寸。</description>
         </item>
         <item>
           <term>DMPAPER_USER</term>
@@ -22412,7 +22412,7 @@
       如果省略，缺省值是 1(Letter 8 1/2 x 11 in)。
     </param>
     <remarks>
-      <list>
+      <list type="table">
         <item>
           <term>A3</term>
           <description>297 x 420 mm</description>
@@ -23374,8 +23374,8 @@
       以下常量之一，表示富文本中当前选择的类型：
       <list type="table">
         <listheader>
-          <term>Constant</term>
-          <description>Description</description>
+          <term>常量</term>
+          <description>描述</description>
         </listheader>
         <item>
           <term>RESEL_EMPTY</term>
@@ -23399,7 +23399,7 @@
       <list type="table">
         <listheader>
           <term>Operation</term>
-          <description>Description</description>
+          <description>描述</description>
         </listheader>
         <item>
           <term>#Add</term>
@@ -23422,8 +23422,8 @@
     <remarks>
       <list type="table">
         <listheader>
-          <term>Constant</term>
-          <description>Description</description>
+          <term>常量</term>
+          <description>描述</description>
         </listheader>
         <item>
           <term>REOPT_AUTOWORD</term>
@@ -23595,8 +23595,8 @@
       以下常量之一，表示富文本中新选择的类型：
       <list type="table">
         <listheader>
-          <term>Constant</term>
-          <description>Description</description>
+          <term>常量</term>
+          <description>描述</description>
         </listheader>
         <item>
           <term>RESEL_EMPTY</term>
@@ -23845,8 +23845,8 @@
       一个字符串，表示生成此 ScrollEvent 时发生的滚动操作的类型。 返回以下值中的一个：
       <list type="table">
         <listheader>
-          <term>Constant</term>
-          <description>Description</description>
+          <term>常量</term>
+          <description>描述</description>
         </listheader>
         <item>
           <term>BLOCKDECREMENT</term>
@@ -24170,7 +24170,7 @@
         </tr>
         <tr>
           <td>Window</td>
-          <td>Any area of the window not explicitly identified in this table</td>
+          <td>窗口中未在此表中明确标识的任何区域</td>
         </tr>
         <tr>
           <td>Window_Border</td>
@@ -24178,27 +24178,27 @@
         </tr>
         <tr>
           <td>Window_Caption</td>
-          <td>Title bar</td>
+          <td>标题栏</td>
         </tr>
         <tr>
           <td>Window_MaxBox</td>
-          <td>Maximize button</td>
+          <td>最大化按钮</td>
         </tr>
         <tr>
           <td>Window_MinBox</td>
-          <td>Minimize button</td>
+          <td>最小化按钮</td>
         </tr>
         <tr>
           <td>Window_SysMenuBox</td>
-          <td>System menu button</td>
+          <td>系统菜单按钮</td>
         </tr>
         <tr>
           <td>Window_Unknown</td>
-          <td>Any area of the window not explicitly identified in this table</td>
+          <td>窗口中未在此表中明确标识的任何区域</td>
         </tr>
         <tr>
           <td>Window_WindowCanvas</td>
-          <td>Canvas area</td>
+          <td>画布区域</td>
         </tr>
       </table>
       <note type="tip">

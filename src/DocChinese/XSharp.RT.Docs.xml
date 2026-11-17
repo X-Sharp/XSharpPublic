@@ -2,8 +2,7 @@
 <doc>
   <__Array>
     <summary>
-      Internal type that implements the VO Compatible ARRAY type.<br/>
-      This type has methods and properties that normally are never directly called from user code.
+      实现与 VO 兼容的 ARRAY 类型的内部类型。<br/> 此类型具有的方法和属性通常不会被用户代码直接调用。
     </summary>
     <seealso cref="IIndexer"/>
     <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*"/>
@@ -19,7 +18,7 @@
     <param name="indices">
       <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
     </param>
-    <returns>The element stored at the specified location in the array.</returns>
+    <returns>存储在数组中指定位置的元素。</returns>
   </__Array.__GetElement>
   <__Array.__SetElement>
     <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*"/>
@@ -32,16 +31,16 @@
     <param name="indices">
       <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
     </param>
-    <returns>The element stored at the specified location in the array.</returns>
+    <returns>存储在数组中指定位置的元素。</returns>
   </__Array.__SetElement>
   <__Array.ctor>
-    <summary>Create an array and fill it with elements from an existing .Net array of USUALS</summary>
+    <summary>创建一个数组，并使用现有 .Net USUAL 数组中的元素填充它</summary>
   </__Array.ctor>
   <__Array.DefaultValue>
-    <summary>Returns the default value for array elements when arrays are resized or initialized. This is NIL.</summary>
+    <summary>返回数组调整大小或初始化时数组元素的默认值。该值为 NIL。</summary>
   </__Array.DefaultValue>
   <__Array.IMPLICIT>
-    <summary>Implicit conversion to OBJECT[]. SubArrays become nested OBJECT[] arrays.</summary>
+    <summary>隐式转换为 OBJECT[]。子数组将变为嵌套的 OBJECT[] 数组。</summary>
   </__Array.IMPLICIT>
   <__Array.SELF_index>
     <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*"/>
@@ -51,75 +50,74 @@
     <param name="index2">
       <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
     </param>
-    <returns>The value of the property of the element stored at the indicated location in the array.</returns>
+    <returns>存储在数组中指定位置的元素的属性值。</returns>
   </__Array.SELF_index>
   <__Array.SELF_indices>
     <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*"/>
     <param name="indices">
       <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
     </param>
-    <returns>The value of the property of the element stored at the indicated location in the array.</returns>
+    <returns>存储在数组中指定位置的元素的属性值。</returns>
   </__Array.SELF_indices>
   <__ArrayBase_T_>
     <summary>
-      Internal type that implements the new TYPED ARRAY type.<br/>
-      This type has methods and properties that normally are never directly called from user code.
+      实现新的 TYPED ARRAY 类型的内部类型。<br/> 此类型包含的方法和属性通常不会在用户代码中被直接调用。
     </summary>
-    <typeparam name="T">Type of the elements inside the array </typeparam>
+    <typeparam name="T">数组内元素的类型 </typeparam>
   </__ArrayBase_T_>
   <__ArrayBase_T_.__GetElement>
     <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*"/>
     <param name="index">
       <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
     </param>
-    <returns>The element stored at the specified location in the array.</returns>
+    <returns>存储在数组中指定位置的元素。</returns>
   </__ArrayBase_T_.__GetElement>
   <__ArrayBase_T_.__SetElement>
     <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*"/>
     <param name="index">
       <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
     </param>
-    <param name="e">New element to store in the array at the position specified</param>
-    <returns>The new element</returns>
+    <param name="e">要存储在数组指定位置的新元素</param>
+    <returns>新元素</returns>
   </__ArrayBase_T_.__SetElement>
   <__ArrayBase_T_.Count>
-    <summary>Length of the array.</summary>
+    <summary>数组的长度。</summary>
   </__ArrayBase_T_.Count>
   <__ArrayBase_T_.ctor>
-    <summary>Create an empty array</summary>
+    <summary>创建一个空数组</summary>
   </__ArrayBase_T_.ctor>
   <__ArrayBase_T_.ctor_2>
-    <summary>Create an array with a certain capacity.</summary>
+    <summary>创建一个具有指定容量的数组。</summary>
   </__ArrayBase_T_.ctor_2>
   <__ArrayBase_T_.ctor_3>
-    <summary>Create an array with a certain capacity and specify if it should be filled with default values.</summary>
+    <summary>创建一个具有指定容量的数组，并指定是否使用默认值填充。</summary>
   </__ArrayBase_T_.ctor_3>
   <__ArrayBase_T_.ctor_4>
-    <summary>Create an array and fill it with elements from an existing collection.</summary>
+    <summary>创建一个数组，并使用现有集合中的元素填充它。</summary>
   </__ArrayBase_T_.ctor_4>
   <__ArrayBase_T_.ctor_5>
-    <summary>Create an array and fill it with elements from an existing .Net array of objects. Note that the objects must be of the right type.</summary>
+    <summary>创建一个数组，并使用现有 .Net 对象数组中的元素填充它。请注意，这些对象必须是正确的类型。</summary>
   </__ArrayBase_T_.ctor_5>
   <__ArrayBase_T_.ctor_6>
-    <summary>Create an array and fill it with elements from an existing .Net array.</summary>
+    <summary>创建一个数组，并使用现有 .Net 数组中的元素填充它。</summary>
   </__ArrayBase_T_.ctor_6>
   <__ArrayBase_T_.DefaultValue>
-    <summary>Returns the default value for array elements when arrays are resized or initialized.</summary>
+    <summary>返回数组调整大小或初始化时数组元素的默认值。</summary>
   </__ArrayBase_T_.DefaultValue>
   <__ArrayBase_T_.EXPLICIT>
-    <summary>Implicitely convert a typed array to an array of USUALs.</summary>
+    <summary>将类型化数组隐式转换为 USUAL 数组。</summary>
   </__ArrayBase_T_.EXPLICIT>
   <__ArrayBase_T_.IMPLICIT>
-    <summary>Implicitely convert an array of USUALs to a typed array. Note that the usuals must contain a value of the correct type.</summary>
+    <summary>将 USUAL 数组隐式转换为类型化数组。请注意，这些 USUAL 必须包含正确类型的值。</summary>
   </__ArrayBase_T_.IMPLICIT>
   <__ArrayBase_T_.IMPLICIT_2>
-    <summary>Implicitely convert a typed Array to an OBJECT[].</summary>
+    <summary>将类型化数组隐式转换为 OBJECT[]。</summary>
   </__ArrayBase_T_.IMPLICIT_2>
   <__ArrayBase_T_.IsEmpty>
-    <summary>Is the array empty.</summary>
+    <summary>数组是否为空。</summary>
   </__ArrayBase_T_.IsEmpty>
   <__ArrayBase_T_.Length>
-    <summary>Length of the array.</summary>
+    <summary>数组的长度。</summary>
   </__ArrayBase_T_.Length>
   <__ArrayBase_T_.SELF_index>
     <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*"/>
@@ -132,222 +130,208 @@
     <param name="name">
       <include file="RTComments.xml" path="Comments/NameBasedIndexParam/*"/>
     </param>
-    <returns>The element stored at the indicated location in the collection.</returns>
+    <returns>存储在集合中指定位置的元素。</returns>
   </__ArrayBase_T_.SELF_index>
   <__Binary>
     <summary>
-      Internal type that implements the FoxPro Compatible BINARY type.<br/>
-      This type has many operators and implicit converters that normally are never directly called from user code.
-      The data in this type is stored as an array of Bytes<br/>
-      Conversions from and to String are supported and they use the current active windows codepage.
+      实现 FoxPro 兼容的 BINARY 类型的内部类型。<br/> 此类型包含许多运算符和隐式转换器，通常不会在用户代码中被直接调用。此类型中的数据以 Byte 数组的形式存储。<br/> 支持与 String 之间的转换，转换时使用当前活动的 Windows 代码页。
     </summary>
   </__Binary>
   <__Binary.ctor>
     <include file="RTComments.xml" path="Comments/Constructor/*"/>
-    <param name="b">Byte[] value that has the bytes that define the binary</param>
-    <param name="s">STRING that will be converted to bytes using the current windows codepage.</param>
+    <param name="b">包含定义该二进制数据的字节的 Byte[] 值</param>
+    <param name="s">将使用当前 Windows 代码页转换为字节的 STRING。</param>
     <remarks>
       <remarks>
-        When you create a Binary from a string, then accented characters and characters outside the current windows codepage may be replaced with a question mark.
-        and when the current codepage is a so called multi byte codepage than one character may be mapped to more than one byte in the result
+        从字符串创建 Binary 时，带重音符号的字符以及当前 Windows 代码页之外的字符可能会被替换为问号。并且当当前代码页是所谓的多字节代码页时，一个字符在结果中可能会映射为多个字节
       </remarks>
 
     </remarks>
 
   </__Binary.ctor>
   <__Binary.Value>
-    <summary>Binary value as array of Bytes</summary>
+    <summary>以 Byte 数组表示的二进制值</summary>
   </__Binary.Value>
   <__Currency>
     <summary>
-      Internal type that implements the FoxPro Compatible CURRENCY type.
-      This type has many operators and implicit converters that normally are never directly called from user code.
-      The data in this type is stored as a System.Decimal with 4 decimal places
+      实现 FoxPro 兼容的 CURRENCY 类型的内部类型。此类型包含许多运算符和隐式转换器，通常不会在用户代码中被直接调用。此类型中的数据以带有 4 位小数的 System.Decimal 形式存储
     </summary>
     <seealso cref="__Float"/>
     <seealso cref="System.Decimal"/>
   </__Currency>
   <__Currency.ctor>
     <include file="RTComments.xml" path="Comments/Constructor/*"/>
-    <param name="r8">Real8 value to convert to a CURRENCY</param>
-    <param name="d">Decimal value to convert to a CURRENCY</param>
-    <param name="f">Float value to convert to a CURRENCY</param>
-    <param name="c">ICurrency value to convert to a CURRENCY</param>
+    <param name="r8">要转换为 CURRENCY 的 Real8 值</param>
+    <param name="d">要转换为 CURRENCY 的 Decimal 值</param>
+    <param name="f">要转换为 CURRENCY 的 Float 值</param>
+    <param name="c">要转换为 CURRENCY 的 ICurrency 值</param>
   </__Currency.ctor>
   <__Currency.Value>
-    <summary>Decimal (System.Decimal) value</summary>
+    <summary>Decimal (System.Decimal) 值</summary>
   </__Currency.Value>
   <__Date>
     <summary>
-      Internal type that implements the VO Compatible DATE type<br/>
-      This type has many operators and implicit converters that normally are never directly called from user code.
-      It holds year, month, day in 32 bits. For date calculations it uses the System.DateTime calculation logic.
-      There are implicit converters between Date and DateTime.
+      实现 VO 兼容的 DATE 类型的内部类型<br/> 此类型包含许多运算符和隐式转换器，通常不会在用户代码中被直接调用。它以 32 位保存年、月、日。日期计算使用 System.DateTime 的计算逻辑。Date 与 DateTime 之间存在隐式转换器。
     </summary>
     <seealso cref="IDate"/>
     <seealso cref="T:XSharp.RDD.DbDate"/>
   </__Date>
   <__Date.ctor>
-    <summary>Create a Date Value</summary>
-    <param name="dt">DateTime value to convert to a DATE</param>
-    <param name="iDate">Date value to convert to a DATE</param>
-    <param name="ticks">Ticks value to convert to a DATE</param>
-    <param name="strDate">String value to convert to a DATE</param>
+    <summary>创建一个日期值</summary>
+    <param name="dt">要转换为 DATE 的 DateTime 值</param>
+    <param name="iDate">要转换为 DATE 的 Date 值</param>
+    <param name="ticks">要转换为 DATE 的 Ticks 值</param>
+    <param name="strDate">要转换为 DATE 的字符串值</param>
     <param name="strFormat">
-      Format specifier for <paramref name="strDate"/> value
+      <paramref name="strDate"/> 值的格式说明符
     </param>
-    <param name="year">Year value to convert to a DATE</param>
-    <param name="month">Month  value to convert to a DATE</param>
-    <param name="day">Day  value to convert to a DATE</param>
+    <param name="year">要转换为 DATE 的年份值</param>
+    <param name="month">要转换为 DATE 的月份值</param>
+    <param name="day">要转换为 DATE 的日值</param>
   </__Date.ctor>
   <__Date.Value>
-    <summary>Return DATE value as DateTime.</summary>
+    <summary>将 DATE 值作为 DateTime 返回。</summary>
   </__Date.Value>
   <__Float>
     <summary>
-      Internal type that implements the XBase Compatible FLOAT type.
-      This type has many operators and implicit converters that normally are never directly called from user code.
+      实现 XBase 兼容的 FLOAT 类型的内部类型。此类型包含许多运算符和隐式转换器，通常不会在用户代码中被直接调用。
     </summary>
     <seealso cref="IFloat"/>
     <seealso cref="RDD.DbFloat"/>
   </__Float>
   <__Float.ctor>
     <include file="RTComments.xml" path="Comments/Constructor/*"/>
-    <param name="r8">Real8 value to convert to a FLOAT</param>
-    <param name="decimals">Number of significant decimals of the FLOAT</param>
-    <param name="length">Length of the FLOAT</param>
-    <param name="Value">IFLoat value to copy into the FLOAT</param>
+    <param name="r8">要转换为 FLOAT 的 Real8 值</param>
+    <param name="decimals">FLOAT 的有效小数位数</param>
+    <param name="length">FLOAT 的长度</param>
+    <param name="Value">要复制到 FLOAT 中的 IFLoat 值</param>
   </__Float.ctor>
 
   <__Float.Decimals>
-    <summary>Number of decimals</summary>
+    <summary>小数位数</summary>
   </__Float.Decimals>
   <__Float.Digits>
     <summary>Width </summary>
   </__Float.Digits>
   <__Float.Value>
-    <summary>REAL8 (System.Double) value</summary>
+    <summary>REAL8 (System.Double) 值</summary>
   </__Float.Value>
   <__Psz>
     <summary>
-      Internal type that implements the XBase Compatible PSZ type.<br/>
-      This type has many operators and implicit converters that normally are never directly called from user code.
+      实现 XBase 兼容的 PSZ 类型的内部类型。<br/> 此类型包含许多运算符和隐式转换器，通常不会在用户代码中被直接调用。
     </summary>
     <include file="RTComments.xml" path="Comments/PSZ/*"/>
   </__Psz>
   <__Symbol>
     <summary>
-      Internal type that implements the XBase Compatible SYMBOL type.<br/>
-      This type has many operators and implicit converters that normally are never directly called from user code.<br/>
-      There are also some operators that handle implicit conversions between Symbols and Strings in your code.
+      实现 XBase 兼容的 SYMBOL 类型的内部类型。<br/> 此类型包含许多运算符和隐式转换器，通常不会在用户代码中被直接调用。<br/> 还有一些运算符用于处理代码中 Symbol 与 String 之间的隐式转换。
     </summary>
     <include file="RTComments.xml" path="Comments/Symbol/*"/>
   </__Symbol>
   <__Symbol.ctor>
     <include file="RTComments.xml" path="Comments/Constructor/*"/>
-    <param name="sValue">String value to convert to a SYMBOL</param>
-    <param name="upperCase">Should the symbol be converted to Uppercase</param>
-    <param name="dwValue">Position of an existing symbol in the symbol table.</param>
+    <param name="sValue">要转换为 SYMBOL 的字符串值</param>
+    <param name="upperCase">是否应将该符号转换为大写</param>
+    <param name="dwValue">现有符号在符号表中的位置。</param>
   </__Symbol.ctor>
   <__Usual>
     <summary>
-      Internal type that implements the XBase Compatible USUAL type.<br/>
-      This type has many operators and implicit converters that normally are never directly called from user code.
+      实现 XBase 兼容的 USUAL 类型的内部类型。<br/> 此类型包含许多运算符和隐式转换器，通常不会在用户代码中被直接调用。
     </summary>
   </__Usual>
   <__Usual.__InexactEquals>
-    <summary>This method is used by the compiler for code that does an inexact comparison between two usuals.</summary>
-    <param name="lhs">Left hand side of the comparison</param>
-    <param name="rhs">Right hand side of the comparison</param>
-    <returns>TRUE when the values are equal</returns>
-    <remarks>This method takes the SetExact() setting into account when comparing string values.</remarks>
+    <summary>编译器在对两个 USUAL 进行不精确比较的代码中使用此方法。</summary>
+    <param name="lhs">比较的左侧</param>
+    <param name="rhs">比较的右侧</param>
+    <returns>当两个值相等时为 TRUE</returns>
+    <remarks>比较字符串值时，此方法会考虑 SetExact() 设置。</remarks>
   </__Usual.__InexactEquals>
   <__Usual.__InexactNotEquals>
-    <summary>This method is used by the compiler for code that does an inexact comparison.</summary>
-    <param name="lhs">Left hand side of the comparison</param>
-    <param name="rhs">Right hand side of the comparison</param>
-    <returns>TRUE when the values are NOT equal</returns>
-    <remarks>This method takes the SetExact() setting into account when comparing string values.</remarks>
+    <summary>编译器在进行不精确比较的代码中使用此方法。</summary>
+    <param name="lhs">比较的左侧</param>
+    <param name="rhs">比较的右侧</param>
+    <returns>当两个值不相等时为 TRUE</returns>
+    <remarks>比较字符串值时，此方法会考虑 SetExact() 设置。</remarks>
   </__Usual.__InexactNotEquals>
   <__Usual.CompareTo>
-    <summary>This method is needed to implement the IComparable interface.</summary>
+    <summary>实现 IComparable 接口需要此方法。</summary>
   </__Usual.CompareTo>
   <__Usual.ctor>
-    <summary>This constructor is used in code generated by the compiler when needed.</summary>
-    <param name="o">object that will be stored inside the usual.</param>
-    <remarks>When the object is a value type, the the value will be stored inside the usual. Otherwise a reference to the value will be stored.</remarks>
+    <summary>此构造函数在需要时用于编译器生成的代码中。</summary>
+    <param name="o">将存储在 USUAL 内部的对象。</param>
+    <remarks>当该对象是值类型时，其值将存储在 USUAL 内部。否则将存储对该值的引用。</remarks>
   </__Usual.ctor>
   <__Usual.IsArray>
-    <summary>This property returns TRUE when the USUAL is of type Array</summary>
+    <summary>当 USUAL 为 Array 类型时，此属性返回 TRUE</summary>
   </__Usual.IsArray>
   <__Usual.IsBinary>
-    <summary>This property returns TRUE when the USUAL is of type Binary</summary>
+    <summary>当 USUAL 为 Binary 类型时，此属性返回 TRUE</summary>
   </__Usual.IsBinary>
   <__Usual.IsByRef>
-    <summary>This property returns TRUE when the USUAL is passed by reference (not implemented yet)</summary>
+    <summary>当 USUAL 是通过引用传递时，此属性返回 TRUE（尚未实现）</summary>
   </__Usual.IsByRef>
   <__Usual.IsCodeblock>
-    <summary>This property returns TRUE when the USUAL is of type Codeblock</summary>
+    <summary>当 USUAL 为 Codeblock 类型时，此属性返回 TRUE</summary>
   </__Usual.IsCodeblock>
   <__Usual.IsCurrency>
-    <summary>This property returns TRUE when the USUAL is of type Currency</summary>
+    <summary>当 USUAL 为 Currency 类型时，此属性返回 TRUE</summary>
   </__Usual.IsCurrency>
   <__Usual.IsDate>
-    <summary>This property returns TRUE when the USUAL is of type Date</summary>
+    <summary>当 USUAL 为 Date 类型时，此属性返回 TRUE</summary>
   </__Usual.IsDate>
   <__Usual.IsDateTime>
-    <summary>This property returns TRUE when the USUAL is of type DateTime</summary>
+    <summary>当 USUAL 为 DateTime 类型时，此属性返回 TRUE</summary>
   </__Usual.IsDateTime>
   <__Usual.IsDecimal>
-    <summary>This property returns TRUE when the USUAL is of type Decimal</summary>
+    <summary>当 USUAL 为 Decimal 类型时，此属性返回 TRUE</summary>
   </__Usual.IsDecimal>
   <__Usual.IsEmpty>
-    <summary>This property returns TRUE when the USUAL is Empty. </summary>
+    <summary>当 USUAL 为空时，此属性返回 TRUE。 </summary>
   </__Usual.IsEmpty>
 <__Usual.IsFloat>
-    <summary>This property returns TRUE when the USUAL is of type FLOAT </summary>
+    <summary>当 USUAL 为 FLOAT 类型时，此属性返回 TRUE </summary>
   </__Usual.IsFloat>
   <__Usual.IsFractional>
-    <summary>This property returns TRUE when the USUAL is of type FLOAT, Decimal or Currency</summary>
+    <summary>当 USUAL 为 FLOAT、Decimal 或 Currency 类型时，此属性返回 TRUE</summary>
   </__Usual.IsFractional>
   <__Usual.IsInt64>
-    <summary>This property returns TRUE when the USUAL is of type Int64 </summary>
+    <summary>当 USUAL 为 Int64 类型时，此属性返回 TRUE </summary>
   </__Usual.IsInt64>
   <__Usual.IsInteger>
-    <summary>This property returns TRUE when the USUAL is of type LONG or INT64 </summary>
+    <summary>当 USUAL 为 LONG 或 INT64 类型时，此属性返回 TRUE </summary>
   </__Usual.IsInteger>
   <__Usual.IsLogic>
-    <summary>This property returns TRUE when the USUAL is of type LOGIC </summary>
+    <summary>当 USUAL 为 LOGIC 类型时，此属性返回 TRUE </summary>
   </__Usual.IsLogic>
   <__Usual.IsLong>
-    <summary>This property returns TRUE when the USUAL is of type Long </summary>
+    <summary>当 USUAL 为 Long 类型时，此属性返回 TRUE </summary>
   </__Usual.IsLong>
   <__Usual.IsNil>
-    <summary>This property returns TRUE when the USUAL is NIL, or when the usual is a reference type and NULL or when the isual is a PTR type and IntPtr.Zero</summary>
+    <summary>当 USUAL 为 NIL，或者 USUAL 是引用类型且为 NULL，或者 USUAL 是 PTR 类型且为 IntPtr.Zero 时，此属性返回 TRUE</summary>
   </__Usual.IsNil>
   <__Usual.IsNull>
-    <summary>This property returns TRUE when the USUAL is of type NULL</summary>
+    <summary>当 USUAL 为 NULL 类型时，此属性返回 TRUE</summary>
   </__Usual.IsNull>
   <__Usual.IsNumeric>
-    <summary>This property returns TRUE when the USUAL is of type LONG, Int64, FLOAT or Decimal</summary>
+    <summary>当 USUAL 为 LONG、Int64、FLOAT 或 Decimal 类型时，此属性返回 TRUE</summary>
   </__Usual.IsNumeric>
   <__Usual.IsObject>
-    <summary>This property returns TRUE when the USUAL is of type Object</summary>
+    <summary>当 USUAL 为 Object 类型时，此属性返回 TRUE</summary>
   </__Usual.IsObject>
   <__Usual.IsPsz>
-    <summary>This property returns TRUE when the USUAL is of type Psz</summary>
+    <summary>当 USUAL 为 Psz 类型时，此属性返回 TRUE</summary>
   </__Usual.IsPsz>
   <__Usual.IsPtr>
-    <summary>This property returns TRUE when the USUAL is of type Ptr (IntPtr)</summary>
+    <summary>当 USUAL 为 Ptr (IntPtr) 类型时，此属性返回 TRUE</summary>
   </__Usual.IsPtr>
   <__Usual.IsReferenceType>
-    <summary>This property returns TRUE when the USUAL is a reference type (Array, Decimal, Object, String)</summary>
+    <summary>当 USUAL 为引用类型（Array、Decimal、Object、String）时，此属性返回 TRUE</summary>
   </__Usual.IsReferenceType>
   <__Usual.IsString>
-    <summary>This property returns TRUE when the USUAL is of type String</summary>
+    <summary>当 USUAL 为 String 类型时，此属性返回 TRUE</summary>
   </__Usual.IsString>
   <__Usual.IsSymbol>
-    <summary>This property returns TRUE when the USUAL is of type Symbol</summary>
+    <summary>当 USUAL 为 Symbol 类型时，此属性返回 TRUE</summary>
   </__Usual.IsSymbol>
   <__Usual.SELF_index>
     <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*"/>
@@ -360,272 +344,257 @@
     <param name="index2">
       <include file="RTComments.xml" path="Comments/ZeroBasedIndexParam/*"/>
     </param>
-    <returns>The element stored at the indicated location in the array.</returns>
-    <remarks>When the contents of the USUAL is not an array or does not support indexed access then a runtime error is generated.</remarks>
+    <returns>存储在数组中指定位置的元素。</returns>
+    <remarks>当 USUAL 的内容不是数组或不支持索引访问时，将生成运行时错误。</remarks>
   </__Usual.SELF_index>
   <__Usual.SELF_name>
     <include file="RTComments.xml" path="Comments/ZeroBasedIndexProperty/*"/>
     <param name="name">
       <include file="RTComments.xml" path="Comments/NameBasedIndexParam/*"/>
     </param>
-    <returns>The element stored at the indicated location in the collection.</returns>
-    <remarks>When the contents of the USUAL is not an array or does not name based indexing  then a runtime error is generated.</remarks>
+    <returns>存储在集合中指定位置的元素。</returns>
+    <remarks>当 USUAL 的内容不是数组或不支持基于名称的索引时，将生成运行时错误。</remarks>
   </__Usual.SELF_name>
   <__Usual.SystemType>
-    <summary>This property returns the System.Type that represents the value of the usual.</summary>
+    <summary>此属性返回表示该 USUAL 的值的 System.Type。</summary>
   </__Usual.SystemType>
   <__Usual.Type>
-    <summary>This property returns the __UsualType of the USUAL </summary>
+    <summary>此属性返回该 USUAL 的 __UsualType </summary>
   </__Usual.Type>
   <__Usual.Value>
-    <summary>Return the value of the USUAL as object. NIL values are shown as a NIL string.</summary>
+    <summary>以 object 形式返回 USUAL 的值。NIL 值显示为 NIL 字符串。</summary>
   </__Usual.Value>
   <__UsualEnumerator>
-    <summary>Create an enumerator for the USUAL type or throw a runtime exception.</summary>
-    <param name="name">Name of the Usual</param>
-    <remarks>This function is automatically called by code generated by the compiler when enumerating an untyped variable</remarks>
+    <summary>为 USUAL 类型创建枚举器，否则抛出运行时异常。</summary>
+    <param name="name">USUAL 的名称</param>
+    <remarks>在枚举无类型变量时，编译器生成的代码会自动调用此函数</remarks>
   </__UsualEnumerator>
   <__WinBool>
-    <summary>Internal type that implements the WIN32 Compatible LOGIC type in UNIONs and VOSTRUCTs</summary>
+    <summary>在 UNION 和 VOSTRUCT 中实现 WIN32 兼容的 LOGIC 类型的内部类型</summary>
   </__WinBool>
   <__WinBool.ctor>
-    <summary>This constructor is used in code generated by the compiler when needed.</summary>
+    <summary>此构造函数在需要时用于编译器生成的代码中。</summary>
   </__WinBool.ctor>
   <__WinBool.Value>
-    <summary>Value as Logic</summary>
+    <summary>作为 Logic 的值</summary>
   </__WinBool.Value>
   <__WinDate>
-    <summary>Internal type that implements the XBase Compatible DATE type in UNIONs and VOSTRUCTs</summary>
+    <summary>在 UNION 和 VOSTRUCT 中实现 XBase 兼容的 DATE 类型的内部类型</summary>
   </__WinDate>
   <__WinDate.ctor>
-    <summary>This constructor is used in code generated by the compiler when needed.</summary>
+    <summary>此构造函数在需要时用于编译器生成的代码中。</summary>
   </__WinDate.ctor>
   <__WinDate.JulianValue>
-    <summary>Value as Julian Number, 0 for NULL_DATE</summary>
+    <summary>以儒略日数表示的值，NULL_DATE 为 0</summary>
   </__WinDate.JulianValue>
   <__WinDate.Value>
-    <summary>Value as Date</summary>
+    <summary>作为 Date 的值</summary>
   </__WinDate.Value>
   <_ArrayToObjectArray>
-    <summary>Helper function to convert ARRAY to OBJECT[]</summary>
-    <param name="args">X# array to convert</param>
-    <returns>OBJECT Array</returns>
-    <remarks>This is a helper function used for late bound code that can also be called from user code.</remarks>
+    <summary>将 ARRAY 转换为 OBJECT[] 的辅助函数</summary>
+    <param name="args">要转换的 X# 数组</param>
+    <returns>OBJECT 数组</returns>
+    <remarks>这是用于后期绑定代码的辅助函数，也可以从用户代码中调用。</remarks>
   </_ArrayToObjectArray>
   <_ArrayToUsualArray>
-    <summary>Helper function to convert ARRAY to USUAL[]</summary>
-    <param name="args">X# array to convert</param>
-    <returns>USUAL Array</returns>
-    <remarks>This is a helper function used for late bound code that can also be called from user code.</remarks>
+    <summary>将 ARRAY 转换为 USUAL[] 的辅助函数</summary>
+    <param name="args">要转换的 X# 数组</param>
+    <returns>USUAL 数组</returns>
+    <remarks>这是用于后期绑定代码的辅助函数，也可以从用户代码中调用。</remarks>
   </_ArrayToUsualArray>
   <_CallClipFunc>
-    <summary>Call a clipper function by name</summary>
-    <param name="symFunction">The name of the function to call.</param>
-    <param name="aArgs">The list of arguments to pass to the function</param>
-    <param name="uArgs">The list of arguments to pass to the function</param>
-    <returns>The return value of the function</returns>
-    <remarks>Note that X# allows to call functions that are overloaded.</remarks>
+    <summary>按名称调用 clipper 函数</summary>
+    <param name="symFunction">要调用的函数的名称。</param>
+    <param name="aArgs">传递给该函数的参数列表</param>
+    <param name="uArgs">传递给该函数的参数列表</param>
+    <returns>函数的返回值</returns>
+    <remarks>请注意，X# 允许调用重载的函数。</remarks>
   </_CallClipFunc>
   <_Codeblock>
     <summary>
-      Internal type that is the base class for macro compiled codeblocks.
+      宏编译的代码块的基类内部类型。
     </summary>
     <seealso cref="ICodeblock"/>
     <seealso cref="IMacroCompiler"/>
     <seealso cref="Codeblock"/>
   </_Codeblock>
   <_Codeblock.ctor>
-    <summary>This constructor is used by the Macro Compiler</summary>
-    <param name="innerBlock">Compiled codeblock created by the macro compiler.</param>
-    <param name="cMacro">Macro string that was used to create the codeblock.</param>
-    <param name="lIsBlock">Did the macro string start with "{|".</param>
-    <param name="lAddsMemvars">Does the macro create Memvars .</param>
+    <summary>宏编译器使用此构造函数</summary>
+    <param name="innerBlock">由宏编译器创建的已编译代码块。</param>
+    <param name="cMacro">用于创建该代码块的宏字符串。</param>
+    <param name="lIsBlock">宏字符串是否以 "{|" 开头。</param>
+    <param name="lAddsMemvars">宏是否创建 Memvars。</param>
   </_Codeblock.ctor>
   <_Codeblock.Eval>
     <summary>
-      Executes the codeblock.
+      执行代码块。
     </summary>
-    <param name="args">Zero or more arguments to pass to the codeblock.</param>
+    <param name="args">传递给代码块的零个或多个参数。</param>
     <returns>
-      The value of the last expression within the codeblock as a USUAL.
-      If the last expression in the codeblock is of type VOID, then the codeblock
-      returns NIL.
+      代码块中最后一个表达式的值，以 USUAL 形式返回。如果代码块中的最后一个表达式的类型为 VOID，则代码块返回 NIL。
     </returns>
   </_Codeblock.Eval>
   <_Codeblock.IsBlock>
-    <summary>Was the codeblock created from a string that started with "{|" </summary>
+    <summary>代码块是否由以 "{|" 开头的字符串创建 </summary>
   </_Codeblock.IsBlock>
   <_Codeblock.ToString>
     <summary>
-      Returns the original string that was used to create the macro compiled codeblock.
+      返回用于创建该宏编译代码块的原始字符串。
     </summary>
   </_Codeblock.ToString>
   <_MClear>
     <summary>
-      Clear all memory variables (all public variables and the private variables of the current thread)
+      清除所有内存变量（所有 public 变量以及当前线程的 private 变量）
     </summary>
     <include file="RTComments.xml" path="Comments/Memvar/*"/>
   </_MClear>
   <_MRelease>
     <summary>
-      Release variables that match a certain wildcard pattern
+      释放与某个通配符模式匹配的变量
     </summary>
-    <param name="cMask">The wildcard pattern to use when releasing the memvars. May contain * and ? characters.</param>
-    <param name="lMatch">Indicates if the variables that need to be released should match (TRUE) or NOT match (FALSE) the pattern.</param>
+    <param name="cMask">释放内存变量时使用的通配符模式。可以包含 * 和 ? 字符。</param>
+    <param name="lMatch">指示需要释放的变量应与该模式匹配 (TRUE) 还是不匹配 (FALSE)。</param>
     <remarks>
-      For most dialects the variables are not removed but their values are replaced with NIL.
+      对于大多数方言，变量不会被移除，而是其值被替换为 NIL。
     </remarks>
     <include file="RTComments.xml" path="Comments/Memvar/*"/>
-    dsAccessToLocals(TRUE)];
-    TION _MRelease(cMask AS STRING, lMatch AS LOGIC)	AS VOID
+    dsAccessToLocals(TRUE)]; TION _MRelease(cMask AS STRING, lMatch AS LOGIC) AS VOID
   </_MRelease>
   <_MRestore>
     <summary>
-      Recreate public and private variables previously saved to a file and initialize them with their former values.
+      重新创建先前保存到文件中的 public 和 private 变量，并使用其原有的值对其进行初始化。
     </summary>
-    <param name="cFileName">The name of the memory file to read. The default extension is .MEM </param>
-    <param name="lAdditive">When set to TRUE then the existing memory variables will be saved. Otherwise all memory variables will be deleted first.</param>
-    <param name="cSkel">(Optional) Wildcard pattern to use when saving. This can include literal characters as well as the standard wildcard characters, * and ?. </param>
-    <param name="lLike">(Optional) When set to TRUE then variables matching the pattern are restored. When set to FALSE then the variables that do NOT match the pattern are restored.</param>
+    <param name="cFileName">要读取的内存文件的名称。默认扩展名为 .MEM </param>
+    <param name="lAdditive">设置为 TRUE 时，将保留现有的内存变量。否则将先删除所有内存变量。</param>
+    <param name="cSkel">（可选）保存时使用的通配符模式。可以包含字面字符以及标准通配符 * 和 ?。 </param>
+    <param name="lLike">（可选）设置为 TRUE 时，将恢复与该模式匹配的变量。设置为 FALSE 时，将恢复与该模式不匹配的变量。</param>
     <remarks>
-      When memory variables are restored, they are recreated as private variables with the scope of the current procedure or function
-      unless they exist as public variables and you specify the ADDITIVE clause .  If ADDITIVE is specified, public and private variables
-      with the same names are overwritten unless hidden with PRIVATE.  If ADDITIVE is not specified, all public and private variables are
-      released before the memory file is loaded. In that case all restored variables will become private variables.
+      恢复内存变量时，它们将被重新创建为具有当前过程或函数作用域的 private 变量，除非它们作为 public 变量已存在且指定了 ADDITIVE 子句。如果指定了 ADDITIVE，则同名的 public 和 private 变量将被覆盖，除非被 PRIVATE 隐藏。如果未指定 ADDITIVE，则在加载内存文件之前将释放所有 public 和 private 变量。在这种情况下，所有恢复的变量都将成为 private 变量。
     </remarks>
   </_MRestore>
   <_MSave>
     <summary>
-      Copy public and private memory variables visible within the current routine to a disk file.
+      将当前例程中可见的 public 和 private 内存变量复制到磁盘文件。
     </summary>
-    <param name="cFileName">The name of the file, including an optional drive, directory, and extension. The default extension is .MEM </param>
-    <param name="cSkel">Wildcard pattern to use when saving. This can include literal characters as well as the standard wildcard characters, * and ?. </param>
-    <param name="lLike">When set to TRUE then variables matching the pattern are saved. When set to FALSE then the variables that do NOT match the pattern are saved.</param>
+    <param name="cFileName">文件名，包括可选的驱动器、目录和扩展名。默认扩展名为 .MEM </param>
+    <param name="cSkel">保存时使用的通配符模式。可以包含字面字符以及标准通配符 * 和 ?。 </param>
+    <param name="lLike">设置为 TRUE 时，将保存与该模式匹配的变量。设置为 FALSE 时，将保存与该模式不匹配的变量。</param>
     <remarks>
-      An existing MEM file will be overwritten. When an existing file is ReadOnly then an exception will be thrown.
+      现有的 MEM 文件将被覆盖。当现有文件为只读时，将抛出异常。
     </remarks>
   </_MSave>
   <_MxRelease>
     <summary>
-      Release one or more memory variables variables.
+      释放一个或多个内存变量。
     </summary>
-    <param name="var1">Variable 1</param>
-    <param name="var2">Variable 2</param>
-    <param name="var3">Variable 3</param>
-    <param name="var4">Variable 4</param>
-    <param name="varn">Variable n</param>
+    <param name="var1">变量 1</param>
+    <param name="var2">变量 2</param>
+    <param name="var3">变量 3</param>
+    <param name="var4">变量 4</param>
+    <param name="varn">变量 n</param>
     <remarks>
-      The variables are not removed but their values are replaced with NIL.
+      变量不会被移除，而是其值被替换为 NIL。
     </remarks>
     <include file="RTComments.xml" path="Comments/Memvar/*"/>
   </_MxRelease>
   <_ObjectArrayToUsualArray>
-    <summary>Helper function to convert OBJECT[] to USUAL[]</summary>
-    <remarks>This is a helper function used for late bound code that can also be called from user code.</remarks>
-    <param name="args">OBJECT array to convert</param>
-    <returns>USUAL Array</returns>
+    <summary>将 OBJECT[] 转换为 USUAL[] 的辅助函数</summary>
+    <remarks>这是用于后期绑定代码的辅助函数，也可以从用户代码中调用。</remarks>
+    <param name="args">要转换的 OBJECT 数组</param>
+    <returns>USUAL 数组</returns>
   </_ObjectArrayToUsualArray>
   <_PrivateCount>
     <summary>
-      Count private variables
+      统计私有变量数量
     </summary>
   </_PrivateCount>
   <_PrivateEnum>
     <summary>
-      Enumerate private variables
+      枚举私有变量
     </summary>
   </_PrivateEnum>
   <_PrivateFirst>
     <summary>
-      Enumerate private variables
+      枚举私有变量
     </summary>
   </_PrivateFirst>
   <_PrivateNext>
     <summary>
-      Enumerate private variables
+      枚举私有变量
     </summary>
   </_PrivateNext>
   <_PublicCount>
     <summary>
-      Count public variables
+      统计公共变量数量
     </summary>
   </_PublicCount>
   <_PublicEnum>
     <summary>
-      Enumerate public variables
+      枚举公共变量
     </summary>
   </_PublicEnum>
   <_PublicFirst>
     <summary>
-      Enumerate public variables
+      枚举公共变量
     </summary>
   </_PublicFirst>
   <_PublicNext>
     <summary>
-      Enumerate public variables
+      枚举公共变量
     </summary>
   </_PublicNext>
   <_SequenceError>
     <summary>
-      This function is automatically inserted by the compiler in a RECOVER USING block and gets called when the
-      RECOVER USING block is reached because of an exception.
+      此函数由编译器自动插入到 RECOVER USING 块中，当由于异常而到达 RECOVER USING 块时被调用。
     </summary>
-    <param name="e">The exception that triggered the jump into the RECOVER USING block</param>
+    <param name="e">触发跳转到 RECOVER USING 块的异常</param>
     <remarks>
-      The default implementation of this function (in the XSharp.RT assembly) called the installed error handler
-      that is installed with ErrorBlock()
-      The function should then have the following prototype
+      此函数的默认实现（位于 XSharp.RT 程序集中）调用通过 ErrorBlock() 安装的错误处理程序。该函数应具有以下原型
       <code language="X#">
         FUNCTION _SequenceError(e as Exception) AS VOID
       </code>
     </remarks>
-    <returns>The result of the call to the error handler installed in the ErrorBlock</returns>
-    <seealso cref="O:XSharp.RT.Functions._Break">Break Function</seealso>
-    <seealso cref="O:XSharp.RT.Functions.ErrorBlock">Break Function</seealso>
+    <returns>调用 ErrorBlock 中安装的错误处理程序的结果</returns>
+    <seealso cref="O:XSharp.RT.Functions._Break">Break 函数</seealso>
+    <seealso cref="O:XSharp.RT.Functions.ErrorBlock">Break 函数</seealso>
   </_SequenceError>
   <_SequenceRecover>
     <summary>
-      This function is automatically inserted by the compiler in a compiler generated
-      RECOVER USING block when you have a BEGIN SEQUENCE .. END SEQUENCE in your code
-      without RECOVER USING clause
+      当您的代码中存在没有 RECOVER USING 子句的 BEGIN SEQUENCE .. END SEQUENCE 时，编译器会将此函数自动插入到编译器生成的 RECOVER USING 块中
     </summary>
-    <param name="u">The parameter that was passed in the BREAK statement or the call to the _Break function</param>
+    <param name="u">在 BREAK 语句或对 _Break 函数的调用中传递的参数</param>
     <remarks>
-      If a REAL exception occurs then this function is NOT called. The function is only called when
-      the (generated) RECOVER USING block is called with a value from a BREAK statement. <br/>
-      The default implementation of this function (in the XSharp.RT assembly) does nothing.
-      You can override this function in your own code if you want.
-      The function should then have the following prototype
+      如果发生真正的异常，则不会调用此函数。仅当使用 BREAK 语句提供的值调用（生成的）RECOVER USING 块时，才会调用此函数。<br/> 此函数的默认实现（位于 XSharp.RT 程序集中）不执行任何操作。如果需要，您可以在自己的代码中重写此函数。该函数应具有以下原型
       <code language="X#">
         FUNCTION _SequenceRecover(u as USUAL) AS VOID
       </code>
     </remarks>
-    <seealso cref="O:XSharp.RT.Functions._Break">Break Function</seealso>
+    <seealso cref="O:XSharp.RT.Functions._Break">Break 函数</seealso>
   </_SequenceRecover>
   <_Str>
     <inheritdoc cref="Str"/>
-    <returns>The returned string with always have a DOT as decimal separator.</returns>
+    <returns>返回的字符串始终使用点 (.) 作为小数分隔符。</returns>
   </_Str>
   <_Str3>
     <inheritdoc cref="Str3"/>
-    <returns>A string with DOT as decimal separator.</returns>
+    <returns>使用点 (.) 作为小数分隔符的字符串。</returns>
   </_Str3>
   <_TextRestore>
     <summary>
-      This function is used by the TEXT TO FILE UDC
+      此函数由 TEXT TO FILE UDC 使用
     </summary>
   </_TextRestore>
   <_TextSave>
     <summary>
-      This function is used by the TEXT TO FILE UDC
+      此函数由 TEXT TO FILE UDC 使用
     </summary>
-    <param name="cFile">FileName specified in the TEXT TO FILE UDC</param>
+    <param name="cFile">在 TEXT TO FILE UDC 中指定的文件名</param>
   </_TextSave>
   <_UsualArrayToObjectArray>
-    <summary>Helper function to convert USUAL[] to OBJECT[]</summary>
-    <param name="args">USUAL array to convert</param>
-    <returns>OBJECT Array</returns>
-    <remarks>This is a helper function used for late bound code that can also be called from user code.</remarks>
+    <summary>将 USUAL[] 转换为 OBJECT[] 的辅助函数</summary>
+    <param name="args">要转换的 USUAL 数组</param>
+    <returns>OBJECT 数组</returns>
+    <remarks>这是用于后期绑定代码的辅助函数，也可以从用户代码中调用。</remarks>
   </_UsualArrayToObjectArray>
   <_VoDbErrInfoPtr>
     <inheritdoc cref="CoreDb._ErrInfoPtr"/>
@@ -633,82 +602,82 @@
   </_VoDbErrInfoPtr>
   <AAdd_T_>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/aadd/*"/>
-    <typeparam name="T">The type of the array elements</typeparam>
+    <typeparam name="T">数组元素的类型</typeparam>
   </AAdd_T_>
   <AClone_T_>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/aclone/*"/>
-    <typeparam name="T">The type of the array elements</typeparam>
+    <typeparam name="T">数组元素的类型</typeparam>
   </AClone_T_>
   <ACloneShallow_T_>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/acloneshallow/*"/>
-    <typeparam name="T">The type of the array elements</typeparam>
+    <typeparam name="T">数组元素的类型</typeparam>
   </ACloneShallow_T_>
   <ADel_T_>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/adel/*"/>
-    <typeparam name="T">The type of the array elements</typeparam>
+    <typeparam name="T">数组元素的类型</typeparam>
   </ADel_T_>
   <ADim>
-    <summary>Calculate the # of dimensions in an array</summary>
+    <summary>计算数组的维数</summary>
     <param name="a"/>
-    <returns>Number of dimensions in an array</returns>
+    <returns>数组的维数</returns>
   </ADim>
   <ADimPic>
-    <summary>Calculate a string that represents the dimensions in an array</summary>
+    <summary>计算表示数组维度的字符串</summary>
     <param name="a"/>
-    <returns>String that displays the dimensions in an array</returns>
+    <returns>显示数组维度的字符串</returns>
   </ADimPic>
   <AEval_T_>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/aeval/*"/>
-    <typeparam name="T">The type of the array elements</typeparam>
+    <typeparam name="T">数组元素的类型</typeparam>
   </AEval_T_>
   <AEvalA_T_>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/aevala/*"/>
-    <typeparam name="T">The type of the array elements</typeparam>
+    <typeparam name="T">数组元素的类型</typeparam>
   </AEvalA_T_>
   <AIns_T_>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/ains/*"/>
-    <typeparam name="T">The type of the array elements</typeparam>
+    <typeparam name="T">数组元素的类型</typeparam>
   </AIns_T_>
   <ALen_T_>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/alen/*"/>
-    <typeparam name="T">The type of the array elements</typeparam>
+    <typeparam name="T">数组元素的类型</typeparam>
   </ALen_T_>
   <ArrayCreate_T_>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraycreate/*"/>
-    <typeparam name="T">The type of the array elements</typeparam>
+    <typeparam name="T">数组元素的类型</typeparam>
   </ArrayCreate_T_>
   <ArrayDeProtect_T_>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraydeprotect/*"/>
-    <typeparam name="T">The type of the array elements</typeparam>
+    <typeparam name="T">数组元素的类型</typeparam>
   </ArrayDeProtect_T_>
   <ArrayGet_T_>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayget/*"/>
-    <typeparam name="T">The type of the array elements</typeparam>
+    <typeparam name="T">数组元素的类型</typeparam>
   </ArrayGet_T_>
   <ArrayNew_T_>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraynew/*"/>
-    <typeparam name="T">The type of the array elements</typeparam>
+    <typeparam name="T">数组元素的类型</typeparam>
   </ArrayNew_T_>
   <ArrayProtect_T_>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayprotect/*"/>
-    <typeparam name="T">The type of the array elements</typeparam>
+    <typeparam name="T">数组元素的类型</typeparam>
   </ArrayProtect_T_>
   <ArrayPut_T_>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayput/*"/>
-    <typeparam name="T">The type of the array elements</typeparam>
+    <typeparam name="T">数组元素的类型</typeparam>
   </ArrayPut_T_>
   <ArrayStore_T_>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/arraystore/*"/>
-    <typeparam name="T">The type of the array elements</typeparam>
+    <typeparam name="T">数组元素的类型</typeparam>
   </ArrayStore_T_>
   <ArraySwap_T_>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/arrayswap/*"/>
-    <typeparam name="T">The type of the array elements</typeparam>
+    <typeparam name="T">数组元素的类型</typeparam>
   </ArraySwap_T_>
   <AScan_T_>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/ascan/*"/>
-    <typeparam name="T">The type of the array elements</typeparam>
-    <param name="act">A lambda expression that will be evaluated for every element in the array.</param>
+    <typeparam name="T">数组元素的类型</typeparam>
+    <param name="act">将对数组中每个元素求值的 lambda 表达式。</param>
   </AScan_T_>
   <AsHexString>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/ashexstring/*"/>
@@ -717,112 +686,106 @@
   </AsHexString>
   <ASize_T_>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/asize/*"/>
-    <typeparam name="T">The type of the array elements</typeparam>
+    <typeparam name="T">数组元素的类型</typeparam>
   </ASize_T_>
   <ASort_T_>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/asort/*"/>
-    <typeparam name="T">The type of the array elements</typeparam>
+    <typeparam name="T">数组元素的类型</typeparam>
   </ASort_T_>
   <ATail_T_>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/atail/*"/>
-    <typeparam name="T">The type of the array elements</typeparam>
+    <typeparam name="T">数组元素的类型</typeparam>
   </ATail_T_>
   <ATrueDel_T_>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/adel/*"/>
-    <typeparam name="T">The type of the array elements</typeparam>
+    <typeparam name="T">数组元素的类型</typeparam>
   </ATrueDel_T_>
   <BlobData>
     <summary>
-      This class is used to write BLOB data to a FPT file.
+      此类用于将 BLOB 数据写入 FPT 文件。
     </summary>
   </BlobData>
   <CanBreak>
     <summary>
-      Check if a BEGIN SEQUENCE...END construct is active.
+      检查 BEGIN SEQUENCE...END 结构是否处于活动状态。
     </summary>
     <returns>
     </returns>
   </CanBreak>
   <Codeblock>
     <summary>
-      Internal type that implements the VO Compatible CODEBLOCK type<br/>
-      This type has methods that normally are never directly called from user code.
+      实现 VO 兼容的 CODEBLOCK 类型的内部类型<br/> 此类型包含的方法通常不会在用户代码中被直接调用。
     </summary>
     <seealso cref="ICodeblock"/>
   </Codeblock>
   <Codeblock.ctor>
-    <summary>This constructor is used by the Compiler for compile time codeblocks.</summary>
-    <param name="pCount">Number of parameters defined in the compile time codeblock.</param>
+    <summary>编译器将此构造函数用于编译时代码块。</summary>
+    <param name="pCount">编译时代码块中定义的参数数量。</param>
   </Codeblock.ctor>
   <Codeblock.Eval>
     <summary>
-      Executes the codeblock.
+      执行代码块。
     </summary>
-    <param name="args">Zero or more arguments to pass to the codeblock.</param>
+    <param name="args">传递给代码块的零个或多个参数。</param>
     <returns>
-      The value of the last expression within the codeblock as a USUAL.
-      If the last expression in the codeblock is of type VOID, then the codeblock
-      returns NIL.
+      代码块中最后一个表达式的值，以 USUAL 形式返回。如果代码块中的最后一个表达式的类型为 VOID，则代码块返回 NIL。
     </returns>
     <remarks>
-      This method is abstract and is implemented in the derived classes
-      created by the compiler.
+      此方法是抽象的，由编译器创建的派生类实现。
     </remarks>
   </Codeblock.Eval>
   <Codeblock.EvalBlock>
     <summary>
-      Eval method that can be called from code that does not "know" about the USUAL type.
-      such as the code in the RDD classes.
+      可从“不了解” USUAL 类型的代码（例如 RDD 类中的代码）调用的 Eval 方法。
     </summary>
-    <param name="args">Zero or more arguments to pass to the codeblock.</param>
+    <param name="args">传递给代码块的零个或多个参数。</param>
   </Codeblock.EvalBlock>
   <Codeblock.PCount>
-    <summary>Returns the number of parameters in the codeblock</summary>
+    <summary>返回代码块中的参数数量</summary>
   </Codeblock.PCount>
   <Codeblock.ToString>
     <summary>
-      Return a string that contains the # of parameters for display in the debugger.
+      返回包含参数数量的字符串，用于在调试器中显示。
     </summary>
   </Codeblock.ToString>
   <CompilerServices>
     <summary>
-      This class contains helper code that is called by the compiler to support various XBase language constructs, such as the
-      automatic memory management of PSZ values created with String2Psz().
+      此类包含由编译器调用的辅助代码，用于支持各种 XBase 语言构造，例如对由 String2Psz() 创建的 PSZ 值的自动内存管理。
     </summary>
   </CompilerServices>
   <CompilerServices.CanBreak>
     <summary>
-      Determine if we are inside a BEGIN SEQUENCE .. END by looking at the SEQUENCE counter in the runtime.
+      通过查看运行时中的 SEQUENCE 计数器，确定我们是否处于 BEGIN SEQUENCE .. END 之内。
     </summary>
   </CompilerServices.CanBreak>
   <CompilerServices.EnterBeginSequence>
     <summary>
-      Increment the SEQUENCE counter for a BEGIN SEQUENCE statement
+      为 BEGIN SEQUENCE 语句递增 SEQUENCE 计数器
     </summary>
   </CompilerServices.EnterBeginSequence>
   <CompilerServices.ExitBeginSequence>
     <summary>
-      Decrement the SEQUENCE counter for a BEGIN SEQUENCE statement
+      为 BEGIN SEQUENCE 语句递减 SEQUENCE 计数器
     </summary>
   </CompilerServices.ExitBeginSequence>
   <CompilerServices.String2Psz>
     <summary>
-      Allocate a PSZ and add it to the list
+      分配一个 PSZ 并将其添加到列表中
     </summary>
   </CompilerServices.String2Psz>
   <CompilerServices.String2PszRelease>
     <summary>
-      Free all PSZ values in the List
+      释放列表中的所有 PSZ 值
     </summary>
   </CompilerServices.String2PszRelease>
   <CompilerServices.StringSubtract>
     <summary>
-      Subtract 2 strings.
+      减去两个字符串。
     </summary>
   </CompilerServices.StringSubtract>
   <ConcatAtom>
     <summary>
-      Concatenate two Symbols.
+      连接两个 Symbol。
     </summary>
     <param name="s1"/>
     <param name="s2"/>
@@ -832,7 +795,7 @@
   </ConcatAtom>
   <ConcatAtom3>
     <summary>
-      Concatenate three Symbols.
+      连接三个 Symbol。
     </summary>
     <param name="s1"/>
     <param name="s2"/>
@@ -866,7 +829,7 @@
   </ConcatAtom5>
   <CParamCount>
     <summary>
-      Return the number of arguments that a code block is expecting.
+      返回代码块所需的参数数量。
     </summary>
     <param name="uCodeBlock"/>
     <returns>
@@ -874,32 +837,32 @@
   </CParamCount>
   <CToD>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/ctod/*"/>
-    <param name="cDateFormat">A string representating the date format to use when converting the string to a date. Should consist of D, M and Y characters and separators.</param>
+    <param name="cDateFormat">将字符串转换为日期时使用的日期格式的字符串表示。应由 D、M 和 Y 字符以及分隔符组成。</param>
   </CToD>
   <DbAutoLock>
-    <summary>Automatically lock a record in the FoxPro dialect </summary>
+    <summary>在 FoxPro 方言中自动锁定记录 </summary>
   </DbAutoLock>
   <DbAutoLockArea>
-    <summary>Automatically lock a record in the FoxPro dialect </summary>
+    <summary>在 FoxPro 方言中自动锁定记录 </summary>
   </DbAutoLockArea>
   <DbAutoUnLock>
-    <summary>Automatically unlock a record in the FoxPro dialect </summary>
+    <summary>在 FoxPro 方言中自动解锁记录 </summary>
   </DbAutoUnLock>
   <DbAutoUnLockArea>
-    <summary>Automatically unlock a record in the FoxPro dialect </summary>
+    <summary>在 FoxPro 方言中自动解锁记录 </summary>
   </DbAutoUnLockArea>
   <DbBuffRefresh>
-    <summary>Refresh the buffer for the current workarea, discarding any changes that were made.</summary>
+    <summary>刷新当前工作区的缓冲区，丢弃所做的任何更改。</summary>
     <returns>
     </returns>
   </DbBuffRefresh>
   <DbClearScope>
-    <summary>Clears the top and/or bottom scope. </summary>
+    <summary>清除顶部和/或底部范围。 </summary>
     <param name="nScope">
-      An optional constant that indicates which scope needs to be set.<br/>
+      一个可选常量，指示需要设置哪个范围。<br/>
       <include file="RTComments.xml" path="Comments/ScopeParams/*"/>
     </param>
-    <returns>TRUE when the scope was cleared succesfully, otherwise FALSE.</returns>
+    <returns>成功清除范围时为 TRUE，否则为 FALSE。</returns>
     <seealso cref="DbSetScope"/>
     <seealso cref="DbScope"/>
   </DbClearScope>
@@ -918,9 +881,9 @@
     <seealso cref="XSharp.RDD.Enums.DbRecordInfo">DbRecordInfo ENUM</seealso>
   </DbRecordInfo>
   <DbScope>
-    <summary>Checks if a scope is set in a work area.</summary>
+    <summary>检查工作区中是否设置了范围。</summary>
     <param name="uScope">
-      An optional constant that indicates which scope needs to be set.<br/>
+      一个可选常量，指示需要设置哪个范围。<br/>
       <include file="RTComments.xml" path="Comments/ScopeParams/*"/> <br/>
     </param>
     <returns>
@@ -930,44 +893,43 @@
     <seealso cref="DbClearScope"/>
   </DbScope>
   <DbSetIndex>
-    <param name="uOrder">Order in the index file to activate. When not specified then the first order in the file becomes active.</param>
+    <param name="uOrder">要激活的索引文件中的顺序。如果未指定，则文件中的第一个顺序将变为活动状态。</param>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetindex/*"/>
   </DbSetIndex>
   <DbSetRelation>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetrelation/*"/>
-    <param name="cName">An optional name for the relation. Defaults to ParentName + "_" + ChildName.</param>
+    <param name="cName">关系的可选名称。默认为 ParentName + "_" + ChildName。</param>
   </DbSetRelation>
   <DbSetScope>
-    <summary>Sets scope values.</summary>
+    <summary>设置范围值。</summary>
     <param name="nScope">
-      A constant that indicates which scope needs to be set.<br/>
+      一个常量，指示需要设置哪个范围。<br/>
       <include file="RTComments.xml" path="Comments/ScopeParams/*"/>
     </param>
     <param name="uValue">
-      The value that needs to be set.
-      The type of the value must match the type of the index expression.
+      需要设置的值。该值的类型必须与索引表达式的类型匹配。
     </param>
-    <returns>TRUE when the scope was set succesfully and when the record pointer has been successfully moved to the first record in the scope, otherwise FALSE.</returns>
-    <remarks>The record pointer is moved to the first record in the scope when setting of the scope was succesfull.</remarks>
+    <returns>成功设置范围并且记录指针已成功移动到范围内的第一条记录时为 TRUE，否则为 FALSE。</returns>
+    <remarks>成功设置范围后，记录指针将移动到范围内的第一条记录。</remarks>
     <seealso cref="DbClearScope"/>
     <seealso cref="DbScope"/>
   </DbSetScope>
   <DebOut>
     <summary>
-      Write information to the Debug Terminal Program
+      将信息写入调试终端程序 (Debug Terminal Program)
     </summary>
-    <param name="args">List of values to display on the debug terminal</param>
+    <param name="args">要在调试终端上显示的值列表</param>
   </DebOut>
   <DOY>
     <summary>
-      Return the Day of Year
+      返回一年中的第几天
     </summary>
-    <param name="dDate">Date for which to calculate the Date</param>
+    <param name="dDate">要计算其一年中第几天的日期</param>
     <returns/>
   </DOY>
   <Empty>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/emptytyped/*"/>
-    <remarks>For Object values the 'emptyness' is determined by Comparing to NULL_OBJECT and comparign to DBNull.Value</remarks>
+    <remarks>对于 Object 值，“是否为空”通过与 NULL_OBJECT 比较以及与 DBNull.Value 比较来确定</remarks>
   </Empty>
   <EmptyPSZ>
     <summary>
@@ -978,77 +940,66 @@
     <include file="RTComments.xml" path="Comments/PSZ/*"/>
   </EmptyPSZ>
   <EnableArrayIndexCheck>
-    <summary>Suppress Array Index check to be compatible with Visual Objects</summary>
-    <param name="lCheck">TRUE to enable the array index checks. </param>
-    <returns>The previous setting of the flag</returns>
+    <summary>禁止数组索引检查以与 Visual Objects 兼容</summary>
+    <param name="lCheck">TRUE 表示启用数组索引检查。 </param>
+    <returns>该标志之前的设置</returns>
     <summary>
-      In some situations Visual Objects did not throw a runtime error when you were accessing a non existing array element. <br/>
-      You can enable this (mis)behaviour in X# by disabling the array index checks.<br/>
-      The default behavior is to generate an error when you access array indices out of the existing range.
+      在某些情况下，当您访问不存在的数组元素时，Visual Objects 不会抛出运行时错误。<br/> 您可以通过禁用数组索引检查，在 X# 中启用这种（错误）行为。<br/> 默认行为是在您访问超出现有范围的数组索引时生成错误。
     </summary>
     <example>
-      // The following code does not throw a runtime error but displays NIL for u[1,1]
-      // To get the same behavior in X# you need to call EnableArrayIndexCheck(FALSE)
-      FUNCTION Start
-      LOCAL u AS USUAL
-      u := {1,2,3}
-      ? u[1,1]
-      WAIT
-      RETURN TRUE
+      // The following code does not throw a runtime error but displays NIL for u[1,1] // To get the same behavior in X# you need to call EnableArrayIndexCheck(FALSE) FUNCTION Start LOCAL u AS USUAL u := {1,2,3} ? u[1,1] WAIT RETURN TRUE
     </example>
   </EnableArrayIndexCheck>
   <Eval>
     <summary>
-      Evaluate a code block or an objects Eval() method.
+      计算代码块或对象的 Eval() 方法。
     </summary>
-    <param name="obj">Object or block to evaluate</param>
-    <param name="uCodeBlock">Block to evaluate</param>
-    <param name="args">List of arguments</param>
-    <returns>Result of the evaluation</returns>
+    <param name="obj">要计算的对象或代码块</param>
+    <param name="uCodeBlock">要计算的代码块</param>
+    <param name="args">参数列表</param>
+    <returns>计算结果</returns>
   </Eval>
   <FieldGetBytes>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/fieldget/*"/>
-    <summary>Read an array of bytes direct from the workarea buffer.</summary>
-    <remarks>This will only work for DBF based workareas (not for Advantage workareas)</remarks>
+    <summary>直接从工作区缓冲区读取字节数组。</summary>
+    <remarks>这仅适用于基于 DBF 的工作区（不适用于 Advantage 工作区）</remarks>
     <returns>
-      The value of the field.`
-      IF <paramref name="nFieldPos"/> does not correspond to the position of any field in the database file, FieldGetBytes() will generate an error.
+      字段的值。` 如果 <paramref name="nFieldPos"/> 与数据库文件中任何字段的位置都不对应，FieldGetBytes() 将产生错误。
     </returns>
   </FieldGetBytes>
   <FieldPutBytes>
-    <remarks>This will only work for DBF based workareas (not for Advantage workareas)</remarks>
-    <summary>Write an array of bytes direct to the workarea buffer.</summary>
-    <param name="nFieldPos">The position OF the FIELD IN the database file structure.</param>
-    <param name="aBytes">The value to write to the field</param>
+    <remarks>这仅适用于基于 DBF 的工作区（不适用于 Advantage 工作区）</remarks>
+    <summary>直接将字节数组写入工作区缓冲区。</summary>
+    <param name="nFieldPos">字段在数据库文件结构中的位置。</param>
+    <param name="aBytes">要写入字段的值</param>
     <returns>
-      The value assigned TO the field.
-      IF <paramref name="nFieldPos"/> does not correspond to the position of any field in the database file, FieldPutBytes() will generate an error.
+      赋给字段的值。如果 <paramref name="nFieldPos"/> 与数据库文件中任何字段的位置都不对应，FieldPutBytes() 将产生错误。
     </returns>
   </FieldPutBytes>
   <FindClass>
     <summary>
-      Find a class in the referenced assemblies
+      在引用的程序集中查找类
     </summary>
-    <param name="cClassName">Classname to find</param>
-    <returns>System.Type object or NULL </returns>
+    <param name="cClassName">要查找的类名</param>
+    <returns>System.Type 对象或 NULL </returns>
   </FindClass>
   <FixedMemBlockEnd>
-    <summary>Guard Block following MemAlloc return value</summary>
+    <summary>紧随 MemAlloc 返回值之后的保护块</summary>
   </FixedMemBlockEnd>
   <FixedMemBlockEnd.dwMagic>
     <summary>Checksum</summary>
   </FixedMemBlockEnd.dwMagic>
   <FixedMemBlockEnd.dwZero>
-    <summary>Zero terminator</summary>
+    <summary>零终止符</summary>
   </FixedMemBlockEnd.dwZero>
   <FixedMemBlockStart>
-    <summary>Guard Block preceding MemAlloc return value</summary>
+    <summary>位于 MemAlloc 返回值之前的保护块</summary>
   </FixedMemBlockStart>
   <FixedMemBlockStart.dwCargo>
-    <summary>Cargo slot</summary>
+    <summary>Cargo 槽</summary>
   </FixedMemBlockStart.dwCargo>
   <FixedMemBlockStart.dwGroup>
-    <summary>Group number</summary>
+    <summary>组编号</summary>
   </FixedMemBlockStart.dwGroup>
   <FixedMemBlockStart.dwMagic>
     <summary>Checksum</summary>
@@ -1064,17 +1015,16 @@
     </returns>
   </Float2Long>
   <FParamCount>
-    <summary>Return the number of local arguments that a function is expecting.</summary>
-    <param name="symFunction">The name of the function to examine.</param>
-    <returns>The number of arguments that a method is expecting.</returns>
+    <summary>返回函数所需的本地参数个数。</summary>
+    <param name="symFunction">要检查的函数名称。</param>
+    <returns>方法所需的参数个数。</returns>
     <remarks>
-      Note that you can't use this for functions that are overloaded.<br/>
-      And unlike in VO this function can also be used to return the number of parameters for typed functions.
+      请注意，此函数不能用于重载的函数。<br/> 并且与 VO 不同，此函数也可用于返回带类型函数的参数个数。
     </remarks>
   </FParamCount>
   <FReadText3>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/freadtext/*"/>
-    <param name="pData">A block of memory to store the data read from the specified file. The length of this variable must be greater than or equal to the number of bytes in the next parameter.</param>
+    <param name="pData">用于存储从指定文件读取的数据的内存块。此变量的长度必须大于或等于下一个参数中的字节数。</param>
     <include file="RTComments.xml" path="Comments/FileCompat/*"/>
   </FReadText3>
   <GetRTFullPath>
@@ -1091,75 +1041,70 @@
   </GetThreadCount>
   <GetTickCountLow>
     <summary>
-      Get the number of 1/10000 seconds that have elapsed since Windows was started.
+      获取自 Windows 启动以来经过的 1/10000 秒数。
     </summary>
     <returns>
     </returns>
   </GetTickCountLow>
   <Globals>
     <summary>
-      Support class to support runtime access to globals declared in the loaded X# assemblies
+      用于支持在运行时访问已加载的 X# 程序集中所声明的全局变量的支持类
     </summary>
   </Globals>
   <Globals.Find>
     <summary>
-      Find the Global Field with a name
+      按名称查找全局字段
     </summary>
-    <param name="cVarName">Name of the global to find</param>
+    <param name="cVarName">要查找的全局变量名称</param>
     <returns/>
   </Globals.Find>
   <Globals.Get>
     <summary>
-      Return the value of a Global
+      返回全局变量的值
     </summary>
-    <param name="cVarName">Name of the global to find</param>
+    <param name="cVarName">要查找的全局变量名称</param>
     <param name="uValue">Value</param>
-    <returns>TRUE when a global with the name exists, FALSE when it does not exist</returns>
+    <returns>存在具有该名称的全局变量时为 TRUE，不存在时为 FALSE</returns>
   </Globals.Get>
   <Globals.GetAllGlobals>
     <summary>
-      Return a list of all Global Fields. This is used in the Globals Debugger Window
+      返回所有全局字段的列表。此函数用于全局变量调试窗口
     </summary>
-    <returns>List of Globals</returns>
+    <returns>全局变量列表</returns>
   </Globals.GetAllGlobals>
   <Globals.Put>
     <summary>
-      Assign a value to a Global
+      为全局变量赋值
     </summary>
-    <param name="cVarName">Name of the global to assign</param>
-    <param name="uValue">New value</param>
-    <returns>TRUE when a global with the name exists, and the value was successfully assigned. FALSE when it does not exist or when there was an error assigning the value.,</returns>
+    <param name="cVarName">要赋值的全局变量名称</param>
+    <param name="uValue">新值</param>
+    <returns>存在具有该名称的全局变量且赋值成功时为 TRUE。不存在或赋值出错时为 FALSE。,</returns>
   </Globals.Put>
   <IDynamicProperties>
     <summary>
-      This interface is used for objects that implement a special mechanism
-      for reading / writing properties at runtime.
+      此接口用于实现了在运行时读取/写入属性的特殊机制的对象。
     </summary>
   </IDynamicProperties>
   <IDynamicProperties.GetPropertyNames>
-    <summary>Retrieve an array of the property names that exist.</summary>
+    <summary>检索现有属性名称的数组。</summary>
   </IDynamicProperties.GetPropertyNames>
   <IDynamicProperties.NoIvarGet>
-    <summary>Retrieve the value of a property by name.</summary>
-    <param name="cName">Property Name</param>
-    <returns>The current value of the property </returns>
-    <remarks>Accessing a property that does not exist will result in a runtime error.</remarks>
+    <summary>按名称检索属性的值。</summary>
+    <param name="cName">属性名称</param>
+    <returns>属性的当前值 </returns>
+    <remarks>访问不存在的属性将导致运行时错误。</remarks>
   </IDynamicProperties.NoIvarGet>
   <IDynamicProperties.NoIvarPut>
-    <summary>Update the value of a property by name.</summary>
-    <param name="cName">Property Name</param>
-    <param name="uValue">New value of the property</param>
+    <summary>按名称更新属性的值。</summary>
+    <param name="cName">属性名称</param>
+    <param name="uValue">属性的新值</param>
     <remarks>
-      Assigning a property that does not exist may result in a runtime error. <br/>
-      However the class may also decide to "silently" add the property.
+      为不存在的属性赋值可能会导致运行时错误。<br/> 不过，该类也可以决定“静默”添加该属性。
     </remarks>
   </IDynamicProperties.NoIvarPut>
   <IIndexedProperties>
     <summary>
-      This interface can be used to access any object with an indexer.
-      This is mostly used for elements inside typed arrays of the 'ARRAY OF' class.
-      If you implement the interface on the elements you can use an array syntax to
-      assess fields/properties in the elements of the array by name or ordinal.
+      此接口可用于访问任何带有索引器的对象。它主要用于 'ARRAY OF' 类的类型化数组内部的元素。如果在元素上实现此接口，则可以使用数组语法按名称或序号访问数组元素中的字段/属性。
     </summary>
     <seealso cref="INamedIndexer"/>
     <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*"/>
@@ -1171,13 +1116,12 @@
     </param>
   </IIndexedProperties.self_index>
   <IIndexedProperties.self_name>
-    <summary>Get/Set array elements with a name.</summary>
-    <param name="name">Name which will be used to lookup a property</param>
+    <summary>按名称获取/设置数组元素。</summary>
+    <param name="name">用于查找属性的名称</param>
   </IIndexedProperties.self_name>
   <IIndexer>
     <summary>
-      This interface is used to index a collection using the VO Array syntax.
-      The interface is implemented by the ARRAY type in the runtime, but you can also use it for your custom types.
+      此接口用于使用 VO 数组语法对集合进行索引。该接口由运行时中的 ARRAY 类型实现，但您也可以将其用于自定义类型。
     </summary>
     <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*"/>
     <seealso cref="T:XSharp.__Array"/>
@@ -1199,55 +1143,49 @@
   </IIndexer.self_index1>
   <ILateBound>
     <summary>
-      This interface described the methods needed for a LateBound object <br/>
-      When an object implements this interface then the X# runtime will not use
-      reflection to implement late bound calls to properties or methods
-      but will call these methods instead.
+      此接口描述了 LateBound 对象所需的方法 <br/> 当对象实现此接口时，X# 运行时将不使用反射来实现对属性或方法的后期绑定调用，而是调用这些方法。
     </summary>
   </ILateBound>
   <ILateBound.NoIvarGet>
     <summary>
-      Method to read a field or property late bound.
+      后期绑定读取字段或属性的方法。
     </summary>
-    <param name="cName">Field/Property Name</param>
-    <returns>Current value of Field/Property</returns>
+    <param name="cName">字段/属性名称</param>
+    <returns>字段/属性的当前值</returns>
   </ILateBound.NoIvarGet>
   <ILateBound.NoIvarPut>
     <summary>
-      Method to update a field or property late bound.
+      后期绑定更新字段或属性的方法。
     </summary>
-    <param name="cName">Field/Property Name</param>
-    <param name="uValue">New value for field/property</param>
+    <param name="cName">字段/属性名称</param>
+    <param name="uValue">字段/属性的新值</param>
   </ILateBound.NoIvarPut>
   <ILateBound.NoMethod>
     <summary>
-      Call a method in the type late bound. Arguments are passed as Clipper calling convention parameters.
-      The method name is passed as first parameter.
+      以后期绑定方式调用类型中的方法。参数按 Clipper 调用约定传递。方法名称作为第一个参数传递。
     </summary>
-    <returns>Result of MethodCall</returns>
+    <returns>MethodCall 的结果</returns>
   </ILateBound.NoMethod>
   <IMacroCompilerUsual>
     <summary>
-      This interface defines and extension to the Macro compiler subsystem
+      此接口定义了对宏编译器子系统的扩展
     </summary>
     <seealso cref="T:XSharp.IMacroCompiler"/>
     <seealso cref="T:XSharp.IMacroCompiler2"/>
   </IMacroCompilerUsual>
   <IMacroCompilerUsual.CompileCodeblock>
-    <summary>Compile a string into a runtime codeblock.</summary>
-    <param name="macro">String to compile</param>
-    <param name="lAllowSingleQuotes">Should single quotes be allowed</param>
-    <param name="module">Module of the main app</param>
-    <param name="isCodeblock">will be set to TRUE when the string was a real codeblock (with {|..| }).</param>
-    <param name="addsMemVars">will be set to TRUE when the macro contains code that may result in adding new MemVars).</param>
-    <returns>A compiled codeblock</returns>
+    <summary>将字符串编译为运行时代码块。</summary>
+    <param name="macro">要编译的字符串</param>
+    <param name="lAllowSingleQuotes">是否允许使用单引号</param>
+    <param name="module">主应用程序的模块</param>
+    <param name="isCodeblock">当字符串是真正的代码块（带有 {|..| }）时将被设置为 TRUE。</param>
+    <param name="addsMemVars">当宏包含可能导致添加新内存变量的代码时将被设置为 TRUE。）</param>
+    <returns>已编译的代码块</returns>
     <seealso cref="T:XSharp._Codeblock"/>
   </IMacroCompilerUsual.CompileCodeblock>
   <INamedIndexer>
     <summary>
-      This interface is used to index a collection using a numeric and a string index and is implemented by the
-      typed array class ('ARRAY OF'). If your elements inside the collection implement the IIndexProperties interface then
-      the lookup of the property inside array element will be resolved with a call to the named indexer on that object.
+      此接口用于使用数值索引和字符串索引对集合进行索引，由类型化数组类（'ARRAY OF'）实现。如果集合内部的元素实现了 IIndexProperties 接口，则数组元素内部属性的查找将通过对该对象上的命名索引器的调用来解析。
     </summary>
     <include file="RTComments.xml" path="Comments/ZeroBasedIndex/*"/>
     <seealso cref="T:XSharp.IIndexedProperties"/>
@@ -1265,32 +1203,25 @@
   <InList>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/inlist/*"/>
     <remarks>
-      InList() determines whether an expression is found in a series of expressions.
-      The first expression is compared to each of the other expressions until either a match is
-      found or the entire list has been traversed.
-      For exact matching, use InListExact().
+      InList() 确定某个表达式是否存在于一系列表达式中。第一个表达式将依次与其他每个表达式进行比较，直到找到匹配项或遍历完整个列表为止。如需精确匹配，请使用 InListExact()。
     </remarks>
     <seealso cref="M:XSharp.RT.Functions.InListExact(XSharp.__Usual,XSharp.__Usual[])">InListExact</seealso>
   </InList>
   <InListExact>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/inlist/*"/>
     <remarks>
-      InListExact() determines whether an expression is found in a series of expressions.
-      The first expression is compared to each of the other expressions until either a match is
-      found or the entire list has been traversed.
-      InListExact() is the same as InList() except that <c>==</c> is used for matching instead of <c>=</c>.
-      There is no difference between InList() and InListExact() for non string datatypes.
+      InListExact() 确定某个表达式是否存在于一系列表达式中。第一个表达式将依次与其他每个表达式进行比较，直到找到匹配项或遍历完整个列表为止。InListExact() 与 InList() 相同，只是匹配时使用 <c>==</c> 而不是 <c>=</c>。对于非字符串数据类型，InList() 和 InListExact() 之间没有区别。
     </remarks>
     <seealso cref="O:XSharp.RT.Functions.InList">InList</seealso>
     <example>
-      This example compares InList() and InListExact() when the left operand in a comparison is longer than the right operand of a comparison:
+      此示例比较了当比较中左操作数比右操作数长时 InList() 和 InListExact() 的行为：
       <code language="X#">
         ? InList("longer", "long")		// TRUE
         ? InList("long  ", "long")		// TRUE
         ? InListExact("longer", "long")	// FALSE
         ? InListExact("long  ", "long")	// FALSE
       </code>
-      This example compares InList() and InListExact() when the right operand in a comparison is longer than the left operand of a comparison:
+      此示例比较了当比较中右操作数比左操作数长时 InList() 和 InListExact() 的行为：
       <code language="X#">
         ? InList("long", "longer")		// FALSE
         ? InList("long", "long  ")		// FALSE
@@ -1302,121 +1233,120 @@
   </InListExact>
   <IRtCodeblock>
     <summary>
-      This interface Extended the ICodeblock interface and adds support for usual
-      parameters and return values
+      此接口扩展了 ICodeblock 接口，并增加了对 usual 参数和返回值的支持
     </summary>
     <seealso cref="T:XSharp.ICodeblock"/>
   </IRtCodeblock>
   <IRtCodeblock.Eval>
     <summary>
-      Executes the codeblock.
+      执行代码块。
     </summary>
-    <param name="args">Zero or more arguments to pass to the codeblock.</param>
-    <returns>The value of the last expression in the codeblock.</returns>
+    <param name="args">传递给代码块的零个或多个参数。</param>
+    <returns>代码块中最后一个表达式的值。</returns>
   </IRtCodeblock.Eval>
   <IRtCodeblock.IsBlock>
-    <summary>Was the codeblock created from a string that started with "{|" </summary>
+    <summary>代码块是否由以 "{|" 开头的字符串创建 </summary>
   </IRtCodeblock.IsBlock>
   <IsAlNum>
-    <summary>Determine if the leftmost character in a PSZ is alphanumeric.</summary>
-    <param name="pszSource">The string to examine.</param>
-    <returns>TRUE if the first character is either alphabetic or numeric otherwise FALSE.</returns>
+    <summary>确定 PSZ 最左边的字符是否为字母或数字。</summary>
+    <param name="pszSource">要检查的字符串。</param>
+    <returns>如果第一个字符是字母或数字则为 TRUE，否则为 FALSE。</returns>
   </IsAlNum>
   <IsAlpha>
-    <summary>Determine if the leftmost character in a PSZ is alphabetic.</summary>
-    <param name="pszSource">The string to examine.</param>
-    <returns>TRUE if the first character is alphabetic.</returns>
+    <summary>确定 PSZ 最左边的字符是否为字母。</summary>
+    <param name="pszSource">要检查的字符串。</param>
+    <returns>如果第一个字符是字母则为 TRUE。</returns>
   </IsAlpha>
   <IsAlphaNum>
-    <summary>Determine if the leftmost character in a PSZ is alphanumeric.</summary>
-    <param name="pszSource">The string to examine.</param>
-    <returns>TRUE if the first character is alphanumeric.</returns>
+    <summary>确定 PSZ 最左边的字符是否为字母或数字。</summary>
+    <param name="pszSource">要检查的字符串。</param>
+    <returns>如果第一个字符是字母或数字则为 TRUE。</returns>
   </IsAlphaNum>
   <IsBDigit>
-    <summary>Determine if the leftmost character in a PSZ is a binary digit  (0 or 1)).</summary>
-    <param name="pszSource">The string to examine.</param>
-    <returns>TRUE if the first character of the string is 0 or 1 otherwise FALSE.</returns>
+    <summary>确定 PSZ 最左边的字符是否为二进制数字（0 或 1）。</summary>
+    <param name="pszSource">要检查的字符串。</param>
+    <returns>如果字符串的第一个字符是 0 或 1 则为 TRUE，否则为 FALSE。</returns>
   </IsBDigit>
   <IsBinary>
     <summary>
-      Determine if a value is a Binary.
+      确定值是否为 Binary。
     </summary>
-    <param name="uVal">The value to examine.</param>
-    <returns>TRUE if the value is a Binary data type; otherwise, FALSE. </returns>
+    <param name="uVal">要检查的值。</param>
+    <returns>如果该值是 Binary 数据类型则为 TRUE；否则为 FALSE。 </returns>
   </IsBinary>
   <IsByRef>
     <summary>
-      Determine if a value is passed by reference
+      确定值是否按引用传递
     </summary>
-    <param name="uVal">The value to examine.</param>
+    <param name="uVal">要检查的值。</param>
     <returns>
     </returns>
   </IsByRef>
   <IsCurrency>
     <summary>
-      Determine if a value is a Currency.
+      确定值是否为 Currency。
     </summary>
-    <param name="uVal">The value to examine.</param>
-    <returns>TRUE if the value is a Currency data type; otherwise, FALSE. </returns>
+    <param name="uVal">要检查的值。</param>
+    <returns>如果该值是 Currency 数据类型则为 TRUE；否则为 FALSE。 </returns>
   </IsCurrency>
   <IsDateTime>
     <summary>
-      Determine if a value is a DateTime.
+      确定值是否为 DateTime。
     </summary>
-    <param name="uVal">The value to examine.</param>
-    <returns>TRUE if the value is a DATETIME data type; otherwise, FALSE. </returns>
+    <param name="uVal">要检查的值。</param>
+    <returns>如果该值是 DATETIME 数据类型则为 TRUE；否则为 FALSE。 </returns>
   </IsDateTime>
   <IsDecimal>
     <summary>
-      Determine if a value is a Decimal.
+      确定值是否为 Decimal。
     </summary>
-    <param name="uVal">The value to examine.</param>
-    <returns>TRUE if the value is a Decimal data type; otherwise, FALSE. </returns>
+    <param name="uVal">要检查的值。</param>
+    <returns>如果该值是 Decimal 数据类型则为 TRUE；否则为 FALSE。 </returns>
   </IsDecimal>
   <IsFractional>
     <summary>
-      Determine if a value is a Decimal or a Float
+      确定值是否为 Decimal 或 Float
     </summary>
-    <param name="uVal">The value to examine.</param>
-    <returns>TRUE if the value is a Decimal, Currency or Float data type; otherwise, FALSE. </returns>
+    <param name="uVal">要检查的值。</param>
+    <returns>如果该值是 Decimal、Currency 或 Float 数据类型则为 TRUE；否则为 FALSE。 </returns>
   </IsFractional>
   <IsInt64>
     <summary>
-      Determine if a value is a INT64.
+      确定值是否为 INT64。
     </summary>
-    <param name="uVal">The value to examine.</param>
-    <returns>TRUE if the value is a INT64 data type; otherwise, FALSE. </returns>
+    <param name="uVal">要检查的值。</param>
+    <returns>如果该值是 INT64 数据类型则为 TRUE；否则为 FALSE。 </returns>
   </IsInt64>
   <IsInteger>
     <summary>
-      Determine if a value is an integer (LONG or INT64).
+      确定值是否为整数（LONG 或 INT64）。
     </summary>
-    <param name="uVal">The value to examine.</param>
-    <returns>TRUE if the value is a LONG or INT64 data type; otherwise, FALSE. </returns>
+    <param name="uVal">要检查的值。</param>
+    <returns>如果该值是 LONG 或 INT64 数据类型则为 TRUE；否则为 FALSE。 </returns>
   </IsInteger>
   <IsLower>
-    <summary>Determine if the leftmost character in a PSZ is lower.</summary>
-    <param name="pszSource">The string to examine.</param>
-    <returns>TRUE if the first character is a lowercase letter otherwise, FALSE.</returns>
+    <summary>确定 PSZ 最左边的字符是否为小写。</summary>
+    <param name="pszSource">要检查的字符串。</param>
+    <returns>如果第一个字符是小写字母则为 TRUE，否则为 FALSE。</returns>
   </IsLower>
   <IsNumeric>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/isnumeric/*"/>
-    <returns>TRUE if the value is a LONG, FLOAT, IN64 or DECIMAL data type; otherwise, FALSE. </returns>
+    <returns>如果该值是 LONG、FLOAT、IN64 或 DECIMAL 数据类型则为 TRUE；否则为 FALSE。 </returns>
   </IsNumeric>
   <IsSpace>
-    <summary>Determine if the leftmost character in a PSZ is a blank (that is, Chr(9) through Chr(13) or Chr(32)).</summary>
-    <param name="pszSource">The string to examine.</param>
-    <returns>TRUE if the first character of the string blank otherwise FALSE.</returns>
+    <summary>确定 PSZ 最左边的字符是否为空白字符（即 Chr(9) 到 Chr(13) 或 Chr(32)）。</summary>
+    <param name="pszSource">要检查的字符串。</param>
+    <returns>如果字符串的第一个字符是空白字符则为 TRUE，否则为 FALSE。</returns>
   </IsSpace>
   <IsUpper>
-    <summary>Determine if the leftmost character in a PSZ is uppercase.</summary>
-    <param name="pszSource">The string to examine.</param>
-    <returns>TRUE if the first character is an uppercase letter otherwise, FALSE.</returns>
+    <summary>确定 PSZ 最左边的字符是否为大写。</summary>
+    <param name="pszSource">要检查的字符串。</param>
+    <returns>如果第一个字符是大写字母则为 TRUE，否则为 FALSE。</returns>
   </IsUpper>
   <IsXDigit>
-    <summary>Determine if the leftmost character in a PSZ is a hex character (that is, digits from 1 through 9 and letters from A through F).</summary>
-    <param name="pszSource">The string to examine.</param>
-    <returns>TRUE if the first character is hex otherwise FALSE.</returns>
+    <summary>确定 PSZ 最左边的字符是否为十六进制字符（即数字 1 到 9 以及字母 A 到 F）。</summary>
+    <param name="pszSource">要检查的字符串。</param>
+    <returns>如果第一个字符是十六进制字符则为 TRUE，否则为 FALSE。</returns>
   </IsXDigit>
   <JCDOW>
     <summary>
@@ -1441,7 +1371,7 @@
   </JCYEAR>
   <MaxAtom>
     <summary>
-      Determine the number of Symbols in the atom table.
+      确定原子表中的 Symbol 数量。
     </summary>
     <returns>
     </returns>
@@ -1449,23 +1379,23 @@
   </MaxAtom>
   <MCompile>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/mcompile/*"/>
-    <remarks>MCompile() allows you to use the macro compiler to compile a string and store the compiled results for later execution.  Instead of invoking the macro compiler each time an expression is evaluated, you could speed up your application by compiling an expression only once and executing the compiled form as often as desired.</remarks>
-    <param name="lAllowSingleQuotes">Should single quotes be allowed as string delimiters</param>
-    <note type="caution">MCompile returns a STRING in VO. It returns a XSharp._Codeblock in .Net.</note>
+    <remarks>MCompile() 允许您使用宏编译器编译字符串，并存储编译结果以供以后执行。与其在每次计算表达式时都调用宏编译器，不如只编译表达式一次，然后根据需要多次执行已编译的形式，这样可以提高应用程序的速度。</remarks>
+    <param name="lAllowSingleQuotes">是否允许将单引号用作字符串分隔符</param>
+    <note type="caution">MCompile 在 VO 中返回 STRING。在 .Net 中它返回 XSharp._Codeblock。</note>
     <seealso cref="_Codeblock"/>
   </MCompile>
   <MemGrpCAlloc>
     <inheritdoc cref="MemCAlloc"/>
-    <param name="wGroup">The group to which the newly allocated memory buffer will belong. This group should have already been opened by MemGrpOpen().</param>
+    <param name="wGroup">新分配的内存缓冲区所属的组。该组应已通过 MemGrpOpen() 打开。</param>
     <include file="RTComments.xml" path="Comments/StaticMemory/*"/>
   </MemGrpCAlloc>
   <MemGrpEnum>
     <summary>
-      Enumerate all the pointers allocated in a memory group
+      枚举内存组中分配的所有指针
     </summary>
-    <param name="dwGroup">The group you want to compact</param>
-    <param name="pEnum">MemWalker Delegate</param>
-    <returns>TRUE when all delegate calls return TRUE</returns>
+    <param name="dwGroup">要压缩的组</param>
+    <param name="pEnum">MemWalker 委托</param>
+    <returns>当所有委托调用都返回 TRUE 时为 TRUE</returns>
   </MemGrpEnum>
   <MemLen>
     <summary>
@@ -1484,18 +1414,17 @@
   </MemLower>
   <MemRealloc>
     <summary>
-      ReAllocate a static memory buffer of a specified size.
+      重新分配指定大小的静态内存缓冲区。
     </summary>
     <param name="pBuffer"/>
     <param name="nSize"/>
     <returns>
-      Returns the original pointer when the nSize parameter is smaller or equal to the current size.<br/>
-      Extraneous bytes are zeroed out. Returns a new buffer when the requesed size is bigger than the original size.
+      当 nSize 参数小于或等于当前大小时，返回原始指针。<br/> 多余的字节会被清零。当请求的大小大于原始大小时，返回新的缓冲区。
     </returns>
     <include file="RTComments.xml" path="Comments/StaticMemory/*"/>
   </MemRealloc>
   <MemTrace>
-    <summary>Enable / disable memory tracing</summary>
+    <summary>启用/禁用内存跟踪</summary>
   </MemTrace>
   <MemUpper>
     <summary>
@@ -1507,253 +1436,237 @@
   </MemUpper>
   <MemVar>
     <summary>
-      Internal type that implements the Dynamic Memory Variables.<br/>
+      实现动态内存变量的内部类型。<br/>
     </summary>
     <include file="RTComments.xml" path="Comments/Memvar/*"/>
   </MemVar>
   <MemVar._Get>
-    <summary>Get the value of a local, private or public (in that order). Throws an exception when the variable does not exist.</summary>
-    <returns>The value of the memory variable.</returns>
-    <param name="cName">The name of the memory variable</param>
+    <summary>获取本地变量、私有变量或公共变量的值（按此顺序）。当变量不存在时抛出异常。</summary>
+    <returns>内存变量的值。</returns>
+    <param name="cName">内存变量的名称</param>
   </MemVar._Get>
   <MemVar._GetSafe>
-    <summary>Get the value of a local, private or public (in that order). Returns NIL if the value does not exist.</summary>
-    <returns>The value of the memory variable or NIL when it does not exist.</returns>
-    <param name="cName">The name of the memory variable</param>
-    <remarks>When a private and a public exist with the same name then the private has preference</remarks>
+    <summary>获取本地变量、私有变量或公共变量的值（按此顺序）。如果该值不存在则返回 NIL。</summary>
+    <returns>内存变量的值，不存在时为 NIL。</returns>
+    <param name="cName">内存变量的名称</param>
+    <remarks>当存在同名的私有变量和公共变量时，私有变量优先</remarks>
   </MemVar._GetSafe>
   <MemVar._Put>
     <summary>
-      Updates the value of a local, private or public (in that order).
-      If the value does not exist than a new variable at the current level is created.
+      更新本地变量、私有变量或公共变量的值（按此顺序）。如果该变量不存在，则在当前级别创建一个新变量。
     </summary>
-    <returns>The value of the memory variable.</returns>
-    <param name="cName">The name of the memory variable.</param>
-    <param name="uValue">The value to assign.</param>
+    <returns>内存变量的值。</returns>
+    <param name="cName">内存变量的名称。</param>
+    <param name="uValue">要赋的值。</param>
   </MemVar._Put>
   <MemVar.Add>
-    <summary>Add a public memvar or a private memvar to the current level.</summary>
-    <param name="cName">The name of the memory variable</param>
-    <param name="lPrivate">Should the variable be created as private</param>
+    <summary>向当前级别添加公共内存变量或私有内存变量。</summary>
+    <param name="cName">内存变量的名称</param>
+    <param name="lPrivate">变量是否应创建为私有变量</param>
   </MemVar.Add>
   <MemVar.Clear>
-    <summary>Clear a variable by name. Tries to clear a private first and when that is not found then a public</summary>
-    <param name="cName">The name of the memory variable.</param>
+    <summary>按名称清除变量。首先尝试清除私有变量，如果未找到，则清除公共变量</summary>
+    <param name="cName">内存变量的名称。</param>
     <remarks>
-      Clear does not remove the variable but sets its value to NIL.<br/>
-      In the FoxPro dialect Clear does not clear local variables when these are visible.
+      Clear 不会删除变量，而是将其值设置为 NIL。<br/> 在 FoxPro 方言中，当本地变量可见时，Clear 不会清除它们。
     </remarks>
   </MemVar.Clear>
   <MemVar.ClearAll>
     <summary>
-      Clear all memvar name/value pairs.
-      Does not remove locals. Does not remove privates stack levels.
+      清除所有内存变量的名称/值对。不会删除本地变量。不会删除私有变量的堆栈级别。
     </summary>
   </MemVar.ClearAll>
   <MemVar.GetHigherLevelPrivate>
-    <summary>Get a memvar object from the stack (if it exists)</summary>
+    <summary>从堆栈中获取内存变量对象（如果存在）</summary>
   </MemVar.GetHigherLevelPrivate>
   <MemVar.Getter>
-    <summary>Delegate for reading memvars.</summary>
-    <param name="name">Name of the Memvar for which the value has to be retrieved</param>
-    <returns>The value of the memory variable. </returns>
+    <summary>用于读取内存变量的委托。</summary>
+    <param name="name">要检索其值的内存变量名称</param>
+    <returns>内存变量的值。 </returns>
   </MemVar.Getter>
   <MemVar.Name>
-    <summary>Name of the memory variable.</summary>
+    <summary>内存变量的名称。</summary>
   </MemVar.Name>
   <MemVar.PrivateFind>
-    <summary>Find a private variable. Try on the current level on the stack first and when not found then walk the stack.</summary>
+    <summary>查找私有变量。首先在堆栈的当前级别上尝试，未找到时再遍历整个堆栈。</summary>
   </MemVar.PrivateFind>
   <MemVar.PrivatePut>
-    <summary>Update a private variable. Does NOT add a new variable</summary>
+    <summary>更新私有变量。不会添加新变量</summary>
   </MemVar.PrivatePut>
   <MemVar.PrivatesCount>
-    <summary>Get the total number of unique private variable names.</summary>
+    <summary>获取唯一私有变量名称的总数。</summary>
   </MemVar.PrivatesCount>
   <MemVar.PrivatesEnum>
-    <summary>Get an enumerator for all the unique names of private variables</summary>
+    <summary>获取所有唯一私有变量名称的枚举器</summary>
   </MemVar.PrivatesEnum>
   <MemVar.PrivatesFirst>
-    <summary>Get the first unique private variable name.</summary>
+    <summary>获取第一个唯一私有变量名称。</summary>
   </MemVar.PrivatesFirst>
   <MemVar.PrivatesNext>
-    <summary>Get the next unique private variable name.</summary>
+    <summary>获取下一个唯一私有变量名称。</summary>
   </MemVar.PrivatesNext>
   <MemVar.PublicFind>
-    <summary>Find a public variable</summary>
-    <param name="cName">The name of the memory variable.</param>
+    <summary>查找公共变量</summary>
+    <param name="cName">内存变量的名称。</param>
   </MemVar.PublicFind>
   <MemVar.PublicPut>
-    <summary>Update a public variable. Does NOT create a new public when there is no variable with that name.</summary>
-    <param name="cName">The name of the memory variable.</param>
-    <param name="uValue">The value to assign.</param>
+    <summary>更新公共变量。当不存在具有该名称的变量时，不会创建新的公共变量。</summary>
+    <param name="cName">内存变量的名称。</param>
+    <param name="uValue">要赋的值。</param>
   </MemVar.PublicPut>
   <MemVar.PublicsCount>
-    <summary>Gets the total number of public variables.</summary>
+    <summary>获取公共变量的总数。</summary>
   </MemVar.PublicsCount>
   <MemVar.PublicsEnum>
-    <summary>Get an enumerator for all the unique names of public variables</summary>
+    <summary>获取所有唯一公共变量名称的枚举器</summary>
   </MemVar.PublicsEnum>
   <MemVar.PublicsFirst>
-    <summary>Gets the name of the first public variable.</summary>
+    <summary>获取第一个公共变量的名称。</summary>
   </MemVar.PublicsFirst>
   <MemVar.PublicsNext>
-    <summary>Gets the name of the next public variable.</summary>
+    <summary>获取下一个公共变量的名称。</summary>
   </MemVar.PublicsNext>
   <MemVar.Putter>
-    <summary>Delegate for writing memvars.</summary>
-    <param name="name">Name of the Memvar for which the value has to be retrieved</param>
-    <param name="value">Value to assign to the memory variable</param>
-    <remarks>When the variable does not exist then a new memory variable may be created.</remarks>
+    <summary>用于写入内存变量的委托。</summary>
+    <param name="name">要检索其值的内存变量名称</param>
+    <param name="value">要赋给内存变量的值</param>
+    <remarks>当变量不存在时，可能会创建新的内存变量。</remarks>
   </MemVar.Putter>
   <MemVar.Release>
-    <summary>Release a private variable</summary>
+    <summary>释放私有变量</summary>
   </MemVar.Release>
   <MemVar.ReleaseAll>
-    <summary>Assign NIL to all visible private variables. Hidden privates are not affected.</summary>
+    <summary>将 NIL 赋给所有可见的私有变量。隐藏的私有变量不受影响。</summary>
   </MemVar.ReleaseAll>
   <MemVar.ReleasePrivates>
-    <summary>Release all privates at a certain level and higher</summary>
+    <summary>释放某一级别及更高级别上的所有私有变量</summary>
   </MemVar.ReleasePrivates>
   <MemVar.TryGet>
-    <summary>Try to retrieve the value of a local, private or public (in that order).</summary>
-    <param name="cName">The name of the memory variable</param>
-    <param name="uValue">Value of the variable, or NIL whe the variable does not exist.</param>
-    <returns>TRUE when the variable was found. Otherwise FALSE</returns>
+    <summary>尝试检索本地变量、私有变量或公共变量的值（按此顺序）。</summary>
+    <param name="cName">内存变量的名称</param>
+    <param name="uValue">变量的值，变量不存在时为 NIL。</param>
+    <returns>找到变量时为 TRUE。否则为 FALSE</returns>
   </MemVar.TryGet>
   <MemVar.Value>
-    <summary>Value of the memory variable. The default is NIL for PRIVATEs and FALSE for PUBLICs.</summary>
+    <summary>内存变量的值。PRIVATE 变量的默认值为 NIL，PUBLIC 变量的默认值为 FALSE。</summary>
   </MemVar.Value>
   <MemVarBlockSym>
     <inheritdoc cref="MemVarBlock"/>
-    <param name="symVar">The name of the variable .</param>
+    <param name="symVar">变量的名称。</param>
   </MemVarBlockSym>
   <MemVarClear>
-    <summary>Release a memory variable</summary>
-    <param name="symVar">The name of the variable you want to clear. </param>
-    <remarks>The value of this variable will be set to NIL. The variable is NOT deleted.</remarks>
+    <summary>释放内存变量</summary>
+    <param name="symVar">要清除的变量的名称。 </param>
+    <remarks>此变量的值将被设置为 NIL。变量不会被删除。</remarks>
     <include file="RTComments.xml" path="Comments/Memvar/*"/>
   </MemVarClear>
   <MemVarRelease>
-    <summary>Release a memory variable</summary>
-    <param name="symVar">The name of the variable you want to release. </param>
+    <summary>释放内存变量</summary>
+    <param name="symVar">要释放的变量的名称。 </param>
     <include file="RTComments.xml" path="Comments/Memvar/*"/>
   </MemVarRelease>
   <MemWalk>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/memwalk/*"/>
-    <remarks>Only memory blocks that were allocated while MemTrace was set to TRUE will be included.</remarks>
+    <remarks>仅包含在 MemTrace 设置为 TRUE 期间分配的内存块。</remarks>
   </MemWalk>
   <MemWalker>
-    <summary>Delegate that a client needs to implement to use MemWalk.</summary>
+    <summary>客户端需要实现的委托，用于使用 MemWalk。</summary>
   </MemWalker>
   <Object2Float>
     <summary>
-      Convert an object containing a numeric value to a FLOAT
+      将包含数值的对象转换为 FLOAT
     </summary>
-    <param name="oValue">Object containing the numeric value to convert.</param>
-    <returns>The value in the form of a float. </returns>
-    <exception cref="System.InvalidCastException"> Thrown when the parameter oValue cannot be converted to a FLOAT.</exception>
+    <param name="oValue">包含要转换的数值的对象。</param>
+    <returns>以 float 形式表示的值。 </returns>
+    <exception cref="System.InvalidCastException"> 当参数 oValue 无法转换为 FLOAT 时抛出。</exception>
   </Object2Float>
   <OOPHelpers.ConvertFromNull>
     <summary>
-      Convert a null value to the correct value for the type
+      将 null 值转换为该类型的正确值
     </summary>
   </OOPHelpers.ConvertFromNull>
   <OOPHelpers.CountNonDefaultParameters>
     <summary>
-      Count the number of parameters that do not have a default value
+      统计没有默认值的参数个数
     </summary>
     <param name="pars"/>
     <returns/>
   </OOPHelpers.CountNonDefaultParameters>
   <OOPHelpers.IsInternalVisible>
     <summary>
-      This method returns TRUE when the assembly from which an IVarGet()
-      or IVarPut() was called is the same assembly in which a property was defined.
+      当调用 IVarGet() 或 IVarPut() 的程序集与定义属性的程序集相同时，此方法返回 TRUE。
     </summary>
-    <param name="propInfo">Property that we are checking</param>
+    <param name="propInfo">我们要检查的属性</param>
     <returns>
-      TRUE when the first stackframe outside of XSharp.RT is in the same assembly as <paramref name="propInfo"/>
+      当 XSharp.RT 之外的第一个堆栈帧与 <paramref name="propInfo"/> 位于同一程序集中时为 TRUE
     </returns>
   </OOPHelpers.IsInternalVisible>
   <OrdCount>
-    <summary>Determines the number of orders for the current work area.  </summary>
+    <summary>确定当前工作区的索引标识（order）数量。  </summary>
     <returns>
-      OrdCount() returns the number of open indexes as a numeric value.
-      When no index is open or when no file is open in the current workarea, the return value is 0.
+      OrdCount() 以数值形式返回已打开索引的数量。当没有打开索引，或当前工作区中没有打开文件时，返回值为 0。
     </returns>
   </OrdCount>
   <OrdList>
-    <summary>Return a list of all tag names for the current work area. </summary>
+    <summary>返回当前工作区的所有标记（tag）名称列表。 </summary>
     <returns>
-      OrdList() returns a one dimensional array holding strings with the tag names of all open indexes.
-      When no index is open, an empty array is returned.
+      OrdList() 返回一个一维数组，其中包含所有已打开索引的标记名称字符串。当没有打开索引时，返回空数组。
     </returns>
   </OrdList>
   <Set>
     <summary>
-      Changes and/or reads a system setting.
+      更改和/或读取系统设置。
     </summary>
     <param name="nDefine">
-      Is a positive integer identifying a system setting or system variable.
-      This should match the values from the Set enumerated type.
+      是标识系统设置或系统变量的正整数。该值应与 Set 枚举类型中的值匹配。
     </param>
     <param name="newValue">
-      The optional expression can specify a new value for a system setting.
-      The data type is dependent on the system setting designated by <paramref name="nDefine"/>.
+      可选表达式可以为系统设置指定新值。数据类型取决于 <paramref name="nDefine"/> 所指定的系统设置。
     </param>
     <returns>
-      When Set() is called without the argument <paramref name="newValue"/> ,
-      the function returns the current system setting designated by <paramref name="nDefine"/> .
-      If <paramref name="newValue"/> is specified, the corresponding system setting is set to <paramref name="newValue"/>
-      and the value of the old setting is returned.
+      当调用 Set() 时不带参数 <paramref name="newValue"/> 时，函数返回由 <paramref name="nDefine"/> 指定的当前系统设置。如果指定了 <paramref name="newValue"/>，则相应的系统设置将被设置为 <paramref name="newValue"/>，并返回旧设置的值。
     </returns>
     <seealso cref="T:XSharp.Set"/>
     <remarks>
-      If you are coming from XHarbour or Xbase++ please don't use set.ch for the value of <paramref name="nDefine"/>
-      because there are some differences between the values in this header file and the values used inside X#.
+      如果您来自 XHarbour 或 Xbase++，请不要将 set.ch 用作 <paramref name="nDefine"/> 的值，因为该头文件中的值与 X# 内部使用的值之间存在一些差异。
     </remarks>
   </Set>
   <ShowArray>
-    <summary>Dump the contents of an array to the terminal window</summary>
-    <param name="aTest">Array to dump</param>
-    <param name="cPrefix">Name to show before the array brackets. Defaults to 'a'</param>
-    <returns>Nothing</returns>
+    <summary>将数组的内容转储到终端窗口</summary>
+    <param name="aTest">要转储的数组</param>
+    <param name="cPrefix">显示在数组括号之前的名称。默认值为 'a'</param>
+    <returns>无</returns>
     <remarks>
-      This dumps the information to the terminal window.
-      This will only work if the main application is a console application.
+      这会将信息转储到终端窗口。仅当主应用程序是控制台应用程序时才有效。
     </remarks>
   </ShowArray>
   <ShowObject>
-    <summary>Dump the contents of an object to the terminal window</summary>
-    <param name="oObject">Object to dump</param>
-    <param name="cPrefix">Name to show before the field names. Defaults to 'o'</param>
-    <returns>Nothing</returns>
+    <summary>将对象的内容转储到终端窗口</summary>
+    <param name="oObject">要转储的对象</param>
+    <param name="cPrefix">显示在字段名称之前的名称。默认值为 'o'</param>
+    <returns>无</returns>
     <remarks>
-      This dumps the information to the terminal window.
-      This will only work if the main application is a console application.
+      这会将信息转储到终端窗口。仅当主应用程序是控制台应用程序时才有效。
     </remarks>
   </ShowObject>
   <ShowPrivates>
-    <summary>Dump the currently defined privates to the terminal window</summary>
-    <param name="lCurrentOnly">Only dump the privates from the current level on the evaluation stack.</param>
-    <returns>Nothing</returns>
+    <summary>将当前定义的私有变量转储到终端窗口</summary>
+    <param name="lCurrentOnly">仅转储计算堆栈上当前级别的私有变量。</param>
+    <returns>无</returns>
     <remarks>
-      This dumps the information to the terminal window.
-      This will only work if the main application is a console application.
+      这会将信息转储到终端窗口。仅当主应用程序是控制台应用程序时才有效。
     </remarks>
   </ShowPrivates>
   <ShowPublics>
-    <summary>Dump the currently defined publics to the terminal window</summary>
-    <returns>Nothing</returns>
+    <summary>将当前定义的公共变量转储到终端窗口</summary>
+    <returns>无</returns>
     <remarks>
-      This dumps the information to the terminal window.
-      This will only work if the main application is a console application.
+      这会将信息转储到终端窗口。仅当主应用程序是控制台应用程序时才有效。
     </remarks>
   </ShowPublics>
   <Str2>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/str2/*"/>
-    <returns>A string representation of the value.</returns>
+    <returns>值的字符串表示形式。</returns>
     <seealso cref="Str"/>
     <seealso cref="Str1"/>
     <seealso cref="Str3"/>
@@ -1766,7 +1679,7 @@
   </Str3>
   <String2Atom>
     <summary>
-      Convert a string to a Symbol.
+      将字符串转换为 Symbol。
     </summary>
     <param name="c"/>
     <returns>
@@ -1775,7 +1688,7 @@
   </String2Atom>
   <String2Symbol>
     <summary>
-      Convert a string to an uppercase Symbol.
+      将字符串转换为大写的 Symbol。
     </summary>
     <param name="c"/>
     <returns>
@@ -1784,7 +1697,7 @@
   </String2Symbol>
   <Symbol2String>
     <summary>
-      Convert a symbol to string
+      将 Symbol 转换为字符串
     </summary>
     <param name="s"/>
     <returns>
@@ -1793,7 +1706,7 @@
   </Symbol2String>
   <SysAddAtom>
     <summary>
-      Convert a string to a Symbol and add it to the atom table.
+      将字符串转换为 Symbol 并将其添加到原子表中。
     </summary>
     <param name="s"/>
     <param name="p"/>
@@ -1803,7 +1716,7 @@
   </SysAddAtom>
   <SysAddAtomUpperA>
     <summary>
-      Convert a string to an uppercase Symbol and add it to the atom table.
+      将字符串转换为大写的 Symbol 并将其添加到原子表中。
     </summary>
     <param name="s"/>
     <param name="p"/>
@@ -1822,7 +1735,7 @@
   </SysCompAtom>
   <SysFindAtom>
     <summary>
-      Determine whether a Symbol is in the atom table.
+      确定 Symbol 是否在原子表中。
     </summary>
     <param name="p"/>
     <returns>
@@ -1831,7 +1744,7 @@
   </SysFindAtom>
   <SysGetAtomName>
     <summary>
-      Convert a Symbol to a null-terminated string.
+      将 Symbol 转换为以 null 结尾的字符串。
     </summary>
     <param name="s"/>
     <returns>
@@ -1840,7 +1753,7 @@
   </SysGetAtomName>
   <UnRegisterAxit>
     <summary>
-      Terminate the registration of an object that has been registered with RegisterAxit().
+      终止已通过 RegisterAxit() 注册的对象的注册。
     </summary>
     <param name="oSource"/>
     <returns>
@@ -1848,7 +1761,7 @@
   </UnRegisterAxit>
   <UsualType>
     <summary>
-      Determine the data type of an expression.
+      确定表达式的数据类型。
     </summary>
     <param name="x"/>
     <returns>
@@ -1856,27 +1769,26 @@
   </UsualType>
   <UsualVal>
     <summary>
-      Access contents of an address, whether it is passed by reference or not.
+      访问地址的内容，无论其是否按引用传递。
     </summary>
     <param name="u"/>
     <returns/>
   </UsualVal>
   <ValType>
-    <summary>Determine the data type of an expression.</summary>
+    <summary>确定表达式的数据类型。</summary>
     <param name="u"/>
     <returns/>
   </ValType>
   <Version>
     <summary>
-      Returns the version of X# you are using.
+      返回您正在使用的 X# 的版本。
     </summary>
     <returns>
     </returns>
   </Version>
   <VoDb>
     <summary>
-      The VoDb class extends the CoreDb class with methods that take usual parameters or return usual values.<br/>
-      All other methods are identical and inherited from the CoreDb class.
+      VoDb 类通过接受 usual 参数或返回 usual 值的方法扩展了 CoreDb 类。<br/> 所有其他方法都相同，并继承自 CoreDb 类。
     </summary>
   </VoDb>
   <VoDb.Info>
@@ -1885,7 +1797,7 @@
       <inheritdoc cref="CoreDb.Info"/>
       <br/>
       <br/>
-      <note type="tip">The difference between VoDb.Info and CoreDb.Info is that VoDb.Info takes a USUAL parameter</note>
+      <note type="tip">VoDb.Info 与 CoreDb.Info 的区别在于 VoDb.Info 接受 USUAL 参数</note>
     </remarks>
   </VoDb.Info>
   <VoDb.OrderInfo>
@@ -1894,7 +1806,7 @@
       <inheritdoc cref="CoreDb.OrderInfo"/>
       <br/>
       <br/>
-      <note type="tip">The difference between VoDb.OrderInfo and CoreDb.OrderInfo is that VoDb.Info takes a USUAL parameter</note>
+      <note type="tip">VoDb.OrderInfo 与 CoreDb.OrderInfo 的区别在于 VoDb.Info 接受 USUAL 参数</note>
     </remarks>
   </VoDb.OrderInfo>
   <VoDb.RddInfo>
@@ -1903,7 +1815,7 @@
       <inheritdoc cref="CoreDb.RddInfo"/>
       <br/>
       <br/>
-      <note type="tip">The difference between VoDb.RddInfo and CoreDb.RddInfo is that VoDb.RddInfo takes a USUAL parameter</note>
+      <note type="tip">VoDb.RddInfo 与 CoreDb.RddInfo 的区别在于 VoDb.RddInfo 接受 USUAL 参数</note>
     </remarks>
   </VoDb.RddInfo>
   <VoDb.RecordInfo>
@@ -1912,7 +1824,7 @@
       <inheritdoc cref="CoreDb.RecordInfo"/>
       <br/>
       <br/>
-      <note type="tip">The difference between VoDb.RecordInfo and CoreDb.RecordInfo is that VoDb.RecordInfo takes a USUAL parameter</note>
+      <note type="tip">VoDb.RecordInfo 与 CoreDb.RecordInfo 的区别在于 VoDb.RecordInfo 接受 USUAL 参数</note>
     </remarks>
   </VoDb.RecordInfo>
   <VoDb.Select>
@@ -1921,17 +1833,17 @@
       <inheritdoc cref="CoreDb.Select"/>
       <br/>
       <br/>
-      <note type="tip">The difference between VoDb.Select and CoreDb.Select is that VoDb.Select takes a USUAL parameter</note>
+      <note type="tip">VoDb.Select 与 CoreDb.Select 的区别在于 VoDb.Select 接受 USUAL 参数</note>
     </remarks>
   </VoDb.Select>
   <VoDb.SetFilter>
     <inheritdoc cref="CoreDb.SetFilter"/>
     <remarks>
-      <note type="tip">The difference between VoDb.SetFilter and CoreDb.SetFilter is that VoDb.SetFilter takes a USUAL parameter</note>
+      <note type="tip">VoDb.SetFilter 与 CoreDb.SetFilter 的区别在于 VoDb.SetFilter 接受 USUAL 参数</note>
     </remarks>
   </VoDb.SetFilter>
   <VoDbAlias>
-    These functions all map to the static methods inside VoDb (and CoreDb)
+    这些函数都映射到 VoDb（和 CoreDb）内部的静态方法
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbalias/*"/>
     <seealso cref="CoreDb.Alias"/>
   </VoDbAlias>
@@ -1978,7 +1890,7 @@
       <inheritdoc cref="CoreDb.CloseArea"/>
       <br/>
       <br/>
-      <note type="tip">VoDbCloseArea() is an alias for CoreDbCloseArea()</note>
+      <note type="tip">VoDbCloseArea() 是 CoreDbCloseArea() 的别名</note>
     </remarks>
   </VoDbCloseArea>
   <VoDbCommit>
@@ -1995,14 +1907,14 @@
   </VoDbContinue>
   <VoDbCreate>
     <inheritdoc cref="CoreDb.Create"/>
-    <param name="aStruct">Array with structure to use when creating the file.</param>
-    <param name="oRddType">Type of the RDDs to use when creating the file</param>
-    <param name="aList">structure that describes the list of RDDs to use</param>
+    <param name="aStruct">创建文件时要使用的结构数组。</param>
+    <param name="oRddType">创建文件时要使用的 RDD 类型</param>
+    <param name="aList">描述要使用的 RDD 列表的结构</param>
     <remarks>
       <inheritdoc cref="CoreDb.Create"/>
       <br/>
       <br/>
-      <note type="tip">The difference between VoDbCreate and CoreDb.Create is that VoDbCreate takes a ARRAY parameter</note>
+      <note type="tip">VoDbCreate 与 CoreDb.Create 的区别在于 VoDbCreate 接受 ARRAY 参数</note>
     </remarks>
   </VoDbCreate>
   <VoDbDelete>
@@ -2031,7 +1943,7 @@
   </VoDbFieldGetBytes>
   <VoDbFieldInfo>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbfieldinfo/*"/>
-    <param name="uValue">New value to assign to the Field.</param>
+    <param name="uValue">要赋给字段的新值。</param>
     <seealso cref="O:CoreDb.FieldInfo"/>
   </VoDbFieldInfo>
   <VoDbFieldPut>
@@ -2127,7 +2039,7 @@
   </VoDbOrdDestroy>
   <VoDbOrderInfo>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodborderinfo/*"/>
-    <param name="uValue">New value to assign to the Order.</param>
+    <param name="uValue">要赋给索引标识（Order）的新值。</param>
     <seealso cref="CoreDb.OrderInfo"/>
   </VoDbOrderInfo>
   <VoDbOrdListAdd>
@@ -2148,7 +2060,7 @@
   <VoDbOrdSetFocus>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetorder/*"/>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbordsetfocus/*"/>
-    <param name="cOrder">This returns the previous order that was selected.</param>
+    <param name="cOrder">这将返回之前选择的索引标识（order）。</param>
     <seealso cref="CoreDb.OrdSetFocus"/>
   </VoDbOrdSetFocus>
   <VoDbPack>
@@ -2165,7 +2077,7 @@
       <inheritdoc cref="CoreDb.RddInfo"/>
       <br/>
       <br/>
-      <note type="tip">The difference between VoDbRddInfo and CoreDb.RddInfo is that VoDbRddInfo takes a USUAL parameter</note>
+      <note type="tip">VoDbRddInfo 与 CoreDb.RddInfo 的区别在于 VoDbRddInfo 接受 USUAL 参数</note>
     </remarks>
     <seealso cref="CoreDb.RddInfo"/>
   </VoDbRddInfo>
@@ -2255,8 +2167,8 @@
     <seealso cref="CoreDb.SkipScope"/>
   </VoDbSkipScope>
   <VoDbSort>
-    <param name="fldNames">List of field names to copy</param>
-    <param name="fnSortNames">List of field names to sort on</param>
+    <param name="fldNames">要复制的字段名称列表</param>
+    <param name="fnSortNames">要排序的字段名称列表</param>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsort/*"/>
     <seealso cref="CoreDb.Sort"/>
   </VoDbSort>
@@ -2267,7 +2179,7 @@
   <VoDbTrans>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbtrans/*"/>
     <seealso cref="CoreDb.Trans"/>
-    <param name="fldNames">List of field names to copy </param>
+    <param name="fldNames">要复制的字段名称列表 </param>
   </VoDbTrans>
   <VoDbTransRec>
     <inheritdoc cref="CoreDb.TransRec"/>
@@ -2279,7 +2191,7 @@
       <inheritdoc cref="CoreDb.Unlock"/>
       <br/>
       <br/>
-      <note type="tip">The difference between VoDbUnlock and CoreDb.UnLock is that VoDbUnlock takes USUAL parameters</note>
+      <note type="tip">VoDbUnlock 与 CoreDb.UnLock 的区别在于 VoDbUnlock 接受 USUAL 参数</note>
     </remarks>
   </VoDbUnlock>
   <VoDbUnLockAll>
@@ -2289,23 +2201,23 @@
   <VoDbUseArea>
     <overloads>
       <summary>
-        Open a file
+        打开文件
       </summary>
       <seealso cref="CoreDb.UseArea"/>
     </overloads>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbusearea/*"/>
     <seealso cref="CoreDb.UseArea"/>
-    <param name="rddlist">List of RDDs to use.</param>
-    <param name="rddName">Name of the RDD to use.</param>
-    <param name="rddType">Type of the RDD to use.</param>
+    <param name="rddlist">要使用的 RDD 列表。</param>
+    <param name="rddName">要使用的 RDD 名称。</param>
+    <param name="rddType">要使用的 RDD 类型。</param>
   </VoDbUseArea>
   <VoDbZap>
     <include file="VoFunctionDocs.xml" path="Runtimefunctions/vodbzap/*"/>
     <seealso cref="CoreDb.Zap"/>
   </VoDbZap>
   <XSharpLoadLibrary>
-    <summary>Dynamically loads a library (dll) compiled with X#, running any _INIT procedures it may contain.</summary>
-    <param name="cLibFileName">The full path of the library to load.</param>
-    <returns>The Assembly object of the loaded library.</returns>
+    <summary>动态加载使用 X# 编译的库（dll），并运行其中可能包含的所有 _INIT 过程。</summary>
+    <param name="cLibFileName">要加载的库的完整路径。</param>
+    <returns>已加载库的 Assembly 对象。</returns>
   </XSharpLoadLibrary>
   </doc>

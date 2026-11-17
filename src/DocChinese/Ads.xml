@@ -15,7 +15,7 @@
                     </description>
                 </item>
                 <item>
-                    <term>String parameters</term>
+                    <term>字符串参数</term>
                     <description>
                         在 Visual Objects 中，所有字符串参数都被声明为 PSZ。在 X# 中，你可以使用普通字符串。<br />
                         .Net 运行时负责管理 unicode 字符串和本地 Ansi 字符串之间的转换。

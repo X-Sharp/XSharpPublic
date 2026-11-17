@@ -44,11 +44,57 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 throw new InvalidOperationException("The solution service does not support adding companion projects.");
             }
 
+            // Adding the companion makes the solution dirty, and so does removing it on close
+            // (ShadowDesignerCleanup). When nothing else is unsaved, both are saved right away, so the
+            // companion never makes VS ask to save the solution.
+            bool wasDirty = IsSolutionDirty(solution);
+
             RemoveStaleHierarchy(solution, csprojPath);
             RemoveStaleProjectItem(solution, Path.GetFileNameWithoutExtension(csprojPath));
 
             var folder = EnsureSolutionFolder(solution, ShadowDesignerFolderName);
             ErrorHandler.ThrowOnFailure(solution6.AddExistingProject(csprojPath, folder, out _));
+
+            if (!wasDirty)
+            {
+                SaveSolutionFile(solution, "companion added");
+            }
+        }
+
+        /// <summary>True when the solution has changes that are not saved yet.</summary>
+        internal static bool IsSolutionDirty(IVsSolution vsSolution)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            return ErrorHandler.Succeeded(vsSolution.GetProperty((int)__VSPROPID.VSPROPID_IsSolutionDirty, out object dirty)) &&
+                dirty is bool isDirty && isDirty;
+        }
+
+        /// <summary>The full path of the solution file, or null for a solution that was never saved.</summary>
+        internal static string GetSolutionFile(IVsSolution vsSolution)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (ErrorHandler.Failed(vsSolution.GetSolutionInfo(out _, out string solutionFile, out _)) ||
+                string.IsNullOrEmpty(solutionFile) || !File.Exists(solutionFile))
+            {
+                return null;
+            }
+            return solutionFile;
+        }
+
+        /// <summary>
+        /// Saves the solution file without asking. Skipped for a solution that was never saved, where saving
+        /// would show the Save As dialog.
+        /// </summary>
+        internal static void SaveSolutionFile(IVsSolution vsSolution, string reason)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            string solutionFile = GetSolutionFile(vsSolution);
+            if (solutionFile == null)
+            {
+                return;
+            }
+            int hr = vsSolution.SaveSolutionElement((uint)__VSSLNSAVEOPTIONS.SLNSAVEOPT_SaveIfDirty, null, 0);
+            Logger.Information($"SolutionWiring: saved {solutionFile} ({reason}), hr=0x{hr:X8}");
         }
 
         /// <summary>

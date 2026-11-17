@@ -39,9 +39,9 @@ namespace XSharp.ProjectSystem.ShadowDesigner
     ///
     /// "On save" specifically (via IVsRunningDocTableEvents.OnAfterSave), not an idle timer
     /// or tab-switch hook: both sync commands read the companion files from disk, not the
-    /// live editor buffer -- the same reason the manual commands force-run File.SaveAll
-    /// first. So on-save is the earliest moment the data is actually available, not an
-    /// arbitrary cadence choice.
+    /// live editor buffer, which is also why the other companion documents are saved first
+    /// (SaveCompanionDocuments). So on-save is the earliest moment the data is actually
+    /// available, not an arbitrary cadence choice.
     ///
     /// Also intercepts the Designer navigating to the companion file's CODE view
     /// (event-handler creation/navigation) via OnBeforeDocumentWindowShow, and redirects to
@@ -144,11 +144,6 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             string path = GetDocumentMoniker(docCookie);
             if (string.IsNullOrEmpty(path))
             {
-                // Not Form1.cs/Form1.Designer.cs -- still worth checking whether this is a
-                // .resx living directly in a known companion folder (e.g. a new
-                // Form1.nl.resx from changing the form's Language property), since that can
-                // be saved without either code file ever becoming dirty.
-                TryHandleResxOnlySave(path);
                 return VSConstants.S_OK;
             }
 
@@ -168,9 +163,8 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 // The save that triggered this event only guarantees ONE of the two
                 // companion files is current on disk -- the other may still be dirty in a
                 // different editor tab (e.g. a new handler stub in Form1.cs while only
-                // Form1.Designer.cs was just saved). Force both current first, same safety
-                // net the manual sync commands already use.
-                SaveDirtyDocuments();
+                // Form1.Designer.cs was just saved). Force both current first.
+                SaveCompanionDocuments(location);
                 EventHandlerSync.Sync(location);
                 DesignerChangesSync.Sync(location);
                 CompanionResourceSync.Sync(location);
@@ -231,6 +225,11 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             }
         }
         static bool saving = false;
+        /// <summary>
+        /// Saves every dirty document, before Debug/Start only (VS saves them for the build anyway). Not used by the
+        /// syncs: called from OnAfterSave, saving the solution as well failed with a recursive save error, see
+        /// SaveCompanionDocuments.
+        /// </summary>
         private void SaveDirtyDocuments()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -238,15 +237,63 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             if (! saving)
             {
                 saving = true;
-                int hr = _rdt.SaveDocuments((uint)__VSRDTSAVEOPTIONS.RDTSAVEOPT_SaveIfDirty,
-                    null, VSConstants.VSITEMID_NIL, VSConstants.VSCOOKIE_NIL);
-                ErrorHandler.ThrowOnFailure(hr);
-                if (hr != VSConstants.S_OK)
+                try
                 {
-                    throw new InvalidOperationException("Saving documents was cancelled; shadow designer synchronization was not performed.");
+                    int hr = _rdt.SaveDocuments((uint)__VSRDTSAVEOPTIONS.RDTSAVEOPT_SaveIfDirty,
+                        null, VSConstants.VSITEMID_NIL, VSConstants.VSCOOKIE_NIL);
+                    ErrorHandler.ThrowOnFailure(hr);
+                    if (hr != VSConstants.S_OK)
+                    {
+                        throw new InvalidOperationException("Saving documents was cancelled; shadow designer synchronization was not performed.");
+                    }
                 }
-                saving = false;
+                finally
+                {
+                    // Also after a failed or cancelled save, otherwise nothing is saved anymore
+                    saving = false;
+                }
+            }
+        }
 
+        /// <summary>
+        /// Saves the companion's own documents that are still dirty (the other code file, a resx), since the syncs
+        /// read them from disk. Deliberately not all documents (File.SaveAll, SaveDirtyDocuments): that also saved
+        /// the user's other documents and unsaved solution changes (which is how the companion ended up in the saved
+        /// solution file), and saving the solution from inside OnAfterSave failed with "A recursive save operation
+        /// is in progress for '....slnx'" (VS 2026, after adding a Solution Folder).
+        /// </summary>
+        private void SaveCompanionDocuments(CompanionLocation location)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            string companionDir = Path.GetDirectoryName(location.CompanionDesignerCsPath);
+            if (string.IsNullOrEmpty(companionDir) ||
+                ErrorHandler.Failed(_rdt.GetRunningDocumentsEnum(out IEnumRunningDocuments documents)) || documents == null)
+            {
+                return;
+            }
+            // Collected first: saving while enumerating could change the table
+            var toSave = new List<uint>();
+            var cookies = new uint[1];
+            while (documents.Next(1, cookies, out uint fetched) == VSConstants.S_OK && fetched == 1)
+            {
+                string path = GetDocumentMoniker(cookies[0]);
+                if (path != null &&
+                    string.Equals(Path.GetDirectoryName(path), companionDir, StringComparison.OrdinalIgnoreCase) &&
+                    (path.EndsWith(".cs", StringComparison.OrdinalIgnoreCase) || path.EndsWith(".resx", StringComparison.OrdinalIgnoreCase)))
+                {
+                    toSave.Add(cookies[0]);
+                }
+            }
+            foreach (uint cookie in toSave)
+            {
+                if (ErrorHandler.Succeeded(_rdt.GetDocumentInfo(cookie, out _, out _, out _, out string path, out IVsHierarchy hierarchy, out uint itemId, out _)))
+                {
+                    int hr = _rdt.SaveDocuments((uint)__VSRDTSAVEOPTIONS.RDTSAVEOPT_SaveIfDirty, hierarchy, itemId, cookie);
+                    if (ErrorHandler.Failed(hr))
+                    {
+                        Logger.Information($"CompanionSaveWatcher: could not save {path}, hr=0x{hr:X8}");
+                    }
+                }
             }
         }
 
@@ -295,7 +342,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 // Same reasoning as OnAfterSave: the sync command reads from disk, and the
                 // Designer's own navigation flow may have flushed its pending edits into the
                 // companion buffer without that being on disk yet.
-                SaveDirtyDocuments();
+                SaveCompanionDocuments(location);
                 result = EventHandlerSync.Sync(location);
                 CompanionResourceSync.Sync(location);
             }
@@ -407,6 +454,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 Logger.Exception(ex, "CompanionSaveWatcher.RedirectNowAsync: CloseFrame failed");
             }
 
+            ReloadOpenDocument(location.MainPrgPath);
             VsShellUtilities.OpenDocument(ServiceProvider.GlobalProvider, location.MainPrgPath,
                 VSConstants.LOGVIEWID.TextView_guid, out _, out _, out IVsWindowFrame frame);
 
@@ -479,14 +527,19 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         ///
         /// The returned frame's text view may still be initializing; poll that frame briefly
         /// rather than navigating whichever document happens to be active.
+        ///
+        /// The declaration is searched in the editor buffer, not in the file: a new stub is
+        /// written to disk by EventHandlerSync, and a .prg that is already open is only
+        /// reloaded by VS a moment later. A line number taken from the file then pointed past
+        /// the end of the old, shorter buffer (caret at the end of the file, while a second
+        /// try worked). RedirectNowAsync therefore reloads the document first
+        /// (ReloadOpenDocument); the buffer is still polled briefly in case that was skipped.
         /// </summary>
         private async Task<bool> NavigateToMethodAsync(IVsWindowFrame frame, string prgPath, string handlerName)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            string[] lines = File.ReadAllLines(prgPath);
             var pattern = new Regex($@"\bMETHOD\s+{Regex.Escape(handlerName)}\s*\(", RegexOptions.IgnoreCase);
-            int declLineIndex = Array.FindIndex(lines, l => pattern.IsMatch(l));
-            if (declLineIndex < 0)
+            if (!File.ReadLines(prgPath).Any(l => pattern.IsMatch(l)))
             {
                 return false;
             }
@@ -508,9 +561,32 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 return false;
             }
 
-            int targetLine = (declLineIndex + 1 < lines.Length) ? declLineIndex + 1 : declLineIndex;
             ErrorHandler.ThrowOnFailure(textView.GetBuffer(out IVsTextLines buffer));
-            ErrorHandler.ThrowOnFailure(buffer.GetLineCount(out int lineCount));
+            int declLineIndex = -1;
+            int lineCount = 0;
+            const int maxAttempts = 40;
+            for (int attempt = 0; attempt < maxAttempts; attempt++)
+            {
+                ErrorHandler.ThrowOnFailure(buffer.GetLineCount(out lineCount));
+                declLineIndex = FindLine(buffer, lineCount, pattern);
+                if (declLineIndex >= 0)
+                {
+                    if (attempt > 0)
+                    {
+                        Logger.Information($"CompanionSaveWatcher.NavigateToMethodAsync: waited {attempt * 50} ms for {prgPath} to be reloaded");
+                    }
+                    break;
+                }
+                await Task.Delay(50);
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            }
+            if (declLineIndex < 0)
+            {
+                Logger.Error($"CompanionSaveWatcher.NavigateToMethodAsync: '{handlerName}' not found in the editor buffer of {prgPath} after {maxAttempts * 50} ms.");
+                return false;
+            }
+
+            int targetLine = (declLineIndex + 1 < lineCount) ? declLineIndex + 1 : declLineIndex;
             int endLine = targetLine;
             int endColumn;
             if (targetLine + 1 < lineCount)
@@ -531,6 +607,58 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 iEndIndex = endColumn,
             }));
             return true;
+        }
+
+        /// <summary>
+        /// Reloads <paramref name="path"/> from disk when it is open in an editor without unsaved changes. EventHandlerSync
+        /// writes new handler stubs to the file; VS reloads an open document only when the UI thread is idle, which
+        /// never happens while the new-handler redirect runs (JoinableTaskFactory.Run in OnBeforeDocumentWindowShow),
+        /// so NavigateToMethodAsync would search a buffer without the new stub. A document with unsaved changes is
+        /// left alone: reloading would lose them.
+        /// </summary>
+        private void ReloadOpenDocument(string path)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (ErrorHandler.Failed(_rdt.FindAndLockDocument((uint)_VSRDTFLAGS.RDT_NoLock, path,
+                out _, out _, out IntPtr docDataPtr, out _)) || docDataPtr == IntPtr.Zero)
+            {
+                return;
+            }
+            try
+            {
+                if (System.Runtime.InteropServices.Marshal.GetObjectForIUnknown(docDataPtr) is IVsPersistDocData docData &&
+                    ErrorHandler.Succeeded(docData.IsDocDataDirty(out int dirty)) && dirty == 0)
+                {
+                    // The file change notification of the sync's own write would reload it a second time
+                    int hr = docData.ReloadDocData((uint)_VSRELOADDOCDATA.RDD_IgnoreNextFileChange);
+                    Logger.Information($"CompanionSaveWatcher.ReloadOpenDocument: reloaded {path}, hr=0x{hr:X8}");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Best-effort: NavigateToMethodAsync still polls the buffer
+                Logger.Exception(ex, $"CompanionSaveWatcher.ReloadOpenDocument: could not reload {path}");
+            }
+            finally
+            {
+                System.Runtime.InteropServices.Marshal.Release(docDataPtr);
+            }
+        }
+
+        /// <summary>The 0-based index of the first buffer line matching <paramref name="pattern"/>, or -1.</summary>
+        private static int FindLine(IVsTextLines buffer, int lineCount, Regex pattern)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            for (int line = 0; line < lineCount; line++)
+            {
+                if (ErrorHandler.Succeeded(buffer.GetLengthOfLine(line, out int length)) &&
+                    ErrorHandler.Succeeded(buffer.GetLineText(line, 0, line, length, out string text)) &&
+                    pattern.IsMatch(text))
+                {
+                    return line;
+                }
+            }
+            return -1;
         }
 
         public int OnBeforeLastDocumentUnlock(uint docCookie, uint dwRDTLockType, uint dwReadLocksRemaining, uint dwEditLocksRemaining) => VSConstants.S_OK;

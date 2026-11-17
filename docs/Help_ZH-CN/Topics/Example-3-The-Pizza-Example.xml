@@ -31,10 +31,10 @@
       <li styleclass="Body Text">在这种情况下，我选择重命名 PIZZA 图像。因此，打开 Images.PRG，重命名为</li>
     </list>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">CLASS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> PIZZA </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">INHERIT</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Bitmap</text></para>
-    <para styleclass="Body Text" style="margin-left:13px;">to</para>
+    <para styleclass="Body Text" style="margin-left:13px;">改为</para>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">CLASS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> ImgPIZZA </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">INHERIT</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Bitmap</text></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">Then recompile again. Now one problem is left: </li>
+      <li styleclass="Body Text">然后再次重新编译。现在还剩下一个问题：</li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"><text styleclass="" style="font-family:Consolas; font-size:9pt; color:#000000;">C:\XporterOutput\Examples\Pizza\Order Dialog.prg(165,25): error XS0246: The type or namespace name &apos;PIZZA&apos; could not be found (are you missing a using directive or an assembly reference?)</text></para>
     <para styleclass="Normal"></para>

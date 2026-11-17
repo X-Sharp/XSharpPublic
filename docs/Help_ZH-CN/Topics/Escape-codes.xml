@@ -120,7 +120,7 @@
           <para styleclass="Normal">\t </para>
         </td>
         <td>
-          <para styleclass="Normal">Tab</para>
+          <para styleclass="Normal">制表符</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -128,7 +128,7 @@
           <para styleclass="Normal">\v </para>
         </td>
         <td>
-          <para styleclass="Normal">纵向 tab</para>
+          <para styleclass="Normal">纵向制表符</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -141,7 +141,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">\u HEXGDIGIT (4 or 8)</para>
+          <para styleclass="Normal">\u HEXGDIGIT (4 或 8)</para>
         </td>
         <td>
           <para styleclass="Normal">字符的 Unicode 编码。4 或 8 个十六进制数字</para>

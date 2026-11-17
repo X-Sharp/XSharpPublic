@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" modified="2026-11-17T13:30:54.371+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>SET SAFETY Command</title>
+  <title>SET SAFETY 命令</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>SET commands</keyword>
@@ -9,18 +9,18 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">SET SAFETY Command</para>
+      <para styleclass="Heading1">SET SAFETY 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">用途</para>
-    <para styleclass="Normal">Specifies whether a confirmation is required before an existing file is overwritten.</para>
+    <para styleclass="Normal">指定在覆盖现有文件之前是否需要确认。</para>
     <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">SET SAFETY ON | OFF | &amp;&lt;cMacro&gt;</para>
     <para styleclass="Heading1">参数</para>
-    <para styleclass="List">ON | OFF<tab/>ON asks for confirmation before an existing file is overwritten. OFF overwrites the file without asking. The value may also be a macro (&amp;) that evaluates to ON or OFF.</para>
-    <para styleclass="Heading1">Remarks</para>
-    <para styleclass="Normal">The value is stored in the runtime state and can be read and changed with the function <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetSafety.htm" domain="XSharpRef.chm">SetSafety()</link>.</para>
+    <para styleclass="List">ON | OFF<tab/>ON 在覆盖现有文件之前要求确认。OFF 不经询问直接覆盖文件。该值也可以是一个宏（&amp;），其求值结果为 ON 或 OFF。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">该值存储在运行时状态中，可以通过函数 <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetSafety.htm" domain="XSharpRef.chm">SetSafety()</link> 读取和更改。</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
     <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_COMPATIBLE">SET COMPATIBLE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetSafety.htm" domain="XSharpRef.chm">SetSafety()</link></para>

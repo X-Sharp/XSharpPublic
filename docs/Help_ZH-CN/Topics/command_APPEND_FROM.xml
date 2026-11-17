@@ -11,14 +11,14 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1"> APPEND FROM Command (non FoxPro)</para>
+      <para styleclass="Heading1"> APPEND FROM 命令 (非 FoxPro)</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
-    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Heading1">用途</para>
     <para styleclass="Normal">从数据库或文本文件导入记录。</para>
-    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">APPEND FROM &lt;xcSourceFile&gt; [FIELDS &lt;idFieldList&gt;] <br/>[&lt;Scope&gt;] [WHILE &lt;lCondition&gt;] [FOR &lt;lCondition&gt;] <br/>[SDF] | [DELIMITED [WITH &lt;xcDelimiter&gt; | BLANK]] | <br/>[VIA &lt;cDriver&gt;] [INHERIT FROM &lt;acRDDs&gt;]</para>
-    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="Heading1">参数</para>
     <para styleclass="List">FROM &lt;xcSourceFile&gt;<tab />添加记录的源文件名称，包括可选的驱动器、目录和扩展名。 有关文件搜索和创建规则，请参阅 SetDefault() 和 SetPath()。 数据库文件的默认扩展名由 RDD 决定。 文本文件的默认扩展名是 .TXT。</para>
     <para styleclass="List"><tab />该命令尝试以共享模式打开 &lt;xcSourceFile&gt;。 如果文件不存在，则会出现运行时错误。 如果文件成功打开，则继续执行操作。 如果由于其他进程独占该文件等原因而拒绝访问，NetErr() 将被设置为 “true”。 &#160;</para>
     <para styleclass="List"></para>

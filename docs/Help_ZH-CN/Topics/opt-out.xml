@@ -39,7 +39,7 @@
     <para styleclass="Normal" style="margin-left:13px;"></para>
     <list id="1" type="ol" listtype="decimal" formatstring="&#37;&#48;&#58;&#115;&#46;" format-charset="DEFAULT_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Arial; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
-      <li styleclass="Normal" style="margin-left:13px;">Click the Application property page.</li>
+      <li styleclass="Normal" style="margin-left:13px;">点击 Application 属性页。</li>
       <li styleclass="Normal" style="margin-left:13px;">编辑 “Application name”属性</li>
       <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Application">查看属性页</link></li>
     </list>

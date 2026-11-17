@@ -73,11 +73,11 @@
     <para styleclass="List"></para>
     <para styleclass="List"><text style="font-weight:bold;">eExpression</text><tab /><text style="font-weight:bold;">PRETEXT 行为 &#160;</text></para>
     <para styleclass="List"></para>
-    <para styleclass="List">Character expression<tab /><text styleclass="Normal">在 TEXT...ENDTEXT 语句之间出现的文本合并内容的每一行之前插入表达式。与 TEXT...ENDTEXT 一起使用 PRETEXT 时，eExpression 的最大长度限制为 255 个字符。</text></para>
+    <para styleclass="List">字符表达式<tab /><text styleclass="Normal">在 TEXT...ENDTEXT 语句之间出现的文本合并内容的每一行之前插入表达式。与 TEXT...ENDTEXT 一起使用 PRETEXT 时，eExpression 的最大长度限制为 255 个字符。</text></para>
     <para styleclass="List"><tab /></para>
     <para styleclass="List"><tab /><text styleclass="Normal">eExpression 会覆盖 _PRETEXT 系统变量的内容。当 eExpression 包含一个需要求值的表达式（例如用户定义函数 (UDF)）时，Visual FoxPro 只在 TEXT 命令首次出现时求值一次。</text></para>
     <para styleclass="Normal">&#32;</para>
-    <para styleclass="List">Numeric expression<tab /> 指定加法标志值，以确定在 TEXT...ENDTEXT 语句之间出现的文本合并内容的行为。</para>
+    <para styleclass="List">数值表达式<tab /> 指定加法标志值，以确定在 TEXT...ENDTEXT 语句之间出现的文本合并内容的行为。</para>
     <para styleclass="List"></para>
     <para styleclass="List"><tab />例如，值为 7 时，Visual FoxPro 将消除所有空白，包括空格、制表符和回车。超出 0-15 范围的值将产生错误。</para>
     <para styleclass="List"></para>

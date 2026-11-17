@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" modified="2026-11-17T13:30:54.167+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>SET CONFIRM Command</title>
+  <title>SET CONFIRM 命令</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>SET commands</keyword>
@@ -9,18 +9,18 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">SET CONFIRM Command</para>
+      <para styleclass="Heading1">SET CONFIRM 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">用途</para>
-    <para styleclass="Normal">Specifies whether the user must press Enter to leave a field in a full-screen input when the field is filled completely.</para>
+    <para styleclass="Normal">指定当全屏输入中的字段被完全填满时，用户是否必须按 Enter 键才能离开该字段。</para>
     <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">SET CONFIRM ON | OFF | &amp;&lt;cMacro&gt;</para>
     <para styleclass="Heading1">参数</para>
-    <para styleclass="List">ON | OFF<tab/>ON requires that the user presses Enter to leave the field. OFF moves the cursor to the next field automatically. The value may also be a macro (&amp;) that evaluates to ON or OFF.</para>
-    <para styleclass="Heading1">Remarks</para>
-    <para styleclass="Normal">The setting is stored in the runtime state, but the runtime does not use it at this moment.</para>
+    <para styleclass="List">ON | OFF<tab/>ON 要求用户按 Enter 键才能离开该字段。OFF 会自动将光标移到下一个字段。该值也可以是一个宏（&amp;），其求值结果为 ON 或 OFF。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">该设置存储在运行时状态中，但运行时目前不使用它。</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
     <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_BELL">SET BELL</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_ESCAPE">SET ESCAPE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_CURSOR">SET CURSOR</link></para>

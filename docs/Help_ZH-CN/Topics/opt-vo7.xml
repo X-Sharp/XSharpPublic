@@ -7,7 +7,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">-vo7<tab/><tab/>Implicit casts and conversions </para>
+      <para styleclass="Heading1">-vo7<tab/><tab/>隐式转换和转换 </para>
     </header>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">-vo7 选项指示编译器允许 Visual Objects 中允许、但在 X# 中通常是非法或需要显式转换的隐式转换。</para>
@@ -24,10 +24,10 @@
     <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="3">
       <tr style="vertical-align:top">
         <td style="width:177px;">
-          <para styleclass="Normal">From</para>
+          <para styleclass="Normal">从</para>
         </td>
         <td style="width:265px;">
-          <para styleclass="Normal">To</para>
+          <para styleclass="Normal">到</para>
         </td>
         <td style="width:750px;">
           <para styleclass="Normal">已执行的操作</para>
@@ -38,7 +38,7 @@
           <para styleclass="Normal">PTR</para>
         </td>
         <td style="width:265px;">
-          <para styleclass="Normal">strongly typed PTR (e.g. INT PTR)</para>
+          <para styleclass="Normal">强类型 PTR(例如 INT PTR)</para>
         </td>
         <td style="width:750px;">
           <para styleclass="Normal">无，这些类型是二进制兼容的。但是，如果指针指向的数据类型不正确，代码运行时可能会失败。</para>
@@ -46,7 +46,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:177px;">
-          <para styleclass="Normal">INT or DWORD </para>
+          <para styleclass="Normal">INT 或 DWORD </para>
         </td>
         <td style="width:265px;">
           <para styleclass="Normal">strongly typed PTR (e.g. INT PTR) </para>
@@ -57,10 +57,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:177px;">
-          <para styleclass="Normal">INT64 or UINT64</para>
+          <para styleclass="Normal">INT64 或 UINT64</para>
         </td>
         <td style="width:265px;">
-          <para styleclass="Normal">strongly typed PTR (e.g. INT PTR)</para>
+          <para styleclass="Normal">强类型 PTR(例如 INT PTR)</para>
         </td>
         <td style="width:750px;">
           <para styleclass="Normal">无，这些类型是二进制兼容的。不过，如果指针指向的数据类型不正确，代码运行时可能会失败。请注意，只有当目标平台设置为 x64 或 Itanium 时，才允许进行这种转换。</para>
@@ -71,7 +71,7 @@
           <para styleclass="Normal">OBJECT</para>
         </td>
         <td style="width:265px;">
-          <para styleclass="Normal">any other reference type</para>
+          <para styleclass="Normal">任何其他引用类型</para>
         </td>
         <td style="width:750px;">
           <para styleclass="Normal">编译器插入了一个显式的目标类型转换，运行时可能会失败。</para>
@@ -79,10 +79,10 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:177px;">
-          <para styleclass="Normal">type PTR</para>
+          <para styleclass="Normal">PTR 类型</para>
         </td>
         <td style="width:265px;">
-          <para styleclass="Normal">REF type</para>
+          <para styleclass="Normal">REF 类型</para>
         </td>
         <td style="width:750px;">
           <para styleclass="Normal">编译器会将指针转换为引用。请注意，即使使用 -vo7，也不能将所有指针转换为引用，否则会影响垃圾回收器的完整性。</para>

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" modified="2024-07-26T10:59:19.689+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Fields</title>
+  <title>字段</title>
   <keywords>
     <keyword>ASSIGNMENT</keyword>
     <keyword>CLASS VAR</keyword>
@@ -9,7 +9,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Fields (Xbase++ class 语法)</para>
+      <para styleclass="Heading1">字段 (Xbase++ 类语法)</para>
     </header>
     <para styleclass="Heading1"><snippet src="__XppOnly" inline="false"/></para>
     <para styleclass="Heading1">用途</para>
@@ -21,7 +21,7 @@
     <para styleclass="Normal"><tab />[READONLY]</para>
     <para styleclass="Normal"><tab /><text styleclass="Body Text">[ASSIGNMENT HIDDEN | PROTECTED | EXPORTED] </text><br/><tab />[NOSAVE]</para>
     <para styleclass="Heading1">参数</para>
-    <para styleclass="List">Visibility<tab />设置语句后一行变量的可见性。可以是<text styleclass="Body Text"> HIDDEN ,PROTECTED, EXPORTED or INTERNAL. 默认可见性为 HIDDEN.</text></para>
+    <para styleclass="List">Visibility<tab />设置语句后一行变量的可见性。可以是<text styleclass="Body Text"> HIDDEN、PROTECTED、EXPORTED 或 INTERNAL。默认可见性为 HIDDEN。</text></para>
     <para styleclass="List"></para>
     <para styleclass="List">CLASS | STATIC<tab />声明这是一个类级别的字段。</para>
     <para styleclass="List"></para>

@@ -37,12 +37,12 @@
     <para styleclass="Code with box"><text style="font-weight:bold; font-style:normal; color:#ff0000;">GLOBAL</text><text style="font-weight:normal; font-style:normal; color:#000000;"> pFoo </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; color:#000000;"> </text><text style="font-weight:bold; font-style:normal; color:#ff0000;">PTR</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Using -vo6 has the same effect as if the GLOBAL declaration were rewritten as:</para>
+    <para styleclass="Normal">使用 -vo6 的效果与将 GLOBAL 声明改写为如下形式相同：</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
     <para styleclass="Code with box">GLOBAL pFoo AS PTR </para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal">Note that PTR does not have the same semantics as typed function pointers in Visual Objects. However, typed function pointers are primarily used as arguments to CALL(), CCALL() and PCALL() in Visual Objects, which are not supported in X#. They have been replaced with CCallNative(), PCallNative() and CallManaged(), which accept IntPtr arguments. The same end result (invoking a function indirectly through a pointer) is therefore possible in X# without typed function pointers.</para>
+    <para styleclass="Normal">请注意，PTR 与 Visual Objects 中的类型化函数指针语义不同。不过，类型化函数指针在 Visual Objects 中主要用作 CALL()、CCALL() 和 PCALL() 的参数，而 X# 不支持这些函数。它们已被 CCallNative()、PCallNative() 和 CallManaged() 取代，后者接受 IntPtr 参数。因此，在 X# 中无需类型化函数指针，同样可以实现相同的最终结果(通过指针间接调用函数)。</para>
     <para styleclass="Normal"></para>
   </body>
 </topic>

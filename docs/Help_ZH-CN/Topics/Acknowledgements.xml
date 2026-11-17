@@ -55,7 +55,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:19%;">
-          <para styleclass="Body Text">F# project system</para>
+          <para styleclass="Body Text">F# 项目系统</para>
         </td>
         <td>
           <para styleclass="Body Text">visual F# (<link displaytype="text" defaultstyle="true" type="weblink" href="http://www.fsharp.org" target="_blank">www.fsharp.org)。</link></para>
@@ -95,7 +95,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="width:19%;">
-          <para styleclass="Body Text">The SQLite team</para>
+          <para styleclass="Body Text">SQLite 团队</para>
         </td>
         <td>
           <para styleclass="Body Text">我们在项目系统中使用他们的 SQLite 数据库。</para>

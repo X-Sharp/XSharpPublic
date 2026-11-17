@@ -15,7 +15,7 @@
     <para styleclass="Code with box">-platform:string  </para>
     <para styleclass="Heading2">参数</para>
     <para styleclass="List"><text styleclass="Code Example">string</text><tab/>anycpu(默认)、anycpu32bitpreferred、ARM、x64、x86 或 Itanium。</para>
-    <para styleclass="Heading2">Remarks</para>
+    <para styleclass="Heading2">备注</para>
     <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">anycpu(默认)编译程序集，以便在任何平台上运行。只要有可能，您的应用程序就会以 64 位进程运行，如果只有 32 位模式可用，就会退回到该模式。</li>
       <li styleclass="Normal" style="margin-left:13px;">anycpu32bitpreferred 编译程序集，以便在任何平台上运行。在同时支持 64 位和 32 位应用程序的系统上，您的应用程序将以 32 位模式运行。只有针对 .NET Framework 4.5 的项目才能指定该选项。</li>
@@ -32,7 +32,7 @@
     <list id="2" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="margin-left:13px; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal" style="margin-left:13px;">使用 -platform:x86 编译的程序集在 WOW64 下运行的 32 位 CLR 上执行。</li>
       <li styleclass="Normal" style="margin-left:13px;">使用 -platform:anycpu 编译的 DLL 与加载该 DLL 的进程在相同的 CLR 上执行。</li>
-      <li styleclass="Normal" style="margin-left:13px;">使用 The -platform:anycpu 编译的可执行文件在 64 位 CLR 上执行。</li>
+      <li styleclass="Normal" style="margin-left:13px;">使用 -platform:anycpu 编译的可执行文件在 64 位 CLR 上执行。</li>
       <li styleclass="Normal" style="margin-left:13px;">使用 -platform:anycpu32bitpreferred 编译的可执行文件在 32 位 CLR 上执行。</li>
     </list>
     <para styleclass="Normal" style="margin-left:13px;"></para>

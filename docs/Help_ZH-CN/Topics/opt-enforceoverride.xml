@@ -13,7 +13,7 @@
     <para styleclass="Normal">该编译器选项告诉编译器不要自动为子类中覆盖父类中虚方法的方法添加 OVERRIDE 修饰符。</para>
     <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-enforceoverride[+ | -] <text styleclass="Normal">&#32;</text></para>
-    <para styleclass="Heading2">Arguments</para>
+    <para styleclass="Heading2">参数</para>
     <para styleclass="List">+ | - <tab />指定 + 或仅指定 -</para>
     <para styleclass="List"></para>
     <para styleclass="Normal"><text styleclass="Heading3">要在 Visual Studio 开发环境中设置该编译器选项，请执行以下操作</text></para>

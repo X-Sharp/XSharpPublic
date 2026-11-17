@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" modified="2026-10-20T13:48:00.260Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Nuget Packages</title>
+  <title>Nuget 包</title>
   <body>
     <header>
-      <para styleclass="Heading1">Nuget Packages</para>
+      <para styleclass="Heading1">Nuget 包</para>
     </header>
     <para styleclass="Normal">XSharp 3 随附用于运行时的 NuGet 包。<br/>这些包包含针对 .Net Framework 4.7 和 .Net 8.0 的程序集及支持文件。</para>
     <para styleclass="Normal">具体包如下：</para>
@@ -29,7 +29,7 @@
           <para styleclass="Normal">XSharp.Core.dll</para>
         </td>
         <td>
-          <para styleclass="Normal">nothing</para>
+          <para styleclass="Normal">无</para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -90,7 +90,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">XSharp.VOSDK<br/><text style="font-weight:bold;">For .Net framework 4.7</text></para>
+          <para styleclass="Normal">XSharp.VOSDK<br/><text style="font-weight:bold;">适用于 .Net framework 4.7</text></para>
         </td>
         <td>
           <para styleclass="Normal">VOConsoleClasses.dll<br/>VOSystemClasses.dll</para>

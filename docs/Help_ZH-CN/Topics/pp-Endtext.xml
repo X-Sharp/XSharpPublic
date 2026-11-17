@@ -22,8 +22,8 @@
     <para styleclass="Body Text">因此，这段代码将转换为 </para>
     <para styleclass="Code Example"><text style="font-weight:normal; font-style:normal; color:#000000;">_TextSave(&quot;EXAMPLE.TXT&quot;);</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">QOut(&quot;line 1&quot;)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">QOut(&quot;line 2&quot;)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">QOut(&quot;line 3&quot;)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">QOut(&quot;line 4&quot;)</text><br/><text style="font-weight:normal; font-style:normal; color:#000000;">_TextRestore()</text></para>
     <para styleclass="Heading1">参见</para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_TEXT">TEXT command</link></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Text">#text Directive</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_TEXT">TEXT 命令</link></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="pp-Text">#text 指令</link></para>
     <para styleclass="Normal"></para>
     <para styleclass="Body Text"></para>
   </body>

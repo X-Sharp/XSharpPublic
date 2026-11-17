@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" modified="2026-11-17T13:30:54.094+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>SET ANSI Command (FoxPro)</title>
+  <title>SET ANSI 命令 (FoxPro)</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>SET ANSI command</keyword>
@@ -10,17 +10,17 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">SET ANSI Command  (FoxPro)</para>
+      <para styleclass="Heading1"      >SET ANSI 命令 (FoxPro)</para>
     </header>
     <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">用途</para>
-    <para styleclass="Normal">Determines how strings of different lengths are compared in SQL commands. This is the FoxPro version of the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_ANSI">SET ANSI</link> command.</para>
+    <para styleclass="Normal">确定在 SQL 命令中如何比较长度不同的字符串。这是 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_ANSI">SET ANSI</link> 命令的 FoxPro 版本。</para>
     <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">SET ANSI ON | OFF | &amp;&lt;cMacro&gt;</para>
     <para styleclass="Heading1">参数</para>
-    <para styleclass="List">ON | OFF<tab/>ON pads the shorter string with blanks before the comparison. OFF compares the strings up to the length of the shorter string. The value may also be a macro (&amp;) that evaluates to ON or OFF.</para>
-    <para styleclass="Heading1">Remarks</para>
-    <para styleclass="Normal">In the FoxPro dialect the command changes the SQL specific setting Set.SqlAnsi. The runtime does not use this setting at this moment. The generic <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_ANSI">SET ANSI</link> command in the other dialects changes the setting Set.Ansi, which controls the use of the ANSI or OEM character set.</para>
+    <para styleclass="List">ON | OFF<tab/>ON 在比较之前用空格填充较短的字符串。OFF 仅比较到较短字符串的长度。该值也可以是一个宏（&amp;），其求值结果为 ON 或 OFF。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">在 FoxPro 方言中，该命令会更改 SQL 专用设置 Set.SqlAnsi。运行时目前不使用此设置。其他方言中的通用 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_ANSI">SET ANSI</link> 命令则更改设置 Set.Ansi，用于控制使用 ANSI 还是 OEM 字符集。</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
     <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_ANSI">SET ANSI</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_EXACT">SET EXACT</link></para>

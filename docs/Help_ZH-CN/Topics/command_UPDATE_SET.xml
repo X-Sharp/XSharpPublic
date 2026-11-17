@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" modified="2026-11-17T13:42:02.783Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>UPDATE SET Command</title>
+  <title>UPDATE SET 命令</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>SQL</keyword>
@@ -9,7 +9,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">UPDATE Command</para>
+      <para styleclass="Heading1">UPDATE SET 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
@@ -25,7 +25,7 @@
     <para styleclass="Normal">记录在更新期间（如有必要）会被锁定，更新完成后解锁。此命令与 xBase 的 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_UPDATE">UPDATE</link> 命令不同。</para>
     <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; color:#ff0000;">目前不支持</text>：包含 JOIN 或子查询的 UPDATE 语句。使用此类语句时，编译器会报错。</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
-    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Heading1">示例</para>
     <para styleclass="Code Example">UPDATE Customers SET Country = &quot;NL&quot;, Active = .T. WHERE City == &quot;Amsterdam&quot;</para>
     <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_REPLACE">REPLACE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_INSERT_INTO">INSERT INTO</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_FROM">DELETE FROM</link></para>

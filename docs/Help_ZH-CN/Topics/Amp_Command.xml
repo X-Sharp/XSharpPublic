@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" status="Under Construction" modified="2024-06-28T00:39:00.666+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>&amp; Command</title>
+  <title>&amp; 命令</title>
   <body>
     <header>
-      <para styleclass="Heading1">&amp; Command</para>
+      <para styleclass="Heading1">&amp; 命令</para>
     </header>
     <para styleclass="Normal"></para>
   </body>

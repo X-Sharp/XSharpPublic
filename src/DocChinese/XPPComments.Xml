@@ -41,7 +41,7 @@
         <item>
           <term>CLASS_DESCR_MEMBERS</term>
           <description> 包含成员变量信息的三列二维数组。 <br />
-            <list>
+            <list type="table">
               <item>
                 <term>CLASS_MEMBER_NAME</term>
                 <description>表示单个成员变量名称的字符字符串</description>
@@ -59,7 +59,7 @@
         </item>
         <item>
           <term>CLASS_DESCR_METHODS</term>
-          <description> 包含方法信息的三列二维数组。 <list>
+          <description> 包含方法信息的三列二维数组。 <list type="table">
               <item>
                 <term>CLASS_METHOD_NAME</term>
                 <description>方法名称的字符字符串</description>

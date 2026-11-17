@@ -202,7 +202,7 @@
     <span>
       <list type="table">
         <listheader>
-          <term>Constant</term>
+          <term>常量</term>
           <description>描述</description>
         </listheader>
         <item>
@@ -338,7 +338,7 @@
     <span>
       <list type="table">
         <listheader>
-          <term>Constant</term>
+          <term>常量</term>
           <description>返回值</description>
         </listheader>
 
@@ -803,7 +803,7 @@
           <description>返回值</description>
         </listheader>
         <item>
-          <term>no parameter</term>
+          <term>无参数</term>
           <description>如果定义了范围，则返回 .T.（true），否则返回 .F.（false）。</description>
         </item>
         <item>

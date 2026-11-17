@@ -81,7 +81,7 @@
                 此 Notify() 方法是链接浏览器和服务器之间自动通知的核心， 允许任何窗口更改字段值或发起移动，并确保所有 客户端窗口反映更改。<br/>
                 任何注册为服务器客户端的类都必须智能地响应 Notify 消息。<br/> 与定义的常量一样，您永远不应依赖常量的实际值——它们不会
                 必然保持不变。然而，常量确实保持其顺序： 
-                <list type="bullet">
+                <list type="table">
                     <listheader>
                         <term>常量</term>
                         <description>描述</description>

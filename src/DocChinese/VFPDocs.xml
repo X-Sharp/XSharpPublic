@@ -614,7 +614,7 @@
                     <term>0或省略</term>
                     <description>
                         返回包含以下项目的两列数组，从第一列开始：
-                        <list type="bullet">
+                        <list type="table">
                             <item>
                                 <description>打印机名称。</description>
                             </item>
@@ -628,7 +628,7 @@
                     <term>1</term>
                     <description>
                         返回包含以下项目的五列数组，从第一列开始：
-                        <list type="bullet">
+                        <list type="table">
                             <item>
                                 <description>打印机名称。</description>
                             </item>
@@ -1912,11 +1912,28 @@
                     <term>Buffering</term>
                     <description>N</description>
                     <description>
-                        1 – 行和表缓冲关闭。（默认）<br/>
-                        2 – 悲观行缓冲开启。<br/>
-                        3 – 乐观行缓冲开启。<br/>
-                        4 – 悲观表缓冲开启。<br/>
-                        5 – 乐观表缓冲开启。<br/>
+                        <list type="table">
+                          <item>
+                            <term>1</term>
+                            <description>行和表缓冲关闭。（默认）</description>
+                          </item>
+                          <item>
+                            <term>2</term>
+                            <description>悲观行缓冲开启。</description>
+                          </item>
+                          <item>
+                            <term>3</term>
+                            <description>乐观行缓冲开启。</description>
+                          </item>
+                          <item>
+                            <term>4</term>
+                            <description>悲观表缓冲开启。</description>
+                          </item>
+                          <item>
+                            <term>5</term>
+                            <description>乐观表缓冲开启。</description>
+                          </item>
+                        </list>
                         可读/写。
                     </description>
                 </item>
@@ -2077,18 +2094,56 @@
                     <term>SourceName</term>
                     <description>N</description>
                     <description>
-                        1 – 数据源是本地SQL视图。<br/>
-                        101 (1 + 100) - 游标由CursorFill方法创建。<br/>
-                        201 (1 + 200) - 游标使用CursorAttach方法附加到CursorAdapter对象。<br/>
-                        2 – 数据源是远程SQL视图。<br/>
-                        102 (2 + 100) - 游标由CursorFill创建。<br/>
-                        202 (2 + 200) - 游标使用CursorAttach附加到CursorAdapter对象。<br/>
-                        3 – 数据源是表。<br/>
-                        103 (3 + 100) - 游标由CursorFill创建。<br/>
-                        203 (3 + 200) - 游标使用CursorAttach附加到CursorAdapter对象。<br/>
-                        4 - 游标基于ADO记录集并附加到CursorAdapter对象。<br/>
-                        104 (4 + 100) - 游标由CursorFill创建。<br/>
-                        204 (4 + 200) - 游标使用CursorAttach附加到CursorAdapter对象。<br/>
+                        <list type="table">
+                          <item>
+                            <term>1</term>
+                            <description>数据源是本地SQL视图。</description>
+                          </item>
+                          <item>
+                            <term>101 (1 + 100)</term>
+                            <description>游标由CursorFill方法创建。</description>
+                          </item>
+                          <item>
+                            <term>201 (1 + 200)</term>
+                            <description>游标使用CursorAttach方法附加到CursorAdapter对象。</description>
+                          </item>
+                          <item>
+                            <term>2</term>
+                            <description>数据源是远程SQL视图。</description>
+                          </item>
+                          <item>
+                            <term>102 (2 + 100)</term>
+                            <description>游标由CursorFill创建。</description>
+                          </item>
+                          <item>
+                            <term>202 (2 + 200)</term>
+                            <description>游标使用CursorAttach附加到CursorAdapter对象。</description>
+                          </item>
+                          <item>
+                            <term>3</term>
+                            <description>数据源是表。</description>
+                          </item>
+                          <item>
+                            <term>103 (3 + 100)</term>
+                            <description>游标由CursorFill创建。</description>
+                          </item>
+                          <item>
+                            <term>203 (3 + 200)</term>
+                            <description>游标使用CursorAttach附加到CursorAdapter对象。</description>
+                          </item>
+                          <item>
+                            <term>4</term>
+                            <description>游标基于ADO记录集并附加到CursorAdapter对象。</description>
+                          </item>
+                          <item>
+                            <term>104 (4 + 100)</term>
+                            <description>游标由CursorFill创建。</description>
+                          </item>
+                          <item>
+                            <term>204 (4 + 200)</term>
+                            <description>游标使用CursorAttach附加到CursorAdapter对象。</description>
+                          </item>
+                        </list>
                         只读。
                     </description>
                 </item>
@@ -2129,8 +2184,16 @@
                     <term>UpdateType</term>
                     <description>N</description>
                     <description>
-                        1 – 指定用新数据更新旧数据。（默认）<br/>
-                        2 – 指定通过删除旧数据并插入新数据来进行更新。<br/>
+                        <list type="table">
+                          <item>
+                            <term>1</term>
+                            <description>指定用新数据更新旧数据。（默认）</description>
+                          </item>
+                          <item>
+                            <term>2</term>
+                            <description>指定通过删除旧数据并插入新数据来进行更新。</description>
+                          </item>
+                        </list>
                         可读/写。
                     </description>
                 </item>
@@ -2246,11 +2309,28 @@
                 <item>
                     <term>Buffering</term>
                     <description>
-                        1 – 关闭行和表缓冲。记录锁定和数据写入与早期FoxPro版本相同。（默认）<br/>
-                        2 – 开启悲观行缓冲。<br/>
-                        3 – 开启乐观行缓冲。<br/>
-                        4 – 开启悲观表缓冲。<br/>
-                        5 – 开启乐观表缓冲。除了1（关闭）之外，所有缓冲模式都必须将<b>Set multilocs</b>设置为<b>on</b>。
+                        <list type="table">
+                          <item>
+                            <term>1</term>
+                            <description>关闭行和表缓冲。记录锁定和数据写入与早期FoxPro版本相同。（默认）</description>
+                          </item>
+                          <item>
+                            <term>2</term>
+                            <description>开启悲观行缓冲。</description>
+                          </item>
+                          <item>
+                            <term>3</term>
+                            <description>开启乐观行缓冲。</description>
+                          </item>
+                          <item>
+                            <term>4</term>
+                            <description>开启悲观表缓冲。</description>
+                          </item>
+                          <item>
+                            <term>5</term>
+                            <description>开启乐观表缓冲。除了1（关闭）之外，所有缓冲模式都必须将<b>Set multilocs</b>设置为<b>on</b>。</description>
+                          </item>
+                        </list>
                     </description>
                 </item>
                 <item>
@@ -2386,8 +2466,16 @@
                 <item>
                     <term>UpdateType</term>
                     <description>
-                        1 – 用新数据更新旧数据。（默认）<br/>
-                        2 – 通过删除旧数据并插入新数据来更新。
+                        <list type="table">
+                          <item>
+                            <term>1</term>
+                            <description>用新数据更新旧数据。（默认）</description>
+                          </item>
+                          <item>
+                            <term>2</term>
+                            <description>通过删除旧数据并插入新数据来更新。</description>
+                          </item>
+                        </list>
                     </description>
                 </item>
                 <item>
@@ -3571,8 +3659,16 @@
                     <description>N</description>
                     <description>
                         视图源。SourceType可能具有以下值：<br/>
-                        1 - 视图使用本地表。<br/>
-                        2 - 视图使用远程表。<br/>
+                        <list type="table">
+                          <item>
+                            <term>1</term>
+                            <description>视图使用本地表。</description>
+                          </item>
+                          <item>
+                            <term>2</term>
+                            <description>视图使用远程表。</description>
+                          </item>
+                        </list>
                         只读。
                     </description>
                 </item>
@@ -7509,35 +7605,20 @@
     </setfldstate>
     <setresultset>
         <summary>
-            Marks a cursor as a result set in the current data session.<br/>
-            Only one cursor per data session can be marked. When marking a new cursor,
-            <b>SetResultSet( )</b> clears the marker from any previously marked cursor.
+            将游标标记为当前数据会话中的结果集。<br/> 每个数据会话中只能标记一个游标。标记新游标时，<b>SetResultSet( )</b> 会清除之前已标记游标上的标记。
         </summary>
         <param name="uArea">
-            Specifies a work area number.<br/>
-            Or<br/>
-            Specifies the alias of the cursor you want to mark.
+            指定工作区编号。<br/> 或<br/> 指定要标记的游标的别名。
         </param>
         <returns>
-            Numeric. <b>SetResultSet( )</b> returns the number of the work area of the previously marked cursor in the current data session or zero (0)
-            if no cursor is marked in the current data session.
+            数值类型。<b>SetResultSet( )</b> 返回当前数据会话中先前已标记游标的工作区编号；如果当前数据会话中没有标记任何游标，则返回零 (0)。
         </returns>
         <remarks>
-            <b>SetResultSet( )</b> is supported in X# and the X# OLE DB Provider. You can use <b>SetResultSet( )</b> in a database container (DBC)
-            stored procedure or send it to the X# OLE DB Provider, assuming that the cursor has been previously opened by the OLE DB Provider.
-            For example, suppose a previous command opens a cursor named MyCursor in the OLE DB Provider. The following line of code retrieves an
-            ADO RecordSet for the cursor, MyCursor:
+            X# 和 X# OLE DB Provider 支持 <b>SetResultSet( )</b>。您可以在数据库容器 (DBC) 存储过程中使用 <b>SetResultSet( )</b>，或将其发送到 X# OLE DB Provider，前提是该游标之前已由 OLE DB Provider 打开。例如，假设先前的某条命令在 OLE DB Provider 中打开了名为 MyCursor 的游标。下面这行代码将为游标 MyCursor 检索一个 ADO RecordSet：
              <code language="X#">oRecordSet = oConn.Execute("SetResultSet('MyCursor')")</code>
-            By using <b>SetResultSet( )</b> to mark a cursor or table opened by the X# OLE DB Provider, you can retrieve a rowset created from the
-            table or cursor from a database container (DBC) stored procedure. When the OLE DB Provider completes command execution, it creates a
-            rowset from the marked cursor, if it exists, then clears the marker flag from the cursor.
-            In this scenario, the OLE DB Provider disregards all other return values. For example, if a stored procedure contains a <b>RETURN</b>
-            Value statement and a marked cursor, the OLE DB Provider does not return the value. Instead, it returns the marked cursor as a rowset
-            to the calling application. When the rowset closes, the cursor also closes.
-            However, even though the OLE DB Provider disregards all return values when a marked cursor exists, you can use <b>SetResultSet( )</b>
-            with the <b>RETURN</b> command. For example:
+            通过使用 <b>SetResultSet( )</b> 标记由 X# OLE DB Provider 打开的游标或表，您可以从数据库容器 (DBC) 存储过程中检索由该表或游标创建的行集。当 OLE DB Provider 完成命令执行时，如果存在已标记的游标，它会根据该游标创建一个行集，然后清除该游标上的标记。在这种情况下，OLE DB Provider 会忽略所有其他返回值。例如，如果存储过程包含 <b>RETURN</b> Value 语句和一个已标记的游标，OLE DB Provider 不会返回该值，而是将已标记的游标作为行集返回给调用应用程序。行集关闭时，游标也随之关闭。不过，即使存在已标记的游标时 OLE DB Provider 会忽略所有返回值，您仍然可以将 <b>SetResultSet( )</b> 与 <b>RETURN</b> 命令一起使用。例如：
              <code language="X#">RETURN SetResultSet("MyCursor")</code>
-            This statement creates and returns a rowset from the marked cursor, not the return value from <b>SetResultSet( )</b>.
+            此语句根据已标记的游标创建并返回一个行集，而不是返回 <b>SetResultSet( )</b> 的返回值。
         </remarks>
     </setresultset>
 
@@ -8555,7 +8636,7 @@
                 </item>
             </list>
             <note name="注意">如果eExpression是一个数组，将评估数组中的第一个元素。</note>
-            <list>
+            <list type="table">
                 <listheader>
                     <term>lNullDataType</term>
                     <description>描述</description>
@@ -8753,7 +8834,7 @@
                 </listheader>
                 <item>
                     <term>
-                        <b>Character</b>、<b>Character</b> (Binary)、<b>Memo</b>、<b>Memo</b> (Binary)
+                        <b>字符类型</b>、<b>字符类型</b> (二进制)、<b>备注类型</b>、<b>备注类型</b> (二进制)
                     </term>
                     <description>
                         接受任何数据，但截断超出<b>Character</b>列长度的任何数据。
@@ -8809,7 +8890,7 @@
                 </item>
                 <item>
                     <term>
-                        <b>Numeric</b>、<b>Float</b>
+                        <b>数值类型</b>、<b>浮点类型</b>
                     </term>
                     <description>
                         接受有或没有小数的数值数据，但根据X#规则截断这些类型接受范围之外的数字

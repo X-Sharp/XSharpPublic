@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>COPY STRUCTURE Command (FoxPro)</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Tables</keyword>
+    <keyword>COPY STRUCTURE command</keyword>
+    <keyword>COPY STRUCTURE command<keyword>FoxPro</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">COPY STRUCTURE Command &#160;(FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Creates a new, empty table with the same structure as the current table, using the FoxPro syntax. This is the FoxPro version of the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_STRUCTURE">COPY STRUCTURE</link> command.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">COPY STRUCTURE TO &lt;TableName&gt;<br/> &#160; [FIELDS &lt;FieldList&gt; | FIELDS LIKE &lt;Skeleton&gt; | FIELDS EXCEPT &lt;Skeleton&gt;]<br/> &#160; [WITH CDX | WITH PRODUCTION]<br/> &#160; [DATABASE &lt;DbName&gt; [NAME &lt;LongTableName&gt;]]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">TO &lt;TableName&gt;<tab />The name of the new table.</para>
+    <para styleclass="List"><snippet src="__FoxFieldList" inline="false"/></para>
+    <para styleclass="List">WITH CDX | WITH PRODUCTION<tab />Also copies the tags from the production index file (CDX) of the current table to a new CDX file for the new table.</para>
+    <para styleclass="List">DATABASE &lt;DbName&gt; [NAME &lt;LongTableName&gt;]<tab />Adds the new table to the specified database. The NAME clause specifies the long name of the table in that database.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The new table is created but not opened. The structure of the new table can only contain the fields that are selected with the FIELDS clause.</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Code Example">USE Customers<br/>
+COPY STRUCTURE TO CustomersEmpty WITH CDX<br/>
+COPY STRUCTURE TO Names FIELDS LastName, FirstName</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_STRUCTURE">COPY STRUCTURE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_STRUCTURE_EXTENDED_FoxPro">COPY STRUCTURE EXTENDED (FoxPro)</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_TO_FoxPro">COPY TO (FoxPro)</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_VFP_Functions_DbCopyStructFox.htm" domain="XSharpRef.chm">DbCopyStructFox()</link></para>
+  </body>
+</topic>

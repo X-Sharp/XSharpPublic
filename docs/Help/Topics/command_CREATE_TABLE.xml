@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CREATE TABLE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SQL</keyword>
+    <keyword>CREATE TABLE command</keyword>
+    <keyword>CREATE DBF command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">CREATE TABLE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Creates a table (DBF file) with the specified fields, using the SQL syntax of Visual FoxPro. CREATE DBF is a synonym for CREATE TABLE.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">CREATE TABLE | DBF &lt;TableName&gt; [NAME &lt;LongTableName&gt;] [FREE] [CODEPAGE = &lt;nCodePage&gt;]<br/> &#160; ( &lt;FieldName&gt; &lt;FieldType&gt; [(&lt;nWidth&gt; [, &lt;nPrecision&gt;])]<br/> &#160; &#160; [NULL | NOT NULL] [CHECK &lt;lExpression&gt; [ERROR &lt;cMessage&gt;]]<br/> &#160; &#160; [DEFAULT &lt;eExpression&gt;] [AUTOINC [NEXTVALUE &lt;n1&gt;] [STEP &lt;n2&gt;]]<br/> &#160; &#160; [PRIMARY KEY | UNIQUE] [NOCPTRANS]<br/> &#160; [, &lt;FieldName2&gt; ...] )<br/><br/>CREATE TABLE | DBF &lt;TableName&gt; [NAME &lt;LongTableName&gt;] [FREE] [CODEPAGE = &lt;nCodePage&gt;] FROM ARRAY &lt;ArrayName&gt;</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;TableName&gt;<tab />The name of the table to create. The default extension is .DBF.</para>
+    <para styleclass="List">NAME &lt;LongTableName&gt;<tab />A long name for the table in the current database.</para>
+    <para styleclass="List">FREE<tab />Creates a free table: the table is not added to the current database, even when a database is open.</para>
+    <para styleclass="List">CODEPAGE = &lt;nCodePage&gt;<tab />The code page for the new table.</para>
+    <para styleclass="List">&lt;FieldName&gt; &lt;FieldType&gt;<tab />The name and type of the field. Valid types include C (Character), N (Numeric), F (Float), I (Integer), B (Double), Y (Currency), D (Date), T (DateTime), L (Logical), M (Memo), G (General), W (Blob) and Q (Varbinary). The width and precision are only needed for the types that have a variable size (C, N and F).</para>
+    <para styleclass="List">NULL | NOT NULL<tab />Allows or disallows NULL values in the field.</para>
+    <para styleclass="List">CHECK, DEFAULT<tab />The validation rule and default value of the field. These are stored in the database container and are only used when the table is part of a database.</para>
+    <para styleclass="List">AUTOINC [NEXTVALUE n1] [STEP n2]<tab />Makes the field an auto increment field. NEXTVALUE is the first value (default 1) and STEP is the increment (default 1).</para>
+    <para styleclass="List">FROM ARRAY &lt;ArrayName&gt;<tab />Creates the table with the structure that is described in an array. The array has the same layout as the array that is returned by AFields().</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">After the table has been created it stays open in the current work area. When a database is open, then the table is added to the database, unless the FREE clause is used. Field names are limited to 10 characters in a free table. When two field names have the same first 10 characters then the names are made unique by replacing the last character(s) with a number.</para>
+    <para styleclass="Normal">The primary key, foreign key, REFERENCES and similar clauses are parsed but they are only used when the table is part of a database container.</para>
+    <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; color:#ff0000;">NOT SUPPORTED AT THIS MOMENT</text>: Creating a table with an AS SELECT clause.</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Code Example">CREATE TABLE Customers (Id I AUTOINC, Name C(40) NOT NULL, Birthday D NULL, Notes M)</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ALTER_TABLE">ALTER TABLE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_CURSOR">CREATE CURSOR</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_ADD_TABLE">ADD TABLE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE">CREATE</link></para>
+  </body>
+</topic>

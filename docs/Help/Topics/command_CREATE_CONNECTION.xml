@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CREATE CONNECTION Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>CREATE CONNECTION command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">CREATE CONNECTION Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Creates a named connection and stores it in the current database.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">CREATE CONNECTION &lt;ConnectionName&gt;<br/> &#160; [DATASOURCE &lt;DataSourceName&gt;] [USERID &lt;UserId&gt;] [PASSWORD &lt;Password&gt;] [DATABASE &lt;DbName&gt;]<br/><br/>CREATE CONNECTION &lt;ConnectionName&gt; CONNSTRING &lt;ConnectionString&gt;</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;ConnectionName&gt;<tab />The name of the connection.</para>
+    <para styleclass="List">DATASOURCE &lt;DataSourceName&gt;<tab />The name of the data source that the connection uses.</para>
+    <para styleclass="List">USERID &lt;UserId&gt;<tab />The user id that is used to log in to the data source.</para>
+    <para styleclass="List">PASSWORD &lt;Password&gt;<tab />The password that is used to log in to the data source.</para>
+    <para styleclass="List">DATABASE &lt;DbName&gt;<tab />The name of the database on the data source server.</para>
+    <para styleclass="List">CONNSTRING &lt;ConnectionString&gt;<tab />A complete connection string. It cannot be combined with the other clauses.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The names and strings may be specified with or without quotes. The command is translated by the preprocessor to a call to the CreateConnection() method of the XSharp.RDD.Dbc class.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_CONNECTION">DELETE CONNECTION</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_DATABASE">CREATE DATABASE</link></para>
+  </body>
+</topic>

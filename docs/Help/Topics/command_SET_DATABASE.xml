@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET DATABASE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>SET DATABASE command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET DATABASE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Specifies the current database.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">SET DATABASE TO [&lt;DbName&gt;]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;DbName&gt;<tab />The name of an open database that must become the current database. If you omit the name, then there will be no current database.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The database must have been opened with <link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPEN_DATABASE">OPEN DATABASE</link> or created with <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_DATABASE">CREATE DATABASE</link>. Commands such as <link displaytype="text" defaultstyle="true" type="topiclink" href="command_ADD_TABLE">ADD TABLE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_REMOVE_TABLE">REMOVE TABLE</link> and <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RENAME_TABLE">RENAME TABLE</link> work on the current database.</para>
+    <para styleclass="Normal">The command is translated by the preprocessor to a call to the Select() method of the XSharp.RDD.Dbc class.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLOSE_DATABASES">CLOSE DATABASES</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_DATABASE">CREATE DATABASE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPEN_DATABASE">OPEN DATABASE</link></para>
+  </body>
+</topic>

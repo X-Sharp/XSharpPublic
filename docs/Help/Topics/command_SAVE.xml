@@ -19,7 +19,7 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Copy public and private memory variables visible within the current routine to a disk file.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Code with box">SAVE TO &lt;xcTargetFile&gt; [ALL [LIKE | EXCEPT &lt;Skeleton&gt;]</para>
+    <para styleclass="Code with box">SAVE TO &lt;xcTargetFile&gt; [ALL [LIKE | EXCEPT &lt;Skeleton&gt;]]<br/>SAVE ALL LIKE | EXCEPT &lt;Skeleton&gt; TO &lt;xcTargetFile&gt;</para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">&lt;xcTargetFile&gt;<tab />The name of the file, including an optional drive, directory, and extension. See SetDefault() and SetPath() for file searching and creation rules. The default extension is .MEM.</para>
     <para styleclass="List"></para>

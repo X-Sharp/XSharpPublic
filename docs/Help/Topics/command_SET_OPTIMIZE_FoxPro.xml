@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET OPTIMIZE Command (FoxPro)</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SET commands</keyword>
+    <keyword>SET OPTIMIZE command</keyword>
+    <keyword>SET OPTIMIZE command<keyword>FoxPro</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET OPTIMIZE Command &#160;(FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Enables or disables Rushmore optimization. This is the FoxPro version of the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_OPTIMIZE">SET OPTIMIZE</link> command.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">SET OPTIMIZE ON | OFF | &amp;&lt;cMacro&gt;</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">ON | OFF<tab />ON enables the optimization of filters and conditions with the open orders. OFF disables it. The value may also be a macro (&amp;) that evaluates to ON or OFF.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The command changes the same runtime setting as the generic command. The setting is only used by RDDs that support optimization.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_OPTIMIZE">SET OPTIMIZE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_FILTER">SET FILTER</link></para>
+  </body>
+</topic>

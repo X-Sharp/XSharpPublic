@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>INDEX Command (FoxPro)</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Indexes</keyword>
+    <keyword>INDEX command</keyword>
+    <keyword>INDEX command<keyword>FoxPro</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">INDEX Command &#160;(FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Creates an index (a tag in a compound index file, or a stand-alone index file), using the syntax of the FoxPro dialect. This is the FoxPro version of the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_INDEX">INDEX</link> command.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">INDEX ON &lt;KeyExpression&gt; [TAG &lt;OrderName&gt;] [TO | OF &lt;IndexFile&gt;]<br/> &#160; [FOR &lt;lCondition&gt;] [WHILE &lt;lCondition&gt;] [&lt;Scope&gt;]<br/> &#160; [UNIQUE | CANDIDATE] [ASCENDING | DESCENDING] [COMPACT] [BINARY &lt;n&gt;] [COLLATE &lt;cCollation&gt;]<br/> &#160; [USECURRENT] [ADDITIVE] [CUSTOM] [NOOPTIMIZE]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">ON &lt;KeyExpression&gt;<tab />The expression that defines the index key.</para>
+    <para styleclass="List">TAG &lt;OrderName&gt;<tab />The name of the tag (order) to create.</para>
+    <para styleclass="List">TO | OF &lt;IndexFile&gt;<tab />The name of the index file. TO creates a stand-alone index file when no TAG is specified. OF creates the tag in the specified compound index file.</para>
+    <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
+    <para styleclass="List"><snippet src="__While" inline="false"/></para>
+    <para styleclass="List"><snippet src="__For" inline="false"/></para>
+    <para styleclass="List">UNIQUE<tab />Only the first record with a particular key value is included in the index.</para>
+    <para styleclass="List">CANDIDATE<tab />Creates a candidate index: the key values must be unique.</para>
+    <para styleclass="List">ASCENDING | DESCENDING<tab />The order of the index. The default is ascending.</para>
+    <para styleclass="List">COMPACT<tab />Creates a compact index file.</para>
+    <para styleclass="List">BINARY &lt;n&gt;<tab />Creates the index with binary (ordinal) comparison of the key values.</para>
+    <para styleclass="List">COLLATE &lt;cCollation&gt;<tab />The collation sequence that is used for character keys.</para>
+    <para styleclass="List">USECURRENT<tab />Use the current order to limit the records that are put in the new index.</para>
+    <para styleclass="List">ADDITIVE<tab />Keeps the other open index files open when the new index is created.</para>
+    <para styleclass="List">CUSTOM<tab />Creates a custom (user maintained) index.</para>
+    <para styleclass="List">NOOPTIMIZE<tab />Disables the optimization of the FOR clause.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">In the FoxPro dialect the order name is specified with the TAG keyword and the index file with TO or OF. The command is translated to calls to OrdCondSet() and OrdCreate().</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Code Example">USE Customers EXCLUSIVE<br/>
+INDEX ON UPPER(LastName) TAG LastName<br/>
+INDEX ON Id TAG Id CANDIDATE<br/>
+INDEX ON Country + City TAG CountryCity FOR !DELETED()</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_INDEX">INDEX</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_INDEX_FoxPro">SET INDEX (FoxPro)</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_ORDER">SET ORDER</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_REINDEX">REINDEX</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_OrdCondSet.htm" domain="XSharpRef.chm">OrdCondSet()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_OrdCreate.htm" domain="XSharpRef.chm">OrdCreate()</link></para>
+  </body>
+</topic>

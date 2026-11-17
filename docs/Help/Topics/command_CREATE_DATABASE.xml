@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CREATE DATABASE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>CREATE DATABASE command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">CREATE DATABASE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Creates a new database container (DBC) and opens it for exclusive use.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">CREATE DATABASE &lt;DbName&gt;</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;DbName&gt;<tab />The name of the database to create. The default extension is .DBC.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The new database becomes the current database. The command is translated by the preprocessor to a call to the Create() method of the XSharp.RDD.Dbc class.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_DATABASE">DELETE DATABASE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPEN_DATABASE">OPEN DATABASE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DATABASE">SET DATABASE TO</link></para>
+  </body>
+</topic>

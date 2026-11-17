@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>REMOVE TABLE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>REMOVE TABLE command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">REMOVE TABLE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Removes a table from the current database. The table becomes a free table, or is deleted from disk.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">REMOVE TABLE &lt;TableName&gt; [DELETE | RECYCLE]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;TableName&gt;<tab />The name of the table in the current database.</para>
+    <para styleclass="List">DELETE<tab />Deletes the table file (and its memo and index files) from disk after it has been removed from the database.</para>
+    <para styleclass="List">RECYCLE<tab />Intended to move the files to the Recycle Bin. At this moment the files are deleted permanently, just like with the DELETE clause. <text styleclass="Body Text" style="font-weight:bold; color:#ff0000;">RECYCLE IS NOT FULLY SUPPORTED AT THIS MOMENT</text></para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">Without the DELETE and RECYCLE clauses the table file remains on disk as a free table.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ADD_TABLE">ADD TABLE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RENAME_TABLE">RENAME TABLE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_DATABASE">DELETE DATABASE</link></para>
+  </body>
+</topic>

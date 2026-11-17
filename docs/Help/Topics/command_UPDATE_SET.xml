@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>UPDATE SET Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SQL</keyword>
+    <keyword>UPDATE command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">UPDATE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Updates fields in the records of a table, using the SQL syntax.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">UPDATE &lt;TableName&gt; SET &lt;FieldName1&gt; = &lt;eExpression1&gt; [, &lt;FieldName2&gt; = &lt;eExpression2&gt; ...] [WHERE &lt;lCondition&gt;]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;TableName&gt;<tab />The table (or alias) that must be updated. The table must be open.</para>
+    <para styleclass="List">SET &lt;FieldName&gt; = &lt;eExpression&gt;<tab />The fields that are updated and the new values. The expressions are evaluated for each record that matches the condition.</para>
+    <para styleclass="List">WHERE &lt;lCondition&gt;<tab />Only the records for which the condition is true are updated. Without this clause all records are updated.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The records are locked while they are updated (when needed) and unlocked afterwards. This command is not the same as the xBase <link displaytype="text" defaultstyle="true" type="topiclink" href="command_UPDATE">UPDATE</link> command.</para>
+    <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; color:#ff0000;">NOT SUPPORTED AT THIS MOMENT</text>: UPDATE with a JOIN or a subselect. The compiler generates an error when this is used.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Code Example">UPDATE Customers SET Country = "NL", Active = .T. WHERE City == "Amsterdam"</para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_REPLACE">REPLACE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_INSERT_INTO">INSERT INTO</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_FROM">DELETE FROM</link></para>
+  </body>
+</topic>

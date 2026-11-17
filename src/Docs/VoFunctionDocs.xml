@@ -98,17 +98,52 @@
     </summary>
     <returns>
       One of the following constants indicating the status of the window:
-      Constant	Meaning
-      SW_HIDE	The window is hidden and another window activated
-      SW_MINIMIZE	The window is minimized and the top-level window in the system's list is activated
-      SW_RESTORE	Window is activated and displayed — if minimized or maximized, Windows restores it to its original size and position (same as SW_SHOWNORMAL).
-      SW_SHOW	Window is activated and displayed in its current size and position
-      SW_SHOWMAXIMIZED	Window is activated and displayed as maximized
-      SW_SHOWMINIMIZED	Window is activated and displayed as an icon
-      SW_SHOWMINNOACTIVE	Window is displayed as an icon, leaving the currently active window active
-      SW_SHOWNA	Window is displayed in its current state, leaving the currently active window active
-      SW_SHOWNOACTIVATE	Window is displayed in its most recent size and position, leaving the currently active window active
-      SW_SHOWNORMAL	Window is activated and displayed — if minimized or maximized, Windows restores it to its original size and position (same as SW_RESTORE).
+      <list type="table">
+        <listheader>
+          <term>Constant</term>
+          <description>Meaning</description>
+        </listheader>
+        <item>
+          <term>SW_HIDE</term>
+          <description>The window is hidden and another window activated</description>
+        </item>
+        <item>
+          <term>SW_MINIMIZE</term>
+          <description>The window is minimized and the top-level window in the system's list is activated</description>
+        </item>
+        <item>
+          <term>SW_RESTORE</term>
+          <description>Window is activated and displayed — if minimized or maximized, Windows restores it to its original size and position (same as SW_SHOWNORMAL).</description>
+        </item>
+        <item>
+          <term>SW_SHOW</term>
+          <description>Window is activated and displayed in its current size and position</description>
+        </item>
+        <item>
+          <term>SW_SHOWMAXIMIZED</term>
+          <description>Window is activated and displayed as maximized</description>
+        </item>
+        <item>
+          <term>SW_SHOWMINIMIZED</term>
+          <description>Window is activated and displayed as an icon</description>
+        </item>
+        <item>
+          <term>SW_SHOWMINNOACTIVE</term>
+          <description>Window is displayed as an icon, leaving the currently active window active</description>
+        </item>
+        <item>
+          <term>SW_SHOWNA</term>
+          <description>Window is displayed in its current state, leaving the currently active window active</description>
+        </item>
+        <item>
+          <term>SW_SHOWNOACTIVATE</term>
+          <description>Window is displayed in its most recent size and position, leaving the currently active window active</description>
+        </item>
+        <item>
+          <term>SW_SHOWNORMAL</term>
+          <description>Window is activated and displayed — if minimized or maximized, Windows restores it to its original size and position (same as SW_RESTORE).</description>
+        </item>
+      </list>
     </returns>
     <remarks>
     </remarks>
@@ -280,7 +315,7 @@
     </param>
     <returns>
       If the function succeeds, the return value is greater than 31. f the function fails, the return value is one of the following error values.
-      <list>
+      <list type="table">
         <listheader>
           <term>Return code/value</term>
           <description>Description</description>
@@ -3197,7 +3232,7 @@
     <param name="kMode">
       A constant defining the copy mode, as shown in the table below:<br/>
 
-      <list>
+      <list type="table">
         <listheader>
           <term>Constant</term>
           <description>Description</description>
@@ -3438,7 +3473,7 @@
     <param name="kMode">
       A constant defining the copy mode, as shown in the table below:<br/>
 
-      <list>
+      <list type="table">
         <listheader>
           <term>Constant</term>
           <description>Description</description>
@@ -6023,11 +6058,38 @@
       DBCopyXStruct() creates a database file whose contents is the structure of the current database file, with a record for the definition of each field.
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*"/>
       The structure-extended database file has the following structure:
-      Name	Type	Length	Decimals
-      Field_Name	Character	10
-      Field_Type	Character	1
-      Field_Len	Numeric	3	0
-      Field_Dec	Numeric	3	0
+      <list type="table">
+        <listheader>
+          <term>Name</term>
+          <description>Type</description>
+          <description>Length</description>
+          <description>Decimals</description>
+        </listheader>
+        <item>
+          <term>Field_Name</term>
+          <description>Character</description>
+          <description>10</description>
+          <description></description>
+        </item>
+        <item>
+          <term>Field_Type</term>
+          <description>Character</description>
+          <description>1</description>
+          <description></description>
+        </item>
+        <item>
+          <term>Field_Len</term>
+          <description>Numeric</description>
+          <description>3</description>
+          <description>0</description>
+        </item>
+        <item>
+          <term>Field_Dec</term>
+          <description>Numeric</description>
+          <description>3</description>
+          <description>0</description>
+        </item>
+      </list>
       Used in application programs, DBCopyXStruct() permits you to create or modify the structure of a database file programmatically.<br/>
       To create a new database file from the structure-extended file, use CREATE FROM.<br/>
       If you need an empty structure-extended file, use CREATE.
@@ -6105,13 +6167,21 @@
       DBCreate() creates a database file from an array containing the structure of the file.  DBCreate() is similar to the CREATE FROM command, which creates a new database file structure from a structure-extended file.
       Before using DBCreate(), you must first create the <paramref name="aStruct"/> array and fill it with the field definition arrays, according to the structure in the table above.  You can create the array programmatically or by using DBStruct().
       There are some specific rules for creating a field definition array, including:
-      -	Specify all field attributes with a value of the proper data type for the attribute.<br/>
-      The decimals attribute must be specified — even for non-numeric fields.<br/>
-      If the field does not have a decimals attribute, specify 0.
-      -	Specify the type attribute using the first letter of the data type as a minimum.<br/>
-      Use longer and more descriptive terms for readability.<br/>
-      For example, both "C" and "Character" can be specified as the type attribute for character fields.
-      -	Unlike the CREATE FROM command, DBCreate() does not use the decimals attribute to specify the high-order part of the field length.  Specify the field length directly, regardless of its magnitude.
+      <list type="bullet">
+        <item>
+          Specify all field attributes with a value of the proper data type for the attribute.
+          The decimals attribute must be specified — even for non-numeric fields.
+          If the field does not have a decimals attribute, specify 0.
+        </item>
+        <item>
+          Specify the type attribute using the first letter of the data type as a minimum.
+          Use longer and more descriptive terms for readability.
+          For example, both "C" and "Character" can be specified as the type attribute for character fields.
+        </item>
+        <item>
+          Unlike the CREATE FROM command, DBCreate() does not use the decimals attribute to specify the high-order part of the field length.  Specify the field length directly, regardless of its magnitude.
+        </item>
+      </list>
     </remarks>
     <example>
       The following example demonstrates DBCreate():
@@ -6194,11 +6264,21 @@
       Note:<br/>
       If the RDD supports multiple orders per index file, add subsequent orders to the index file using DBCreateOrder().
       <note type="tip">
-        Side effects:	DBCreateIndex() is guaranteed to create an order that, when made the controlling order, will impose the specified logical order on the database.<br/>
+        <list type="table">
+          <item>
+            <term>Side effects</term>
+            <description>DBCreateIndex() is guaranteed to create an order that, when made the controlling order, will impose the specified logical order on the database.</description>
+          </item>
+        </list>
         The key expression is not necessarily evaluated at any particular time, by any particular means, or on any particular record or series of records.<br/>
         If the key expression relies on information external to the database file or work area, the effect is unpredictable.<br/>
         If the key expression changes the state of the work area (for example, by moving to a different record or changing the contents of a record), the effect is unpredictable.
-        Key evaluation:	Before the key expression is evaluated, the associated work area is automatically selected as the current work area; the previously selected work area is automatically restored afterward.
+        <list type="table">
+          <item>
+            <term>Key evaluation</term>
+            <description>Before the key expression is evaluated, the associated work area is automatically selected as the current work area; the previously selected work area is automatically restored afterward.</description>
+          </item>
+        </list>
       </note>
     </remarks>
     <example>
@@ -6272,11 +6352,21 @@
       Note:<br/>
       Although this function is designed to work with both single-order and multiple-order index files, you may find it is easier to use DBCreateIndex() for creating single-order index files.
       <note type="tip">
-        Side effects:	DBCreateOrder() is guaranteed to create an order that, when made the controlling order, will impose the specified logical order on the database.<br/>
+        <list type="table">
+          <item>
+            <term>Side effects</term>
+            <description>DBCreateOrder() is guaranteed to create an order that, when made the controlling order, will impose the specified logical order on the database.</description>
+          </item>
+        </list>
         The key expression is not necessarily evaluated at any particular time, by any particular means, or on any particular record or series of records.<br/>
         If the key expression relies on information external to the database file or work area, the effect is unpredictable.<br/>
         If the key expression changes the state of the work area (for example, by moving to a different record or changing the contents of a record), the effect is unpredictable.
-        Key evaluation:	Before the key expression is evaluated, the associated work area is automatically selected as the current work area; the previously selected work area is automatically restored afterward.
+        <list type="table">
+          <item>
+            <term>Key evaluation</term>
+            <description>Before the key expression is evaluated, the associated work area is automatically selected as the current work area; the previously selected work area is automatically restored afterward.</description>
+          </item>
+        </list>
       </note>
     </remarks>
     <example>
@@ -6314,8 +6404,16 @@
       DBDelete() is the functional equivalent of the DELETE command with a scope of the current record.<br/>
       For more information, refer to DELETE.
       <note type="tip">
-        Logical records:	If SetDeleted() is TRUE, deleted records are not logically visible.  That is, database operations which operate on logical records will not consider records marked for deletion.  Note, however, that if SetDeleted() is TRUE when the current record is marked for deletion, the record remains visible until it is no longer the current record.
-        Shared mode:	For a shared database, DBDelete() requires the current record to be locked.
+        <list type="table">
+          <item>
+            <term>Logical records</term>
+            <description>If SetDeleted() is TRUE, deleted records are not logically visible.  That is, database operations which operate on logical records will not consider records marked for deletion.  Note, however, that if SetDeleted() is TRUE when the current record is marked for deletion, the record remains visible until it is no longer the current record.</description>
+          </item>
+          <item>
+            <term>Shared mode</term>
+            <description>For a shared database, DBDelete() requires the current record to be locked.</description>
+          </item>
+        </list>
       </note>
     </remarks>
     <example>
@@ -6575,7 +6673,12 @@
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*"/>
       This function operates like the DBRelation() and DBRSelect() functions, which save and re-execute the linking expression of a relation within a work area.
       <note type="tip">
-        Declared variables:	A string returned by DBFilter() cannot operate correctly when recompiled and executed using the macro operator (&amp;) if the original filter expression contained references to local or static variables or is otherwise dependent on compile-time declarations.
+        <list type="table">
+          <item>
+            <term>Declared variables</term>
+            <description>A string returned by DBFilter() cannot operate correctly when recompiled and executed using the macro operator (&amp;) if the original filter expression contained references to local or static variables or is otherwise dependent on compile-time declarations.</description>
+          </item>
+        </list>
       </note>
     </remarks>
     <example>
@@ -6637,10 +6740,20 @@
       DBGoBottom() is the functional equivalent of the GO BOTTOM command.<br/>
       For more information, refer to the GO command.
       <note type="tip">
-        Logical records:	DBGoBottom() operates on logical records.<br/>
+        <list type="table">
+          <item>
+            <term>Logical records</term>
+            <description>DBGoBottom() operates on logical records.</description>
+          </item>
+        </list>
         If the work area has an active order list, DBGoBottom() moves to the last record in controlling order.<br/>
         If a filter is set, only records which meet the filter condition are considered.
-        Shared mode:	For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.
+        <list type="table">
+          <item>
+            <term>Shared mode</term>
+            <description>For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.</description>
+          </item>
+        </list>
       </note>
     </remarks>
     <example>
@@ -6688,8 +6801,16 @@
       DbGoTo() performs the same function as the GO command.<br/>
       For more information, refer to the GO command.
       <note type="tip">
-        Logical records:	DBGoTo() does not respect logical visibility.  That is, if the specified record exists, it will become the current record regardless of any order or filter condition.
-        Shared mode:	For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.
+        <list type="table">
+          <item>
+            <term>Logical records</term>
+            <description>DBGoTo() does not respect logical visibility.  That is, if the specified record exists, it will become the current record regardless of any order or filter condition.</description>
+          </item>
+          <item>
+            <term>Shared mode</term>
+            <description>For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.</description>
+          </item>
+        </list>
       </note>
     </remarks>
     <example>
@@ -6727,10 +6848,20 @@
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkareaParam/*"/>
       DBGoTop() performs the same function as the GO TOP command.
       <note type="tip">
-        Logical records:	DBGoTop() operates on logical records.<br/>
+        <list type="table">
+          <item>
+            <term>Logical records</term>
+            <description>DBGoTop() operates on logical records.</description>
+          </item>
+        </list>
         If the work area has an active order list, DBGoTop() moves to the first record in the controlling order.<br/>
         If a filter is set, only records which meet the filter condition are considered.
-        Shared mode:	For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.
+        <list type="table">
+          <item>
+            <term>Shared mode</term>
+            <description>For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.</description>
+          </item>
+        </list>
       </note>
     </remarks>
     <example>
@@ -7086,9 +7217,19 @@
       DBRecall() performs the same function as the RECALL command.<br/>
       For more information, refer to the DELETE and RECALL commands.
       <note type="tip">
-        Logical records:	Reinstating a deleted record affects the record's logical visibility if SetDeleted() is TRUE.<br/>
+        <list type="table">
+          <item>
+            <term>Logical records</term>
+            <description>Reinstating a deleted record affects the record's logical visibility if SetDeleted() is TRUE.</description>
+          </item>
+        </list>
         For more information, refer to the DBDelete() function and the DELETE and RECALL commands.
-        Shared mode:	For a shared database, DBRecall() requires the current record to be locked.
+        <list type="table">
+          <item>
+            <term>Shared mode</term>
+            <description>For a shared database, DBRecall() requires the current record to be locked.</description>
+          </item>
+        </list>
       </note>
     </remarks>
     <example>
@@ -7232,7 +7373,12 @@
       DBRelation() returns the linking expression defined by the TO clause.  DBRSelect() returns the work area linked as defined by the INTO clause.
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*"/>
       <note type="tip">
-        Declared variables:	A string returned by DBRelation() cannot operate correctly when recompiled and executed using the macro operator (&amp;) if the original expression contained references to local or static variables, or otherwise depends on compile-time declarations.
+        <list type="table">
+          <item>
+            <term>Declared variables</term>
+            <description>A string returned by DBRelation() cannot operate correctly when recompiled and executed using the macro operator (&amp;) if the original expression contained references to local or static variables, or otherwise depends on compile-time declarations.</description>
+          </item>
+        </list>
       </note>
     </remarks>
     <example>
@@ -7470,9 +7616,19 @@
       DBSeek() performs the same function as the SEEK command.<br/>
       For more information, refer to the SEEK command.
       <note type="tip">
-        Logical records:	DBSeek() operates on logical records.  Records are processed in controlling order.<br/>
+        <list type="table">
+          <item>
+            <term>Logical records</term>
+            <description>DBSeek() operates on logical records.  Records are processed in controlling order.</description>
+          </item>
+        </list>
         If a filter is set, only records which meet the filter condition are considered.
-        Shared mode:	For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.
+        <list type="table">
+          <item>
+            <term>Shared mode</term>
+            <description>For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.</description>
+          </item>
+        </list>
       </note>
     </remarks>
     <example>
@@ -7530,8 +7686,16 @@
       DBSelectArea() performs the same function as the SELECT command.<br/>
       For more information, refer to the SELECT command.
       <note type="tip">
-        Selecting 0:	Selecting work area 0 causes the lowest numbered unoccupied work area to become the current work area.
-        Aliased expressions:	The alias operator (-&gt;) can temporarily select a work area while an expression is evaluated and automatically restore the previously selected work area afterward.
+        <list type="table">
+          <item>
+            <term>Selecting 0</term>
+            <description>Selecting work area 0 causes the lowest numbered unoccupied work area to become the current work area.</description>
+          </item>
+          <item>
+            <term>Aliased expressions</term>
+            <description>The alias operator (-&gt;) can temporarily select a work area while an expression is evaluated and automatically restore the previously selected work area afterward.</description>
+          </item>
+        </list>
       </note>
     </remarks>
     <example>
@@ -7928,12 +8092,25 @@
       DBSetRelation() performs the same function as the SET RELATION command with the ADDITIVE clause.<br/>
       For more information, refer to the SET RELATION command.
       <note type="tip">
-        Side effects:	DBSetRelation() is only guaranteed to synchronize the work areas as described above.<br/>
+        <list type="table">
+          <item>
+            <term>Side effects</term>
+            <description>DBSetRelation() is only guaranteed to synchronize the work areas as described above.</description>
+          </item>
+        </list>
         The relational expression is not necessarily evaluated at any particular time, by any particular means, or on any particular record or series of records.<br/>
         If the relational expression relies on information external to the parent work area or its associated database file, the effect is unpredictable.<br/>
         If the expression changes the state of either work area (for example, by moving to a different record or changing the contents of a record), the effect is unpredictable.
-        Evaluation context:	When the relational expression is evaluated, the parent work area is automatically selected as the current work area before the evaluation; the previously selected work area is automatically restored afterward.
-        Soft seeking:	Seek operations that occur as part of relational positioning are never soft seeks.<br/>
+        <list type="table">
+          <item>
+            <term>Evaluation context</term>
+            <description>When the relational expression is evaluated, the parent work area is automatically selected as the current work area before the evaluation; the previously selected work area is automatically restored afterward.</description>
+          </item>
+          <item>
+            <term>Soft seeking</term>
+            <description>Seek operations that occur as part of relational positioning are never soft seeks.</description>
+          </item>
+        </list>
         If a relational movement is unsuccessful, the child work area is positioned to LastRec() + 1, its Found() status returns FALSE, and its EOF() status returns TRUE.
       </note>
     </remarks>
@@ -8016,10 +8193,20 @@
       DBSkip() is the functional equivalent of the SKIP command.<br/>
       For more information, refer to the SKIP command.
       <note type="tip">
-        Logical records:	DBSkip() operates on logical records.<br/>
+        <list type="table">
+          <item>
+            <term>Logical records</term>
+            <description>DBSkip() operates on logical records.</description>
+          </item>
+        </list>
         If the work area has an active order list, records are considered in controlling order.<br/>
         If a filter is set, only records which meet the filter condition are considered.
-        Shared mode:	For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.
+        <list type="table">
+          <item>
+            <term>Shared mode</term>
+            <description>For a shared file, moving to a different record can cause updates to the current record to become visible to other processes.</description>
+          </item>
+        </list>
       </note>
     </remarks>
     <example>
@@ -8289,7 +8476,12 @@
       DBUnLock() releases any record or file locks obtained by the current process for a work area.  DBUnLock() is only meaningful on a shared database.
       <include file="VoFunctionDocs.xml" path="Runtimefunctions/currentWorkarea/*"/>
       <note type="tip">
-        Shared mode:	Releasing locks can cause updates to the database to become visible to other processes.
+        <list type="table">
+          <item>
+            <term>Shared mode</term>
+            <description>Releasing locks can cause updates to the database to become visible to other processes.</description>
+          </item>
+        </list>
       </note>
     </remarks>
     <example>
@@ -8390,7 +8582,12 @@
       The source database file can be open in any mode.
       DBUpdate() is the functional equivalent of the UPDATE command.
       <note type="tip">
-        Deleted records:	If SetDeleted() is FALSE, deleted records in both source files are processed.  Records in the file being updated retain their deleted status and are not affected by the deleted status of records in the source file.<br/>
+        <list type="table">
+          <item>
+            <term>Deleted records</term>
+            <description>If SetDeleted() is FALSE, deleted records in both source files are processed.  Records in the file being updated retain their deleted status and are not affected by the deleted status of records in the source file.</description>
+          </item>
+        </list>
         If SetDeleted()is TRUE, however, no deleted records are processed from either source file
       </note>
     </remarks>
@@ -10253,21 +10450,40 @@
 
 
 
-      	Constant	Returns<br/>
-
-      	FA_DIRECTORY	D<br/>
-
-      	FA_VOLUME	V<br/>
-
-      	FC_ARCHIVED	A<br/>
-
-      	FC_HIDDEN	H<br/>
-
-      	FC_NORMAL	NULL_STRING<br/>
-
-      	FC_READONLY	R<br/>
-
-      	FC_SYSTEM	S
+      	<list type="table">
+      	  <listheader>
+      	    <term>Constant</term>
+      	    <description>Returns</description>
+      	  </listheader>
+      	  <item>
+      	    <term>FA_DIRECTORY</term>
+      	    <description>D</description>
+      	  </item>
+      	  <item>
+      	    <term>FA_VOLUME</term>
+      	    <description>V</description>
+      	  </item>
+      	  <item>
+      	    <term>FC_ARCHIVED</term>
+      	    <description>A</description>
+      	  </item>
+      	  <item>
+      	    <term>FC_HIDDEN</term>
+      	    <description>H</description>
+      	  </item>
+      	  <item>
+      	    <term>FC_NORMAL</term>
+      	    <description>NULL_STRING</description>
+      	  </item>
+      	  <item>
+      	    <term>FC_READONLY</term>
+      	    <description>R</description>
+      	  </item>
+      	  <item>
+      	    <term>FC_SYSTEM</term>
+      	    <description>S</description>
+      	  </item>
+      	</list>
     </param>
     <returns>
       One or more of the characters indicated in the table above, depending upon what file attribute constants were specified in <paramref name="dwAttributes"/>.<br/>
@@ -10298,14 +10514,40 @@
     <returns>
       A value indicating the attributes of the current file.
       The constants in the following table can be used individually or added together to determine which attributes are applicable:
-      Constant	Description
-      FA_DIRECTORY	Directory
-      FA_VOLUME	Volume
-      FC_ARCHIVED	Archived
-      FC_HIDDEN	Hidden
-      FC_NORMAL	Read/write
-      FC_READONLY	Read-only
-      FC_SYSTEM	System
+      <list type="table">
+        <listheader>
+          <term>Constant</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>FA_DIRECTORY</term>
+          <description>Directory</description>
+        </item>
+        <item>
+          <term>FA_VOLUME</term>
+          <description>Volume</description>
+        </item>
+        <item>
+          <term>FC_ARCHIVED</term>
+          <description>Archived</description>
+        </item>
+        <item>
+          <term>FC_HIDDEN</term>
+          <description>Hidden</description>
+        </item>
+        <item>
+          <term>FC_NORMAL</term>
+          <description>Read/write</description>
+        </item>
+        <item>
+          <term>FC_READONLY</term>
+          <description>Read-only</description>
+        </item>
+        <item>
+          <term>FC_SYSTEM</term>
+          <description>System</description>
+        </item>
+      </list>
       Note:<br/>
       It is not uncommon for a file to have more than one attribute.<br/>
       For example, it may be read-only and archived, which would be represented as FC_READONLY + FC_ARCHIVED or _Or(FC_READONLY, FC_ARCHIVED).
@@ -10520,17 +10762,32 @@
     <param name="kAttributes">
       One of the following constants indicating the attribute to be set when creating the file:<br/>
 
-      	Constant	Description<br/>
-
-      	FC_ARCHIVED	Archived file<br/>
-
-      	FC_HIDDEN	Hidden file<br/>
-
-      	FC_NORMAL	Normal read/write file<br/>
-
-      	FC_READONLY	Read-only file<br/>
-
-      	FC_SYSTEM	System file
+      	<list type="table">
+      	  <listheader>
+      	    <term>Constant</term>
+      	    <description>Description</description>
+      	  </listheader>
+      	  <item>
+      	    <term>FC_ARCHIVED</term>
+      	    <description>Archived file</description>
+      	  </item>
+      	  <item>
+      	    <term>FC_HIDDEN</term>
+      	    <description>Hidden file</description>
+      	  </item>
+      	  <item>
+      	    <term>FC_NORMAL</term>
+      	    <description>Normal read/write file</description>
+      	  </item>
+      	  <item>
+      	    <term>FC_READONLY</term>
+      	    <description>Read-only file</description>
+      	  </item>
+      	  <item>
+      	    <term>FC_SYSTEM</term>
+      	    <description>System file</description>
+      	  </item>
+      	</list>
     </param>
     <returns>
       The DOS file handle number of the new file.<br/>
@@ -10575,17 +10832,32 @@
     <param name="dwAttributes">
       One of the following constants indicating the attribute to be set when creating the file:<br/>
 
-      	Constant	Description<br/>
-
-      	FC_ARCHIVED	Archived file<br/>
-
-      	FC_HIDDEN	Hidden file<br/>
-
-      	FC_NORMAL	Normal read/write file<br/>
-
-      	FC_READONLY	Read-only file<br/>
-
-      	FC_SYSTEM	System file
+      	<list type="table">
+      	  <listheader>
+      	    <term>Constant</term>
+      	    <description>Description</description>
+      	  </listheader>
+      	  <item>
+      	    <term>FC_ARCHIVED</term>
+      	    <description>Archived file</description>
+      	  </item>
+      	  <item>
+      	    <term>FC_HIDDEN</term>
+      	    <description>Hidden file</description>
+      	  </item>
+      	  <item>
+      	    <term>FC_NORMAL</term>
+      	    <description>Normal read/write file</description>
+      	  </item>
+      	  <item>
+      	    <term>FC_READONLY</term>
+      	    <description>Read-only file</description>
+      	  </item>
+      	  <item>
+      	    <term>FC_SYSTEM</term>
+      	    <description>System file</description>
+      	  </item>
+      	</list>
     </param>
     <returns>
       The DOS file handle number of the new file.<br/>
@@ -10712,10 +10984,21 @@
     <param name="nError">
       A subsequent error code to set FError() to.<br/>
       These are additional error codes used by X#:
+      <list type="table">
+        <listheader>
+          <term>Error</term>
+          <description>Meaning</description>
+        </listheader>
+        <item>
+          <term>256</term>
+          <description>Disk full</description>
+        </item>
+        <item>
+          <term>257</term>
+          <description>EOF was already reached when a read was tried</description>
+        </item>
+      </list>
     </param>
-    <param name="Error">Meaning	</param>
-    <param name="256">Disk full	</param>
-    <param name="257">EOF was already reached when a read was tried	</param>
     <returns>
       The error from the last file operation or the last user-specified setting.<br/>
       If there was no error, FError() returns 0.
@@ -10763,17 +11046,32 @@
 
 
 
-      	Constant	Description<br/>
-
-      	FA_DIRECTORY	Directory<br/>
-
-      	FA_VOLUME	Volume<br/>
-
-      	FC_HIDDEN	Hidden<br/>
-
-      	FC_NORMAL	Visible<br/>
-
-      	FC_SYSTEM	System<br/>
+      	<list type="table">
+      	  <listheader>
+      	    <term>Constant</term>
+      	    <description>Description</description>
+      	  </listheader>
+      	  <item>
+      	    <term>FA_DIRECTORY</term>
+      	    <description>Directory</description>
+      	  </item>
+      	  <item>
+      	    <term>FA_VOLUME</term>
+      	    <description>Volume</description>
+      	  </item>
+      	  <item>
+      	    <term>FC_HIDDEN</term>
+      	    <description>Hidden</description>
+      	  </item>
+      	  <item>
+      	    <term>FC_NORMAL</term>
+      	    <description>Visible</description>
+      	  </item>
+      	  <item>
+      	    <term>FC_SYSTEM</term>
+      	    <description>System</description>
+      	  </item>
+      	</list>
 
       	To specify more than one constant, you can either add attributes together, as in FC_SYSTEM + FC_HIDDEN, or use the _Or() operator, as in _Or(FC_SYSTEM, FC_HIDDEN).<br/>
 
@@ -10834,17 +11132,32 @@
     <param name="kAttributes">
       One or more of the following constants indicating the file attributes to be used with <paramref name="pszFileSpec"/> as search criteria:<br/>
 
-      	Constant	Description<br/>
-
-      	FA_DIRECTORY	Directory<br/>
-
-      	FA_VOLUME	Volume<br/>
-
-      	FC_HIDDEN	Hidden<br/>
-
-      	FC_NORMAL	Visible<br/>
-
-      	FC_SYSTEM	System<br/>
+      	<list type="table">
+      	  <listheader>
+      	    <term>Constant</term>
+      	    <description>Description</description>
+      	  </listheader>
+      	  <item>
+      	    <term>FA_DIRECTORY</term>
+      	    <description>Directory</description>
+      	  </item>
+      	  <item>
+      	    <term>FA_VOLUME</term>
+      	    <description>Volume</description>
+      	  </item>
+      	  <item>
+      	    <term>FC_HIDDEN</term>
+      	    <description>Hidden</description>
+      	  </item>
+      	  <item>
+      	    <term>FC_NORMAL</term>
+      	    <description>Visible</description>
+      	  </item>
+      	  <item>
+      	    <term>FC_SYSTEM</term>
+      	    <description>System</description>
+      	  </item>
+      	</list>
 
       	To specify more than one constant, you can either add attributes together, as in FC_SYSTEM + FC_HIDDEN, or use the _Or() operator, as in _Or(FC_SYSTEM, FC_HIDDEN).<br/>
 
@@ -11958,31 +12271,59 @@
 
       	Available open and sharing mode constants are listed below:<br/>
 
-      	Access Modes	Operation<br/>
-
-      	FO_READ	Open for reading (default)<br/>
-
-      	FO_READWRITE	Open for reading or writing<br/>
-
-      	FO_WRITE	Open for writing<br/>
+      	<list type="table">
+      	  <listheader>
+      	    <term>Access Modes</term>
+      	    <description>Operation</description>
+      	  </listheader>
+      	  <item>
+      	    <term>FO_READ</term>
+      	    <description>Open for reading (default)</description>
+      	  </item>
+      	  <item>
+      	    <term>FO_READWRITE</term>
+      	    <description>Open for reading or writing</description>
+      	  </item>
+      	  <item>
+      	    <term>FO_WRITE</term>
+      	    <description>Open for writing</description>
+      	  </item>
+      	</list>
 
       <br/>
 
 
 
-      	Sharing Modes	Operation<br/>
-
-      	FO_COMPAT	Compatibility mode (default)<br/>
-
-      	FO_DENYNONE	Allow others to read or write<br/>
-
-      	FO_DENYREAD	Prevent others from reading<br/>
-
-      	FO_DENYWRITE	Prevent others from writing<br/>
-
-      	FO_EXCLUSIVE	Exclusive use<br/>
-
-      	FO_SHARED	Same as FO_DENYNONE<br/>
+      	<list type="table">
+      	  <listheader>
+      	    <term>Sharing Modes</term>
+      	    <description>Operation</description>
+      	  </listheader>
+      	  <item>
+      	    <term>FO_COMPAT</term>
+      	    <description>Compatibility mode (default)</description>
+      	  </item>
+      	  <item>
+      	    <term>FO_DENYNONE</term>
+      	    <description>Allow others to read or write</description>
+      	  </item>
+      	  <item>
+      	    <term>FO_DENYREAD</term>
+      	    <description>Prevent others from reading</description>
+      	  </item>
+      	  <item>
+      	    <term>FO_DENYWRITE</term>
+      	    <description>Prevent others from writing</description>
+      	  </item>
+      	  <item>
+      	    <term>FO_EXCLUSIVE</term>
+      	    <description>Exclusive use</description>
+      	  </item>
+      	  <item>
+      	    <term>FO_SHARED</term>
+      	    <description>Same as FO_DENYNONE</description>
+      	  </item>
+      	</list>
 
       	The default open mode is non-sharable and read-only.<br/>
       If just the access mode is used, the file is opened as non-sharable.
@@ -13417,21 +13758,48 @@
     <param name="uAttributes">
       One or more of the following constants or strings:<br/>
 
-      	Character	Constant	Description<br/>
-
-      	A	FC_ARCHIVED	Archived<br/>
-
-      	D	FA_DIRECTORY	Directory<br/>
-
-      	H	FC_HIDDEN	Hidden<br/>
-
-      	NULL_STRING	FC_NORMAL	Read/write<br/>
-
-      	R	FC_READONLY	Read-only<br/>
-
-      	S	FC_SYSTEM	System<br/>
-
-      	V	FA_VOLUME	Search for the DOS volume label and exclude all other files<br/>
+      	<list type="table">
+      	  <listheader>
+      	    <term>Character</term>
+      	    <description>Constant</description>
+      	    <description>Description</description>
+      	  </listheader>
+      	  <item>
+      	    <term>A</term>
+      	    <description>FC_ARCHIVED</description>
+      	    <description>Archived</description>
+      	  </item>
+      	  <item>
+      	    <term>D</term>
+      	    <description>FA_DIRECTORY</description>
+      	    <description>Directory</description>
+      	  </item>
+      	  <item>
+      	    <term>H</term>
+      	    <description>FC_HIDDEN</description>
+      	    <description>Hidden</description>
+      	  </item>
+      	  <item>
+      	    <term>NULL_STRING</term>
+      	    <description>FC_NORMAL</description>
+      	    <description>Read/write</description>
+      	  </item>
+      	  <item>
+      	    <term>R</term>
+      	    <description>FC_READONLY</description>
+      	    <description>Read-only</description>
+      	  </item>
+      	  <item>
+      	    <term>S</term>
+      	    <description>FC_SYSTEM</description>
+      	    <description>System</description>
+      	  </item>
+      	  <item>
+      	    <term>V</term>
+      	    <description>FA_VOLUME</description>
+      	    <description>Search for the DOS volume label and exclude all other files</description>
+      	  </item>
+      	</list>
 
       	To specify more than one constant, you can either add attributes together, as in FC_SYSTEM + FC_HIDDEN, or use the _Or() operator, as in _Or(FC_SYSTEM, FC_HIDDEN).<br/>
       To specify more than one string, simply concatenate them, as in "SH."
@@ -15179,11 +15547,28 @@
     <param name="symInstanceVar">The instance variable that you want information about.</param>
     <returns>
       A numeric value that can be interpreted as follows:
-      wIvarInfo	Description
-      0	Not found
-      1	INSTANCE declaration
-      2	EXPORT declaration
-      3	ACCESS declaration
+      <list type="table">
+        <listheader>
+          <term>wIvarInfo</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>0</term>
+          <description>Not found</description>
+        </item>
+        <item>
+          <term>1</term>
+          <description>INSTANCE declaration</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>EXPORT declaration</description>
+        </item>
+        <item>
+          <term>3</term>
+          <description>ACCESS declaration</description>
+        </item>
+      </list>
       Note:  PROTECT and HIDDEN variables cannot be tested with this function.
     </returns>
     <remarks>
@@ -15372,11 +15757,28 @@
     <param name="symInstanceVar">The instance variable that you want information about.</param>
     <returns>
       A numeric value that can be interpreted as follows:
-      wIvarInfo	Description
-      0	Not found
-      1	INSTANCE declaration
-      2	EXPORT declaration
-      3	ASSIGN declaration
+      <list type="table">
+        <listheader>
+          <term>wIvarInfo</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>0</term>
+          <description>Not found</description>
+        </item>
+        <item>
+          <term>1</term>
+          <description>INSTANCE declaration</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>EXPORT declaration</description>
+        </item>
+        <item>
+          <term>3</term>
+          <description>ASSIGN declaration</description>
+        </item>
+      </list>
       Note:  PROTECT and HIDDEN variables cannot be tested with this function.
     </returns>
     <remarks>
@@ -17613,34 +18015,119 @@
       Report the status of memory.
     </summary>
 
-    <param name="iFunc">One of the following constants, indicating the type of memory information about which you want to report (note that each constant begins with the prefix MEMORY_ as illustrated in the example below):</param>
-    <param name="Constant">Action/Returns	</param>
-    <param name="MEMORY_ACTIVATION">Size of activation stack table in bytes (maximum is 64)	</param>
-    <param name="MEMORY_CLASSCOUNT">ClassCount()	</param>
-    <param name="MEMORY_COLLECT">CollectForced()	</param>
-    <param name="MEMORY_COLLECTCOUNT">CollectCount()	</param>
-    <param name="MEMORY_DYNINFOFREE">DynInfoFree()	</param>
-    <param name="MEMORY_DYNINFOMAX">DynInfoMax()	</param>
-    <param name="MEMORY_DYNINFOSIZE">DynInfoSize()	</param>
-    <param name="MEMORY_DYNINFOUSED">DynInfoUsed()	</param>
-    <param name="MEMORY_FUNCTIONCOUNT">FCount()	</param>
-    <param name="MEMORY_MAXATOM">MaxAtom()	</param>
-    <param name="MEMORY_MEMTOTAL">MemTotal()	</param>
-    <param name="MEMORY_PRIVAT">Size of private var table in bytes (maximum is 64)	</param>
-    <param name="MEMORY_PUBLIC">Size of public var table in bytes (maximum is 64)	</param>
-    <param name="MEMORY_REGCOLLNOTIFYEND_COUNT">Number of _RegCollNotifyEnd() active	</param>
-    <param name="MEMORY_REGCOLLNOTIFYSTART_COUNT">Number of _RegCollNotifyStart() active	</param>
-    <param name="MEMORY_REGISTERAXIT">Number of RegisterAxit() active	</param>
-    <param name="MEMORY_REGISTEREXIT_COUNT">Number of _RegisterExit() active	</param>
-    <param name="MEMORY_REGISTERKID">Number of RegisterKid() active	</param>
-    <param name="MEMORY_SEQUENCE">Size of SEQUENCE table in bytes (maximum is 64) (see LABEL...())	</param>
-    <param name="MEMORY_SP">Stack pointer of application	</param>
-    <param name="MEMORY_STACK_FREE">Free stack space in bytes	</param>
-    <param name="MEMORY_STACK_SIZE">Size of stack segment of application	</param>
-    <param name="MEMORY_STACKKID">Number of stack KID active	</param>
-    <param name="MEMORY_SYSTEM_FREE">Calls the Windows API GlobalMemoryStatus() function, returning MemoryStatus.dwTotalPhys	</param>
-    <param name="MEMORY_SYSTEM_MAX">Calls the Windows API GlobalMemoryStatus() function, returning MemoryStatus.dwAvailPhys	</param>
-    <param name="MEMORY_WINDOWS_SYSTEMRESOURCES">Calls the Windows API GlobalMemoryStatus() function, returning MemoryStatus.dwMemoryLoad	</param>
+    <param name="iFunc">
+      One of the following constants, indicating the type of memory information about which you want to report (note that each constant begins with the prefix MEMORY_ as illustrated in the example below):
+      <list type="table">
+        <listheader>
+          <term>Constant</term>
+          <description>Action/Returns</description>
+        </listheader>
+        <item>
+          <term>MEMORY_ACTIVATION</term>
+          <description>Size of activation stack table in bytes (maximum is 64)</description>
+        </item>
+        <item>
+          <term>MEMORY_CLASSCOUNT</term>
+          <description>ClassCount()</description>
+        </item>
+        <item>
+          <term>MEMORY_COLLECT</term>
+          <description>CollectForced()</description>
+        </item>
+        <item>
+          <term>MEMORY_COLLECTCOUNT</term>
+          <description>CollectCount()</description>
+        </item>
+        <item>
+          <term>MEMORY_DYNINFOFREE</term>
+          <description>DynInfoFree()</description>
+        </item>
+        <item>
+          <term>MEMORY_DYNINFOMAX</term>
+          <description>DynInfoMax()</description>
+        </item>
+        <item>
+          <term>MEMORY_DYNINFOSIZE</term>
+          <description>DynInfoSize()</description>
+        </item>
+        <item>
+          <term>MEMORY_DYNINFOUSED</term>
+          <description>DynInfoUsed()</description>
+        </item>
+        <item>
+          <term>MEMORY_FUNCTIONCOUNT</term>
+          <description>FCount()</description>
+        </item>
+        <item>
+          <term>MEMORY_MAXATOM</term>
+          <description>MaxAtom()</description>
+        </item>
+        <item>
+          <term>MEMORY_MEMTOTAL</term>
+          <description>MemTotal()</description>
+        </item>
+        <item>
+          <term>MEMORY_PRIVAT</term>
+          <description>Size of private var table in bytes (maximum is 64)</description>
+        </item>
+        <item>
+          <term>MEMORY_PUBLIC</term>
+          <description>Size of public var table in bytes (maximum is 64)</description>
+        </item>
+        <item>
+          <term>MEMORY_REGCOLLNOTIFYEND_COUNT</term>
+          <description>Number of _RegCollNotifyEnd() active</description>
+        </item>
+        <item>
+          <term>MEMORY_REGCOLLNOTIFYSTART_COUNT</term>
+          <description>Number of _RegCollNotifyStart() active</description>
+        </item>
+        <item>
+          <term>MEMORY_REGISTERAXIT</term>
+          <description>Number of RegisterAxit() active</description>
+        </item>
+        <item>
+          <term>MEMORY_REGISTEREXIT_COUNT</term>
+          <description>Number of _RegisterExit() active</description>
+        </item>
+        <item>
+          <term>MEMORY_REGISTERKID</term>
+          <description>Number of RegisterKid() active</description>
+        </item>
+        <item>
+          <term>MEMORY_SEQUENCE</term>
+          <description>Size of SEQUENCE table in bytes (maximum is 64) (see LABEL...())</description>
+        </item>
+        <item>
+          <term>MEMORY_SP</term>
+          <description>Stack pointer of application</description>
+        </item>
+        <item>
+          <term>MEMORY_STACK_FREE</term>
+          <description>Free stack space in bytes</description>
+        </item>
+        <item>
+          <term>MEMORY_STACK_SIZE</term>
+          <description>Size of stack segment of application</description>
+        </item>
+        <item>
+          <term>MEMORY_STACKKID</term>
+          <description>Number of stack KID active</description>
+        </item>
+        <item>
+          <term>MEMORY_SYSTEM_FREE</term>
+          <description>Calls the Windows API GlobalMemoryStatus() function, returning MemoryStatus.dwTotalPhys</description>
+        </item>
+        <item>
+          <term>MEMORY_SYSTEM_MAX</term>
+          <description>Calls the Windows API GlobalMemoryStatus() function, returning MemoryStatus.dwAvailPhys</description>
+        </item>
+        <item>
+          <term>MEMORY_WINDOWS_SYSTEMRESOURCES</term>
+          <description>Calls the Windows API GlobalMemoryStatus() function, returning MemoryStatus.dwMemoryLoad</description>
+        </item>
+      </list>
+    </param>
     <returns>
     </returns>
     <remarks>
@@ -18416,15 +18903,62 @@
     </returns>
     <remarks>
       Mod() is not implemented using the X# modulus operator (%).  Note that there are differences between the Mod() function and the modulus operator, which are described in the following table:
-      Dividend	Divisor	Modulus Operator	Mod() function
-      3	 0	Error	 3
-      3	-2	 1	-1
-      -3	 2	-1	 1
-      -3	 0	Error	-3
-      -1	 3	-1	 2
-      -2	 3	-2	 1
-      2	-3	 2	-1
-      1	-3	 1	-2
+      <list type="table">
+        <listheader>
+          <term>Dividend</term>
+          <description>Divisor</description>
+          <description>Modulus Operator</description>
+          <description>Mod() function</description>
+        </listheader>
+        <item>
+          <term>3</term>
+          <description>0</description>
+          <description>Error</description>
+          <description>3</description>
+        </item>
+        <item>
+          <term>3</term>
+          <description>-2</description>
+          <description>1</description>
+          <description>-1</description>
+        </item>
+        <item>
+          <term>-3</term>
+          <description>2</description>
+          <description>-1</description>
+          <description>1</description>
+        </item>
+        <item>
+          <term>-3</term>
+          <description>0</description>
+          <description>Error</description>
+          <description>-3</description>
+        </item>
+        <item>
+          <term>-1</term>
+          <description>3</description>
+          <description>-1</description>
+          <description>2</description>
+        </item>
+        <item>
+          <term>-2</term>
+          <description>3</description>
+          <description>-2</description>
+          <description>1</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>-3</description>
+          <description>2</description>
+          <description>-1</description>
+        </item>
+        <item>
+          <term>1</term>
+          <description>-3</description>
+          <description>1</description>
+          <description>-2</description>
+        </item>
+      </list>
       <note type="tip">
         In dBASE III PLUS, a 0 divisor returns the dividend for every value of the dividend.  In versions of CA-Clipper prior to Summer '87, a 0 divisor returned 0 for all dividends.  In X#, by contrast, the modulus of any dividend using a 0 divisor causes a runtime error.
       </note>
@@ -20311,11 +20845,23 @@
     <remarks>
       ProcLine() queries the X# activation stack to determine the last line executed in a currently executing procedure, function, or method.
       ProcLine() is used with ProcFile() and ProcName() to report debugging information.  ProcLine() and ProcName() are controlled by two options on the Application menu:
-      1.	Application Compiler Options displays a list of CA-Clipper compatibility options, one of which is PROCNAME/PROCLINE:
-      	If PROCNAME/PROCLINE is selected, these functions will compile and run accurately.
-      	If PROCNAME/PROCLINE is not selected, these functions will compile and run but may not produce accurate results.
-      2.	Application Properties displays a Debug option.<br/>
-      If this option is selected, these functions will produce accurate results even if PROCNAME/PROCLINE is not selected.
+      <list type="table">
+        <item>
+          <term>1</term>
+          <description>
+            Application Compiler Options displays a list of CA-Clipper compatibility options, one of which is PROCNAME/PROCLINE:
+            If PROCNAME/PROCLINE is selected, these functions will compile and run accurately.
+            If PROCNAME/PROCLINE is not selected, these functions will compile and run but may not produce accurate results.
+          </description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>
+            Application Properties displays a Debug option.
+            If this option is selected, these functions will produce accurate results even if PROCNAME/PROCLINE is not selected.
+          </description>
+        </item>
+      </list>
       The SET PROCLINE command overrides these compiler options and application settings on an entity level.  See the SET PROCLINE entry for more information.
     </remarks>
     <example>
@@ -20351,11 +20897,23 @@
     <remarks>
       ProcName() queries the X# activation stack to determine the name of a currently executing procedure, function, or method.
       ProcName() is used with ProcFile() and ProcLine() to report debugging information.  ProcLine() and ProcName() are controlled by two options on the Application menu:
-      1.	Application Compiler Options displays a list of CA-Clipper compatibility options, one of which is PROCNAME/PROCLINE:
-      	If PROCNAME/PROCLINE is selected, these functions will compile and run accurately.
-      	If PROCNAME/PROCLINE is not selected, these functions will compile and run but may not produce accurate results.
-      2.	Application Properties displays a Debug option.<br/>
-      If this option is selected, these functions will produce accurate results even if PROCNAME/PROCLINE is not selected.
+      <list type="table">
+        <item>
+          <term>1</term>
+          <description>
+            Application Compiler Options displays a list of CA-Clipper compatibility options, one of which is PROCNAME/PROCLINE:
+            If PROCNAME/PROCLINE is selected, these functions will compile and run accurately.
+            If PROCNAME/PROCLINE is not selected, these functions will compile and run but may not produce accurate results.
+          </description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>
+            Application Properties displays a Debug option.
+            If this option is selected, these functions will produce accurate results even if PROCNAME/PROCLINE is not selected.
+          </description>
+        </item>
+      </list>
       The SET PROCNAME command overrides these compiler options and application settings on an entity level.  See the SET PROCNAME entry for more information.
     </remarks>
     <example>
@@ -20921,13 +21479,24 @@
       The types of RDDs to count.<br/>
       The types are<br/>
 
-      	Constant	Description<br/>
-
-      	RDT_FULL	Fully implemented RDDs<br/>
-
-      	RDT_TRANSFER	Transfer RDDs<br/>
-
-      	RDT_HIDDEN	Specific RDDs<br/>
+      	<list type="table">
+      	  <listheader>
+      	    <term>Constant</term>
+      	    <description>Description</description>
+      	  </listheader>
+      	  <item>
+      	    <term>RDT_FULL</term>
+      	    <description>Fully implemented RDDs</description>
+      	  </item>
+      	  <item>
+      	    <term>RDT_TRANSFER</term>
+      	    <description>Transfer RDDs</description>
+      	  </item>
+      	  <item>
+      	    <term>RDT_HIDDEN</term>
+      	    <description>Specific RDDs</description>
+      	  </item>
+      	</list>
 
       	If <paramref name="kRDDType"/> is not specified, RDT_FULL + RDT_TRANSFER is assumed.
     </param>
@@ -20997,13 +21566,24 @@
       The types of RDDs to include in the list.<br/>
       The types are:<br/>
 
-      	Constant	Description<br/>
-
-      	RDT_FULL	Fully implemented RDDs<br/>
-
-      	RDT_TRANSFER	Transfer RDDs<br/>
-
-      	RDT_HIDDEN	Specific RDDs<br/>
+      	<list type="table">
+      	  <listheader>
+      	    <term>Constant</term>
+      	    <description>Description</description>
+      	  </listheader>
+      	  <item>
+      	    <term>RDT_FULL</term>
+      	    <description>Fully implemented RDDs</description>
+      	  </item>
+      	  <item>
+      	    <term>RDT_TRANSFER</term>
+      	    <description>Transfer RDDs</description>
+      	  </item>
+      	  <item>
+      	    <term>RDT_HIDDEN</term>
+      	    <description>Specific RDDs</description>
+      	  </item>
+      	</list>
 
       	If <paramref name="kRDDType"/> is not specified, RDT_FULL + RDT_TRANSFER is assumed.
     </param>
@@ -22412,10 +22992,24 @@
       For database fields of type FLOAT, such picture information resides in the database header structure and is obtainable by FieldVal().
       With the Val() function and with literal floats (that is, hard-coded in source code and thus known at compile time), the number of decimals is derived from the hard-coded decimal portion and the number of digits is taken from SetDigit().
       If new floats are generated in expressions or by functions, the number of digits is always taken from SetDigit() and the number of decimals is determined as follows:
-      Operators	Number of decimals
-      + or -	Maximum of two operands
-      *	Sum of two operands
-      /	Current setting of SetDecimal()
+      <list type="table">
+        <listheader>
+          <term>Operators</term>
+          <description>Number of decimals</description>
+        </listheader>
+        <item>
+          <term>+ or -</term>
+          <description>Maximum of two operands</description>
+        </item>
+        <item>
+          <term>*</term>
+          <description>Sum of two operands</description>
+        </item>
+        <item>
+          <term>/</term>
+          <description>Current setting of SetDecimal()</description>
+        </item>
+      </list>
       For functions, the number of decimals is determined by the current setting of SetDecimal() or a zero for special cases such as the Integer() function.
     </remarks>
     <example>
@@ -22955,15 +23549,44 @@
       Therefore, if an application uses the #Clipper international mode, it will behave the same on all machines.  Thus, to achieve a different internationalization routine, you would need a specialized version of VO28NAT.DLL.  On the other hand, if the application uses the #Windows international mode, it will behave differently from machine to machine, depending on information defined in the International settings of the Control Panel.
       Changing SetInternational() automatically changes SetCollation() so that the two settings are the same.  SetInternational() also determines the initial defaults for the functions listed in the table below and resets them each time you call the function.<br/>
       For SetInternational(#Windows), the settings are taken from the corresponding International settings in the Control Panel:
-      Function	SetInternational(#Clipper) Default
-      GetAMExt()/SetAMExt()	NULL_STRING
-      GetPMExt()/SetPMExt()	NULL_STRING
-      SetAMPM()	24-hour format
-      SetDateFormat()	mm/dd/yy
-      SetDecimal()	2
-      SetDecimalSep()	Period (.)
-      SetTimeSep()	Colon (:)
-      SetThousandSep()	Comma (,)
+      <list type="table">
+        <listheader>
+          <term>Function</term>
+          <description>SetInternational(#Clipper) Default</description>
+        </listheader>
+        <item>
+          <term>GetAMExt()/SetAMExt()</term>
+          <description>NULL_STRING</description>
+        </item>
+        <item>
+          <term>GetPMExt()/SetPMExt()</term>
+          <description>NULL_STRING</description>
+        </item>
+        <item>
+          <term>SetAMPM()</term>
+          <description>24-hour format</description>
+        </item>
+        <item>
+          <term>SetDateFormat()</term>
+          <description>mm/dd/yy</description>
+        </item>
+        <item>
+          <term>SetDecimal()</term>
+          <description>2</description>
+        </item>
+        <item>
+          <term>SetDecimalSep()</term>
+          <description>Period (.)</description>
+        </item>
+        <item>
+          <term>SetTimeSep()</term>
+          <description>Colon (:)</description>
+        </item>
+        <item>
+          <term>SetThousandSep()</term>
+          <description>Comma (,)</description>
+        </item>
+      </list>
       <note type="tip">
         Leading zeros in time strings:<br/>
         The leading zeros International setting in the Control Panel is ignored.  Leading zeros are always displayed for time strings.
@@ -25119,20 +25742,92 @@
       The table below shows the frequencies of standard musical notes.
       Note:<br/>
       Tone() works only on IBM PC and 100% compatible computers.
-      Pitch	Frequency	Pitch	Frequency
-      C	130.80	mid C	261.70
-      C#	138.60	C#	277.20
-      D	146.80	D	293.70
-      D#	155.60	D#	311.10
-      E	164.80	E	329.60
-      F	174.60	F	349.20
-      F#	185.00	F#	370.00
-      G	196.00	G	392.00
-      G#	207.70	G#	415.30
-      A	220.00	A	440.00
-      A#	233.10	A#	466.20
-      B	246.90	B	493.90
-      		C	523.30
+      <list type="table">
+        <listheader>
+          <term>Pitch</term>
+          <description>Frequency</description>
+          <description>Pitch</description>
+          <description>Frequency</description>
+        </listheader>
+        <item>
+          <term>C</term>
+          <description>130.80</description>
+          <description>mid C</description>
+          <description>261.70</description>
+        </item>
+        <item>
+          <term>C#</term>
+          <description>138.60</description>
+          <description>C#</description>
+          <description>277.20</description>
+        </item>
+        <item>
+          <term>D</term>
+          <description>146.80</description>
+          <description>D</description>
+          <description>293.70</description>
+        </item>
+        <item>
+          <term>D#</term>
+          <description>155.60</description>
+          <description>D#</description>
+          <description>311.10</description>
+        </item>
+        <item>
+          <term>E</term>
+          <description>164.80</description>
+          <description>E</description>
+          <description>329.60</description>
+        </item>
+        <item>
+          <term>F</term>
+          <description>174.60</description>
+          <description>F</description>
+          <description>349.20</description>
+        </item>
+        <item>
+          <term>F#</term>
+          <description>185.00</description>
+          <description>F#</description>
+          <description>370.00</description>
+        </item>
+        <item>
+          <term>G</term>
+          <description>196.00</description>
+          <description>G</description>
+          <description>392.00</description>
+        </item>
+        <item>
+          <term>G#</term>
+          <description>207.70</description>
+          <description>G#</description>
+          <description>415.30</description>
+        </item>
+        <item>
+          <term>A</term>
+          <description>220.00</description>
+          <description>A</description>
+          <description>440.00</description>
+        </item>
+        <item>
+          <term>A#</term>
+          <description>233.10</description>
+          <description>A#</description>
+          <description>466.20</description>
+        </item>
+        <item>
+          <term>B</term>
+          <description>246.90</description>
+          <description>B</description>
+          <description>493.90</description>
+        </item>
+        <item>
+          <term>C</term>
+          <description>523.30</description>
+          <description></description>
+          <description></description>
+        </item>
+      </list>
     </remarks>
     <example>
       This example is a beep function that indicates that a batch operation has completed:
@@ -25198,16 +25893,48 @@
       If a function string is present, the @ character must be the leftmost character of the picture string, and the function string must not contain spaces.<br/>
       A function string can be specified alone or with a template string.<br/>
       If both are present, the function string must precede the template string, and the two must be separated by a single space.
-      Function	Action
-      B	Displays numbers left-justified
-      C	Displays CR after positive numbers
-      D	Displays date in SET DATE format
-      E	Displays date in British format
-      R	Nontemplate characters are inserted
-      X	Displays DB after negative numbers
-      Z	Displays zeros as blanks
-      (	Encloses negative numbers in parentheses
-      !	Converts alphabetic characters to uppercase
+      <list type="table">
+        <listheader>
+          <term>Function</term>
+          <description>Action</description>
+        </listheader>
+        <item>
+          <term>B</term>
+          <description>Displays numbers left-justified</description>
+        </item>
+        <item>
+          <term>C</term>
+          <description>Displays CR after positive numbers</description>
+        </item>
+        <item>
+          <term>D</term>
+          <description>Displays date in SET DATE format</description>
+        </item>
+        <item>
+          <term>E</term>
+          <description>Displays date in British format</description>
+        </item>
+        <item>
+          <term>R</term>
+          <description>Nontemplate characters are inserted</description>
+        </item>
+        <item>
+          <term>X</term>
+          <description>Displays DB after negative numbers</description>
+        </item>
+        <item>
+          <term>Z</term>
+          <description>Displays zeros as blanks</description>
+        </item>
+        <item>
+          <term>(</term>
+          <description>Encloses negative numbers in parentheses</description>
+        </item>
+        <item>
+          <term>!</term>
+          <description>Converts alphabetic characters to uppercase</description>
+        </item>
+      </list>
       Template string:<br/>
       A picture template string specifies formatting rules on a character by character basis.<br/>
       The template string consists of a series of characters, some of which have special meanings (see table below).<br/>
@@ -25216,15 +25943,44 @@
       If the @R picture function is used, these characters are inserted between characters of the return value; otherwise, they overwrite the corresponding characters of the return value.<br/>
       A template string can be specified alone or with a function string.<br/>
       If both are present, the function string must precede the template string, and the two must be separated by a single space.
-      Template	Action
-      A,N,X,9,#	Displays digits for any data type
-      L	Displays logicals as "T" or "F"
-      Y	Displays logicals as "Y" or "N"
-      !	Converts an alphabetic character to uppercase
-      $	Displays a dollar sign in place of a leading space in a numeric
-      *	Displays an asterisk in place of a leading space in a numeric
-      .	Specifies a decimal point position
-      ,	Specifies a comma position
+      <list type="table">
+        <listheader>
+          <term>Template</term>
+          <description>Action</description>
+        </listheader>
+        <item>
+          <term>A,N,X,9,#</term>
+          <description>Displays digits for any data type</description>
+        </item>
+        <item>
+          <term>L</term>
+          <description>Displays logicals as "T" or "F"</description>
+        </item>
+        <item>
+          <term>Y</term>
+          <description>Displays logicals as "Y" or "N"</description>
+        </item>
+        <item>
+          <term>!</term>
+          <description>Converts an alphabetic character to uppercase</description>
+        </item>
+        <item>
+          <term>$</term>
+          <description>Displays a dollar sign in place of a leading space in a numeric</description>
+        </item>
+        <item>
+          <term>*</term>
+          <description>Displays an asterisk in place of a leading space in a numeric</description>
+        </item>
+        <item>
+          <term>.</term>
+          <description>Specifies a decimal point position</description>
+        </item>
+        <item>
+          <term>,</term>
+          <description>Specifies a comma position</description>
+        </item>
+      </list>
     </remarks>
     <example>
       This example formats a number into a currency format using a template:
@@ -25329,18 +26085,56 @@
     </param>
     <returns>
       One of the following characters:
-      Returns	Meaning
-      A	Array
-      B	Block
-      C	String
-      D	Date
-      L	Logical
-      M	Memo
-      N	Numeric
-      O	Object
-      U	NIL, local, or static
-      UE	Error syntactical
-      UI	Error indeterminate
+      <list type="table">
+        <listheader>
+          <term>Returns</term>
+          <description>Meaning</description>
+        </listheader>
+        <item>
+          <term>A</term>
+          <description>Array</description>
+        </item>
+        <item>
+          <term>B</term>
+          <description>Block</description>
+        </item>
+        <item>
+          <term>C</term>
+          <description>String</description>
+        </item>
+        <item>
+          <term>D</term>
+          <description>Date</description>
+        </item>
+        <item>
+          <term>L</term>
+          <description>Logical</description>
+        </item>
+        <item>
+          <term>M</term>
+          <description>Memo</description>
+        </item>
+        <item>
+          <term>N</term>
+          <description>Numeric</description>
+        </item>
+        <item>
+          <term>O</term>
+          <description>Object</description>
+        </item>
+        <item>
+          <term>U</term>
+          <description>NIL, local, or static</description>
+        </item>
+        <item>
+          <term>UE</term>
+          <description>Error syntactical</description>
+        </item>
+        <item>
+          <term>UI</term>
+          <description>Error indeterminate</description>
+        </item>
+      </list>
     </returns>
     <remarks>
       Type() uses the macro operator (&amp;) to determine the argument's data type; therefore, you cannot use it to determine the data type of undeclared variables or functions that are not intended for used with macros.<br/>
@@ -25619,18 +26413,56 @@
     <returns>
       The data type of <paramref name="uValue"/>.<br/>
       The return values have the following meanings:
-      Returns	Meaning
-      ARRAY	Array
-      CODEBLOCK	Code block
-      DATE	Date
-      FLOAT	Float, Real4, Real8
-      LOGIC	Logical value
-      LONGINT	Byte, Word, DWord, ShortInt, Int, LongInt
-      OBJECT	Object or runtime code block (see example below)
-      VOID	NIL
-      PTR	Pointer
-      STRING	String, PSZ
-      SYMBOL	Symbol
+      <list type="table">
+        <listheader>
+          <term>Returns</term>
+          <description>Meaning</description>
+        </listheader>
+        <item>
+          <term>ARRAY</term>
+          <description>Array</description>
+        </item>
+        <item>
+          <term>CODEBLOCK</term>
+          <description>Code block</description>
+        </item>
+        <item>
+          <term>DATE</term>
+          <description>Date</description>
+        </item>
+        <item>
+          <term>FLOAT</term>
+          <description>Float, Real4, Real8</description>
+        </item>
+        <item>
+          <term>LOGIC</term>
+          <description>Logical value</description>
+        </item>
+        <item>
+          <term>LONGINT</term>
+          <description>Byte, Word, DWord, ShortInt, Int, LongInt</description>
+        </item>
+        <item>
+          <term>OBJECT</term>
+          <description>Object or runtime code block (see example below)</description>
+        </item>
+        <item>
+          <term>VOID</term>
+          <description>NIL</description>
+        </item>
+        <item>
+          <term>PTR</term>
+          <description>Pointer</description>
+        </item>
+        <item>
+          <term>STRING</term>
+          <description>String, PSZ</description>
+        </item>
+        <item>
+          <term>SYMBOL</term>
+          <description>Symbol</description>
+        </item>
+      </list>
       If <paramref name="uValue"/> is passed by reference, 128 is automatically added to the return value (see the last example).
     </returns>
     <remarks>
@@ -25812,17 +26644,53 @@
     </param>
     <returns>
       One of the following characters, which represent the data type of <paramref name="uValue"/>:
-      Characters	Meaning
-      A	Array
-      B	Code block
-      C	String, PSZ
-      D	Date
-      L	Logic
-      N	LongInt, ShortInt, Byte, Word, Dword, Real4, Real8, Float, Numeric
-      O	Object
-      U	NIL
-      #	Symbol
-      -	PTR
+      <list type="table">
+        <listheader>
+          <term>Characters</term>
+          <description>Meaning</description>
+        </listheader>
+        <item>
+          <term>A</term>
+          <description>Array</description>
+        </item>
+        <item>
+          <term>B</term>
+          <description>Code block</description>
+        </item>
+        <item>
+          <term>C</term>
+          <description>String, PSZ</description>
+        </item>
+        <item>
+          <term>D</term>
+          <description>Date</description>
+        </item>
+        <item>
+          <term>L</term>
+          <description>Logic</description>
+        </item>
+        <item>
+          <term>N</term>
+          <description>LongInt, ShortInt, Byte, Word, Dword, Real4, Real8, Float, Numeric</description>
+        </item>
+        <item>
+          <term>O</term>
+          <description>Object</description>
+        </item>
+        <item>
+          <term>U</term>
+          <description>NIL</description>
+        </item>
+        <item>
+          <term>#</term>
+          <description>Symbol</description>
+        </item>
+      </list>
+      <list type="bullet">
+        <item>
+          PTR
+        </item>
+      </list>
       If <paramref name="uValue"/> is passed by reference, the return value will be preceded by an @ sign (see the second example).
     </returns>
     <remarks>
@@ -27003,11 +27871,25 @@
     <param name="kRDDType">
       The types of RDDs to include in the list.<br/>
       The types are:
+      <list type="table">
+        <listheader>
+          <term>Constant</term>
+          <description>Description</description>
+        </listheader>
+        <item>
+          <term>RDT_FULL</term>
+          <description>Fully implemented RDDs</description>
+        </item>
+        <item>
+          <term>RDT_TRANSFER</term>
+          <description>Transfer RDDs</description>
+        </item>
+        <item>
+          <term>RDT_HIDDEN</term>
+          <description>Specific RDDs</description>
+        </item>
+      </list>
     </param>
-    <param name="Constant">Description	</param>
-    <param name="RDT_FULL">Fully implemented RDDs	</param>
-    <param name="RDT_TRANSFER">Transfer RDDs	</param>
-    <param name="RDT_HIDDEN">Specific RDDs	</param>
     <returns>
       TRUE, if successful; otherwise, FALSE.<br/>
       A FALSE return value indicates an error, but this function does not call the error handler and will not, therefore, produce a runtime error message or create an error object if it fails.  Thus, it may be important to check the return value to determine if the function succeeded.<br/>

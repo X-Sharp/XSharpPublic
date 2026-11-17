@@ -161,13 +161,28 @@
         <value>A constant (four standard values) representing how the column can be used in searches:</value>
         <remarks>
             One of the following constants (four standard values) representing how the column can be used in searches:
-            <pre>
-                Constant				Meaning
-                SQL_ALL_EXCEPT_LIKE	The column can be used in a WHERE clause with all comparison operators except LIKE.
-                SQL_LIKE_ONLY			The column can be used in a WHERE clause only with the LIKE predicate.
-                SQL_SEARCHABLE		The column can be used in a WHERE clause with any comparison operator.
-                SQL_UNSEARCHABLE		The column cannot be used in a WHERE clause.
-            </pre>
+              <list type="table">
+                <listheader>
+                  <term>Constant</term>
+                  <description>Meaning</description>
+                </listheader>
+                <item>
+                  <term>SQL_ALL_EXCEPT_LIKE</term>
+                  <description>The column can be used in a WHERE clause with all comparison operators except LIKE.</description>
+                </item>
+                <item>
+                  <term>SQL_LIKE_ONLY</term>
+                  <description>The column can be used in a WHERE clause only with the LIKE predicate.</description>
+                </item>
+                <item>
+                  <term>SQL_SEARCHABLE</term>
+                  <description>The column can be used in a WHERE clause with any comparison operator.</description>
+                </item>
+                <item>
+                  <term>SQL_UNSEARCHABLE</term>
+                  <description>The column cannot be used in a WHERE clause.</description>
+                </item>
+              </list>
         </remarks>
     </SQLColumnAttributes.Searchable>
     <SQLColumnAttributes.Unsigned>
@@ -449,8 +464,16 @@
             Valid values include:
             SQL_CONCUR_LOCK
             SQL_CONCUR_READ_ONLY
-            SQL_CONCUR_TIMESTAMP	(equivalent to SQL_CONCUR_ROWVER)
-            SQL_CONCUR_VALUES	(default for most drivers)
+            <list type="table">
+              <item>
+                <term>SQL_CONCUR_TIMESTAMP</term>
+                <description>(equivalent to SQL_CONCUR_ROWVER)</description>
+              </item>
+              <item>
+                <term>SQL_CONCUR_VALUES</term>
+                <description>(default for most drivers)</description>
+              </item>
+            </list>
             <note type="tip">Refer to your ODBC documentation for a description of these constants.</note>
         </remarks>
     </SQLConnection.ScrollConcurrency>
@@ -2901,11 +2924,28 @@
         </summary>
         <param name="kOption">
             The option used when the statement is freed, specified by one of the following constants:
-            Constant	Description
-            SQL_CLOSE	Closes the cursor.
-            SQL_DROP	Closes the cursor, unbinds and resets the parameters, and frees the statement.
-            SQL_RESET_PARAMS	Resets the parameters.
-            SQL_UNBIND	Unbinds the parameters.
+            <list type="table">
+              <listheader>
+                <term>Constant</term>
+                <description>Description</description>
+              </listheader>
+              <item>
+                <term>SQL_CLOSE</term>
+                <description>Closes the cursor.</description>
+              </item>
+              <item>
+                <term>SQL_DROP</term>
+                <description>Closes the cursor, unbinds and resets the parameters, and frees the statement.</description>
+              </item>
+              <item>
+                <term>SQL_RESET_PARAMS</term>
+                <description>Resets the parameters.</description>
+              </item>
+              <item>
+                <term>SQL_UNBIND</term>
+                <description>Unbinds the parameters.</description>
+              </item>
+            </list>
         </param>
 <include file="VOSDK.xml" path="doc/ReturnsLogic/*"/>    </SQLStatement.FreeStmt>
     <SQLStatement.GetStatementOption>
@@ -2989,7 +3029,12 @@
         <remarks>
             A string containing the text of the statement.
             <note type="tip">	You can use the SQLSelect:SQLString assign to change the statement text.</note>
-            Note:		If you assign a different SQLString and the statement is Preparedm it will become 'unprepared'.
+            <list type="table">
+              <item>
+                <term>Note</term>
+                <description>If you assign a different SQLString and the statement is Preparedm it will become 'unprepared'.</description>
+              </item>
+            </list>
         </remarks>
     </SQLStatement.SQLString>
     <SQLStatement.StatementHandle>

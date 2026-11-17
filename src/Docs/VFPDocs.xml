@@ -682,10 +682,10 @@
         <remarks>
             The following table describes the information returned by the AStackInfo( ) function:
             <list type="table">
-                <listheaders>
+                <listheader>
                     <term>Array Element</term>
                     <description>Description</description>
-                </listheaders>
+                </listheader>
                 <item>
                     <term>1</term>
                     <description>Call Stack Level</description>
@@ -8495,7 +8495,7 @@
                 </item>
             </list>
             <note name="Note">If eExpression is an array, the first element in the array is evaluated.</note>
-            <list>
+            <list type="table">
                 <listheader>
                     <term>lNullDataType</term>
                     <description>Description</description>

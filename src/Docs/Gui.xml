@@ -132,10 +132,24 @@
     <remarks>
       The Create() method is called after the ActiveXControl object is instantiated. Note that the both methods are called from the ActiveX container application: they should never be called directly from your code.
       Inside Create(), you should:
-      1.	Instantiate a control or window object representing the user interface of the ActiveX control. This object should be assigned to OCXWindow.
-      2.	Instantiate an object representing the automation interface of the ActiveX control and assign it to AutoServer.
-      3.	Instantiate an object representing the event interface of the ActiveX control and assign it to Events—this step is optional.
-      4.	Perform other initializations tasks.
+      <list type="table">
+        <item>
+          <term>1</term>
+          <description>Instantiate a control or window object representing the user interface of the ActiveX control. This object should be assigned to OCXWindow.</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>Instantiate an object representing the automation interface of the ActiveX control and assign it to AutoServer.</description>
+        </item>
+        <item>
+          <term>3</term>
+          <description>Instantiate an object representing the event interface of the ActiveX control and assign it to Events—this step is optional.</description>
+        </item>
+        <item>
+          <term>4</term>
+          <description>Perform other initializations tasks.</description>
+        </item>
+      </list>
       For further details, see Creating OLE Servers in X# in the "How To" section of the online help, as well as the sample applications that are accessible from the Samples tab page of the Application Gallery.
     </remarks>
     <example>
@@ -2424,7 +2438,7 @@
     <param name="kStyle">The style of the combo box, specified as one of the Windows API constants listed below:</param>
     <param name="nResourceID">The resource ID of the combo box.</param>
     <remarks>
-      <list>
+      <list type="table">
         <listheader>
           <term>Constant</term>
           <description>Creates</description>
@@ -2906,15 +2920,34 @@
     <remarks>
       <include file="Gui.xml" path="doc/Callback/*"/>
       Controls receive events from the user and the system all of the time. Each control receives only the events that are relevant to it. For each event that is generated, two things happen:
-      1.	The event is converted to a particular Event object (an ExposeEvent or a MouseEvent, for example) according to the action that triggered the event.
-      2.	The appropriate event handler is called, and this typed Event object is passed to it.
+      <list type="table">
+        <item>
+          <term>1</term>
+          <description>The event is converted to a particular Event object (an ExposeEvent or a MouseEvent, for example) according to the action that triggered the event.</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>The appropriate event handler is called, and this typed Event object is passed to it.</description>
+        </item>
+      </list>
       <note type="tip">
         If you want to set a specific return value for the underlying window procedure, you have to change the EventReturnValue variable for the control object.
         If you want to handle other events (for example, timer events), you need to write your own Dispatch() method.
         The following guidelines should be followed when writing a customized Dispatch() method:
-        1.	Subclass an event type appropriate to the type of operation for which it is being used.
-        2.	Add an event handler function to your derived object. (This event handler should be called with the event when the event is received.)
-        3.	In general, the implementation of this event handler should call Default(). This keeps the same behavior as the base class, but it also allows other classes to provide useful event handlers for your new type of event, allowing you to provide a framework for other classes to use.
+        <list type="table">
+          <item>
+            <term>1</term>
+            <description>Subclass an event type appropriate to the type of operation for which it is being used.</description>
+          </item>
+          <item>
+            <term>2</term>
+            <description>Add an event handler function to your derived object. (This event handler should be called with the event when the event is received.)</description>
+          </item>
+          <item>
+            <term>3</term>
+            <description>In general, the implementation of this event handler should call Default(). This keeps the same behavior as the base class, but it also allows other classes to provide useful event handlers for your new type of event, allowing you to provide a framework for other classes to use.</description>
+          </item>
+        </list>
         The base class Dispatch() method should be called in those cases where the received event is not handled by the customized dispatcher. For example:
         <code language="X#">
           RETURN SUPER:Dispatch(<paramref name="oEvent"/>)
@@ -8386,7 +8419,7 @@
     <param name="dwDrawStyle">The style to set. See table in the remarks section.</param>
     <param name="lEnable">A logical value to set the style. TRUE sets the style on, FALSE turns it off.</param>
     <remarks>
-      <list>
+      <list type="table">
         <listheader>
           <term>Value</term>
           <description>Description</description>
@@ -8506,7 +8539,7 @@
     </summary>
     <param name="kTextStyle">
       The text alignment style, specified as one of the following constants:
-      <list type="Table">
+      <list type="table">
         <listheader>
           <term>Constant</term>
           <description>Description</description>
@@ -8565,8 +8598,16 @@
       Although you supply specifics for a new font, the GUI actually picks an actual font which best fits the description provided.
       Each window has a currently selected font. Window:TextPrint() and Window:SizeText() use this font when they are printing or sizing text.
       <note type="tip">
-        Deselecting a Font:	In Windows, the current font should be deselected before destroying the window. To do this, use Window:Font to assign the previous font, for example. However, this is only necessary if there is a font other than the default one currently selected.
-        Font Pitch:	A font's pitch can be either variable or fixed. In variable pitch fonts, characters are proportionally spaced (for example, a variable pitch font uses more space to print an "M" than an "i"). In fixed pitch fonts, the same amount of space is used by each character, regardless of the character width. Fixed pitch fonts are most commonly used by terminals and typewriters or to display program text.
+        <list type="table">
+          <item>
+            <term>Deselecting a Font</term>
+            <description>In Windows, the current font should be deselected before destroying the window. To do this, use Window:Font to assign the previous font, for example. However, this is only necessary if there is a font other than the default one currently selected.</description>
+          </item>
+          <item>
+            <term>Font Pitch</term>
+            <description>A font's pitch can be either variable or fixed. In variable pitch fonts, characters are proportionally spaced (for example, a variable pitch font uses more space to print an "M" than an "i"). In fixed pitch fonts, the same amount of space is used by each character, regardless of the character width. Fixed pitch fonts are most commonly used by terminals and typewriters or to display program text.</description>
+          </item>
+        </list>
         Variable pitched fonts are not always supported. This is dependent on the individual font.
       </note>
     </remarks>
@@ -9168,7 +9209,7 @@
       Instead, they are provided by the system to give you access to certain standard help features:
 
 
-      <list>
+      <list type="table">
         <listheader>
           <term>Reserved Keyword</term>
           <description>Description</description>
@@ -9531,7 +9572,7 @@
     <param name="oWindow">The window to which the HotKey object will be applied.</param>
     <returns>
       A numeric value indicating the result of applying the HotKey object to the window. The result can be one of the following values:
-      <list>
+      <list type="table">
         <listheader>
           <term>Value</term>
           <description>Result</description>
@@ -11731,11 +11772,28 @@
     </summary>
     <remarks>
       The IRequest class retrieves the values that the client browser passed to the server during an HTTP request. The variables are internally stored by collections in the following order:
-      1.	QueryString
-      2.	Form
-      3.	Cookies
-      4.	ClientCertificate
-      5.	ServerVariables
+      <list type="table">
+        <item>
+          <term>1</term>
+          <description>QueryString</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>Form</description>
+        </item>
+        <item>
+          <term>3</term>
+          <description>Cookies</description>
+        </item>
+        <item>
+          <term>4</term>
+          <description>ClientCertificate</description>
+        </item>
+        <item>
+          <term>5</term>
+          <description>ServerVariables</description>
+        </item>
+      </list>
       The IRequest class provides the following kinds of methods:
       Methods to retrieve these collections as arrays containing value {name, value} pairs for each collection (e.g., GetForms()).
       Methods to retrieve a certain value of one of these collections (e.g., GetForm("firstname")).
@@ -17840,7 +17898,7 @@
       If <paramref name="kResourceID"/> is specified, use one of the constants listed below:
     </param>
     <remarks>
-      <list>
+      <list type="table">
         <item>
           <term>Pointer</term>
           <description>Description</description>
@@ -18727,8 +18785,16 @@
     <param name="aContents">
       The array containing existing radio buttons or the values that should be used to create radio buttons. A two-dimensional array may be used to define the values to be returned to the program when a radio button is selected; this 'other' value is what is returned in the RadioButtonGroup:Value property, and what is stored in the database if the control is associated with a database field. If a one-dimensional array is specified, the values are returned as 1, 2, 3...
       Thus, the array may be specified in one of two formats:
-      1.	One-dimensional array containing radio button objects that are to be linked to the group
-      2.	Two-dimensional arrays, each element containing a RadioButton object and the corresponding value returned to the program
+      <list type="table">
+        <item>
+          <term>1</term>
+          <description>One-dimensional array containing radio button objects that are to be linked to the group</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>Two-dimensional arrays, each element containing a RadioButton object and the corresponding value returned to the program</description>
+        </item>
+      </list>
       Note: the two dimensional array has the same structure as that returned by DBServer:GetLookupTable().
     </param>
     <remarks>
@@ -25379,15 +25445,34 @@
     <remarks>
       Windows receive events from the user and the system all of the time. Each window receives only the events that are
       relevant to it. For each event that is generated, two things happen:
-      1.	The event is converted to a particular Event object (an ExposeEvent or a MouseEvent, for example) according to the action that triggered the event.
-      2.	The appropriate event handler is called, and this typed Event object is passed to it.
+      <list type="table">
+        <item>
+          <term>1</term>
+          <description>The event is converted to a particular Event object (an ExposeEvent or a MouseEvent, for example) according to the action that triggered the event.</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>The appropriate event handler is called, and this typed Event object is passed to it.</description>
+        </item>
+      </list>
       <note type="tip">
         If you want to set a specific return value for the underlying window procedure, you have to change the EventReturnValue variable for the window object.
         If you want to handle other events (for example, timer events), you need to write your own Dispatch() method.
         The following guidelines should be followed when writing a customized Dispatch() method:
-        1.	Subclass an event type appropriate to the type of operation for which it is being used.
-        2.	Add an event handler function to your derived object. (This event handler should be called with the event when the event is received.)
-        3.	In general, the implementation of this event handler should call Default(). This keeps the same behavior as the base class, but it also
+        <list type="table">
+          <item>
+            <term>1</term>
+            <description>Subclass an event type appropriate to the type of operation for which it is being used.</description>
+          </item>
+          <item>
+            <term>2</term>
+            <description>Add an event handler function to your derived object. (This event handler should be called with the event when the event is received.)</description>
+          </item>
+          <item>
+            <term>3</term>
+            <description>In general, the implementation of this event handler should call Default(). This keeps the same behavior as the base class, but it also</description>
+          </item>
+        </list>
         allows other classes to provide useful event handlers for your new type of event, allowing you to provide a framework for other classes to use.
         The base class Dispatch() method should be called in those cases where the received event is not handled by the customized dispatcher.
         For example:

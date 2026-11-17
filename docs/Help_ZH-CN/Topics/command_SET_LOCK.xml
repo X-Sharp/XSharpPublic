@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" modified="2026-11-17T13:30:54.267+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>SET LOCK Command</title>
+  <title>SET LOCK 命令</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>SET commands</keyword>
@@ -9,18 +9,18 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">SET LOCK Command</para>
+      <para styleclass="Heading1">SET LOCK 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">用途</para>
-    <para styleclass="Normal">Specifies whether files are automatically locked when commands such as AVERAGE, COUNT, SUM and others access them.</para>
+    <para styleclass="Normal">指定当 AVERAGE、COUNT、SUM 等命令访问文件时，是否自动锁定这些文件。</para>
     <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">SET LOCK ON | OFF | &amp;&lt;cMacro&gt;</para>
     <para styleclass="Heading1">参数</para>
-    <para styleclass="List">ON | OFF<tab/>ON locks the files automatically. OFF does not lock them. The value may also be a macro (&amp;) that evaluates to ON or OFF.</para>
-    <para styleclass="Heading1">Remarks</para>
-    <para styleclass="Normal">The setting is stored in the runtime state, but the runtime does not use it at this moment.</para>
+    <para styleclass="List">ON | OFF<tab/>ON 自动锁定文件。OFF 不锁定文件。该值也可以是一个宏（&amp;），其求值结果为 ON 或 OFF。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">该设置存储在运行时状态中，但运行时目前不使用它。</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
     <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_MULTILOCKS">SET MULTILOCKS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_EXCLUSIVE">SET EXCLUSIVE</link></para>

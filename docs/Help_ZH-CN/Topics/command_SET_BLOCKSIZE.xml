@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" modified="2026-11-17T13:30:54.138+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>SET BLOCKSIZE Command</title>
+  <title>SET BLOCKSIZE 命令</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>SET commands</keyword>
@@ -9,18 +9,18 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">SET BLOCKSIZE Command</para>
+      <para styleclass="Heading1">SET BLOCKSIZE 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">用途</para>
-    <para styleclass="Normal">Specifies how disk space is allocated for the storage of memo fields.</para>
+    <para styleclass="Normal">指定如何为备注字段的存储分配磁盘空间。</para>
     <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">SET BLOCKSIZE TO &lt;nBytes&gt;</para>
     <para styleclass="Heading1">参数</para>
-    <para styleclass="List">&lt;nBytes&gt;<tab/>The size of the memo blocks. A value between 1 and 32 is the number of 512 byte blocks. Larger values are the number of bytes. The value 0 selects blocks of 1 byte.</para>
-    <para styleclass="Heading1">Remarks</para>
-    <para styleclass="Normal">The setting is used when new tables with memo fields are created. The command is equivalent to <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_MEMOBLOCK">SET MEMOBLOCKSIZE</link>.</para>
+    <para styleclass="List">&lt;nBytes&gt;<tab/>备注块的大小。介于 1 和 32 之间的值表示 512 字节块的数量。更大的值表示字节数。值 0 选择 1 字节的块。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">该设置在创建带有备注字段的新表时使用。该命令等同于 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_MEMOBLOCK">SET MEMOBLOCKSIZE</link>。</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
     <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_MEMOBLOCK">SET MEMOBLOCKSIZE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_TABLE">CREATE TABLE</link></para>

@@ -13,7 +13,7 @@
     <para styleclass="Normal">-optimize 选项可启用或禁用编译器的优化功能，使输出文件更小、更快、更高效。</para>
     <para styleclass="Heading2">语法</para>
     <para styleclass="Code with box">-optimize[+ | -]  </para>
-    <para styleclass="Heading2">Remarks</para>
+    <para styleclass="Heading2">备注</para>
     <para styleclass="Normal">-optimize  还可以让公共语言运行时在运行时优化代码。</para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">默认情况下，优化是禁用的。指定 -optimize+ 可启用优化。</para>

@@ -18,14 +18,14 @@
     <para styleclass="Heading1">用途</para>
     <para styleclass="Normal">声明和实现类的方法，包括类实例和类本身的方法</para>
     <para styleclass="Heading1">语法</para>
-    <para styleclass="Normal"><tab /><text style="font-weight:bold;">Method forward declaration</text></para>
+    <para styleclass="Normal"><tab /><text style="font-weight:bold;">方法前向声明</text></para>
     <para styleclass="Body Text"><tab />[Modifiers] METHOD &lt;MethodName,...&gt; [IS &lt;MethodName&gt;] [IN &lt;SuperClass&gt;] </para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"><tab /><text styleclass="Normal" style="font-weight:bold;">Access/Assign method forward declaration</text></para>
+    <para styleclass="Body Text"><tab /><text styleclass="Normal" style="font-weight:bold;">存取/赋值方法前向声明</text></para>
     <para styleclass="Body Text"><tab />[Attributes] ACCESS ASSIGN [CLASS] METHOD &lt;MethodName&gt; [VAR &lt;VarName&gt;] &#160;<text styleclass="Normal">[AS &lt;</text><text styleclass="Italic">idType</text><text styleclass="Normal">&gt;]</text></para>
     <para styleclass="Body Text"><tab />[Attributes] ACCESS | ASSIGN [CLASS] METHOD &lt;MethodName&gt; [VAR &lt;VarName&gt;] &#160;<text styleclass="Normal">[AS &lt;</text><text styleclass="Italic">idType</text><text styleclass="Normal">&gt;]</text></para>
     <para styleclass="Body Text"></para>
-    <para styleclass="Body Text"><tab /><text styleclass="Normal" style="font-weight:bold;">Method inline declaration</text></para>
+    <para styleclass="Body Text"><tab /><text styleclass="Normal" style="font-weight:bold;">方法内联声明</text></para>
     <para styleclass="Body Text"><tab />[Attributes] INLINE [CLASS] METHOD &lt;MethodName&gt;[ <text styleclass="Normal">[([&lt;</text><text styleclass="Italic">idParam</text><text styleclass="Normal">&gt; [AS|REF|OUT|IN &lt;</text><text styleclass="Italic">idType</text><text styleclass="Normal">&gt;] [, ...])] </text>) <text styleclass="Normal">[AS &lt;</text><text styleclass="Italic">idType</text><text styleclass="Normal">&gt;]</text><br/><tab /><text styleclass="Normal">[=&gt; &lt;expression&gt;] </text><br/><tab /><text styleclass="Normal" style="font-weight:bold;">CRLF</text></para>
     <para styleclass="Normal"><tab />[&lt;<text styleclass="Italic">Body</text>&gt;]<br/><tab />[END METHOD]</para>
     <para styleclass="Heading1">参数</para>

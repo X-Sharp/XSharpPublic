@@ -229,7 +229,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Body Text">Bitwise </para>
+          <para styleclass="Body Text">按位</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Body Text">(_AND, _OR, _XOR, _NOT) ( 表达式列表 )</para>

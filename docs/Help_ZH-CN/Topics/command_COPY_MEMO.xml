@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" modified="2026-11-17T13:32:46.755Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>COPY MEMO Command</title>
+  <title>COPY MEMO 命令</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>COPY MEMO command</keyword>
@@ -9,7 +9,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">COPY MEMO Command</para>
+      <para styleclass="Heading1">COPY MEMO 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
@@ -19,10 +19,10 @@
     <para styleclass="Code with box">COPY MEMO &lt;MemoField&gt; TO &lt;FileName&gt; [ADDITIVE] [AS &lt;nCodePage&gt;]</para>
     <para styleclass="Heading1">参数</para>
     <para styleclass="List">&lt;MemoField&gt;<tab />当前工作区中备注字段的名称。</para>
-    <para styleclass="List">TO &lt;FileName&gt;<tab />接收备忘录字段内容的文件名称。</para>
+    <para styleclass="List">TO &lt;FileName&gt;<tab />接收备注字段内容的文件名称。</para>
     <para styleclass="List">ADDITIVE<tab />如果文件已存在，则将内容追加到文件末尾。如果没有此子句，则会覆盖现有文件。</para>
     <para styleclass="List">AS &lt;nCodePage&gt;<tab />写入文件中的文本的代码页。省略此子句时，文本将不经转换直接写入。</para>
-    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Heading1">示例</para>
     <para styleclass="Code Example">USE Customers<br/>COPY MEMO Notes TO CustomerNotes.txt<br/>COPY MEMO Notes TO AllNotes.txt ADDITIVE</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
     <para styleclass="Heading1">参见</para>

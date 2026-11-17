@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" modified="2026-11-17T13:41:40.296Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>SORT Command (FoxPro)</title>
+  <title>SORT 命令 (FoxPro)</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>SORT command</keyword>
@@ -10,7 +10,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">SORT Command &#160;(FoxPro)</para>
+      <para styleclass="Heading1">SORT 命令 (FoxPro)</para>
     </header>
     <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">用途</para>
@@ -25,7 +25,7 @@
     <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
     <para styleclass="List"><snippet src="__While" inline="false"/></para>
     <para styleclass="List"><snippet src="__For" inline="false"/></para>
-    <para styleclass="List">NOOPTIMIZE<tab />Disables the optimization of the FOR clause.</para>
+    <para styleclass="List">NOOPTIMIZE<tab />禁用 FOR 子句的优化。</para>
     <para styleclass="Heading1">备注</para>
     <para styleclass="Normal">该命令的 FoxPro 版本会添加包含 LIKE 和 EXCEPT 选项的 FIELDS 子句，用于限制写入新表的字段。</para>
     <para styleclass="Heading1">示例</para>

@@ -23,7 +23,7 @@
       <li styleclass="Normal" style="margin-left:13px;">打开项目的 &quot;属性&quot;页面</li>
       <li styleclass="Normal" style="margin-left:13px;">点击 Language 选项卡</li>
       <li styleclass="Normal" style="margin-left:13px;">在 Preprocessor 部分，编辑 &quot;Suppress standard header file(替代标准头文件)&quot; 属性</li>
-      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">Click here to see the property page</link></li>
+      <li styleclass="Normal" style="margin-left:13px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="PropPage-Language">查看属性页</link></li>
     </list>
   </body>
 </topic>

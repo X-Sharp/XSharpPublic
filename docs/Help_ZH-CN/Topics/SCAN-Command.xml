@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" modified="2024-09-08T20:52:55.629+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>SCAN .. ENDSCAN Command</title>
+  <title>SCAN ... ENDSCAN 命令</title>
   <keywords>
     <keyword>ENDSCAN</keyword>
     <keyword>EXIT statement</keyword>
@@ -47,7 +47,7 @@
     <para styleclass="Body Text">下面的示例使用 SCAN ... ENDSCAN 循环显示在 Sweden(瑞典) 的所有公司。</para>
     <para styleclass="Code Example"><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> customer &#160;&amp;&amp; Opens Customer table</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">CLEAR</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">SCAN</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FOR</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> UPPER(country) = &apos;SWEDEN&apos;</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; ? contact, company, city</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">ENDSCAN</text></para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_CASE">DO CASE Statement</link></para>
     <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_WHILE">DO WHILE </link><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_CASE">Statement</link></para>
     <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FOR">FOR Statement</link></para>

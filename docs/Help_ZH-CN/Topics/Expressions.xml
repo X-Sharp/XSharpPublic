@@ -167,7 +167,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">Bitwise And</para>
+          <para styleclass="Normal">按位 AND</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Body Text">表达式 &amp; 表达式</para>
@@ -175,7 +175,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">Bitwise XOR</para>
+          <para styleclass="Normal">按位 XOR</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Body Text">表达式 ~ 表达式</para>
@@ -183,7 +183,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td style="vertical-align:middle;">
-          <para styleclass="Normal">Bitwise OR</para>
+          <para styleclass="Normal">按位 OR</para>
         </td>
         <td style="vertical-align:middle;">
           <para styleclass="Body Text">表达式 | 表达式</para>

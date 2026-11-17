@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" modified="2026-11-17T13:30:54.408+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>SET STRICTREAD Command</title>
+  <title>SET STRICTREAD 命令</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>SET commands</keyword>
@@ -10,17 +10,17 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">SET STRICTREAD Command</para>
+      <para styleclass="Heading1">SET STRICTREAD 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">用途</para>
-    <para styleclass="Normal">Specifies whether the DBFCDX RDD reads its index files in strict mode (STRICTREAD ON) or allows &quot;dirty reads&quot; (DIRTYREAD ON), where index data is read without taking the locks that guarantee a consistent state.</para>
+    <para styleclass="Normal">指定 DBFCDX RDD 是以严格模式读取其索引文件（STRICTREAD ON），还是允许&quot;脏读&quot;（DIRTYREAD ON），即读取索引数据时不加锁，因而无法保证状态一致。</para>
     <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">SET STRICTREAD ON | OFF | &amp;&lt;cMacro&gt;<br/>SET DIRTYREAD ON | OFF | &amp;&lt;cMacro&gt;</para>
     <para styleclass="Heading1">参数</para>
-    <para styleclass="List">ON | OFF<tab/>For SET STRICTREAD, ON enables the strict mode. For SET DIRTYREAD the meaning is reversed: ON allows dirty reads, which is the same as SET STRICTREAD OFF. The value may also be a macro (&amp;) that evaluates to ON or OFF.</para>
-    <para styleclass="Heading1">Remarks</para>
-    <para styleclass="Normal">Both commands change the same runtime setting. SET DIRTYREAD ON is equivalent to SET STRICTREAD OFF and SET DIRTYREAD OFF is equivalent to SET STRICTREAD ON.</para>
+    <para styleclass="List">ON | OFF<tab/>对于 SET STRICTREAD，ON 启用严格模式。对于 SET DIRTYREAD，含义相反：ON 允许脏读，等同于 SET STRICTREAD OFF。该值也可以是一个宏（&amp;），其求值结果为 ON 或 OFF。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">这两个命令更改的是同一个运行时设置。SET DIRTYREAD ON 等同于 SET STRICTREAD OFF，SET DIRTYREAD OFF 等同于 SET STRICTREAD ON。</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
     <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_REFRESH">SET REFRESH</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_EXCLUSIVE">SET EXCLUSIVE</link></para>

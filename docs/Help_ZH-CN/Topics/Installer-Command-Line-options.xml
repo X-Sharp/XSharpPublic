@@ -97,8 +97,8 @@
           <list id="0" type="ul" listtype="bullet" formatstring="·" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
             <li styleclass="Body Text">YES                   在 “Keep newer file?”(保留较新的文件)</li>
             <li styleclass="Body Text">NO                     在 “&apos;File exists, confirm overwrite”(文件已存在，确认覆盖)</li>
-            <li styleclass="Body Text">Abort                  在 Abort/Retry</li>
-            <li styleclass="Body Text">Cancel                在 Retry/Cancel</li>
+            <li styleclass="Body Text"            >Abort                  在 Abort/Retry(中止/重试)</li>
+            <li styleclass="Body Text"            >Cancel                在 Retry/Cancel(重试/取消)</li>
             <li styleclass="Body Text">YES(=continue)   在“DiskSpaceWarning/DirExists/DirDoesntExist/NoUninstallWarning/ExitSetupMessage/ConfirmUninstall”(磁盘空间警告/目录存在/目录不存在/未卸载警告/退出设置消息/确认卸载)</li>
             <li styleclass="Body Text">YES(=restart)     在&quot;FinishedRestartMessage/UninstalledAndNeedsRestart&quot;(完成重启/已卸载并需要重启)</li>
             <li styleclass="Body Text">在 PrivilegesRequiredOverridesAllowed=dialog 情况下的建议选择。</li>

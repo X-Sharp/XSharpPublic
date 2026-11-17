@@ -13,7 +13,7 @@
     <header>
       <para styleclass="Heading1">历史：XSharp 1 及更早版本</para>
     </header>
-    <para styleclass="Heading1">Changes in 1.2.1</para>
+    <para styleclass="Heading1">1.2.1 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">修正了一个问题，在该问题中，编译错误会导致 “Failed to emit module” 的信息，而没有进一步的信息</li>
@@ -31,7 +31,7 @@
     </list>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 1.2.0</para>
+    <para styleclass="Heading1">1.2.0 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">为了与 VO 和 Vulcan 兼容，现在可以为通过引用声明的参数传递 NULL。<br/>我们强烈建议不要这样做，除非你确保函数期望这样做，并且不会在没有检查 NULL 引用的情况下赋值给引用参数。只有启用 /vo7 编译器选项后，这种做法才有效。</li>
@@ -84,7 +84,7 @@
     </list>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 1.1.2</para>
+    <para styleclass="Heading1">1.1.2 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">已为包含 #pragma 的代码添加编译器警告</li>
@@ -103,7 +103,7 @@
     </list>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 1.1.1</para>
+    <para styleclass="Heading1">1.1.1 中的更改</para>
     <para styleclass="Heading2"><text style="font-weight:bold;">编译器</text></para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">修正了调试器 DO CASE 和 OTHERWISE 断点的一个问题</li>
@@ -128,7 +128,7 @@
     </list>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 1.1</para>
+    <para styleclass="Heading1">1.1 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">修正了 X# 1.0.3 发布后在后期绑定代码中使用代码块的问题</li>
@@ -218,7 +218,7 @@
     </list>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 1.0.3</para>
+    <para styleclass="Heading1">1.0.3 中的更改</para>
     <para styleclass="Heading2"><text style="font-weight:bold;">编译器</text></para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">修正了使用 usual 参数索引的 Vulcan 数组的索引计算问题</li>
@@ -228,7 +228,7 @@
     </list>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 1.0.2</para>
+    <para styleclass="Heading1">1.0.2 中的更改</para>
     <para styleclass="Heading2"><text style="font-weight:bold;">编译器</text></para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">添加了对 XML 文档生成的支持。我们支持与 C# 编译器和其他 .Net 编译器相同的标记。</li>
@@ -270,7 +270,7 @@
     </list>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in General Release (1.0.1.1)</para>
+    <para styleclass="Heading1">正式发布版 (1.0.1.1) 中的更改</para>
     <para styleclass="Heading2"><text style="font-weight:bold;">编译器</text></para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">修复了 Vulcan Runtime 非常老的版本的一个问题</li>
@@ -290,7 +290,7 @@
     </list>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in General Release (1.0.1)</para>
+    <para styleclass="Heading1">正式发布版 (1.0.1) 中的更改</para>
     <para styleclass="Heading2">新特性</para>
     <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">我们新增了对 ENUM 基本类型(ENUM Foo AS WORD)的支持</li>
@@ -358,7 +358,7 @@
     </list>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 0.2.12</para>
+    <para styleclass="Heading1">0.2.12 中的更改</para>
     <para styleclass="Heading2"><text style="font-weight:bold;">脚本</text></para>
     <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">我们增加了使用 X# 脚本的功能。有关如何工作的一些文档</text><link displaytype="text" defaultstyle="true" type="topiclink" href="X-Scripting" styleclass="Normal">可以在这里找到</link><text styleclass="Normal">。 您还可以在 下面文件夹中查找脚本示例 </text><br/><text styleclass="Normal">c:\Users\Public\Documents\XSharp\Scripting folder</text></li>
@@ -407,7 +407,7 @@
     </list>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 0.2.11</para>
+    <para styleclass="Heading1">0.2.11 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <para styleclass="Heading3"><text style="font-weight:bold;">所有方言</text></para>
     <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -466,7 +466,7 @@
     </list>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 0.2.10</para>
+    <para styleclass="Heading1">0.2.10 中的更改</para>
     <para styleclass="Normal"><text style="font-weight:normal;">该版本重点解决了 VO 和 Vulcan 兼容性方面的最后遗留问题，并为 Visual Studio 集成添加了大量新功能。</text></para>
     <para styleclass="Heading2"><text style="font-weight:bold;">编译器</text></para>
     <para styleclass="Heading3"><text style="font-weight:bold;">VO/Vulcan 兼容性</text></para>
@@ -535,7 +535,7 @@
     </list>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 0.2.9</para>
+    <para styleclass="Heading1">0.2.9 中的更改</para>
     <para styleclass="Heading2"><text style="font-weight:bold;">编译器</text></para>
     <para styleclass="Body Text"><text style="font-weight:bold; font-style:italic;">除了 Vulcan 没有发现的 Vulcan SDK 中的一些明显错误外，您可以在不做任何更改的情况下编译 Vulcan SDK！</text></para>
     <para styleclass="Body Text"><text style="font-weight:bold; font-style:italic;">根据编译器的当前状态，我们认为编译器的 Vulcan 兼容性已经完成。现在，所有 Vulcan 代码的编译都不会出现问题。</text></para>
@@ -655,7 +655,7 @@
     </list>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 0.2.8</para>
+    <para styleclass="Heading1">0.2.8 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <para styleclass="Heading3">VO/Vulcan 兼容性</para>
     <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
@@ -730,7 +730,7 @@
     </list>
     <para styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 0.2.7.1</para>
+    <para styleclass="Heading1">0.2.7.1 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">编译器不接受 AssemblyFileVersion 属性和 AssemblyInformationVersion 属性的通配符字符串。现已修复</text></li>
@@ -756,7 +756,7 @@
     </list>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 0.2.7</para>
+    <para styleclass="Heading1">0.2.7 中的更改</para>
     <para styleclass="Heading2"><text style="font-weight:bold;">编译器</text></para>
     <para styleclass="Heading3"><text style="font-weight:bold;">新特性：</text></para>
     <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
@@ -793,7 +793,7 @@
       <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="Normal">修正了启动调试器时使用非标准命令行的问题</text></li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 0.2.6</para>
+    <para styleclass="Heading1">0.2.6 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="17" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">已添加事件定义的替代语法。请参阅文档中的 <link displaytype="text" defaultstyle="true" type="topiclink" href="new-feat-EVENT-(Add-and-Remove)">EVENT</link> 关键字</li>
@@ -821,7 +821,7 @@
       <li styleclass="List1">现在，所有生成的文件都以 UTF 格式存储，以确保特殊字符的正确存储。如果在生成代码时看到有关代码页转换的警告，请从 Visual Studio 菜单中选择 “文件 - 高级保存选项”，然后选择 Unicode 文件格式，将文件保存为 UTF 格式。</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 0.2.51</para>
+    <para styleclass="Heading1">0.2.51 中的更改</para>
     <para styleclass="Heading2">Visual Studio 集成 &amp; 生成系统</para>
     <list id="19" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">本地资源编译器现在能 “找到 ”头文件，如 Vulcan.NET include 文件夹中的 “VOWin32APILibrary.vh”。此外，在 “正常 ”信息模式下运行时，资源编译器的输出现在不再那么冗长。在 “详细 ”或 “诊断 ”模式下运行时，输出现在也包括资源编译器的冗长输出。</li>
@@ -835,7 +835,7 @@
       <li styleclass="List1">修正了 ~ 运算符的一个问题。VO 和 Vulcan(以及 X#)将该运算符用作一元运算符和二元运算符。<br/>一元运算符进行 bitwise negation(一元补码)，二元运算符进行 XOR。<br/>这与 C# 不同，在 C# 中，~ 运算符是 Bitwise Negation，^ 运算符是 XOR(当然，我们的 Roslyn 后端使用的是 C# 语法)。</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 0.2.5</para>
+    <para styleclass="Heading1">0.2.5 中的更改</para>
     <para styleclass="Heading2">Visual Studio 集成</para>
     <list id="21" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">修正了为 WPF 生成时输出文件名包含管道符号的问题</li>
@@ -905,7 +905,7 @@
       <li styleclass="List1">已添加 Vulcan 运行时参考文档</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 0.2.4</para>
+    <para styleclass="Heading1">0.2.4 中的更改</para>
     <para styleclass="Heading2">Visual Studio 集成</para>
     <list id="32" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">双击错误浏览器中的错误现在可以正确打开源文件并定位光标</li>
@@ -977,7 +977,7 @@
       <li styleclass="List1">索引属性内的 __ENTITY__ 预处理器宏</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 0.2.3</para>
+    <para styleclass="Heading1">0.2.3 中的更改</para>
     <para styleclass="Heading2">Visual Studio 集成</para>
     <list id="37" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">我们已改为使用 Visual Studio Integration 的 MPF 风格。</li>
@@ -1023,7 +1023,7 @@
       <li styleclass="List1">? 命令将对参数调用 AsString()</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 0.2.2</para>
+    <para styleclass="Heading1">0.2.2 中的更改</para>
     <para styleclass="Heading2">Visual Studio 集成</para>
     <list id="40" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">添加了更多项目属性。其中一个新属性是 “使用共享编译器” 选项。这将提高编译速度，但可能会产生副作用，即某些编译器(解析器)错误不会显示在详细信息中。 <br/>如果您遇到这种情况，请禁用该选项。</li>
@@ -1049,7 +1049,7 @@
       <li styleclass="Normal"><text style="font-weight:normal;">右移操作符不再与两个 “大于 ”操作符冲突，这使您可以声明或创建泛型，而不必在它们之间留出空格。</text><br/><text style="font-weight:normal;">(</text><text styleclass="Code Example">var x := List&lt;Tuple&lt;int,int&gt;&gt;{}</text></li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 0.2.1</para>
+    <para styleclass="Heading1">0.2.1 中的更改</para>
     <para styleclass="Heading2">Visual Studio 集成</para>
     <list id="40" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">添加并改进了多个项目属性</li>
@@ -1066,7 +1066,7 @@
       <li styleclass="List1">结合 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo3">/VO3</link> 兼容性选项对虚方法和非虚方法进行了多项修复</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 0.1.7</para>
+    <para styleclass="Heading1">0.1.7 中的更改</para>
     <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">&quot;<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ns">ns</link>&quot;(为没有命名空间的类添加默认命名空间)已经实现</li>
       <li styleclass="List1">实现了 “<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo3">vo3</link>” 编译器选项(使所有方法都成为虚方法)。</li>
@@ -1081,7 +1081,7 @@
       <li styleclass="List1">WHILE. ENDDO(没有前导 DO 的 DO WHILE)现在可以正确识别了</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 0.1.6</para>
+    <para styleclass="Heading1">0.1.6 中的更改</para>
     <list id="42" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">该版本现在附带安装程序</li>
       <li styleclass="List1">该版本包含 Visual Studio 集成的第一个版本。您可以在 Visual Studio 中进行编辑、生成、运行和调试。没有 “intellisense ”功能。</li>
@@ -1095,7 +1095,7 @@
       <li styleclass="List1">修正了一个问题，当混合使用不同的数字类型时，该问题可能会导致 “运算符不明确 ”的信息。</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 0.1.5</para>
+    <para styleclass="Heading1">0.1.5 中的更改</para>
     <list id="43" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">当解析阶段出现错误时，X# 将不再进入编译器的后续阶段，以防止崩溃。除了解析器的错误外，还会显示错误 9002。</li>
       <li styleclass="List1">解析器错误现在也会在错误信息中包含源文件名，并采用与其他错误信息相同的格式。请注意，我们尚未完成对这些错误信息的处理。在即将推出的版本中，这些错误信息的格式将得到改进。</li>
@@ -1104,7 +1104,7 @@
       <li styleclass="List1">修正了感叹号 (!) NOT 运算符的一个问题 </li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 0.1.4</para>
+    <para styleclass="Heading1">0.1.4 中的更改</para>
     <list id="44" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">允许使用整数和枚举进行计算的几处更改</li>
       <li styleclass="List1">为实现与 VO 兼容的 _OR、_AND、_NOT 和 _XOR 操作而做的几处修改</li>
@@ -1126,7 +1126,7 @@
       <li styleclass="List1">不带 GET SET 的 AUTO 属性现在会自动添加一个 GET 和 SET 块</li>
       <li styleclass="List1">允许隐式常量从 double 到 single 的转换</li>
     </list>
-    <para styleclass="Heading1">Changes in 0.1.3</para>
+    <para styleclass="Heading1">0.1.3 中的更改</para>
     <list id="45" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">将不一致的字段可访问性错误改为警告和其他类似错误</li>
       <li styleclass="List1">添加了对 Vulcan 参数的命令行支持。除非 Roslyn (C#) 编译器存在等效参数，否则这些参数不会再导致错误信息，但不会真正实现。例如 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-ovf">/ovf</link> 和 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fovf">/fovf</link> 都被映射到 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-checked">/checked</link>，<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-wx">/wx</link> 被映射到 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-warnaserror">/warnaserror</link> 。不应使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-w">/w</link>，因为其含义与 /warning level(警告级别)不同。而应使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-nowarn">/nowarn</link>:nnnn</li>
@@ -1144,14 +1144,14 @@
       <li styleclass="List1">修复了 ACCESS/ASSIGN 属性生成的问题</li>
       <li styleclass="List1">修复了 Abstract 方法处理的问题</li>
     </list>
-    <para styleclass="Heading1">Changes in 0.1.2.1</para>
+    <para styleclass="Heading1">0.1.2.1 中的更改</para>
     <list id="46" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">添加了默认表达式</li>
       <li styleclass="List1">修复了与事件有关的问题</li>
       <li styleclass="List1">修复了一些小的词法问题</li>
       <li styleclass="List1">修复了 _DLL FUNCTION 和 _DLL PROCEDURE 的问题</li>
     </list>
-    <para styleclass="Heading1">Changes in 0.1.2</para>
+    <para styleclass="Heading1">0.1.2 中的更改</para>
     <list id="47" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="0" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">修复了处理扩展字符串中转义序列的问题</li>
       <li styleclass="List1">修复了 FOR... NEXT 语句中的问题</li>

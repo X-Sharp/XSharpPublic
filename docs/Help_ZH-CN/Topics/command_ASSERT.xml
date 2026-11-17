@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" modified="2026-11-17T13:30:54.568+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>ASSERT Command</title>
+  <title>ASSERT 命令</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>Debugging</keyword>
@@ -9,21 +9,21 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">ASSERT Command</para>
+      <para styleclass="Heading1">ASSERT 命令</para>
     </header>
     <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">用途</para>
-    <para styleclass="Normal">Displays a message box when the specified expression evaluates to FALSE.</para>
+    <para styleclass="Normal">当指定的表达式求值为 FALSE 时，显示一个消息框。</para>
     <para styleclass="Heading1">语法</para>
     <para styleclass="Code with box">ASSERT &lt;lExpression&gt; [MESSAGE &lt;cMessageText&gt;]</para>
     <para styleclass="Heading1">参数</para>
-    <para styleclass="List">&lt;lExpression&gt;<tab/>The expression that is evaluated. Nothing happens when the expression returns TRUE.</para>
-    <para styleclass="List">MESSAGE &lt;cMessageText&gt;<tab/>The text that is displayed in the message box. When this clause is omitted, the text of the expression is displayed.</para>
-    <para styleclass="Heading1">Remarks</para>
-    <para styleclass="Normal">ASSERT only does something when <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_ASSERTS">SET ASSERTS</link> is ON. When the assertion fails, a dialog is shown with the options Debug, Cancel, Ignore and Ignore All. Ignore All suppresses all following failed assertions.</para>
-    <para styleclass="Normal">When the compiler define NOASSERT is declared, the ASSERT commands are removed from the code by the preprocessor.</para>
-    <para styleclass="Heading1">Examples</para>
+    <para styleclass="List">&lt;lExpression&gt;<tab/>要求值的表达式。当表达式返回 TRUE 时，不会发生任何事情。</para>
+    <para styleclass="List">MESSAGE &lt;cMessageText&gt;<tab/>在消息框中显示的文本。省略此子句时，将显示表达式的文本。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">仅当 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_ASSERTS">SET ASSERTS</link> 为 ON 时，ASSERT 才会起作用。断言失败时，将显示一个对话框，其中包含“调试”（Debug）、“取消”（Cancel）、“忽略”（Ignore）和“全部忽略”（Ignore All）选项。“全部忽略”会抑制之后所有失败的断言。</para>
+    <para styleclass="Normal">当声明了编译器宏定义 NOASSERT 时，预处理器会从代码中移除 ASSERT 命令。</para>
+    <para styleclass="Heading1">示例</para>
     <para styleclass="Code Example">SET ASSERTS ON<br/>
 ASSERT nCount &gt; 0 MESSAGE &quot;The count must be positive&quot;</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>

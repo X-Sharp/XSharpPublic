@@ -17,7 +17,7 @@
     <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">&lt;idClass&gt;<tab />NULL_OBJECT</para>
     <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">STRING<tab />NULL_STRING<tab /></para>
     <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">SYMBOL<tab />NULL_SYMBOL<tab /></para>
-    <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">All numerics<tab />0<tab /></para>
+    <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">所有数值类型<tab />0<tab /></para>
     <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">USUAL<tab />NIL<tab /></para>
     <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">PSZ<tab />NULL_PSZ<tab /></para>
     <para styleclass="List" style="text-indent:-171px; margin-left:369px; tabstops:198px left,385px left ;">PTR<tab />NULL_PTR<tab /></para>

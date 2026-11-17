@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" modified="2026-11-17T13:37:03.738Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>DELETE Command (FoxPro)</title>
+  <title>DELETE 命令 (FoxPro)</title>
   <keywords>
     <keyword>Commands</keyword>
     <keyword>DELETE command</keyword>
@@ -10,7 +10,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">DELETE Command &#160;(FoxPro)</para>
+      <para styleclass="Heading1">DELETE 命令 (FoxPro)</para>
     </header>
     <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">用途</para>
@@ -21,13 +21,13 @@
     <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
     <para styleclass="List"><snippet src="__While" inline="false"/></para>
     <para styleclass="List"><snippet src="__For" inline="false"/></para>
-    <para styleclass="List">NOOPTIMIZE<tab />Disables the optimization of the FOR clause. This clause is accepted for compatibility.</para>
+    <para styleclass="List">NOOPTIMIZE<tab />禁用 FOR 子句的优化。接受此子句仅为保持兼容性。</para>
     <para styleclass="List"><snippet src="__In" inline="false"/></para>
     <para styleclass="Heading1">备注</para>
     <para styleclass="Normal">子句可以按任意顺序指定。如果没有指定作用域，仅使用 FOR 或 WHILE 子句时，仅会删除当前记录。使用 FOR 子句时，默认作用域为 ALL。</para>
     <para styleclass="Normal">DELETE 仅将记录标记为待删除。这些记录将保留在表中，直到执行 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_PACK">PACK</link> 命令为止。使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DELETED">SET DELETED</link> 可隐藏已删除的记录，使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RECALL">RECALL</link> 可清除删除标记。</para>
     <para styleclass="Normal">命令执行完成后，变量 _TALLY 将包含已被标记为待删除的记录数。已标记为已删除的记录不计入其中。</para>
-    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Heading1">示例</para>
     <para styleclass="Code Example">USE Customers<br/>DELETE FOR Country = &quot;XX&quot;<br/>DELETE NEXT 5 IN Customers<br/>? _TALLY</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
     <para styleclass="Heading1">参见</para>

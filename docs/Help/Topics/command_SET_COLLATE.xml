@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET COLLATE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SET commands</keyword>
+    <keyword>SET COLLATE command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET COLLATE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Specifies the collation sequence that is used for the indexing and sorting of character fields.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">SET COLLATE TO &lt;cCollationSequence&gt;</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;cCollationSequence&gt;<tab />The name of the collation sequence, for example "MACHINE" or "GENERAL". The name may be specified with or without quotes.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The default value is "MACHINE". The value is stored in the runtime state. The runtime does not change the collation of the indexes based on this setting at this moment. Use <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_COLLATION">SET COLLATION</link> to select the collation table that is used by the runtime.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_COLLATION">SET COLLATION</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_INDEX_FoxPro">INDEX (FoxPro)</link></para>
+  </body>
+</topic>

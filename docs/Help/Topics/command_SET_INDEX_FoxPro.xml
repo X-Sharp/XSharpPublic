@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET INDEX Command (FoxPro)</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Indexes</keyword>
+    <keyword>SET INDEX command</keyword>
+    <keyword>SET INDEX command<keyword>FoxPro</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET INDEX Command &#160;(FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Opens one or more index files for the current table and optionally selects the controlling order. This is the FoxPro version of the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_INDEX">SET INDEX</link> command.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">SET INDEX TO [&lt;IndexFile1&gt; [, &lt;IndexFile2&gt; ...]]<br/> &#160; [ORDER [TAG &lt;OrderName&gt; [OF &lt;IndexFile&gt;]]] [ASCENDING | DESCENDING] [ADDITIVE]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;IndexFile1&gt;, ...<tab />The index files to open. If the list is omitted (SET INDEX TO without arguments), all open index files for the current table are closed.</para>
+    <para styleclass="List">ORDER [TAG] &lt;OrderName&gt; [OF &lt;IndexFile&gt;]<tab />Selects the controlling order after the index files have been opened.</para>
+    <para styleclass="List">ASCENDING | DESCENDING<tab />Changes the direction of the controlling order.</para>
+    <para styleclass="List">ADDITIVE<tab />Keeps the index files that are already open open. Without this clause, the other index files are closed before the new files are opened.</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Code Example">USE Customers<br/>
+SET INDEX TO Customers.cdx ORDER TAG LastName DESCENDING<br/>
+SET INDEX TO Extra.cdx ADDITIVE</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_INDEX">SET INDEX</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_INDEX_FoxPro">INDEX (FoxPro)</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_ORDER">SET ORDER</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_OrdListAdd.htm" domain="XSharpRef.chm">OrdListAdd()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_OrdSetFocus.htm" domain="XSharpRef.chm">OrdSetFocus()</link></para>
+  </body>
+</topic>

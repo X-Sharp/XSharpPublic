@@ -36,6 +36,8 @@
     <para styleclass="Heading1"><text styleclass="Body Text">SCAN automatically advances the record pointer to the next record that meets the specified conditions and executes the block of commands.</text></para>
     <para styleclass="Body Text">You can place comments after ENDSCAN on the same line. The comments are ignored during program compilation and execution.</para>
     <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">The preprocessor translates SCAN to a call to DbLocate() followed by a DO WHILE Found() loop. ENDSCAN is translated to a call to DbContinue() followed by ENDDO. The scan therefore follows the same rules as the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCATE">LOCATE</link> and <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CONTINUE">CONTINUE</link> commands. END SCAN is a synonym for ENDSCAN.</para>
+    <para styleclass="Body Text"></para>
     <para styleclass="Body Text">SCAN ... ENDSCAN ensures that, upon reaching ENDSCAN, Visual FoxPro reselects the table that was current when the SCAN ... ENDSCAN loop began.</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Heading1">Example</para>
@@ -48,5 +50,9 @@
     <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FOR">FOR Statement</link></para>
     <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FOREACH">FOREACH </link><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_CASE">Statement</link></para>
     <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SWITCH">SWITCH Statement</link></para>
+    <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCATE">LOCATE Command</link></para>
+    <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CONTINUE">CONTINUE Command</link></para>
+    <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbLocate.htm" domain="XSharpRef.chm">DbLocate()</link></para>
+    <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbContinue.htm" domain="XSharpRef.chm">DbContinue()</link></para>
   </body>
 </topic>

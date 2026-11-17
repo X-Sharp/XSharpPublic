@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET POINT Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SET commands</keyword>
+    <keyword>SET POINT command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET POINT Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Specifies the character that is used as decimal separator in numeric expressions.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">SET POINT TO [&lt;cCharacter&gt;]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;cCharacter&gt;<tab />The decimal separator. When the character is omitted the separator is reset to the period (".").</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The setting is stored in the runtime state as Set.Point, which is the same setting as the one that is changed by <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDecimalSep.htm" domain="XSharpRef.chm">SetDecimalSep()</link>.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_SEPARATOR">SET SEPARATOR</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DECIMALS">SET DECIMALS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDecimalSep.htm" domain="XSharpRef.chm">SetDecimalSep()</link></para>
+  </body>
+</topic>

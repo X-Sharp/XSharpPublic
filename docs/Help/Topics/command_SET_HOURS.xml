@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET HOURS Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SET commands</keyword>
+    <keyword>SET HOURS command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET HOURS Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Sets the 12 or 24 hour format for the display of time values.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">SET HOURS TO &lt;nHours&gt;</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;nHours&gt;<tab />12 or 24.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">SET HOURS TO is equivalent to the function <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetHours.htm" domain="XSharpRef.chm">SetHours()</link>.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_SECONDS">SET SECONDS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_TIME">SET TIME</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetHours.htm" domain="XSharpRef.chm">SetHours()</link></para>
+  </body>
+</topic>

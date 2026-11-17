@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET TEXTMERGE DELIMITERS Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SET commands</keyword>
+    <keyword>SET TEXTMERGE DELIMITERS command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET TEXTMERGE DELIMITERS Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Specifies the delimiters that mark the expressions that are evaluated in text-merge output.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">SET TEXTMERGE DELIMITERS [TO [&lt;cLeftDelimiter&gt; [, &lt;cRightDelimiter&gt;]]]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">TO &lt;cLeftDelimiter&gt; [, &lt;cRightDelimiter&gt;]<tab />The characters that mark the start and the end of an expression. When only the left delimiter is specified, then it is also used as the right delimiter.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The default delimiters are &lt;&lt; and &gt;&gt;. The delimiters are used when <link displaytype="text" defaultstyle="true" type="topiclink" href="Command_SET_TEXTMERGE">SET TEXTMERGE</link> is ON, in the \ and \\ commands and in the <link displaytype="text" defaultstyle="true" type="topiclink" href="TEXT-Command-(FoxPro)">TEXT ... ENDTEXT</link> command.</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Code Example">SET TEXTMERGE ON<br/>
+SET TEXTMERGE DELIMITERS TO "{", "}"<br/>
+TEXT<br/>
+Today is {DATE()}<br/>
+ENDTEXT</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Command_SET_TEXTMERGE">SET TEXTMERGE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="TEXT-Command-(FoxPro)">TEXT ... ENDTEXT</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_VFP_Functions_SetTextMergeDelimiters.htm" domain="XSharpRef.chm">SetTextMergeDelimiters()</link></para>
+  </body>
+</topic>

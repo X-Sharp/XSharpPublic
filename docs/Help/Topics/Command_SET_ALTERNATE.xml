@@ -17,6 +17,7 @@
     <para styleclass="Heading1">Syntax</para>
     <para styleclass="Normal"><text style="font-family:Consolas;">SET ALTERNATE TO [&lt;cFileName&gt; [ADDITIVE] ] </text></para>
     <para styleclass="Normal"><text style="font-family:Consolas;">SET ALTERNATE ON | OFF | &lt;lToggle</text>&gt; </para>
+    <para styleclass="Normal"><text style="font-family:Consolas;">CLOSE ALTERNATE</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">&lt;cFileName&gt;<tab />Specifies the name of the ASCII file where screen output is recorded. The name must contain the drive and path. The file name can be specified either as a literal file name or as a character expression in parentheses. When the file name is specified without a file extension, the extension &quot;.TXT&quot; is used by default. <br/></para>

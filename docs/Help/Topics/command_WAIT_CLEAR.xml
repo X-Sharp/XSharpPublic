@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>WAIT CLEAR Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Terminal</keyword>
+    <keyword>WAIT CLEAR command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">WAIT CLEAR Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Closes a message window that was left open by the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_WAIT_FoxPro">WAIT WINDOW ... NOCLEAR</link> command.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">WAIT CLEAR</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; color:#ff0000;">NOT SUPPORTED AT THIS MOMENT</text>: The command is accepted for compatibility, but it does not do anything.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_WAIT_FoxPro">WAIT (FoxPro)</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_WAIT">WAIT</link></para>
+  </body>
+</topic>

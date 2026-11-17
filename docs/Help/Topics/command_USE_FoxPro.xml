@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>USE Command (FoxPro)</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Tables</keyword>
+    <keyword>USE command</keyword>
+    <keyword>USE command<keyword>FoxPro</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">USE Command &#160;(FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Opens a table and its indexes, or closes a table, using the syntax of the FoxPro dialect. This is the FoxPro version of the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE">USE</link> command.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">USE &lt;TableName&gt; [IN &lt;WorkArea&gt; | &lt;Alias&gt;]<br/> &#160; [ONLINE] [ADMIN] [AGAIN] [NOREQUERY [&lt;nDataSession&gt;]] [NODATA]<br/> &#160; [INDEX &lt;IndexFile1&gt; [, &lt;IndexFile2&gt; ...]]<br/> &#160; [ORDER [TAG] &lt;OrderName&gt; [OF &lt;IndexFile&gt;]] [ASCENDING | DESCENDING]<br/> &#160; [ALIAS &lt;Alias&gt;] [EXCLUSIVE | SHARED] [NOUPDATE] [CONNSTRING &lt;ConnectionString&gt;]<br/><br/>USE IN &lt;WorkArea&gt; | &lt;Alias&gt;</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;TableName&gt;<tab />The name of the table to open. When the table is not found in the current directory the search path is used (see <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_PATH">SET PATH</link>).</para>
+    <para styleclass="List"><snippet src="__In" inline="false"/></para>
+    <para styleclass="List">AGAIN<tab />Opens the table again in a new work area, while it is also open in another work area. The new work area uses the same shared/exclusive and read-only mode as the work area where the table is already open.</para>
+    <para styleclass="List">INDEX &lt;IndexFile1&gt;, ...<tab />Opens the specified index files together with the table.</para>
+    <para styleclass="List">ORDER [TAG] &lt;OrderName&gt; [OF &lt;IndexFile&gt;]<tab />Selects the controlling order after the table has been opened. The order can be a tag name from a compound index file (CDX), or the name of an order in the index file that is specified in the OF clause.</para>
+    <para styleclass="List">ASCENDING | DESCENDING<tab />Changes the direction of the controlling order. This is only done when the ORDER clause is also specified.</para>
+    <para styleclass="List">ALIAS &lt;Alias&gt;<tab />The alias for the table. When this clause is omitted, the alias is the name of the table without path and extension. When that alias is already in use by another work area then a unique alias is generated.</para>
+    <para styleclass="List">EXCLUSIVE<tab />Opens the table for exclusive use. By default the table is opened as set by <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_EXCLUSIVE">SET EXCLUSIVE</link>.</para>
+    <para styleclass="List">SHARED<tab />Opens the table for shared use.</para>
+    <para styleclass="List">NOUPDATE<tab />Opens the table read-only.</para>
+    <para styleclass="List">ONLINE, ADMIN, NOREQUERY, NODATA, CONNSTRING<tab />These clauses are only relevant for remote views and are accepted for compatibility, but ignored.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The FoxPro version of the command uses the DBFVFP RDD as the default driver, so the table can be a DBF with the FoxPro extensions (null fields, auto-increment fields, DateTime and Currency fields and so on).</para>
+    <para styleclass="Normal">USE IN &lt;WorkArea&gt; closes the table in the specified work area. The command USE without any clauses closes the table in the current work area, as described in <link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE">USE</link>. CLOSE IN &lt;WorkArea&gt; has the same effect as USE IN.</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Code Example">USE Customers ALIAS Cust SHARED NOUPDATE<br/>
+USE Customers AGAIN IN 0 ALIAS Cust2 ORDER TAG LastName<br/>
+USE IN Cust2</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE">USE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLOSE">CLOSE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLOSE_TABLES">CLOSE TABLES</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SELECT">SELECT</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_VFP_Functions_DbUseAreaFox.htm" domain="XSharpRef.chm">DbUseAreaFox()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_RT_Functions_DbCloseArea.htm" domain="XSharpRef.chm">DbCloseArea()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetIndex.htm" domain="XSharpRef.chm">DbSetIndex()</link></para>
+  </body>
+</topic>

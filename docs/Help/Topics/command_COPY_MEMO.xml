@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>COPY MEMO Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Memo fields</keyword>
+    <keyword>COPY MEMO command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">COPY MEMO Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Copies the contents of a memo field of the current record to a file.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">COPY MEMO &lt;MemoField&gt; TO &lt;FileName&gt; [ADDITIVE] [AS &lt;nCodePage&gt;]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;MemoField&gt;<tab />The name of the memo field in the current work area.</para>
+    <para styleclass="List">TO &lt;FileName&gt;<tab />The name of the file that receives the contents of the memo field.</para>
+    <para styleclass="List">ADDITIVE<tab />Appends the contents to the end of the file when it already exists. Without this clause an existing file is overwritten.</para>
+    <para styleclass="List">AS &lt;nCodePage&gt;<tab />The code page of the text that is written to the file. When this clause is omitted, the text is written without conversion.</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Code Example">USE Customers<br/>
+COPY MEMO Notes TO CustomerNotes.txt<br/>
+COPY MEMO Notes TO AllNotes.txt ADDITIVE</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_REPLACE_FoxPro">REPLACE (FoxPro)</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbCopyMemo.htm" domain="XSharpRef.chm">DbCopyMemo()</link></para>
+  </body>
+</topic>

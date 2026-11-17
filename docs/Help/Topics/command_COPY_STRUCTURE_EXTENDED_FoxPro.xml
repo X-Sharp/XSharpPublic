@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>COPY STRUCTURE EXTENDED Command (FoxPro)</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Tables</keyword>
+    <keyword>COPY STRUCTURE EXTENDED command</keyword>
+    <keyword>COPY STRUCTURE EXTENDED command<keyword>FoxPro</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">COPY STRUCTURE EXTENDED Command &#160;(FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Creates a table that contains the structure of the current table as data: one record for each field. This is the FoxPro version of the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_STRUCTURE_EXTENDE">COPY STRUCTURE EXTENDED</link> command.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">COPY [STRUCTURE] EXTENDED TO &lt;TableName&gt; [DATABASE &lt;DbName&gt; [NAME &lt;LongTableName&gt;]]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">TO &lt;TableName&gt;<tab />The name of the new table. This table has the fields that describe a field of the original table (name, type, width, decimals and so on).</para>
+    <para styleclass="List">DATABASE &lt;DbName&gt; [NAME &lt;LongTableName&gt;]<tab />Adds the new table to the specified database. The NAME clause specifies the long name of the table in that database.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The keywords STRUCTURE and EXTENDED may be used in the order shown, but the STRUCTURE keyword is optional. You can use the resulting table to create a new table with <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_FROM">CREATE FROM</link>.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_STRUCTURE_EXTENDE">COPY STRUCTURE EXTENDED</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_STRUCTURE_FoxPro">COPY STRUCTURE (FoxPro)</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_VFP_Functions_DbCopyXStructFox.htm" domain="XSharpRef.chm">DbCopyXStructFox()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbCopyXStruct.htm" domain="XSharpRef.chm">DbCopyXStruct()</link></para>
+  </body>
+</topic>

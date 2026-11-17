@@ -17,7 +17,9 @@
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Change the block size for memo files.</para>
     <para styleclass="Heading1">Syntax</para>
-    <para styleclass="Code with box">SET MEMOBLOCK TO &lt;<text styleclass="Italic">nSize</text>&gt;</para>
+    <para styleclass="Code with box">SET MEMOBLOCK TO &lt;<text styleclass="Italic">nSize</text>&gt;<br/>SET MEMOBLOCKSIZE TO [&lt;<text styleclass="Italic">nSize</text>&gt;]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List"><text styleclass="Italic">nSize</text><tab />The block size for memo files. SET MEMOBLOCKSIZE TO without a value sets the block size to 512.</para>
     <para styleclass="Heading1">Description</para>
     <para styleclass="Normal">The initial memo file block size depends on the RDD. For most drivers that support the .DBT memo file format, it is 512 bytes. However, if you are using BLOB files (.DBV) via inheritance from the DBFBLOB driver, the default is 1.</para>
     <para styleclass="Normal">SET MEMOBLOCK is functionally equivalent to calling RDDInfo(_SET_MEMOBLOCKSIZE, &lt;<text styleclass="Italic">nSize</text>&gt;). &#160;</para>

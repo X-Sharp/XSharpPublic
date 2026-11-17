@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>MKDIR Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Files and folders</keyword>
+    <keyword>MKDIR command</keyword>
+    <keyword>MD command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">MKDIR | MD Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Creates a new folder.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">MKDIR | MD &lt;FolderName&gt;</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;FolderName&gt;<tab />The name of the folder to create. This may be a relative or a full path. Missing parent folders are also created. The name may be specified with or without quotes.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">MD is a synonym for MKDIR. An error is generated when the folder cannot be created.</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Code Example">MKDIR C:\Temp\Test<br/>
+CHDIR C:\Temp\Test<br/>
+CD ..<br/>
+RMDIR C:\Temp\Test</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CHDIR">CHDIR</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RMDIR">RMDIR</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DIR">DIR</link></para>
+  </body>
+</topic>

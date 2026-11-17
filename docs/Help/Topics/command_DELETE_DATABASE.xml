@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>DELETE DATABASE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>DELETE DATABASE command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">DELETE DATABASE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Deletes a database container (DBC) from disk.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">DELETE DATABASE &lt;DbName&gt; [DELETETABLES] [RECYCLE]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;DbName&gt;<tab />The name of the database to delete.</para>
+    <para styleclass="List">DELETETABLES<tab />Also deletes the tables (.DBF files) that belong to the database. Without this clause the tables are not deleted and become free tables.</para>
+    <para styleclass="List">RECYCLE<tab />Moves the deleted files to the Recycle Bin instead of deleting them permanently.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The command is translated by the preprocessor to a call to the Delete() method of the XSharp.RDD.Dbc class.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_DATABASE">CREATE DATABASE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPEN_DATABASE">OPEN DATABASE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_REMOVE_TABLE">REMOVE TABLE</link></para>
+  </body>
+</topic>

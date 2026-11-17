@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>ADD TABLE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>ADD TABLE command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">ADD TABLE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Adds a free table to the current database.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">ADD TABLE &lt;TableName&gt; [NAME &lt;LongTableName&gt;]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;TableName&gt;<tab />The name of the free table (.DBF file) to add to the database. The .DBF extension is added when it is omitted. The file must exist and may not belong to another database.</para>
+    <para styleclass="List">NAME &lt;LongTableName&gt;<tab />A long name (up to 128 characters) for the table in the database. When this clause is omitted, the file name without extension is used.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The database must have been opened with <link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPEN_DATABASE">OPEN DATABASE</link> and must be the current database (see <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DATABASE">SET DATABASE TO</link>).</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_REMOVE_TABLE">REMOVE TABLE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RENAME_TABLE">RENAME TABLE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_TABLE">CREATE TABLE</link></para>
+  </body>
+</topic>

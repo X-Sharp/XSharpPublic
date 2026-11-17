@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:46:43.251Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET COLLATE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SET COLLATE command</keyword>
+    <keyword>SET commands</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET COLLATE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">指定用于字符字段索引和排序的排序规则。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">SET COLLATE TO &lt;cCollationSequence&gt;</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;cCollationSequence&gt;<tab />排序规则序列的名称，例如“MACHINE”或“GENERAL”。该名称可以带引号，也可以不带引号。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">默认值为“MACHINE”。该值存储在运行时状态中。目前，运行时不会根据此设置更改索引的排序规则。请使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_COLLATION">SET COLLATION</link> 来选择运行时所使用的排序规则表。</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_COLLATION">SET COLLATION</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_INDEX_FoxPro">INDEX (FoxPro)</link></para>
+  </body>
+</topic>

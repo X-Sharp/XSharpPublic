@@ -1,18 +1,18 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-11-17T13:12:12.378Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SET ANSI Command (FoxPro)</title>
   <keywords>
     <keyword>Commands</keyword>
-    <keyword>SET commands</keyword>
     <keyword>SET ANSI command</keyword>
     <keyword>SET ANSI command<keyword>FoxPro</keyword></keyword>
+    <keyword>SET commands</keyword>
   </keywords>
   <body>
     <header>
       <para styleclass="Heading1">SET ANSI Command &#160;(FoxPro)</para>
     </header>
-    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Determines how strings of different lengths are compared in SQL commands. This is the FoxPro version of the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_ANSI">SET ANSI</link> command.</para>
     <para styleclass="Heading1">Syntax</para>

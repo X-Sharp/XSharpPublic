@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:30:54.046+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET TIME Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SET commands</keyword>
+    <keyword>SET TIME command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET TIME Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">Specifies the format that is used to display time values.</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">SET TIME TO &lt;cTimeFormat&gt;<br/>SET TIME TO SYSTEM</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;cTimeFormat&gt;<tab/>The time format, for example HH:MM:SS. The format may be specified with or without quotes.</para>
+    <para styleclass="List">SYSTEM<tab/>Uses the time format of the operating system.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The command is equivalent to the function <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_Core_Functions_SetTimeFormat.htm" domain="XSharpRef.chm">SetTimeFormat()</link>.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_HOURS">SET HOURS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_SECONDS">SET SECONDS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DATE_FORMAT">SET DATE FORMAT</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_Core_Functions_SetTimeFormat.htm" domain="XSharpRef.chm">SetTimeFormat()</link></para>
+  </body>
+</topic>

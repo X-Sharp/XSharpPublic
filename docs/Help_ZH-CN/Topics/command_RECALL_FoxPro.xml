@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:39:00.647Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>RECALL Command (FoxPro)</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>RECALL command</keyword>
+    <keyword>RECALL command<keyword>FoxPro</keyword></keyword>
+    <keyword>Records</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">RECALL Command &#160;(FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">根据 FoxPro 方言的规则，从记录中移除删除标记。这是 FoxPro 版本的 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RECALL">RECALL</link> 命令。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">RECALL [&lt;Scope&gt;] [FOR &lt;lCondition&gt;] [WHILE &lt;lCondition&gt;] [NOOPTIMIZE] [IN &lt;WorkArea&gt; | &lt;Alias&gt;]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
+    <para styleclass="List"><snippet src="__While" inline="false"/></para>
+    <para styleclass="List"><snippet src="__For" inline="false"/></para>
+    <para styleclass="List">NOOPTIMIZE<tab />Disables the optimization of the FOR clause. This clause is accepted for compatibility.</para>
+    <para styleclass="List"><snippet src="__In" inline="false"/></para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">这些子句可以按任意顺序指定。如果没有指定作用域，仅使用 FOR 或 WHILE 子句时，只会调出当前记录。使用 FOR 子句时，默认作用域为 ALL。</para>
+    <para styleclass="Normal">当 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DELETED">SET DELETED</link> 设置为 ON 时，RECALL 也会访问已删除的记录，因此被 SET DELETED 隐藏的记录仍可被召回。</para>
+    <para styleclass="Normal">命令执行完成后，变量 _TALLY 包含已清除删除标记的记录数。未被删除的记录不计入其中。</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Code Example">USE Customers<br/>RECALL ALL<br/>RECALL FOR Country = &quot;NL&quot; IN Customers</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_RECALL">RECALL</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_FoxPro">DELETE (FoxPro)</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_PACK">PACK</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DELETED">SET DELETED</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_RT_Functions_DbRecall.htm" domain="XSharpRef.chm">DbRecall()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbEval.htm" domain="XSharpRef.chm">DbEval()</link></para>
+  </body>
+</topic>

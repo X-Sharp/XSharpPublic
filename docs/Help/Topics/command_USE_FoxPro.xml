@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-11-17T13:11:14.889Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>USE Command (FoxPro)</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -12,7 +12,7 @@
     <header>
       <para styleclass="Heading1">USE Command &#160;(FoxPro)</para>
     </header>
-    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Opens a table and its indexes, or closes a table, using the syntax of the FoxPro dialect. This is the FoxPro version of the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE">USE</link> command.</para>
     <para styleclass="Heading1">Syntax</para>
@@ -33,9 +33,7 @@
     <para styleclass="Normal">The FoxPro version of the command uses the DBFVFP RDD as the default driver, so the table can be a DBF with the FoxPro extensions (null fields, auto-increment fields, DateTime and Currency fields and so on).</para>
     <para styleclass="Normal">USE IN &lt;WorkArea&gt; closes the table in the specified work area. The command USE without any clauses closes the table in the current work area, as described in <link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE">USE</link>. CLOSE IN &lt;WorkArea&gt; has the same effect as USE IN.</para>
     <para styleclass="Heading1">Examples</para>
-    <para styleclass="Code Example">USE Customers ALIAS Cust SHARED NOUPDATE<br/>
-USE Customers AGAIN IN 0 ALIAS Cust2 ORDER TAG LastName<br/>
-USE IN Cust2</para>
+    <para styleclass="Code Example">USE Customers ALIAS Cust SHARED NOUPDATE<br/>USE Customers AGAIN IN 0 ALIAS Cust2 ORDER TAG LastName<br/>USE IN Cust2</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
     <para styleclass="Heading1">See Also</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE">USE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLOSE">CLOSE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLOSE_TABLES">CLOSE TABLES</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SELECT">SELECT</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_VFP_Functions_DbUseAreaFox.htm" domain="XSharpRef.chm">DbUseAreaFox()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_RT_Functions_DbCloseArea.htm" domain="XSharpRef.chm">DbCloseArea()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbSetIndex.htm" domain="XSharpRef.chm">DbSetIndex()</link></para>

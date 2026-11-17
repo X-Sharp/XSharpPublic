@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:44:39.317Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>RMDIR Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Files and folders</keyword>
+    <keyword>RD command</keyword>
+    <keyword>RMDIR command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">RMDIR | RD Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">删除一个空文件夹。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">RMDIR | RD &lt;FolderName&gt;</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;FolderName&gt;<tab />要删除的文件夹名称。该名称可以带引号，也可以不带引号。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">RD 是 RMDIR 的同义词。该文件夹必须为空：该命令不会删除文件夹内的文件和子文件夹。若无法删除该文件夹，则会产生错误。</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_MKDIR">MKDIR</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CHDIR">CHDIR</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DIR">DIR</link></para>
+  </body>
+</topic>

@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:30:54.197+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET DELIMITERS Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SET commands</keyword>
+    <keyword>SET DELIMITERS command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET DELIMITERS Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">Specifies whether the delimiters are displayed around the fields of a full-screen input and which characters are used as delimiters.</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">SET DELIMITERS ON | OFF | &amp;&lt;cMacro&gt;<br/>SET DELIMITERS TO [&lt;cDelimiters&gt; | DEFAULT]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">ON | OFF<tab/>ON displays the delimiters. OFF removes them. The value may also be a macro (&amp;) that evaluates to ON or OFF.</para>
+    <para styleclass="List">TO &lt;cDelimiters&gt;<tab/>The delimiter characters. When one character is specified, it is used for the left and right side. Two characters specify the left and right delimiter.</para>
+    <para styleclass="List">TO DEFAULT<tab/>Restores the default delimiters (a colon on both sides). SET DELIMITERS TO without 参数 does the same.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The settings are stored in the runtime state, but the runtime does not use them at this moment.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_TEXTMERGE_DELIMITERS">SET TEXTMERGE DELIMITERS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_CONFIRM">SET CONFIRM</link></para>
+  </body>
+</topic>

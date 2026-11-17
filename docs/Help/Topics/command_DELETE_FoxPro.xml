@@ -1,18 +1,18 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-11-17T13:09:53.067Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>DELETE Command (FoxPro)</title>
   <keywords>
     <keyword>Commands</keyword>
-    <keyword>Records</keyword>
     <keyword>DELETE command</keyword>
     <keyword>DELETE command<keyword>FoxPro</keyword></keyword>
+    <keyword>Records</keyword>
   </keywords>
   <body>
     <header>
       <para styleclass="Heading1">DELETE Command &#160;(FoxPro)</para>
     </header>
-    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Marks records for deletion, using the rules of the FoxPro dialect. This is the FoxPro version of the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE">DELETE</link> command.</para>
     <para styleclass="Heading1">Syntax</para>
@@ -28,10 +28,7 @@
     <para styleclass="Normal">DELETE only marks the records for deletion. The records remain in the table until <link displaytype="text" defaultstyle="true" type="topiclink" href="command_PACK">PACK</link> is executed. Use <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DELETED">SET DELETED</link> to hide the deleted records and <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RECALL">RECALL</link> to remove the deletion mark.</para>
     <para styleclass="Normal">After the command has completed, the variable _TALLY contains the number of records that have been marked for deletion. Records that were already marked as deleted are not counted.</para>
     <para styleclass="Heading1">Examples</para>
-    <para styleclass="Code Example">USE Customers<br/>
-DELETE FOR Country = "XX"<br/>
-DELETE NEXT 5 IN Customers<br/>
-? _TALLY</para>
+    <para styleclass="Code Example">USE Customers<br/>DELETE FOR Country = &quot;XX&quot;<br/>DELETE NEXT 5 IN Customers<br/>? _TALLY</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
     <para styleclass="Heading1">See Also</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE">DELETE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_FROM">DELETE FROM</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RECALL_FoxPro">RECALL (FoxPro)</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_PACK">PACK</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DELETED">SET DELETED</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_RT_Functions_DbDelete.htm" domain="XSharpRef.chm">DbDelete()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbEval.htm" domain="XSharpRef.chm">DbEval()</link></para>

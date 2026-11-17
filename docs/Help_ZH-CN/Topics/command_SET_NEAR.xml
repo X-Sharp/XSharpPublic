@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:46:25.871Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET NEAR Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SET commands</keyword>
+    <keyword>SET NEAR command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET NEAR Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">指定在使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SEEK_FoxPro">SEEK</link> 或 FIND 进行搜索失败后，记录指针的位置。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">SET NEAR ON | OFF | &amp;&lt;cMacro&gt;</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="Normal"><text styleclass="List">文件末尾。该值也可以是一个宏（&amp;），其求值结果为 ON 或 OFF。</text></para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">SET NEAR 是 FoxPro 中 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_SOFTSEEK">SET SOFTSEEK</link> 的名称。这两个命令均用于更改相同的运行时设置。</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_SOFTSEEK">SET SOFTSEEK</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SEEK_FoxPro">SEEK (FoxPro)</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetSoftSeek.htm" domain="XSharpRef.chm">SetSoftSeek()</link></para>
+  </body>
+</topic>

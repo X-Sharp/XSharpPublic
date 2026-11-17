@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-11-17T13:13:14.285Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SET OPTIMIZE Command (FoxPro)</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -12,7 +12,7 @@
     <header>
       <para styleclass="Heading1">SET OPTIMIZE Command &#160;(FoxPro)</para>
     </header>
-    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Enables or disables Rushmore optimization. This is the FoxPro version of the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_OPTIMIZE">SET OPTIMIZE</link> command.</para>
     <para styleclass="Heading1">Syntax</para>

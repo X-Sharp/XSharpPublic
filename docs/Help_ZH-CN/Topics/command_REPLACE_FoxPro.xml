@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:39:42.772Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>REPLACE Command (FoxPro)</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Fields</keyword>
+    <keyword>REPLACE command</keyword>
+    <keyword>REPLACE command<keyword>FoxPro</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">REPLACE Command &#160;(FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">使用 FoxPro 方言的规则，将字段的内容替换为新值。这是 FoxPro 版本的 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_REPLACE">REPLACE</link> 命令。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">REPLACE &lt;Field1&gt; WITH &lt;eExpression1&gt; [ADDITIVE] [, &lt;Field2&gt; WITH &lt;eExpression2&gt; ...]<br/> &#160; [&lt;Scope&gt;] [FOR &lt;lCondition&gt;] [WHILE &lt;lCondition&gt;] [NOOPTIMIZE]<br/> &#160; [IN &lt;WorkArea&gt; | &lt;Alias&gt;]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;Field&gt; WITH &lt;eExpression&gt;<tab />The field that must be changed and the expression with the new value. You can specify multiple fields, separated by commas.</para>
+    <para styleclass="List">ADDITIVE<tab />Appends the value to the existing contents of a memo field instead of replacing it. This clause can be used with a single field.</para>
+    <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
+    <para styleclass="List"><snippet src="__While" inline="false"/></para>
+    <para styleclass="List"><snippet src="__For" inline="false"/></para>
+    <para styleclass="List">NOOPTIMIZE<tab />Disables the optimization of the FOR clause. This clause is accepted for compatibility.</para>
+    <para styleclass="List"><snippet src="__In" inline="false"/></para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">若未指定作用域、FOR 或 WHILE 子句，则 REPLACE 仅修改当前记录。若包含上述任一子句，默认作用域为 ALL。该命令与标准命令的区别在于 ADDITIVE 和 IN 子句，以及变量 _TALLY 会被初始化（详见下文）。</para>
+    <para styleclass="Normal">命令执行完成后，变量 _TALLY 将包含已处理的记录数（单条记录形式下为 1）。</para>
+    <para styleclass="Normal">记录会在需要时自动锁定，并在字段被修改后解锁。</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Code Example">USE Customers<br/>GO 10<br/>REPLACE Name WITH &quot;Smith&quot;, Active WITH .T.<br/>REPLACE ALL Country WITH &quot;NL&quot; FOR City = &quot;Amsterdam&quot; IN Customers<br/>REPLACE Notes WITH &quot;Called today&quot; ADDITIVE</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_REPLACE">REPLACE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_UPDATE_SET">UPDATE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbEval.htm" domain="XSharpRef.chm">DbEval()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbAutoLock.htm" domain="XSharpRef.chm">DbAutoLock()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbAutoUnLock.htm" domain="XSharpRef.chm">DbAutoUnLock()</link></para>
+  </body>
+</topic>

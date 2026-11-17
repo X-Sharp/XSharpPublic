@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:51:12.993Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>WAIT Command (FoxPro)</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Terminal</keyword>
+    <keyword>WAIT command</keyword>
+    <keyword>WAIT command<keyword>FoxPro</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">WAIT Command &#160;(FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">显示一条消息，并暂停程序，直到按下任意键或超时为止。这是 FoxPro 版本的 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_WAIT">WAIT</link> 命令。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">WAIT [&lt;cMessage&gt;] [TO &lt;Variable&gt;] [WINDOW [AT &lt;nRow&gt;, &lt;nColumn&gt;]] [NOWAIT] [NOCLEAR] [TIMEOUT &lt;nSeconds&gt;]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;cMessage&gt;<tab />要显示的消息。如果省略此参数，将显示文本“按任意键继续……”。当使用 WINDOW 子句且省略消息时，不会显示任何消息。</para>
+    <para styleclass="List">TO &lt;Variable&gt;<tab />接收所按键值的变量。若未按下任何键（NOWAIT、TIMEOUT 或程序非交互式时），该变量将接收一个空字符串。</para>
+    <para styleclass="List">WINDOW [AT &lt;n行&gt;, &lt;n列&gt;]<tab />将消息显示在窗口中，而非屏幕上。当程序为GUI程序时，消息将显示在消息框中。该位置仅在窗口支持时才被使用。</para>
+    <para styleclass="List">NOWAIT<tab />显示消息后立即继续程序执行，不等待按键输入。</para>
+    <para styleclass="List">NOCLEAR<tab />命令执行完毕后保持消息窗口打开。使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_WAIT_CLEAR">WAIT CLEAR</link> 关闭该窗口。</para>
+    <para styleclass="List">TIMEOUT &lt;nSeconds&gt;<tab />在命令继续执行前等待按键的秒数。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">当程序没有控制台或用户界面时（例如在服务中），WAIT 命令将返回一个空字符串，并且不会进行等待。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Code Example">WAIT &quot;继续吗？&quot; TO cKey<br/>WAIT WINDOW &quot;请稍候...&quot; NOWAIT<br/>WAIT &quot;请在 5 秒内按任意键&quot; TIMEOUT 5</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_WAIT">WAIT</link>、<link displaytype="text" defaultstyle="true" type="topiclink" href="command_WAIT_CLEAR">WAIT CLEAR</link></para>
+  </body>
+</topic>

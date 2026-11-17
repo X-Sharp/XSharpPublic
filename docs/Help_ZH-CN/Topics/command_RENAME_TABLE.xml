@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:39:22.995Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>RENAME TABLE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>RENAME TABLE command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">RENAME TABLE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">更改当前数据库中某张表的名称。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">RENAME TABLE &lt;OldName&gt; TO &lt;NewName&gt;</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;OldName&gt;<tab />数据库中该表的当前（逻辑）名称。</para>
+    <para styleclass="List">&lt;NewName&gt;<tab />表的新（逻辑）名称。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">此命令仅更改数据库容器内的表名。物理 .DBF 文件不会被重命名。若要重命名文件，请使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RENAME">RENAME 命令</link>。</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ADD_TABLE">ADD TABLE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RENAME">RENAME</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_REMOVE_TABLE">REMOVE TABLE</link></para>
+  </body>
+</topic>

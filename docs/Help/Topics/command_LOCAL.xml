@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-12-11T16:28:38.738+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-11-17T12:32:33.518Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>LOCAL Statement</title>
   <keywords>
     <keyword>Arrays<keyword>creating</keyword><keyword>declaring</keyword></keyword>
@@ -23,7 +23,6 @@
     <para styleclass="Code with box">[STATIC] LOCAL &lt;idVar&gt; [:= &lt;uValue&gt;] [,...] [AS | IS &lt;idType&gt;] [, ...]<br/>[STATIC] LOCAL DIM &lt;ArraySpec&gt; [, ...] AS | IS &lt;idType&gt; [, ...]<br/>[STATIC] LOCAL &lt;ArraySpec&gt; [, ...] [AS ARRAY] [, ...]<br/>LOCAL ARRAY &lt;arrayName&gt; <text style="font-weight:bold;">(</text> &lt;nRows&gt; [, &lt;nColumns&gt;] <text style="font-weight:bold;">)</text> [, &lt;arrayName&gt; ( &lt;nRows&gt; [, &lt;nColumns&gt;] ) ] &#160; &#160; // FoxPro dialect only<br/>LOCAL ARRAY &lt;arrayName&gt; <text style="font-weight:bold;">[</text> &lt;nRows&gt; [, &lt;nColumns&gt;] <text style="font-weight:bold;">]</text> [, &lt;arrayName&gt; <text style="font-weight:bold;">[</text> &lt;nRows&gt; [, &lt;nColumns&gt;] <text style="font-weight:bold;">]</text> ] &#160; &#160; // FoxPro dialect only</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:16px; margin-bottom:0px; margin-left:12px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:64px left,320px left ;"></para>
     <para styleclass="Body Text"><text style="font-family:Arial; font-weight:normal; font-style:normal; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">Note: </text><text styleclass="Normal">The LOCAL statement is shown using several syntax diagrams for convenience. You can declare variables, dynamic arrays, and dimensioned arrays using a single LOCAL statement if each definition is separated by a comma.</text></para>
-    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:16px; margin-bottom:0px; margin-left:12px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:64px left,320px left ;"></para>
     <para styleclass="Heading1">Arguments</para>
     <para styleclass="List">STATIC<tab />Causes the local variable to retain its value across invocations of the declaring entity but does not affect its visibility.</para>
     <para styleclass="List"></para>

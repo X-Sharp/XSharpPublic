@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:30:54.332+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET PATH Command (FoxPro)</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SET commands</keyword>
+    <keyword>SET PATH command</keyword>
+    <keyword>SET PATH command<keyword>FoxPro</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET PATH Command  (FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">Specifies the search path for files, with the option to add folders to the existing path. This is the FoxPro version of the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_PATH">SET PATH</link> command.</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">SET PATH TO &lt;PathList&gt; ADDITIVE</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;PathList&gt;<tab/>A list of folders, separated by semi-colons or commas. This must be a string, a macro (&amp;) or an expression between parentheses (or a function call) that returns a string.</para>
+    <para styleclass="List">ADDITIVE<tab/>Adds the folders to the existing path, instead of replacing the path. Folders that are already in the path are not added again.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">When the path is specified as a plain name (without quotes or parentheses) then the keyword ADDITIVE is regarded as part of the path, so SET PATH TO data ADDITIVE sets the path to &quot;DATA ADDITIVE&quot;. This is the same in Visual FoxPro.</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Code Example">SET PATH TO &quot;C:\Data&quot;<br/>SET PATH TO &quot;C:\Data\Archive; C:\Data\Shared&quot; ADDITIVE</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_PATH">SET PATH</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DEFAULT">SET DEFAULT</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetPath.htm" domain="XSharpRef.chm">SetPath()</link></para>
+  </body>
+</topic>

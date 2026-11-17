@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:45:50.948Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SEEK Command (FoxPro)</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Indexes</keyword>
+    <keyword>SEEK command</keyword>
+    <keyword>SEEK command<keyword>FoxPro</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SEEK Command &#160;(FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">在已建立索引的表中搜索第一个索引键与指定表达式匹配的记录，可选地使用不同的排序顺序。这是 FoxPro 版本的 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SEEK">SEEK</link> 命令。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">SEEK &lt;eExpression&gt; [ORDER [TAG] &lt;OrderName&gt; [OF &lt;IndexFile&gt;]] [ASCENDING | DESCENDING] [IN &lt;WorkArea&gt; | &lt;Alias&gt;]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;eExpression&gt;<tab />要搜索的值。</para>
+    <para styleclass="List">ORDER [TAG] &lt;订单名称&gt; [OF &lt;索引文件&gt;]<tab />用于搜索的订单。该命令执行后，将恢复命令执行前的有效订单。</para>
+    <para styleclass="List">ASCENDING | DESCENDING<tab />用于搜索的排序方向。</para>
+    <para styleclass="List"><snippet src="__In" inline="false"/></para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">执行该命令后，如果找到了匹配的记录，Found() 函数将返回 TRUE。如果未找到匹配的记录，则记录指针将定位在文件的末尾（或者当 SET SOFTSEEK 为 ON 时，定位在下一个更高的键上）。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Code Example">USE Customers<br/>SEEK &quot;Smith&quot; ORDER TAG LastName<br/>IF Found()<br/> &#160;? Name<br/>ENDIF</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SEEK">SEEK</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_ORDER">SET ORDER</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_SOFTSEEK">SET SOFTSEEK</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_VFP_Functions_DbSeekFox.htm" domain="XSharpRef.chm">DbSeekFox()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Found.htm" domain="XSharpRef.chm">Found()</link></para>
+  </body>
+</topic>

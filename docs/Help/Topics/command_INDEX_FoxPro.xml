@@ -1,18 +1,18 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-11-17T13:15:01.586Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>INDEX Command (FoxPro)</title>
   <keywords>
     <keyword>Commands</keyword>
-    <keyword>Indexes</keyword>
     <keyword>INDEX command</keyword>
     <keyword>INDEX command<keyword>FoxPro</keyword></keyword>
+    <keyword>Indexes</keyword>
   </keywords>
   <body>
     <header>
       <para styleclass="Heading1">INDEX Command &#160;(FoxPro)</para>
     </header>
-    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Creates an index (a tag in a compound index file, or a stand-alone index file), using the syntax of the FoxPro dialect. This is the FoxPro version of the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_INDEX">INDEX</link> command.</para>
     <para styleclass="Heading1">Syntax</para>
@@ -37,10 +37,7 @@
     <para styleclass="Heading1">Remarks</para>
     <para styleclass="Normal">In the FoxPro dialect the order name is specified with the TAG keyword and the index file with TO or OF. The command is translated to calls to OrdCondSet() and OrdCreate().</para>
     <para styleclass="Heading1">Examples</para>
-    <para styleclass="Code Example">USE Customers EXCLUSIVE<br/>
-INDEX ON UPPER(LastName) TAG LastName<br/>
-INDEX ON Id TAG Id CANDIDATE<br/>
-INDEX ON Country + City TAG CountryCity FOR !DELETED()</para>
+    <para styleclass="Code Example">USE Customers EXCLUSIVE<br/>INDEX ON UPPER(LastName) TAG LastName<br/>INDEX ON Id TAG Id CANDIDATE<br/>INDEX ON Country + City TAG CountryCity FOR !DELETED()</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
     <para styleclass="Heading1">See Also</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_INDEX">INDEX</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_INDEX_FoxPro">SET INDEX (FoxPro)</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_ORDER">SET ORDER</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_REINDEX">REINDEX</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_OrdCondSet.htm" domain="XSharpRef.chm">OrdCondSet()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_OrdCreate.htm" domain="XSharpRef.chm">OrdCreate()</link></para>

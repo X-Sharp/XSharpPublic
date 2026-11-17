@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:36:24.611Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CREATE DATABASE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>CREATE DATABASE command</keyword>
+    <keyword>Databases</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">CREATE DATABASE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">创建一个新的数据库容器（DBC）并将其打开以供独占使用。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">CREATE DATABASE &lt;DbName&gt;</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;DbName&gt;<tab />要创建的数据库名称。默认扩展名为 .DBC。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">新数据库将成为当前数据库。该命令会被预处理器转换为对 XSharp.RDD.Dbc 类中 Create() 方法的调用。</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_DATABASE">DELETE DATABASE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPEN_DATABASE">OPEN DATABASE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DATABASE">SET DATABASE TO</link></para>
+  </body>
+</topic>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-11-17T13:15:05.629Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SEEK Command (FoxPro)</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -12,7 +12,7 @@
     <header>
       <para styleclass="Heading1">SEEK Command &#160;(FoxPro)</para>
     </header>
-    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Searches an indexed table for the first record whose index key matches the specified expression, optionally using a different order. This is the FoxPro version of the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SEEK">SEEK</link> command.</para>
     <para styleclass="Heading1">Syntax</para>
@@ -25,11 +25,7 @@
     <para styleclass="Heading1">Remarks</para>
     <para styleclass="Normal">After the command the function Found() returns TRUE when a matching record was found. When no matching record was found, then the record pointer is positioned at the end of the file (or at the next higher key when SET SOFTSEEK is ON).</para>
     <para styleclass="Heading1">Examples</para>
-    <para styleclass="Code Example">USE Customers<br/>
-SEEK "Smith" ORDER TAG LastName<br/>
-IF Found()<br/>
-&#160; ? Name<br/>
-ENDIF</para>
+    <para styleclass="Code Example">USE Customers<br/>SEEK &quot;Smith&quot; ORDER TAG LastName<br/>IF Found()<br/> &#160;? Name<br/>ENDIF</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
     <para styleclass="Heading1">See Also</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SEEK">SEEK</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_ORDER">SET ORDER</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_SOFTSEEK">SET SOFTSEEK</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_VFP_Functions_DbSeekFox.htm" domain="XSharpRef.chm">DbSeekFox()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Found.htm" domain="XSharpRef.chm">Found()</link></para>

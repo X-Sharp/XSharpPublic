@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:41:40.296Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SORT Command (FoxPro)</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SORT command</keyword>
+    <keyword>SORT command<keyword>FoxPro</keyword></keyword>
+    <keyword>Tables</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SORT Command &#160;(FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">对当前表的记录进行排序，并将结果写入新表。这是 FoxPro 版本的 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SORT">SORT</link> 命令。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">SORT TO &lt;TableName&gt; ON &lt;Field1&gt; [/A | /D] [/C] [, &lt;Field2&gt; [/A | /D] [/C] ...]<br/> &#160; [ASCENDING | DESCENDING]<br/> &#160; [&lt;Scope&gt;] [FOR &lt;lCondition&gt;] [WHILE &lt;lCondition&gt;] [NOOPTIMIZE]<br/> &#160; [FIELDS &lt;FieldList&gt; | FIELDS LIKE &lt;Skeleton&gt; | FIELDS EXCEPT &lt;Skeleton&gt;]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">TO &lt;表名&gt;<tab />接收已排序记录的表的名称。</para>
+    <para styleclass="List">ON &lt;Field1&gt; [/A | /D] [/C], ...<tab />用于对表进行排序的字段。/A 表示升序排序（默认），/D 表示降序排序，/C 表示忽略字符字段的大小写。</para>
+    <para styleclass="List">ASCENDING | DESCENDING<tab />对于未指定 /A 或 /D 选项的字段，其默认排序方向。</para>
+    <para styleclass="List"><snippet src="__FoxFieldList" inline="false"/></para>
+    <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
+    <para styleclass="List"><snippet src="__While" inline="false"/></para>
+    <para styleclass="List"><snippet src="__For" inline="false"/></para>
+    <para styleclass="List">NOOPTIMIZE<tab />Disables the optimization of the FOR clause.</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">该命令的 FoxPro 版本会添加包含 LIKE 和 EXCEPT 选项的 FIELDS 子句，用于限制写入新表的字段。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Code Example">USE Customers<br/>SORT TO SortedCustomers ON Country, LastName /C FOR Active<br/>SORT TO Names ON LastName FIELDS LastName, FirstName</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SORT">SORT</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_TO_FoxPro">COPY TO (FoxPro)</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_VFP_Functions_DbSortFox.htm" domain="XSharpRef.chm">DbSortFox()</link></para>
+  </body>
+</topic>

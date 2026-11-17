@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:30:56.147+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SCAN ... ENDSCAN Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Records</keyword>
+    <keyword>SCAN command</keyword>
+    <keyword>ENDSCAN command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SCAN ... ENDSCAN Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">Moves through the records of the current table and executes a block of statements for each record that matches the specified conditions.</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">SCAN [&lt;Scope&gt;] [FOR &lt;lCondition&gt;] [WHILE &lt;lCondition&gt;] [NOOPTIMIZE]<br/>   &lt;Statements&gt;<br/>ENDSCAN</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
+    <para styleclass="List"><snippet src="__While" inline="false"/></para>
+    <para styleclass="List"><snippet src="__For" inline="false"/></para>
+    <para styleclass="List">NOOPTIMIZE<tab/>Disables the optimization of the FOR clause. This clause is accepted for compatibility.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">SCAN locates the first record that matches the conditions and then executes the statements. At the ENDSCAN statement the next record that matches the conditions is located and the statements are executed again, until there are no more matching records. You do not have to move the record pointer in the loop, because ENDSCAN does that for you. END SCAN is a synonym for ENDSCAN.</para>
+    <para styleclass="Normal">The command is translated by the preprocessor to a DbLocate() call, followed by a DO WHILE Found() loop that ends with DbContinue(). The scan therefore follows the same rules as <link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCATE">LOCATE</link> and <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CONTINUE">CONTINUE</link>. Do not use LOCATE or CONTINUE for the same work area inside the loop, because that would change the state of the scan.</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Code Example">USE Customers<br/>
+SCAN FOR Country = &quot;NL&quot;<br/>
+  ? Name<br/>
+ENDSCAN</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCATE">LOCATE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CONTINUE">CONTINUE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbLocate.htm" domain="XSharpRef.chm">DbLocate()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbContinue.htm" domain="XSharpRef.chm">DbContinue()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Found.htm" domain="XSharpRef.chm">Found()</link></para>
+  </body>
+</topic>

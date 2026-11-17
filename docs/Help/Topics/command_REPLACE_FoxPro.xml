@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-11-17T13:10:28.692Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>REPLACE Command (FoxPro)</title>
   <keywords>
     <keyword>Commands</keyword>
@@ -12,7 +12,7 @@
     <header>
       <para styleclass="Heading1">REPLACE Command &#160;(FoxPro)</para>
     </header>
-    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Replaces the contents of fields with new values, using the rules of the FoxPro dialect. This is the FoxPro version of the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_REPLACE">REPLACE</link> command.</para>
     <para styleclass="Heading1">Syntax</para>
@@ -30,11 +30,7 @@
     <para styleclass="Normal">After the command has completed, the variable _TALLY contains the number of records that were processed (1 for the single record form).</para>
     <para styleclass="Normal">The records are locked automatically when needed, and unlocked after the field has been changed.</para>
     <para styleclass="Heading1">Examples</para>
-    <para styleclass="Code Example">USE Customers<br/>
-GO 10<br/>
-REPLACE Name WITH "Smith", Active WITH .T.<br/>
-REPLACE ALL Country WITH "NL" FOR City = "Amsterdam" IN Customers<br/>
-REPLACE Notes WITH "Called today" ADDITIVE</para>
+    <para styleclass="Code Example">USE Customers<br/>GO 10<br/>REPLACE Name WITH &quot;Smith&quot;, Active WITH .T.<br/>REPLACE ALL Country WITH &quot;NL&quot; FOR City = &quot;Amsterdam&quot; IN Customers<br/>REPLACE Notes WITH &quot;Called today&quot; ADDITIVE</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
     <para styleclass="Heading1">See Also</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_REPLACE">REPLACE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_UPDATE_SET">UPDATE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbEval.htm" domain="XSharpRef.chm">DbEval()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbAutoLock.htm" domain="XSharpRef.chm">DbAutoLock()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbAutoUnLock.htm" domain="XSharpRef.chm">DbAutoUnLock()</link></para>

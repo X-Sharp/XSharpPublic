@@ -1,18 +1,18 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-11-17T13:10:52.587Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>SORT Command (FoxPro)</title>
   <keywords>
     <keyword>Commands</keyword>
-    <keyword>Tables</keyword>
     <keyword>SORT command</keyword>
     <keyword>SORT command<keyword>FoxPro</keyword></keyword>
+    <keyword>Tables</keyword>
   </keywords>
   <body>
     <header>
       <para styleclass="Heading1">SORT Command &#160;(FoxPro)</para>
     </header>
-    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Sorts the records of the current table and writes the result to a new table. This is the FoxPro version of the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SORT">SORT</link> command.</para>
     <para styleclass="Heading1">Syntax</para>
@@ -29,9 +29,7 @@
     <para styleclass="Heading1">Remarks</para>
     <para styleclass="Normal">The FoxPro version of the command adds the FIELDS clause with the LIKE and EXCEPT options, which limits the fields that are written to the new table.</para>
     <para styleclass="Heading1">Examples</para>
-    <para styleclass="Code Example">USE Customers<br/>
-SORT TO SortedCustomers ON Country, LastName /C FOR Active<br/>
-SORT TO Names ON LastName FIELDS LastName, FirstName</para>
+    <para styleclass="Code Example">USE Customers<br/>SORT TO SortedCustomers ON Country, LastName /C FOR Active<br/>SORT TO Names ON LastName FIELDS LastName, FirstName</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
     <para styleclass="Heading1">See Also</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SORT">SORT</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_TO_FoxPro">COPY TO (FoxPro)</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_VFP_Functions_DbSortFox.htm" domain="XSharpRef.chm">DbSortFox()</link></para>

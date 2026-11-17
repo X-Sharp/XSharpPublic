@@ -17,6 +17,7 @@
     <para styleclass="Heading1">语法</para>
     <para styleclass="Normal">SET ALTERNATE TO [&lt;cFileName&gt; [ADDITIVE] ] </para>
     <para styleclass="Normal">SET ALTERNATE ON | OFF | &lt;lToggle&gt; </para>
+    <para styleclass="Normal">CLOSE ALTERNATE</para>
     <para styleclass="Normal"></para>
     <para styleclass="Heading1">参数</para>
     <para styleclass="List">&lt;cFileName&gt;<tab />指定记录屏幕输出的 ASCII 文件名称。文件名必须包含驱动器和路径。文件名既可以是字面文件名，也可以是括号中的字符表达式。如果指定的文件名没有文件扩展名，则默认使用扩展名&quot;.TXT&quot;。<br/></para>

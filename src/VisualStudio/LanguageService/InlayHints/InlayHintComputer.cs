@@ -65,8 +65,8 @@ namespace XSharp.LanguageService.InlayHints
                     if (!InRange(call.Name, start, end))
                         continue;
                     // only calls that could show a hint are worth a lookup
-                    if (!call.Arguments.Any(HintRules.SaysNothing))
-                        continue;
+                    //if (!call.Arguments.Any(HintRules.SaysNothing))
+                    //    continue;
                     calls++;
                     var member = HintRules.SingleFit(Resolve(document, file, tokens, call.Name, out _, out _), call.Arguments.Count);
                     if (member != null)

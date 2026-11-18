@@ -1961,6 +1961,21 @@ namespace XSharp.Project
 
 #region IXSharpProject Interface
 
+
+        public IList<string> GeneratedSourceFileNames
+        {
+            get
+            {
+                var intermediatePath = this.IntermediateOutputPath;
+                if (Directory.Exists(intermediatePath))
+                {
+                    var files = Directory.GetFiles(intermediatePath, "*.prg", SearchOption.AllDirectories);
+                    return files;
+                }
+                return new string[0];
+            }
+        }
+
         public void AddIntellisenseError(XError error)
         {
             if (_errorListManager != null)

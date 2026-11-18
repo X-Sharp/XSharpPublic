@@ -18411,51 +18411,184 @@
     <value>Specifies the size of the paper to print on.</value>
     <remarks>
       Specifies the size of the paper to print on. This member may be set to zero if the length and width of the paper are specified by the members of the DevMode structure, PaperLength and PaperWidth, respectively. Otherwise, the dmPaperSize member can be set to one of the following predefined values:
-      Value	Desription
-      DMPAPER_FIRST	DMPAPER_LETTER
-      DMPAPER_LETTER	Letter, 8 1/2 x 11 in.
-      DMPAPER_LETTERSMALL	Letter Small, 8 1/2 x 11 in.
-      DMPAPER_TABLOID	Tabloid, 11 x 17 in.
-      DMPAPER_LEDGER	Ledger, 17 x 11 in.
-      DMPAPER_LEGAL	Legal, 8 1/2 x 14 in.
-      DMPAPER_STATEMENT	Statement, 5 1/2 x 8 1/2 in.
-      DMPAPER_EXECUTIVE	Executive, 7 1/2 x 10 1/2 in.
-      DMPAPER_A3	A3, 297 x 420 mm
-      DMPAPER_A4	A4, 210 x 297 mm
-      DMPAPER_A4SMALL	A4 Small, 210 x 297 mm
-      DMPAPER_A5	A5, 148 x 210 mm
-      DMPAPER_B4	B4, 250 x 354 mm
-      DMPAPER_B5	B5, 182 x 257 mm
-      DMPAPER_FOLIO	Folio, 8 1/2 x 13 in.
-      DMPAPER_QUARTO	Quarto, 215 x 275 mm
-      DMPAPER_10X14	10 x 14 in.
-      DMPAPER_11X17	11 x 17 in.
-      DMPAPER_NOTE	Note, 8 1/2 x 11 in.
-      DMPAPER_ENV_9	Envelope #9, 3 7/8 x 87/8in.
-      DMPAPER_ENV_10	Envelope #10, 4 1/8 x 91/2in.
-      DMPAPER_ENV_11	Envelope #11, 4 1/2 x 103/8in.
-      DMPAPER_ENV_12	Envelope #12, 4 1/2 x 11 in.
-      DMPAPER_ENV_14	Envelope #14, 5 x 11 1/2 in.
-      DMPAPER_CSHEET	C size sheet
-      DMPAPER_DSHEET	D size sheet
-      DMPAPER_ESHEET	E size sheet
-      DMPAPER_ENV_DL	Envelope DL, 110 x 220 mm
-      DMPAPER_ENV_C3	Envelope C3, 324 x 458 mm
-      DMPAPER_ENV_C4	Envelope C4, 229 x 324 mm
-      DMPAPER_ENV_C5	Envelope C5, 162 x 229 mm
-      DMPAPER_ENV_C6	Envelope C6, 114 x 162 mm
-      DMPAPER_ENV_C65	Envelope C65, 114 x 229 mm
-      DMPAPER_ENV_B4	Envelope B4, 250 x 353 mm
-      DMPAPER_ENV_B5	Envelope B5, 176 x 250 mm
-      DMPAPER_ENV_B6	Envelope B6, 176 x 125 mm
-      DMPAPER_ENV_ITALY	Envelope, 110 x 230 mm
-      DMPAPER_ENV_MONARCH	Envelope Monarch, 3 7/8 x 71/2 in.
-      DMPAPER_ENV_PERSONAL	Envelope, 3 5/8 x 6 1/2 in.
-      DMPAPER_FANFOLD_US	U.S. Standard Fanfold, 147/8 x 11 in.
-      DMPAPER_FANFOLD_STD_GERMAN	German Standard Fanfold, 81/2 x 12 in.
-      DMPAPER_FANFOLD_LGL_GERMAN	German Legal Fanfold, 81/2 x 13 in.
-      DMPAPER_LAST	German Legal Fanfold, 81/2 x 13 in.
-      DMPAPER_USER	User-defined
+<list type="table">
+        <item>
+          <term>DMPAPER_FIRST</term>
+          <description>First</description>
+        </item>
+        <item>
+          <term>DMPAPER_LETTER</term>
+          <description>Letter，8 1/2 x 11 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_LETTERSMALL</term>
+          <description>Letter Small, 8 1/2 x 11 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_TABLOID</term>
+          <description>Tabloid，11 x 17 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_LEDGER</term>
+          <description> Ledger，17 x 11 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_LEGAL</term>
+          <description>Legal，8 1/2 x 14 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_STATEMENT</term>
+          <description>Statement，5 1/2 x 8 1/2 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_EXECUTIVE</term>
+          <description>Executive，7 1/2 x 10 1/2 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_A3</term>
+          <description>A3, 297 x 420 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_A4</term>
+          <description>A4，210 x 297 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_A4SMALL</term>
+          <description>A4 Small, 210 x 297 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_A5</term>
+          <description>A5，148 x 210 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_B4</term>
+          <description>B4, 250 x 354 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_B5</term>
+          <description>B5, 182 x 257 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_FOLIO</term>
+          <description>Folio，8 1/2 x 13 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_QUARTO</term>
+          <description>Quarto, 215 x 275 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_10X14</term>
+          <description>10 x 14 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_11X17</term>
+          <description>11 x 17 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_NOTE</term>
+          <description>Note，8 1/2 x 11 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_9</term>
+          <description>Envelope #9 ，3 7/8 x 87/8 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_10</term>
+          <description>Envelope #10，4 1/8 x 91/2 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_11</term>
+          <description>Envelope #11，4 1/2 x 103/8 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_12</term>
+          <description>Envelope #12，4 1/2 x 11 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_14</term>
+          <description>Envelope #14，5 x 11 1/2 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_CSHEET</term>
+          <description>C size sheet</description>
+        </item>
+        <item>
+          <term>DMPAPER_DSHEET</term>
+          <description>D size sheet</description>
+        </item>
+        <item>
+          <term>DMPAPER_ESHEET</term>
+          <description>E size sheet</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_DL</term>
+          <description>Envelope DL, 110 x 220 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_C3</term>
+          <description>Envelope C3, 324 x 458 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_C4</term>
+          <description>Envelope C4, 229 x 324 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_C5</term>
+          <description>Envelope C5, 162 x 229 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_C6</term>
+          <description>Envelope C6, 114 x 162 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_C65</term>
+          <description>Envelope C65, 114 x 229 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_B4</term>
+          <description>Envelope B4, 250 x 353 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_B5</term>
+          <description>Envelope B5, 176 x 250 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_B6</term>
+          <description>Envelope B6, 176 x 125 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_ITALY</term>
+          <description>Envelope, 110 x 230 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_MONARCH</term>
+          <description>Envelope Monarch ，3 7/8 x 71/2 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_PERSONAL</term>
+          <description>Envelope,3 5/8 x 6 1/2 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_FANFOLD_US</term>
+          <description>U.S. Standard Fanfold，147/8 x 11 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_FANFOLD_STD_GERMAN</term>
+          <description>German Standard Fanfold，81/2 x 12 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_FANFOLD_LGL_GERMAN</term>
+          <description>German Legal Fanfold，81/2 x 13 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_LAST</term>
+          <description>German Legal Fanfold，81/2 x 13 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_USER</term>
+          <description>User-defined</description>
+        </item>
+      </list>
     </remarks>
   </PrintingDevice.PaperSize>
   <PrintingDevice.PaperWidth>

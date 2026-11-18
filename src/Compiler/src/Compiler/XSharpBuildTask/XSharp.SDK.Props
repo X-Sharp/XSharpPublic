@@ -38,6 +38,17 @@ Copyright (C) XSharp BV. All rights reserved.
          is evaluated before this file. Assigning without it silently discards their setting, unlike
          Microsoft.NET.Sdk.DefaultItems.props, which always appends. -->
     <DefaultItemExcludes>$(DefaultItemExcludes);$(VOBinaryFiles);$(AppXamlFiles);$(HeaderFiles);**/*.rc;**/*.resx;**/*.designer.prg;**/*.xaml.prg</DefaultItemExcludes>
+    <!-- 
+        Please note that Form1.resx can depend on Form1.prg but Resources.Designer.Prg can depend on Resources.Resx 
+        That is why the rule for .resx files has a condition.	
+	The rules for .designer.prg also has condition because it can depend on a prg, resx and settings file
+	Other rules do not have a condition. CPS will silently ignore the DependentUpon property when the 
+	parent does not exist
+	A previous version of XSharp.SDK.Props used Regular expressions. This is a bit faster.
+	
+	Please note that the %(Filename) macro returns the item name WITHOUT path and WITHOUT extension.
+	See https://learn.microsoft.com/en-us/visualstudio/msbuild/msbuild-well-known-item-metadata?view=visualstudio
+    -->
   </PropertyGroup>
   
   <ItemGroup>
@@ -47,38 +58,34 @@ Copyright (C) XSharp BV. All rights reserved.
     </ApplicationDefinition>
     <!-- Add our own definitions for the VOBinary items with calculated dependentupon properti -->
     <VOBinary Include="$(VOBinaryFiles)" Exclude="$(XSharpDefaultItemExcludes)" KeepDuplicates="false">
-      <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '\.[^.]+\%(Extension)$', '.prg'))</ParentName>
-      <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
+      <DependentUpon>$([System.String]::Copy('%(Filename)').Split('.')[0]).prg</DependentUpon>
     </VOBinary>
     <NativeResource Include="**/*.rc" Exclude="$(XSharpDefaultItemExcludes)" >
-      <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '\.[^.]+\%(Extension)$', '.prg'))</ParentName>
-      <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
+      <DependentUpon>$([System.String]::Copy('%(Filename)').Split('.')[0]).prg</DependentUpon>
     </NativeResource >
 	<Compile Include="**/*.xaml.prg" Exclude="$(XSharpDefaultItemExcludes)" KeepDuplicates="false" >
 	   <!-- .xaml.prg can depend on xaml -->
-      <ParentXamlName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.xaml.prg$', '.xaml', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentXamlName>
-      <DependentUpon Condition="Exists('%(ParentXamlName)')">%(ParentXamlName)</DependentUpon>
+      <DependentUpon>$([System.String]::Copy('%(Filename)').Split('.')[0]).prg</DependentUpon>
 	</Compile>
     <Compile Include="**/*.designer.prg" Exclude="$(XSharpDefaultItemExcludes)" KeepDuplicates="false" >
       <!-- Designer.prg can depend on prg, resx or settings. The last matching assignment wins, so the prg comes last:
            a form (Form1.designer.prg) has both Form1.prg and Form1.resx and belongs under Form1.prg, like
            Form1.resx itself; Resources.designer.prg and Settings.designer.prg have no prg of the same name. -->
-      <ParentPrgName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.designer.prg$', '.prg', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentPrgName>
-      <ParentResxName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.designer.prg$', '.resx', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentResxName>
-      <ParentSettingsName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '.designer.prg$', '.settings', System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ParentSettingsName>
-      <DependentUpon Condition="Exists('%(ParentSettingsName)')">%(ParentSettingsName)</DependentUpon>
-      <DependentUpon Condition="Exists('%(ParentResxName)')">%(ParentResxName)</DependentUpon>
+      <ParentPrgName>$([System.String]::Copy('%(Filename)').Split('.')[0]).prg</ParentPrgName>
+      <ParentResName>$([System.String]::Copy('%(Filename)').Split('.')[0]).resx</ParentResName>
+      <ParentSetName>$([System.String]::Copy('%(Filename)').Split('.')[0]).settings</ParentSetName>
+      <DependentUpon Condition="Exists('%(ParentSetName)')">%(ParentSetName)</DependentUpon>
+      <DependentUpon Condition="Exists('%(ParentResName)')">%(ParentResName)</DependentUpon>
       <DependentUpon Condition="Exists('%(ParentPrgName)')">%(ParentPrgName)</DependentUpon>
     </Compile>
     <EmbeddedResource Include="**/*.resx" Exclude="$(XSharpDefaultItemExcludes)" KeepDuplicates="false">
-      <!-- This handles .resx that depends on a prg -->
-      <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '%(Extension)$', '.prg'))</ParentName>
+      <!-- This handles .resx that depend on a prg -->
+      <ParentName>$([System.String]::Copy('%(Filename)').Split('.')[0]).prg</ParentName>
       <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
     </EmbeddedResource>
     <None Include="$(HeaderFiles)" Exclude="$(XSharpDefaultItemExcludes)" KeepDuplicates="false">
       <!-- This handles header files that depend on a prg -->
-      <ParentName>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)%(Extension)', '%(Extension)$', '.prg'))</ParentName>
-      <DependentUpon Condition="Exists('%(ParentName)')">%(ParentName)</DependentUpon>
+	  <DependentUpon>$([System.String]::Copy('%(Filename)').Split('.')[0]).prg</DependentUpon>
     </None>
   </ItemGroup>
   <!-- Implicit imports -->

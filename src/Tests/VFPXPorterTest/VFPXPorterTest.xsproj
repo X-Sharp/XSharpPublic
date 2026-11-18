@@ -72,6 +72,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TestItemCode.prg" />
+    <Compile Include="TestTemplateHelper.prg" />
     <Compile Include="TestXPorterSCXVCX.prg" />
   </ItemGroup>
   <ItemGroup>

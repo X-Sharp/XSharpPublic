@@ -4,5 +4,3 @@
 #include "VFPCmd.xh"
 
 #include "VFPXMenu.xh"
-
-#include "VfpSqlLib.xh"

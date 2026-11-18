@@ -34,8 +34,8 @@ CLASS XProject
     PRIVATE _unprocessedProjectReferences		AS List<STRING>
     PRIVATE _unprocessedStrangerProjectReferences	AS List<STRING>
     PRIVATE _failedStrangerProjectReferences   AS List<STRING>
-    PRIVATE _OtherFilesDict					 as XFileDictionary
-    PRIVATE _SourceFilesDict					 as XFileDictionary
+    PRIVATE _OtherFilesDict					   as XFileDictionary
+    PRIVATE _SourceFilesDict				   as XFileDictionary
     PRIVATE _FunctionClasses                   AS List<STRING>
     PRIVATE _ImplicitNamespaces                AS List<STRING>
     PRIVATE _dependentProjectList              AS STRING
@@ -56,6 +56,10 @@ CLASS XProject
     private _globalUsingsVersion               := 1 AS LONG
     private _globalUsingsBuilt                 := 0 AS LONG
     private _globalUsingsGate                  AS OBJECT
+    // We only read generated source files again when the projectfile was changed
+    private _GeneratedSourceFilesDict	       as XFileDictionary
+    private _projectFileDateTime               := DateTime.MinValue AS DateTime
+    private _intermediateOutputPath                 AS STRING
 
     PRIVATE _cachedAllNamespaces               AS IList<STRING>
     PRIVATE _cachedUsingStatics                AS IList<STRING>
@@ -67,7 +71,7 @@ CLASS XProject
     PROPERTY Id   AS INT64                     GET _id INTERNAL SET _id := value
     PROPERTY FileWalkCompleted                 AS LOGIC AUTO
     PROPERTY FileName                          AS STRING GET _fileName
-    PROPERTY HasFiles                          AS LOGIC GET _SourceFilesDict:Keys:Count > 0 .or. _OtherFilesDict:Keys:Count > 0
+    PROPERTY HasFiles                          AS LOGIC GET _SourceFilesDict:Keys:Count > 0 .or. _OtherFilesDict:Keys:Count > 0 .or. _GeneratedSourceFilesDict:Keys:Count > 0
     PROPERTY Framework                         AS STRING GET _framework
     PROPERTY DisplayName                       AS STRING
         GET
@@ -212,8 +216,9 @@ CLASS XProject
         SELF:_ReferencedProjects := List<XProject>{}
         SELF:_StrangerProjects := List<Object>{}
         SELF:_projectNode := project
-        SELF:_SourceFilesDict   := XFileDictionary{SELF}
-        SELF:_OtherFilesDict    := XFileDictionary{SELF}
+        SELF:_SourceFilesDict           := XFileDictionary{SELF}
+        SELF:_OtherFilesDict            := XFileDictionary{SELF}
+        SELF:_GeneratedSourceFilesDict  := XFileDictionary{SELF}
         SELF:_fileName          := FileName
         SELF:_name              := System.IO.Path.GetFileNameWithoutExtension(FileName)
         SELF:_lastRefCheck      := DateTime.MinValue
@@ -440,7 +445,7 @@ CLASS XProject
 
 #endregion
 
-#region ProjectReferences
+ #region ProjectReferences
     METHOD FindProjectReference(Url AS STRING) AS XProject
         FOREACH VAR prj IN SELF:_ReferencedProjects
             IF String.Compare(prj:FileName, Url, TRUE) == 0
@@ -735,9 +740,67 @@ CLASS XProject
     METHOD ZapFiles() AS VOID
         SELF:_SourceFilesDict:Clear()
         SELF:_OtherFilesDict:Clear()
+        SELF:_GeneratedSourceFilesDict:Clear()
+		
     METHOD AddFile(filePath AS STRING) AS LOGIC
         VAR type := XFileTypeHelpers.GetFileType(filePath)
         RETURN SELF:AddFile(filePath, type)
+		
+    METHOD AddGeneratedSourceFile(filePath AS STRING) AS LOGIC
+        VAR type := XFileTypeHelpers.GetFileType(filePath)
+        IF type == XFileType.SourceCode
+            SELF:_GeneratedSourceFilesDict:Add(filePath)
+            var xFile := XFile{filePath, SELF}
+            XDatabase.Read(xFile)
+            var walker := SourceWalker{xFile, TRUE}
+            walker:Parse(FALSE)
+            RETURN TRUE
+        ENDIF
+        RETURN FALSE
+
+    // Pulls in any generated source files (such as a GlobalUsings.g.prg produced by the build)
+    // that the project node knows about but that we have not parsed yet, parses them into the
+    // database and invalidates the global usings cache so a subsequent lookup can see them.
+    // Runs at most once per project instance; callers should retry their lookup afterwards.
+    METHOD ProcessGeneratedSourceFiles() AS LOGIC
+        IF SELF:_projectNode == NULL
+            RETURN FALSE
+        ENDIF
+        // When the coniguration was changed we want to read the files from the new intermediate output path,
+        // so we need to clear the list of generated source files
+        var intermediateOutputPath := SELF:ProjectNode:IntermediateOutputPath
+        if !String.Equals(intermediateOutputPath, SELF:_intermediateOutputPath,StringComparison.OrdinalIgnoreCase)
+            foreach var file in SELF:_GeneratedSourceFilesDict:Keys:ToArray()
+                XDatabase.DeleteFile(file)
+            NEXT
+            // trigger re-reading of the generated source files
+            _GeneratedSourceFilesDict:Clear()
+        endif
+        var dt := File.GetLastWriteTime(SELF:FileName)
+        IF dt <= SELF:_projectFileDateTime .and. SELF:_GeneratedSourceFilesDict:Keys:Count > 0
+            RETURN FALSE
+        ENDIF
+        SELF:_intermediateOutputPath := intermediateOutputPath
+        LOCAL added := FALSE AS LOGIC
+        TRY
+            VAR fileNames := SELF:_projectNode:GeneratedSourceFileNames
+            IF fileNames != NULL
+                FOREACH VAR fileName IN fileNames
+                    IF ! SELF:_GeneratedSourceFilesDict:Keys:Contains(fileName)
+                        IF SELF:AddGeneratedSourceFile(fileName)
+                            added := TRUE
+                        ENDIF
+                    ENDIF
+                NEXT
+            ENDIF
+        CATCH e AS Exception
+            XSettings.Exception(e)
+        END TRY
+        _projectFileDateTime := dt
+        IF added
+            SELF:InvalidateGlobalUsings()
+        ENDIF
+        RETURN added
     METHOD AddFile(filePath AS STRING, type as XFileType ) AS LOGIC
         LOCAL xamlCodeBehindFile AS STRING
         SELF:WriteOutputMessage(i"AddFile {filePath}")
@@ -773,6 +836,9 @@ CLASS XProject
         IF ! String.IsNullOrEmpty(FullPath)
             VAR File := SELF:_SourceFilesDict:Find(FullPath)
             IF File == NULL
+                File := SELF:_GeneratedSourceFilesDict:Find(FullPath)
+            ENDIF
+            IF File == NULL
                 File := SELF:_OtherFilesDict:Find(FullPath)
             ENDIF
             RETURN File
@@ -790,6 +856,7 @@ CLASS XProject
                 ENDIF
             ENDIF
             SELF:_SourceFilesDict:Remove( url)
+            SELF:_GeneratedSourceFilesDict:Remove( url)
             XDatabase.DeleteFile(url)
         ENDIF
 #endregion
@@ -877,7 +944,6 @@ CLASS XProject
         // we look in the project references and assembly references
         // pass the list of ProjectIds and AssemblyIds to the database engine
         SELF:LogTypeMessage(ie"FindFunction {name} ")
-
         VAR projectIds    := SELF:Id:ToString()
         IF lRecursive
             projectIds    := SELF:DependentProjectList
@@ -885,6 +951,19 @@ CLASS XProject
         VAR result := XDatabase.FindFunction(name, projectIds)
         VAR xmembers := SELF:GetGlobalMembers(result)
         SELF:LogTypeMessage(ie"FindFunction {name}, result {result:Count} ")
+        if xmembers == null .or. xmembers:Count == 0
+            SELF:ProcessGeneratedSourceFiles()
+            xmembers := List<IXMemberSymbol>{}
+            var usingStatics := SELF:GlobalStaticUsings
+            foreach var  type in usingStatics
+                var xtype :=  SELF:FindSystemType(type,null)
+                if xtype != null
+                    var members := xtype:Members:Where( { m => m:Name == name .and. m:IsStatic })
+                    xmembers:AddRange(members)
+                endif
+            next
+        endif
+        SELF:LogTypeMessage(ie"FindFunction {name}, result {iif (xmembers != NULL, xmembers[0].FullName, \"not found\")} ")
         RETURN xmembers
 
     METHOD FindGlobalOrDefine(name AS STRING, lRecursive := TRUE AS LOGIC) AS IXMemberSymbol
@@ -1023,7 +1102,9 @@ CLASS XProject
         IF ! XSettings.DisableForeignProjectReferences
             SELF:RefreshStrangerProjectDLLOutputFiles()
         ENDIF
+
         SELF:ResolveReferences()
+        SELF:ProcessGeneratedSourceFiles()
         IF SELF:GetTypeFromCache(name, out var peType)
             return peType
         endif
@@ -1080,6 +1161,7 @@ CLASS XProject
         myUsings:Add(SELF:RootNamespace)
         myUsings:AddRange(usings)
         myUsings:AddRange(SELF:ImplicitNamespaces)
+        myUsings:AddRange(SELF:GlobalUsings)
         RETURN myUsings:ToList()
 
 
@@ -1100,6 +1182,7 @@ CLASS XProject
     METHOD FindType(TypeName as STRING, usings AS IList<STRING>) AS IXTypeSymbol
         LOCAL result as IXTypeSymbol
         local systemFirst as LOGIC
+        SELF:ProcessGeneratedSourceFiles()
         TypeName := TypeName:GetSystemTypeName(ParseOptions:XSharpRuntime)
         if SELF:GetTypeFromCache(TypeName, OUT VAR peType)
             return peType
@@ -1130,6 +1213,7 @@ CLASS XProject
         IF originalName == _lastName .and. _lastFound != null && _lastFound.Name == typeName
             RETURN _lastFound
         ENDIF
+        SELF:ProcessGeneratedSourceFiles()
         usings := SELF:AdjustUsings(REF typeName, usings)
         VAR pos := typeName:IndexOf('<')
         IF pos > 0
@@ -1225,6 +1309,7 @@ CLASS XProject
         LOCAL nTypeId as INT64
         LOCAL nProjectId as INT64
         LOCAL nTypes := 0 as INT
+        SELF:ProcessGeneratedSourceFiles()
         projectIds := ","+self:DependentProjectList+","
         interfaces := ""
         FOREACH var element in found

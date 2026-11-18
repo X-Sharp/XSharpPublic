@@ -25,6 +25,7 @@ CLASS OrphanedFilesProject IMPLEMENTS IXSharpProject
     PROPERTY EnforceSelf as LOGIC GET FALSE
     PROPERTY DisplayName  AS STRING GET "Miscellaneous Files"
     PROPERTY Name as STRING GET OrphanName
+    PROPERTY GeneratedSourceFileNames as IList<String> GET List<String>{}
 #endregion
     PRIVATE _parseOptions AS XParseOptions
     CONSTRUCTOR()

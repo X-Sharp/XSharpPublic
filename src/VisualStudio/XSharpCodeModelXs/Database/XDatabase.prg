@@ -138,6 +138,7 @@ STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
             oDiskDb:Close()
         END USING
         DeleteOrphanFiles()
+        DeleteMissingFiles()
     ENDIF
     MarkChanged()
     RETURN
@@ -731,8 +732,38 @@ STATIC METHOD DeleteOrphanFiles() AS List<STRING>
 
     END LOCK
     MarkChanged()
-    Log(i" Deleted OrphanFiles")
+    Log(i" Deleted Orphan Files")
     RETURN result
+
+STATIC METHOD DeleteMissingFiles() AS VOID
+    CHECKIFOPEN
+    Log("Delete Missing files from database")
+    BEGIN LOCK dbLock
+        CHECKIFOPEN
+        TRY
+            VAR missingIds := List<INT64>{}
+            USING VAR cmd := CreateCommand("SELECT FileName, ID FROM Files", oConn)
+            USING VAR rdr := cmd:ExecuteReader()
+            DO WHILE rdr:Read()
+                VAR filename := rdr:GetString(0)
+                if ! System.IO.File.Exists(filename)
+                    Log(i"Delete missing file '{filename}' from the database ")
+                    missingIds:Add(rdr:GetInt64(1))
+                endif
+            ENDDO
+            rdr:Close()
+            cmd:CommandText := "Delete from Files where Id in (" + String.Join(",", missingIds) + ")"
+            cmd:ExecuteScalar()
+        CATCH e AS Exception
+            Log("Error deleting missing files")
+            XSettings.Exception(e)
+        END TRY
+
+    END LOCK
+    MarkChanged()
+    Log(i" Deleted Missing Files")
+    RETURN
+
 
 STATIC METHOD GetOpenDesignerFiles() AS List<STRING>
     VAR result := List<STRING>{}

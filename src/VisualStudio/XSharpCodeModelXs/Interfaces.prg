@@ -27,6 +27,7 @@ INTERFACE IXSharpProject
     PROPERTY PrefixClassesWithDefaultNamespace AS LOGIC GET
     PROPERTY RootNameSpace AS STRING GET
     PROPERTY Url AS STRING GET
+    PROPERTY GeneratedSourceFileNames as IList<String> GET
 
 END INTERFACE
 

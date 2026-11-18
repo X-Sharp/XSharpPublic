@@ -56,7 +56,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// Starts watching the document windows, once per session. Called when the first X# CPS project loads, with
         /// the JoinableTaskFactory of the CPS threading service (runs the switch to the designer).
         /// </summary>
-        public static void EnsureAdvised(JoinableTaskFactory joinableTaskFactory)
+        internal static void EnsureAdvised(JoinableTaskFactory joinableTaskFactory)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             if (_instance != null)

@@ -39,12 +39,12 @@ namespace XSharp.ProjectSystem.ShadowDesigner
     /// </summary>
     internal static class CompanionResourceSync
     {
-        public sealed class SyncResult
+        internal sealed class SyncResult
         {
-            public List<string> CopiedFileNames { get; } = new List<string>();
+            internal List<string> CopiedFileNames { get; } = new List<string>();
         }
 
-        public static SyncResult Sync(ShadowDesignerBridge.CompanionLocation location)
+        internal static SyncResult Sync(ShadowDesignerBridge.CompanionLocation location)
         {
             var result = new SyncResult();
 
@@ -90,7 +90,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// "{ClassName}.resx" regardless of what it's actually called on the real side (see
         /// class remarks), so the Designer correctly associates it with the form's class.
         /// </summary>
-        public static void PrimeFromReal(ShadowDesignerBridge.CompanionLocation location)
+        internal static void PrimeFromReal(ShadowDesignerBridge.CompanionLocation location)
         {
             string companionDir = Path.GetDirectoryName(location.CompanionDesignerCsPath);
             string realDir = Path.GetDirectoryName(location.MainPrgPath);

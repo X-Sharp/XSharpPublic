@@ -46,19 +46,19 @@ namespace XSharp.ProjectSystem.ShadowDesigner
     /// already-open companion project's files deterministically, recomputed fresh each time
     /// from the real .prg's own class name.
     /// </summary>
-    public static class ShadowDesignerBridge
+    internal static class ShadowDesignerBridge
     {
         /// <summary>
         /// True when <paramref name="project"/> is loaded by the CPS project system (its IXSharpProject is the
         /// XSharpProjectAdapter). Lets the X# project package decide without knowing the CPS types.
         /// </summary>
-        public static bool IsCpsProject(XProject project) => project?.ProjectNode is LanguageService.XSharpProjectAdapter;
+        internal static bool IsCpsProject(XProject project) => project?.ProjectNode is LanguageService.XSharpProjectAdapter;
 
         /// <summary>
         /// True when <paramref name="prgPath"/> is a .prg with a matching .Designer.prg next to it -- the signal
         /// for a form/user control in SDK-style projects, which rarely have an explicit SubType.
         /// </summary>
-        public static bool HasDesignerFile(string prgPath)
+        internal static bool HasDesignerFile(string prgPath)
         {
             if (string.IsNullOrEmpty(prgPath) ||
                 !string.Equals(Path.GetExtension(prgPath), Constants.SourceFileExtension, StringComparison.OrdinalIgnoreCase) ||
@@ -91,7 +91,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// throwing, since a partially-set-up solution (mid-restore, no build yet) is a
         /// normal, recoverable condition, not a bug.
         /// </summary>
-        public static async Task<(bool Ok, string Error)> TryOpenAsync(string mainPrgPath, XProject xProject)
+        internal static async Task<(bool Ok, string Error)> TryOpenAsync(string mainPrgPath, XProject xProject)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             if (!TryPrepareCompanion(mainPrgPath, xProject, out var location, out string error))
@@ -204,7 +204,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// command handler decide to open the designer in the background, since waiting for the restore must not
         /// block the UI thread.
         /// </summary>
-        public static bool IsCompanionRestored(XProject xProject) =>
+        internal static bool IsCompanionRestored(XProject xProject) =>
             File.Exists(GetCompanionAssetsFile(CompanionProjectWriter.ComputeCompanionDir(xProject.FileName)));
 
         /// <remarks>
@@ -350,13 +350,13 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// need to locate the real .prg pair and an already-existing companion project's
         /// files.
         /// </summary>
-        public sealed class CompanionLocation
+        internal sealed class CompanionLocation
         {
-            public string MainPrgPath { get; set; }
-            public string DesignerPrgPath { get; set; }
-            public string CompanionCsprojPath { get; set; }
-            public string CompanionFormCsPath { get; set; }
-            public string CompanionDesignerCsPath { get; set; }
+            internal string MainPrgPath { get; set; }
+            internal string DesignerPrgPath { get; set; }
+            internal string CompanionCsprojPath { get; set; }
+            internal string CompanionFormCsPath { get; set; }
+            internal string CompanionDesignerCsPath { get; set; }
         }
 
         /// <summary>
@@ -367,7 +367,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// first in that case, distinguishable via the companion .csproj not existing on
         /// disk).
         /// </summary>
-        public static bool TryResolveCompanionPaths(string mainPrgPath, XProject xProject, out CompanionLocation location, out string error)
+        internal static bool TryResolveCompanionPaths(string mainPrgPath, XProject xProject, out CompanionLocation location, out string error)
         {
             location = null;
             try
@@ -452,7 +452,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// synchronously on the UI thread (as CPS does with command handlers): see XSharpShadowDesignerCommands.
         /// Returns false with an error when the user declined the build or it could not be started.
         /// </remarks>
-        public static async Task<(bool Ok, string Error)> EnsureReferencesAsync(XProject xProject)
+        internal static async Task<(bool Ok, string Error)> EnsureReferencesAsync(XProject xProject)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             if (!IsMissingAnyPackageReference(xProject))

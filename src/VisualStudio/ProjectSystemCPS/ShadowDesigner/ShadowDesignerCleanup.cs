@@ -89,7 +89,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// solution events the first time this is called. Safe to call every time
         /// ShadowDesignerBridge.TryOpenAsync prepares the companion -- idempotent (HashSet).
         /// </summary>
-        public static void Track(string companionCsprojPath)
+        internal static void Track(string companionCsprojPath)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             if (_instance == null)
@@ -109,7 +109,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// Stops a pending background deletion of <paramref name="companionDir"/> before the companion project is
         /// written there again. When this returns, no deletion of the folder is running or will start.
         /// </summary>
-        public static void CancelPendingDelete(string companionDir)
+        internal static void CancelPendingDelete(string companionDir)
         {
             if (string.IsNullOrEmpty(companionDir))
             {

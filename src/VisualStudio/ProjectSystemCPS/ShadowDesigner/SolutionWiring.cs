@@ -31,7 +31,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// (created on first use) rather than at the solution root, unless a project with
         /// that exact full path is already present -- safe to call every time.
         /// </summary>
-        public static void EnsureProjectInSolution(string csprojPath)
+        internal static void EnsureProjectInSolution(string csprojPath)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             var solution = GetSolution();
@@ -194,7 +194,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// message on failure instead of throwing -- a freshly-added companion project may
         /// still need a NuGet restore / design-time build to finish.
         /// </summary>
-        public static bool TryOpenInDesigner(string designerCsPath, out string errorMessage)
+        internal static bool TryOpenInDesigner(string designerCsPath, out string errorMessage)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             try
@@ -258,7 +258,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         }
 
         /// <summary>Finds a loaded project by its full path, including projects in solution folders.</summary>
-        public static IVsHierarchy FindProjectByFullPath(string fullPath)
+        internal static IVsHierarchy FindProjectByFullPath(string fullPath)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             foreach (var hierarchy in EnumerateProjects(GetSolution(), __VSENUMPROJFLAGS.EPF_LOADEDINSOLUTION))

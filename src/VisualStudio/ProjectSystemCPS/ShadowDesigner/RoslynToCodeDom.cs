@@ -30,14 +30,14 @@ namespace XSharp.ProjectSystem.ShadowDesigner
     /// </summary>
     internal static class RoslynToCodeDom
     {
-        public sealed class TranslationContext
+        internal sealed class TranslationContext
         {
-            public HashSet<string> KnownFieldNames { get; } = new HashSet<string>(StringComparer.Ordinal);
-            public HashSet<string> LocalVarNames { get; } = new HashSet<string>(StringComparer.Ordinal);
-            public List<string> SkippedStatements { get; } = new List<string>();
+            internal HashSet<string> KnownFieldNames { get; } = new HashSet<string>(StringComparer.Ordinal);
+            internal HashSet<string> LocalVarNames { get; } = new HashSet<string>(StringComparer.Ordinal);
+            internal List<string> SkippedStatements { get; } = new List<string>();
         }
 
-        public static CodeStatement TranslateStatement(StatementSyntax stmt, TranslationContext ctx)
+        internal static CodeStatement TranslateStatement(StatementSyntax stmt, TranslationContext ctx)
         {
             switch (stmt)
             {
@@ -202,7 +202,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             return null;
         }
 
-        public static CodeExpression TranslateExpression(ExpressionSyntax expr, TranslationContext ctx)
+        internal static CodeExpression TranslateExpression(ExpressionSyntax expr, TranslationContext ctx)
         {
             switch (expr)
             {
@@ -284,6 +284,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                                 case double d: return new CodePrimitiveExpression(-d);
                                 case float f: return new CodePrimitiveExpression(-f);
                                 case long l: return new CodePrimitiveExpression(-l);
+                                case decimal d: return new CodePrimitiveExpression(-d);
                             }
                         }
                         return null;
@@ -364,3 +365,4 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         }
     }
 }
+

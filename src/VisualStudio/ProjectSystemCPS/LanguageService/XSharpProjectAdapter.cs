@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Xml;
 
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.ProjectSystem;
 using Microsoft.VisualStudio.ProjectSystem.Build;
 using Microsoft.VisualStudio.ProjectSystem.Properties;
@@ -900,6 +901,27 @@ namespace XSharp.ProjectSystem.LanguageService
         #endregion
 
         #region IXSharpProject
+
+
+        public IList<string> GeneratedSourceFileNames
+        {
+            get
+            {
+                if (primaryTargetFramework == null)
+                    return new List<string>();
+                var cmdLine = commandLines.TryGetValue(primaryTargetFramework, out var cl) ? cl : null;
+                if (cmdLine == null)
+                    return new List<string>();
+                var result = new List<string>();
+                var intermediatePath = intermediateOutputPath;
+                foreach (var file in cmdLine.SourceFiles)
+                {
+                    if (file.StartsWith(intermediatePath, StringComparison.OrdinalIgnoreCase) && file.EndsWith(".prg", StringComparison.OrdinalIgnoreCase))
+                        result.Add(file);
+                }
+                return result;
+            }
+        }
 
         public string DisplayName => Path.GetFileNameWithoutExtension(project.FullPath);
         public string IntermediateOutputPath => intermediateOutputPath;

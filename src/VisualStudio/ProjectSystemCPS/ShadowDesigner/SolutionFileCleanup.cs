@@ -65,7 +65,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
 
         private static bool IsCompanionPath(string solutionDir, string relativePath, ICollection<string> companionCsprojPaths)
         {
-            if (string.IsNullOrEmpty(relativePath))
+            if (string.IsNullOrEmpty(relativePath) || Path.GetExtension(relativePath).ToLower() != ".csproj")
             {
                 return false;
             }

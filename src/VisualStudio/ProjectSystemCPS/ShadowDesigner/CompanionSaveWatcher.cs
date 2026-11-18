@@ -101,7 +101,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// ShadowDesignerBridge.TryOpenAsync prepares the companion -- idempotent (overwrites any existing
         /// entry for the same paths).
         /// </summary>
-        public static void Watch(IServiceProvider services, CompanionLocation location)
+        internal static void Watch(IServiceProvider services, CompanionLocation location)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             if (_instance == null)

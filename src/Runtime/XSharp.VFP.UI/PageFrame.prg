@@ -239,7 +239,13 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		/// </summary>
 		PROTECTED OVERRIDE METHOD OnMove(e AS System.EventArgs) AS VOID
 			SUPER:OnMove(e)
-			IF SELF:_VFPMoved != NULL ; SELF:_VFPMoved:Call() ; ENDIF
+            IF SELF:_VFPMoved != NULL
+                SELF:_VFPMoved:Call()
+            ENDIF
+        END METHOD
+
+        // Not found in docs, but seems used by some developers
+        PROPERTY ErasePage AS LOGIC AUTO
 
 	END CLASS
 
@@ -271,7 +277,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			GET
 				RETURN SELF:_owner:TabPages:Count
 			END GET
-		END PROPERTY
+        END PROPERTY
+
 	END CLASS
 
 END NAMESPACE

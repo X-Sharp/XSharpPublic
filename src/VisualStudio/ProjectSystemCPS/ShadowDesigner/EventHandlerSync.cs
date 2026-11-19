@@ -107,17 +107,26 @@ $@"    PRIVATE METHOD {name}({string.Join(", ", paramTexts)}) AS VOID
                 designerSource = SyncNewEventWiring(location, designerSource, result);
             }
 
+            // The inserted text uses "\n" (and the stub template the line ends of this source file): write the
+            // file back with its own line ends, otherwise VS shows "Inconsistent Line Endings" when it opens it.
             if (result.NewHandlerNames.Count > 0)
             {
-                File.WriteAllText(location.MainPrgPath, mainSource);
+                File.WriteAllText(location.MainPrgPath, NormalizeLineEnds(mainSource, DetectNewLine(File.ReadAllText(location.MainPrgPath))));
             }
             if (result.NewWiringDescriptions.Count > 0)
             {
-                File.WriteAllText(location.DesignerPrgPath, designerSource);
+                File.WriteAllText(location.DesignerPrgPath, NormalizeLineEnds(designerSource, DetectNewLine(File.ReadAllText(location.DesignerPrgPath))));
             }
 
             return result;
         }
+
+        /// <summary>The line end of <paramref name="source"/>: CRLF unless it only has bare LFs.</summary>
+        private static string DetectNewLine(string source) =>
+            source.IndexOf("\r\n", StringComparison.Ordinal) >= 0 || source.IndexOf('\n') < 0 ? "\r\n" : "\n";
+
+        private static string NormalizeLineEnds(string source, string newLine) =>
+            Regex.Replace(source, "\r\n|\r|\n", newLine);
 
         private static IEnumerable<MethodDeclarationSyntax> ParseMethods(string path)
         {
@@ -142,10 +151,30 @@ $@"    PRIVATE METHOD {name}({string.Join(", ", paramTexts)}) AS VOID
             {
                 if (!(statement.Expression is AssignmentExpressionSyntax assignment)) continue;
                 if (!assignment.OperatorToken.IsKind(SyntaxKind.PlusEqualsToken)) continue;
-                if (!(assignment.Left is MemberAccessExpressionSyntax fieldEvent)) continue;
-
-                string eventName = fieldEvent.Name.Identifier.Text;
-                string fieldName = ExtractTrailingName(fieldEvent.Expression);
+                // "button1.Click += ..." / "this.button1.Click += ...", or an event of the form itself (double-click
+                // on the form): "this.Load += ..." from CodeDom, bare "Load += Form1_Load;" from the out-of-process
+                // Designer (2026-11-18, the reason Form1_Load was never wired)
+                string eventName;
+                string fieldName = null;
+                bool formEvent;
+                if (assignment.Left is MemberAccessExpressionSyntax fieldEvent)
+                {
+                    eventName = fieldEvent.Name.Identifier.Text;
+                    formEvent = fieldEvent.Expression is ThisExpressionSyntax;
+                    if (!formEvent)
+                    {
+                        fieldName = ExtractTrailingName(fieldEvent.Expression);
+                    }
+                }
+                else if (assignment.Left is IdentifierNameSyntax bareEvent)
+                {
+                    eventName = bareEvent.Identifier.Text;
+                    formEvent = true;
+                }
+                else
+                {
+                    continue;
+                }
 
                 // Handles both "new EventHandler(this.X_Click)" and a bare method-group
                 // "this.X_Click" -- observed the plain-generated form via CodeDom, and want to
@@ -158,7 +187,20 @@ $@"    PRIVATE METHOD {name}({string.Join(", ", paramTexts)}) AS VOID
                 }
                 string handlerName = ExtractTrailingName(handlerExpr);
 
-                if (fieldName == null || handlerName == null) continue;
+                if (handlerName == null) continue;
+
+                if (formEvent)
+                {
+                    if (Regex.IsMatch(designerSource, $@"\bSELF\s*:\s*{Regex.Escape(eventName)}\s*\+=", RegexOptions.IgnoreCase))
+                    {
+                        continue;
+                    }
+                    designerSource = InsertFormEventWiring(designerSource, $"SELF:{eventName} += SELF:{handlerName}", "InitializeComponent");
+                    result.NewWiringDescriptions.Add($"SELF:{eventName} -> {handlerName}");
+                    continue;
+                }
+
+                if (fieldName == null) continue;
 
                 // Idempotency guard -- re-check against the current (possibly already-edited-
                 // this-run) designerSource each iteration, not a snapshot from before the loop.
@@ -200,6 +242,41 @@ $@"    PRIVATE METHOD {name}({string.Join(", ", paramTexts)}) AS VOID
             }
             var last = matches[matches.Count - 1];
             return source.Substring(0, last.Index) + textToInsert + "\n" + source.Substring(last.Index);
+        }
+
+        /// <summary>
+        /// Inserts the wiring of an event of the form itself where the Designer puts it: after the form's own
+        /// property assignments, i.e. on its own line before "SELF:ResumeLayout(", with that line's indentation.
+        /// Without a ResumeLayout call, on its own line before "END METHOD".
+        /// </summary>
+        private static string InsertFormEventWiring(string source, string statement, string methodName)
+        {
+            var methodStart = Regex.Match(source, $@"\bMETHOD\s+{Regex.Escape(methodName)}\s*\(", RegexOptions.IgnoreCase);
+            if (!methodStart.Success)
+            {
+                throw new InvalidOperationException($"Could not find 'METHOD {methodName}(' in the real Designer .prg.");
+            }
+            string rest = source.Substring(methodStart.Index);
+            var endMethod = Regex.Match(rest, @"\bEND\s+METHOD\b", RegexOptions.IgnoreCase);
+            if (!endMethod.Success)
+            {
+                throw new InvalidOperationException($"Could not find the closing 'END METHOD' for {methodName}.");
+            }
+            string body = rest.Substring(0, endMethod.Index);
+            var anchor = Regex.Match(body, @"^([ \t]*)SELF\s*:\s*ResumeLayout\s*\(", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            string indent;
+            int lineStart;
+            if (anchor.Success)
+            {
+                indent = anchor.Groups[1].Value;
+                lineStart = methodStart.Index + anchor.Index;
+            }
+            else
+            {
+                lineStart = source.LastIndexOf('\n', methodStart.Index + endMethod.Index) + 1;
+                indent = "            ";
+            }
+            return source.Substring(0, lineStart) + indent + statement + "\n" + source.Substring(lineStart);
         }
 
         /// <summary>

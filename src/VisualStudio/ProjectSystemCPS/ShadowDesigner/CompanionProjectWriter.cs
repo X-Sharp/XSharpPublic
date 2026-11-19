@@ -134,14 +134,12 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             WriteIfChanged(paths.CsprojPath, BuildCsprojContent(targetFramework, filteredReferencePaths, packageReferences));
             WriteIfChanged(paths.DesignerCsPath, generatedDesignerCsharp);
 
-            // The stub is where the Designer puts new members (e.g. event handler stubs, picked up by
-            // EventHandlerSync), so it is only regenerated while it is still an empty generated stub -- e.g. one
-            // that was written with an outdated base class.
-            string stubCsPath = ComputeFormCsPath(realXsprojPath, className);
-            if (!File.Exists(stubCsPath) || IsEmptyStub(File.ReadAllText(stubCsPath)))
-            {
-                WriteIfChanged(stubCsPath, stubCsharp);
-            }
+            // The stub is where the Designer puts new members (event handler stubs, picked up by EventHandlerSync).
+            // Always regenerated: every method of the real Form1.prg is already in the generated Form1.Designer.cs,
+            // so a handler the Designer added to the stub in an earlier open (and that was synced into the .prg since)
+            // was there twice, and the Designer failed with CS0121 "call is ambiguous between Form1.button1_Click and
+            // Form1.button1_Click" (seen 2026-11-18, reopening the form without closing the solution).
+            WriteIfChanged(ComputeFormCsPath(realXsprojPath, className), stubCsharp);
 
             return paths;
         }
@@ -249,23 +247,6 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 result.Add(new PackageRef(include, version));
             }
             return result;
-        }
-
-        // An empty generated stub: comments, usings, optional namespace and a partial class without members
-        private static readonly Regex EmptyStubRegex = new Regex(
-            @"^\s*(namespace\s+[\w.]+\s*\{)?\s*public\s+partial\s+class\s+\w+(\s*:[^{]*)?\s*\{\s*\}\s*\}?\s*$",
-            RegexOptions.Singleline);
-
-        /// <summary>
-        /// True when <paramref name="content"/> is an empty generated stub (from this writer), i.e. a file that can be
-        /// regenerated without losing anything.
-        /// </summary>
-        internal static bool IsEmptyStub(string content)
-        {
-            var lines = content.Replace("\r", "").Split('\n')
-                .Select(l => l.Trim())
-                .Where(l => !l.StartsWith("//", StringComparison.Ordinal) && !(l.StartsWith("using ", StringComparison.Ordinal) && l.EndsWith(";", StringComparison.Ordinal)));
-            return EmptyStubRegex.IsMatch(string.Join("\n", lines));
         }
 
         private static string Escape(string value) => System.Security.SecurityElement.Escape(value);

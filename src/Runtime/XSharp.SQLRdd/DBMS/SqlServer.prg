@@ -111,6 +111,7 @@ class SqlDbProviderSqlServer inherit SqlDbProvider
                         {"ASC(%1%)"					,"ASCII(%1%)"},;
                         {"TRIM(%1%)"				,"RTRIM(%1%)"},;
                         {"ALLTRIM(%1%)"				,"TRIM(%1%)"},;
+                        {"LENGTH(%1%)"				,"LEN(%1%)"},;
                         {"+"						,"+"}}
                 endif
             end lock

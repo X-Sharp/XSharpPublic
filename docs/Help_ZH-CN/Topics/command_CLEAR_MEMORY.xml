@@ -23,7 +23,7 @@
     <para styleclass="Heading1">描述</para>
     <para styleclass="Normal">它的作用与 RELEASE ALL 相反，后者实际上并不删除公共和私有内存变量，而是将 NIL 赋值给那些作用域为当前存储过程的变量。 清除内存(CLEAR MEMORY)是删除当前内存中所有公共内存变量的唯一方法。 而声明的变量和常量则不受 CLEAR MEMORY 影响。</para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_MemClear.htm" domain="XSharpRef.chm">MemClear()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RELEASE">RELEASE</link></para>
     <para styleclass="Normal"></para>
   </body>

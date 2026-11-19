@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:30:56.147+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SCAN ... ENDSCAN 命令</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Records</keyword>
+    <keyword>SCAN command</keyword>
+    <keyword>ENDSCAN command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SCAN ... ENDSCAN 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">遍历当前表的记录，并对每条符合指定条件的记录执行一段语句块。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">SCAN [&lt;Scope&gt;] [FOR &lt;lCondition&gt;] [WHILE &lt;lCondition&gt;] [NOOPTIMIZE]<br/>   &lt;Statements&gt;<br/>ENDSCAN</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
+    <para styleclass="List"><snippet src="__While" inline="false"/></para>
+    <para styleclass="List"><snippet src="__For" inline="false"/></para>
+    <para styleclass="List">NOOPTIMIZE<tab/>禁用 FOR 子句的优化。接受此子句仅为了兼容性。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">SCAN 会定位第一条符合条件的记录，然后执行语句。到达 ENDSCAN 语句时，会定位下一条符合条件的记录并再次执行这些语句，直到没有更多符合条件的记录为止。您不必在循环中移动记录指针，因为 ENDSCAN 会替您完成。END SCAN 是 ENDSCAN 的同义词。</para>
+    <para styleclass="Normal">预处理器会将该命令转换为一个 DbLocate() 调用，随后是以 DbContinue() 结尾的 DO WHILE Found() 循环。因此 scan 遵循与 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCATE">LOCATE</link> 和 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CONTINUE">CONTINUE</link> 相同的规则。请勿在循环内对同一工作区使用 LOCATE 或 CONTINUE，因为这会改变 scan 的状态。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Code Example">USE Customers<br/>
+SCAN FOR Country = &quot;NL&quot;<br/>
+  ? Name<br/>
+ENDSCAN</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCATE">LOCATE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CONTINUE">CONTINUE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbLocate.htm" domain="XSharpRef.chm">DbLocate()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbContinue.htm" domain="XSharpRef.chm">DbContinue()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Found.htm" domain="XSharpRef.chm">Found()</link></para>
+  </body>
+</topic>

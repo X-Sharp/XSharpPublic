@@ -4,7 +4,7 @@
   <title>COM</title>
   <body>
     <header>
-      <para styleclass="Heading1">External COM Components</para>
+      <para styleclass="Heading1">外部 COM 组件</para>
     </header>
     <para styleclass="Normal"></para>
     <para styleclass="Normal">添加引用对话框中的 COM 页面列出了在计算机注册表中找到的 COM 组件。</para>

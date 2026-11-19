@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>OPEN DATABASE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>OPEN DATABASE command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">OPEN DATABASE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Opens a database container (DBC).</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">OPEN DATABASE &lt;DbName&gt; [EXCLUSIVE | SHARED] [NOUPDATE] [VALIDATE]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;DbName&gt;<tab />The name of the database to open. The default extension is .DBC.</para>
+    <para styleclass="List">EXCLUSIVE<tab />Opens the database for exclusive use. </para>
+    <para styleclass="List">SHARED<tab />Opens the database for shared use. This is the default when neither EXCLUSIVE nor SHARED is specified.</para>
+    <para styleclass="List">NOUPDATE<tab />Opens the database read-only: the database cannot be modified.</para>
+    <para styleclass="List">VALIDATE<tab />Checks that the tables and indexes that are referenced in the database are available and valid.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">Opening a database does not make it the current database. Use <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DATABASE">SET DATABASE TO</link> to select the current database.</para>
+    <para styleclass="Normal">The command is translated by the preprocessor to a call to the Open() method of the XSharp.RDD.Dbc class.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLOSE_DATABASES">CLOSE DATABASES</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_DATABASE">CREATE DATABASE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_DATABASE">DELETE DATABASE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DATABASE">SET DATABASE TO</link></para>
+  </body>
+</topic>

@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:38:23.921Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>INSERT INTO 命令</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>INSERT INTO command</keyword>
+    <keyword>SQL</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">INSERT INTO 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">将一条记录追加到表中，并使用表达式、内存变量、数组或对象中的值填充该记录。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">INSERT INTO &lt;TableName&gt; [(&lt;FieldName1&gt; [, &lt;FieldName2&gt; ...])] VALUES (&lt;eExpression1&gt; [, &lt;eExpression2&gt; ...])<br/>INSERT INTO &lt;TableName&gt; FROM MEMVAR<br/>INSERT INTO &lt;TableName&gt; FROM ARRAY &lt;ArrayName&gt;<br/>INSERT INTO &lt;TableName&gt; FROM NAME &lt;ObjectName&gt;</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;TableName&gt;<tab />要向其插入记录的表。如果该表在任何工作区中均未打开，则会先打开该表，用于插入操作，然后再次关闭。</para>
+    <para styleclass="List">(&lt;FieldName1&gt;, ...)<tab />将接收值的字段。如果省略字段列表，则值将按字段顺序存储在各字段中。</para>
+    <para styleclass="List">VALUES (&lt;eExpression1&gt;, ...)<tab />字段的值。在可能的情况下，这些值将转换为字段的类型。</para>
+    <para styleclass="List">FROM MEMVAR<tab />从与字段同名的内存变量中获取值。没有同名变量的字段将保持不变。</para>
+    <para styleclass="List">FROM ARRAY &lt;ArrayName&gt;<tab />从数组的元素中获取值，第一个字段的值从数组的第一个元素开始获取。</para>
+    <para styleclass="List">FROM NAME &lt;ObjectName&gt;<tab />从对象中与字段同名的属性中获取值。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; color:#ff0000;">目前不支持</text>：INSERT INTO ... SELECT 的变体。使用时，编译器会报错。</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Code Example">INSERT INTO Customers (Id, Name) VALUES (1, &quot;Smith&quot;)<br/>LOCAL oCustomer := TestObject{} AS OBJECT<br/>INSERT INTO Customers FROM NAME oCustomer</para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_APPEND_BLANK">APPEND BLANK</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Command_GATHER">GATHER</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_UPDATE_SET">UPDATE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_FROM">DELETE FROM</link></para>
+  </body>
+</topic>

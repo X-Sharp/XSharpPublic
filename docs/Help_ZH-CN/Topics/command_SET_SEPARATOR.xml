@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:47:06.550Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET SEPARATOR 命令</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SET commands</keyword>
+    <keyword>SET SEPARATOR command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET SEPARATOR 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">指定在数字表达式中用于分隔数字组（千位分隔符）的字符。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">SET SEPARATOR TO [&lt;cCharacter&gt;]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;cCharacter&gt;<tab />千位分隔符。若省略该字符，分隔符将重置为逗号 (&quot;,&quot;)。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">该设置将作为 Set.Separator 存储在运行时状态中，其设置与 <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetThousandSep.htm" domain="XSharpRef.chm">SetThousandSep()</link> 函数所修改的设置相同。</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_POINT">SET POINT</link>、<link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DECIMALS">SET DECIMALS</link>、<link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetThousandSep.htm" domain="XSharpRef.chm">SetThousandSep()</link></para>
+  </body>
+</topic>

@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:51:21.745Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CAST AS 命令</title>
+  <keywords>
+    <keyword>CAST command</keyword>
+    <keyword>Commands</keyword>
+    <keyword>Conversion</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">CAST ... AS</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">将表达式转换为指定的数据类型。CAST 不是一条语句，而是一种表达式，可在任何需要值的场合使用。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">CAST ( &lt;eExpression&gt; AS &lt;Type&gt; [(&lt;nWidth&gt; [, &lt;nPrecision&gt;])] [NULL | NOT NULL] )<br/>CAST ( &lt;eExpression&gt; AS ( &lt;cTypeExpression&gt; ) [NULL | NOT NULL] )</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;eExpression&gt;<tab />要转换的表达式。</para>
+    <para styleclass="List">&lt;Type&gt;<tab />目标类型，可以是单个字母或名称：<br/>C、CHAR、CHARACTER：字符型（用空格补齐至指定宽度）<br/>V、VARCHAR：Varchar 型（截断至指定宽度，但不补零）<br/>N、 NUM、NUMERIC 和 F、FLOAT：数值型和浮点<br/>型 I、INT、INTEGER：整数型<br/>B、DOUBLE：双<br/>精度型 Y、CURRENCY：货币<br/>型 D、DATE：日期<br/>型 T、DATETIME：日期<br/>时间型 L、LOGICAL： 逻辑型（以 T 或 Y 开头的字符串返回 TRUE，非零数值返回 TRUE）<br/>M, MEMO：备忘录<br/>G, GENERAL：通用<br/>W, BLOB：二进制大对象<br/>Q, VARBINARY：二进制字符串（截断至指定宽度）<br/>类型不区分大小写。 当表达式无法转换为目标类型时，将产生运行时错误。</para>
+    <para styleclass="List">&lt;nWidth&gt; [, &lt;nPrecision&gt;]<tab />字符和数值类型的结果宽度，以及数值类型的小数位数。对于字符值，默认宽度为 1。</para>
+    <para styleclass="List">&lt;cTypeExpression&gt;<tab />括号中的表达式，返回类型名称，例如一个变量。</para>
+    <para styleclass="List">NULL | NOT NULL<tab />为与 SQL 语法兼容而接受。该子句不会改变结果。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Code Example">? CAST(123.456 AS C(10))<br/>? CAST(&quot;42&quot; AS I)<br/>cType := &quot;N&quot;<br/>? CAST(&quot;3.14&quot; AS (cType))</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_TABLE">CREATE TABLE</link></para>
+  </body>
+</topic>

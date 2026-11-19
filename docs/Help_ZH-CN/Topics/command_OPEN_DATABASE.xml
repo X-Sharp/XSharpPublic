@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:38:44.075Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>OPEN DATABASE 命令</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>OPEN DATABASE command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">OPEN DATABASE 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">打开一个数据库容器（DBC）。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">OPEN DATABASE &lt;DbName&gt; [EXCLUSIVE | SHARED] [NOUPDATE] [VALIDATE]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;DbName&gt;<tab />要打开的数据库名称。默认扩展名为 .DBC。</para>
+    <para styleclass="List">EXCLUSIVE<tab />以独占模式打开数据库。 </para>
+    <para styleclass="List">SHARED<tab />以共享模式打开数据库。当未指定 EXCLUSIVE 或 SHARED 时，此为默认模式。</para>
+    <para styleclass="List">NOUPDATE<tab />以只读方式打开数据库：无法修改该数据库。</para>
+    <para styleclass="List">VALIDATE<tab />检查数据库中引用的表和索引是否可用且有效。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">打开数据库并不意味着将其设为当前数据库。请使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DATABASE">SET DATABASE TO</link> 来选择当前数据库。</para>
+    <para styleclass="Normal">该命令由预处理器转换为对 XSharp.RDD.Dbc 类中 Open() 方法的调用。</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLOSE_DATABASES">CLOSE DATABASES</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_DATABASE">CREATE DATABASE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_DATABASE">DELETE DATABASE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DATABASE">SET DATABASE TO</link></para>
+  </body>
+</topic>

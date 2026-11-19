@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:37:45.683Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>DELETE FROM 命令</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>DELETE FROM command</keyword>
+    <keyword>SQL</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">DELETE FROM 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">使用 SQL 语法将表中的记录标记为待删除。这是 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_FoxPro">DELETE（FoxPro）</link>的 SQL 版本。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">DELETE FROM &lt;TableName&gt; [WHERE &lt;lCondition&gt;]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;TableName&gt;<tab />要从中删除记录的表（或别名）。</para>
+    <para styleclass="List">WHERE &lt;lCondition&gt;<tab />仅删除满足该条件的记录。这将转换为 DELETE 命令中的 FOR 子句。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">SQL 命令始终作用于整个表，因此如果没有 WHERE 子句，则会删除所有记录。这与 DELETE 命令不同，后者默认仅删除当前记录。记录仅被标记为待删除。请使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_PACK">PACK</link> 命令将其物理删除。符合条件的记录数量存储在 _TALLY 变量中。</para>
+    <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; color:#ff0000;">当前不支持</text>：带 JOIN 或子查询的 DELETE 语句。使用此类语句时，编译器会报错。</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Code Example">DELETE FROM Customers WHERE Country == &quot;NL&quot;</para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE">DELETE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_FoxPro">DELETE (FoxPro)</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RECALL">RECALL</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_PACK">PACK</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_INSERT_INTO">INSERT INTO</link></para>
+  </body>
+</topic>

@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET REFRESH Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SET commands</keyword>
+    <keyword>SET REFRESH command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET REFRESH Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Specifies how often (in seconds) the data in a work area is refreshed from the disk.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">SET REFRESH TO [&lt;nSeconds&gt;]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;nSeconds&gt;<tab />The number of seconds. When the value is omitted the default value 5 is used.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The command is equivalent to the function <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetRefresh.htm" domain="XSharpRef.chm">SetRefresh()</link>.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_STRICTREAD">SET STRICTREAD</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetRefresh.htm" domain="XSharpRef.chm">SetRefresh()</link></para>
+  </body>
+</topic>

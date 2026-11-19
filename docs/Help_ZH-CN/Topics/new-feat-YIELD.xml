@@ -9,7 +9,7 @@
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">YIELD EXIT and YIELD RETURN</para>
+      <para styleclass="Heading1">YIELD EXIT 和 YIELD RETURN</para>
     </header>
     <para styleclass="Normal"><snippet src="Ex-YIELD-" inline="false"/></para>
   </body>

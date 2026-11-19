@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:40:40.541Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET DATABASE 命令</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>SET DATABASE command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET DATABASE 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">指定当前数据库。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">SET DATABASE TO [&lt;DbName&gt;]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;DbName&gt;<tab />必须设为当前数据库的已打开数据库的名称。如果省略该名称，则不会有当前数据库。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">该数据库必须已通过 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPEN_DATABASE">OPEN DATABASE</link> 命令打开，或通过 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_DATABASE">CREATE DATABASE</link> 命令创建。<link displaytype="text" defaultstyle="true" type="topiclink" href="command_ADD_TABLE">ADD TABLE</link>、<link displaytype="text" defaultstyle="true" type="topiclink" href="command_REMOVE_TABLE">REMOVE TABLE</link> 和 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RENAME_TABLE">RENAME TABLE</link> 等命令作用于当前数据库。</para>
+    <para styleclass="Normal">该命令由预处理器转换为对 XSharp.RDD.Dbc 类中 Select() 方法的调用。</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLOSE_DATABASES">CLOSE DATABASES</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_DATABASE">CREATE DATABASE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPEN_DATABASE">OPEN DATABASE</link></para>
+  </body>
+</topic>

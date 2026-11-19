@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:35:56.850Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CREATE CONNECTION 命令</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>CREATE CONNECTION command</keyword>
+    <keyword>Databases</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">CREATE CONNECTION 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">创建一个命名连接并将其存储在当前数据库中。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">CREATE CONNECTION &lt;ConnectionName&gt;<br/> &#160; [DATASOURCE &lt;DataSourceName&gt;] [USERID &lt;UserId&gt;] [PASSWORD &lt;Password&gt;] [DATABASE &lt;DbName&gt;]<br/><br/>CREATE CONNECTION &lt;ConnectionName&gt; CONNSTRING &lt;ConnectionString&gt;</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;ConnectionName&gt;<tab />连接的名称。</para>
+    <para styleclass="List">DATASOURCE &lt;DataSourceName&gt;<tab />连接所使用的数据源名称。</para>
+    <para styleclass="List">USERID &lt;UserId&gt;<tab />用于登录数据源的用户 ID。</para>
+    <para styleclass="List">PASSWORD &lt;Password&gt;<tab />用于登录数据源的密码。</para>
+    <para styleclass="List">DATABASE &lt;DbName&gt;<tab />数据源服务器上的数据库名称。</para>
+    <para styleclass="List">CONNSTRING &lt;ConnectionString&gt;<tab /> 完整的连接字符串。它不能与其他子句组合使用。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">名称和字符串可以带引号或不带引号指定。该命令将由预处理器转换为对 XSharp.RDD.Dbc 类中 CreateConnection() 方法的调用。</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_CONNECTION">DELETE CONNECTION</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_DATABASE">CREATE DATABASE</link></para>
+  </body>
+</topic>

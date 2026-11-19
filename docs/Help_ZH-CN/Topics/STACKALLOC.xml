@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" modified="2024-06-30T00:51:00.661+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>STACKALLOC</title>
+  <title>STACKALLOC 修饰符</title>
   <keywords>
     <keyword>STACKALLOC</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">STACKALLOC Modifier</para>
+      <para styleclass="Heading1">STACKALLOC 修饰符</para>
     </header>
     <para styleclass="Normal">使用 STACKALLOC 关键字，可以在当前函数/方法的堆栈中分配一个内存块。</para>
     <para styleclass="Normal">使用 STACKALLOC 的语法是</para>

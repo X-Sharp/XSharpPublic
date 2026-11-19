@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CAST AS Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Conversion</keyword>
+    <keyword>CAST command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">CAST ... AS</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Converts an expression to the specified data type. CAST is not a statement, but an expression that can be used wherever a value is expected.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">CAST ( &lt;eExpression&gt; AS &lt;Type&gt; [(&lt;nWidth&gt; [, &lt;nPrecision&gt;])] [NULL | NOT NULL] )<br/>CAST ( &lt;eExpression&gt; AS ( &lt;cTypeExpression&gt; ) [NULL | NOT NULL] )</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;eExpression&gt;<tab />The expression to convert.</para>
+    <para styleclass="List">&lt;Type&gt;<tab />The target type, as a single letter or as a name:<br/>
+C, CHAR, CHARACTER: Character (padded with spaces to the width)<br/>
+V, VARCHAR: Varchar (truncated to the width, but not padded)<br/>
+N, NUM, NUMERIC and F, FLOAT: Numeric and Float<br/>
+I, INT, INTEGER: Integer<br/>
+B, DOUBLE: Double<br/>
+Y, CURRENCY: Currency<br/>
+D, DATE: Date<br/>
+T, DATETIME: DateTime<br/>
+L, LOGICAL: Logical (a string that starts with T or Y gives TRUE, a number gives TRUE when it is not zero)<br/>
+M, MEMO: Memo<br/>
+G, GENERAL: General<br/>
+W, BLOB: Blob<br/>
+Q, VARBINARY: Varbinary (truncated to the width)<br/>
+The type is not case sensitive. A runtime error is generated when the expression cannot be converted to the target type.</para>
+    <para styleclass="List">&lt;nWidth&gt; [, &lt;nPrecision&gt;]<tab />The width of the result for character and numeric types and the number of decimals for numeric types. For character values the default width is 1.</para>
+    <para styleclass="List">&lt;cTypeExpression&gt;<tab />An expression between parentheses that returns the type name, for example a variable.</para>
+    <para styleclass="List">NULL | NOT NULL<tab />Accepted for compatibility with the SQL syntax. The clause does not change the result.</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Code Example">? CAST(123.456 AS C(10))<br/>
+? CAST("42" AS I)<br/>
+cType := "N"<br/>
+? CAST("3.14" AS (cType))</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_TABLE">CREATE TABLE</link></para>
+  </body>
+</topic>

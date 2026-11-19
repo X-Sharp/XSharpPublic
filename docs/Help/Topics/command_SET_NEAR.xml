@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET NEAR Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SET commands</keyword>
+    <keyword>SET NEAR command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET NEAR Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Specifies where the record pointer is positioned after a failed search with <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SEEK_FoxPro">SEEK</link> or FIND.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">SET NEAR ON | OFF | &amp;&lt;cMacro&gt;</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">ON | OFF<tab />ON positions the record pointer on the record with the closest higher key value when the search fails. OFF moves the record pointer to the end of the file. The value may also be a macro (&amp;) that evaluates to ON or OFF.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">SET NEAR is the FoxPro name for <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_SOFTSEEK">SET SOFTSEEK</link>. Both commands change the same runtime setting.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_SOFTSEEK">SET SOFTSEEK</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SEEK_FoxPro">SEEK (FoxPro)</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetSoftSeek.htm" domain="XSharpRef.chm">SetSoftSeek()</link></para>
+  </body>
+</topic>

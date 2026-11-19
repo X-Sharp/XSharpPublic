@@ -27,28 +27,28 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// <summary>Companion project name = real project name + this suffix (also its folder name).</summary>
         internal const string CompanionSuffix = ".ShadowDesigner";
 
-        public readonly struct CompanionPaths
+        internal readonly struct CompanionPaths
         {
-            public CompanionPaths(string csprojPath, string designerCsPath)
+            internal CompanionPaths(string csprojPath, string designerCsPath)
             {
                 CsprojPath = csprojPath;
                 DesignerCsPath = designerCsPath;
             }
 
-            public string CsprojPath { get; }
-            public string DesignerCsPath { get; }
+            internal string CsprojPath { get; }
+            internal string DesignerCsPath { get; }
         }
 
-        public readonly struct PackageRef
+        internal readonly struct PackageRef
         {
-            public PackageRef(string include, string version)
+            internal PackageRef(string include, string version)
             {
                 Include = include;
                 Version = version;
             }
 
-            public string Include { get; }
-            public string Version { get; }
+            internal string Include { get; }
+            internal string Version { get; }
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// Designer-changes sync commands) locate an already-existing companion project
         /// without re-running the parse/merge/generate pipeline.
         /// </summary>
-        public static CompanionPaths ComputePaths(string realXsprojPath, string className)
+        internal static CompanionPaths ComputePaths(string realXsprojPath, string className)
         {
             string companionDir = GetCompanionDir(realXsprojPath);
             string csprojName = Path.GetFileNameWithoutExtension(realXsprojPath) + CompanionSuffix;
@@ -74,7 +74,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// <summary>Companion project's Form1.cs-equivalent stub path (constructor/Dispose,
         /// and where the Designer sometimes puts new handler stubs) -- separate from
         /// CompanionPaths.DesignerCsPath since only the sync commands need it.</summary>
-        public static string ComputeFormCsPath(string realXsprojPath, string className) =>
+        internal static string ComputeFormCsPath(string realXsprojPath, string className) =>
             Path.Combine(GetCompanionDir(realXsprojPath), className + ".cs");
 
         private static string GetCompanionDir(string realXsprojPath)
@@ -90,7 +90,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// <summary>
         /// Folder of the companion project of <paramref name="realXsprojPath"/>.
         /// </summary>
-        public static string ComputeCompanionDir(string realXsprojPath) => GetCompanionDir(realXsprojPath);
+        internal static string ComputeCompanionDir(string realXsprojPath) => GetCompanionDir(realXsprojPath);
 
         /// <param name="realXsprojPath">The X# project.</param>
         /// <param name="evaluatedTargetFramework">The active target framework of the loaded project (short form, e.g.
@@ -100,7 +100,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// <param name="stubCsharp">The Form1.cs-equivalent stub: the partial class with the same base types and
         /// imports as the generated designer code (see ShadowDesignerBridge.BuildStubCSharp).</param>
         /// <param name="className">The form class.</param>
-        public static CompanionPaths EnsureCompanionProject(
+        internal static CompanionPaths EnsureCompanionProject(
             string realXsprojPath,
             string evaluatedTargetFramework,
             IReadOnlyList<string> referencePaths,

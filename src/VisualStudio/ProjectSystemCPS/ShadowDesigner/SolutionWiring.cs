@@ -31,7 +31,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// (created on first use) rather than at the solution root, unless a project with
         /// that exact full path is already present -- safe to call every time.
         /// </summary>
-        public static void EnsureProjectInSolution(string csprojPath)
+        internal static void EnsureProjectInSolution(string csprojPath)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             var solution = GetSolution();
@@ -44,11 +44,57 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 throw new InvalidOperationException("The solution service does not support adding companion projects.");
             }
 
+            // Adding the companion makes the solution dirty, and so does removing it on close
+            // (ShadowDesignerCleanup). When nothing else is unsaved, both are saved right away, so the
+            // companion never makes VS ask to save the solution.
+            bool wasDirty = IsSolutionDirty(solution);
+
             RemoveStaleHierarchy(solution, csprojPath);
             RemoveStaleProjectItem(solution, Path.GetFileNameWithoutExtension(csprojPath));
 
             var folder = EnsureSolutionFolder(solution, ShadowDesignerFolderName);
             ErrorHandler.ThrowOnFailure(solution6.AddExistingProject(csprojPath, folder, out _));
+
+            if (!wasDirty)
+            {
+                SaveSolutionFile(solution, "companion added");
+            }
+        }
+
+        /// <summary>True when the solution has changes that are not saved yet.</summary>
+        internal static bool IsSolutionDirty(IVsSolution vsSolution)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            return ErrorHandler.Succeeded(vsSolution.GetProperty((int)__VSPROPID.VSPROPID_IsSolutionDirty, out object dirty)) &&
+                dirty is bool isDirty && isDirty;
+        }
+
+        /// <summary>The full path of the solution file, or null for a solution that was never saved.</summary>
+        internal static string GetSolutionFile(IVsSolution vsSolution)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (ErrorHandler.Failed(vsSolution.GetSolutionInfo(out _, out string solutionFile, out _)) ||
+                string.IsNullOrEmpty(solutionFile) || !File.Exists(solutionFile))
+            {
+                return null;
+            }
+            return solutionFile;
+        }
+
+        /// <summary>
+        /// Saves the solution file without asking. Skipped for a solution that was never saved, where saving
+        /// would show the Save As dialog.
+        /// </summary>
+        internal static void SaveSolutionFile(IVsSolution vsSolution, string reason)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            string solutionFile = GetSolutionFile(vsSolution);
+            if (solutionFile == null)
+            {
+                return;
+            }
+            int hr = vsSolution.SaveSolutionElement((uint)__VSSLNSAVEOPTIONS.SLNSAVEOPT_SaveIfDirty, null, 0);
+            Logger.Information($"SolutionWiring: saved {solutionFile} ({reason}), hr=0x{hr:X8}");
         }
 
         /// <summary>
@@ -148,7 +194,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// message on failure instead of throwing -- a freshly-added companion project may
         /// still need a NuGet restore / design-time build to finish.
         /// </summary>
-        public static bool TryOpenInDesigner(string designerCsPath, out string errorMessage)
+        internal static bool TryOpenInDesigner(string designerCsPath, out string errorMessage)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             try
@@ -212,7 +258,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         }
 
         /// <summary>Finds a loaded project by its full path, including projects in solution folders.</summary>
-        public static IVsHierarchy FindProjectByFullPath(string fullPath)
+        internal static IVsHierarchy FindProjectByFullPath(string fullPath)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             foreach (var hierarchy in EnumerateProjects(GetSolution(), __VSENUMPROJFLAGS.EPF_LOADEDINSOLUTION))

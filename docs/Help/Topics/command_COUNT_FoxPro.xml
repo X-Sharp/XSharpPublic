@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:09:34.197Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>COUNT Command (FoxPro)</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>COUNT command</keyword>
+    <keyword>COUNT command<keyword>FoxPro</keyword></keyword>
+    <keyword>Records</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">COUNT Command &#160;(FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Counts the records in the current table that match the specified conditions. This is the FoxPro version of the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_COUNT">COUNT</link> command.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">COUNT [&lt;Scope&gt;] [FOR &lt;lCondition&gt;] [WHILE &lt;lCondition&gt;] [NOOPTIMIZE] [TO &lt;Variable&gt;]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
+    <para styleclass="List"><snippet src="__While" inline="false"/></para>
+    <para styleclass="List"><snippet src="__For" inline="false"/></para>
+    <para styleclass="List">NOOPTIMIZE<tab />Disables the optimization of the FOR clause. This clause is accepted for compatibility.</para>
+    <para styleclass="List">TO &lt;Variable&gt;<tab />The variable that receives the number of records. In FoxPro the TO clause is optional. It may be placed directly after COUNT or at the end of the command.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The number of matching records is always stored in the variable _TALLY, also when the TO clause is omitted. This is different from the standard version of COUNT, where the TO clause is required.</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Code Example">USE Customers<br/>COUNT FOR Country = &quot;NL&quot; TO nDutch<br/>COUNT<br/>? _TALLY</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COUNT">COUNT</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SUM">SUM</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_AVERAGE">AVERAGE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbEval.htm" domain="XSharpRef.chm">DbEval()</link></para>
+  </body>
+</topic>

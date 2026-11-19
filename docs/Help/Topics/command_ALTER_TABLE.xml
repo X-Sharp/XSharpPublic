@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>ALTER TABLE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SQL</keyword>
+    <keyword>ALTER TABLE command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">ALTER TABLE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Changes the structure of an existing table.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">ALTER TABLE &lt;TableName&gt; ADD [COLUMN] &lt;FieldName&gt; &lt;FieldType&gt; [(&lt;nWidth&gt; [, &lt;nPrecision&gt;])] [NULL | NOT NULL]<br/>ALTER TABLE &lt;TableName&gt; ALTER [COLUMN] &lt;FieldName&gt; &lt;FieldType&gt; [(&lt;nWidth&gt; [, &lt;nPrecision&gt;])] [NULL | NOT NULL]<br/>ALTER TABLE &lt;TableName&gt; DROP [COLUMN] &lt;FieldName&gt;</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">ADD [COLUMN]<tab />Adds a new field to the table.</para>
+    <para styleclass="List">ALTER [COLUMN]<tab />Changes the type, size or NULL setting of an existing field.</para>
+    <para styleclass="List">DROP [COLUMN]<tab />Removes a field from the table.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The table is rebuilt. The old table is kept as a backup file with the extension .BAK (and .TBK for the memo file) until the new table has been created successfully. Field types and clauses are the same as for <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_TABLE">CREATE TABLE</link>.</para>
+    <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; color:#ff0000;">NOT SUPPORTED AT THIS MOMENT</text>: The variations of the command that change table properties or constraints (such as primary and foreign keys, rules and triggers) are accepted by the preprocessor but are ignored.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_TABLE">CREATE TABLE</link></para>
+  </body>
+</topic>

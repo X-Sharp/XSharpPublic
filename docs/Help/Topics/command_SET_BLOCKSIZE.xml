@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET BLOCKSIZE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SET commands</keyword>
+    <keyword>SET BLOCKSIZE command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET BLOCKSIZE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Specifies how disk space is allocated for the storage of memo fields.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">SET BLOCKSIZE TO &lt;nBytes&gt;</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;nBytes&gt;<tab />The size of the memo blocks. A value between 1 and 32 is the number of 512 byte blocks. Larger values are the number of bytes. The value 0 selects blocks of 1 byte.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The setting is used when new tables with memo fields are created. The command is equivalent to <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_MEMOBLOCK">SET MEMOBLOCKSIZE</link>.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_MEMOBLOCK">SET MEMOBLOCKSIZE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_TABLE">CREATE TABLE</link></para>
+  </body>
+</topic>

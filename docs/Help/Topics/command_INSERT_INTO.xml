@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>INSERT INTO Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SQL</keyword>
+    <keyword>INSERT INTO command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">INSERT INTO Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Appends a record to a table and fills it with values from expressions, memory variables, an array or an object.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">INSERT INTO &lt;TableName&gt; [(&lt;FieldName1&gt; [, &lt;FieldName2&gt; ...])] VALUES (&lt;eExpression1&gt; [, &lt;eExpression2&gt; ...])<br/>INSERT INTO &lt;TableName&gt; FROM MEMVAR<br/>INSERT INTO &lt;TableName&gt; FROM ARRAY &lt;ArrayName&gt;<br/>INSERT INTO &lt;TableName&gt; FROM NAME &lt;ObjectName&gt;</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;TableName&gt;<tab />The table to which the record is added. If the table is not open in any work area, then it is opened, used for the insert and closed again.</para>
+    <para styleclass="List">(&lt;FieldName1&gt;, ...)<tab />The fields that receive a value. If the field list is omitted the values are stored in the fields in field order.</para>
+    <para styleclass="List">VALUES (&lt;eExpression1&gt;, ...)<tab />The values for the fields. The values are converted to the type of the field when possible.</para>
+    <para styleclass="List">FROM MEMVAR<tab />Takes the values from memory variables that have the same names as the fields. Fields without a variable with the same name are not changed.</para>
+    <para styleclass="List">FROM ARRAY &lt;ArrayName&gt;<tab />Takes the values from the elements of the array, starting with the first element for the first field.</para>
+    <para styleclass="List">FROM NAME &lt;ObjectName&gt;<tab />Takes the values from properties of the object that have the same names as the fields.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; color:#ff0000;">NOT SUPPORTED AT THIS MOMENT</text>: The INSERT INTO ... SELECT variation. The compiler generates an error when it is used.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Code Example">INSERT INTO Customers (Id, Name) VALUES (1, "Smith")<br/>
+LOCAL oCustomer := TestObject{} AS OBJECT<br/>
+INSERT INTO Customers FROM NAME oCustomer</para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_APPEND_BLANK">APPEND BLANK</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Command_GATHER">GATHER</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_UPDATE_SET">UPDATE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_FROM">DELETE FROM</link></para>
+  </body>
+</topic>

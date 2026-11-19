@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>DELETE FROM Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SQL</keyword>
+    <keyword>DELETE FROM command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">DELETE FROM Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Marks records in a table for deletion, using the SQL syntax. This is the SQL version of <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_FoxPro">DELETE (FoxPro)</link>.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">DELETE FROM &lt;TableName&gt; [WHERE &lt;lCondition&gt;]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;TableName&gt;<tab />The table (or alias) from which the records are deleted.</para>
+    <para styleclass="List">WHERE &lt;lCondition&gt;<tab />Only records for which the condition is true are deleted. This is translated to the FOR clause of the DELETE command.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The SQL command always works on the whole table, so without the WHERE clause all records are deleted. This is different from the DELETE command, which only deletes the current record by default. The records are only marked for deletion. Use <link displaytype="text" defaultstyle="true" type="topiclink" href="command_PACK">PACK</link> to remove them physically. The number of records that matched the condition is stored in the _TALLY variable.</para>
+    <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; color:#ff0000;">NOT SUPPORTED AT THIS MOMENT</text>: DELETE with a JOIN or a subselect. The compiler generates an error when this is used.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Code Example">DELETE FROM Customers WHERE Country == "NL"</para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE">DELETE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_FoxPro">DELETE (FoxPro)</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RECALL">RECALL</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_PACK">PACK</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_INSERT_INTO">INSERT INTO</link></para>
+  </body>
+</topic>

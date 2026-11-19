@@ -130,7 +130,7 @@
     </AdsColumn>
     <AdsConnect60>
         <include file="ads.xml" path="functions/ads/*"/>
-        <seealso cref="AX_SetConnectionHandle">AX_SetConnectionHandle Function</seealso>
+        <seealso cref="AX_SetConnectionHandle">AX_SetConnectionHandle 函数</seealso>
     </AdsConnect60>
     <AdsDateColumn>
         <summary>用于读取/写入日期列的类</summary>
@@ -351,7 +351,7 @@
         <param name="cFileName">包含要检查的驱动器号或服务器名称的字符串。
         如果应用程序使用服务器名称作为参数，则还必须包含共享或
         卷名。例如，使用"\\server\share"或"\\server\vol:"。</param>
-        <seealso cref="AdsIsServerLoaded">AdsIsServerLoaded Function</seealso>
+        <seealso cref="AdsIsServerLoaded">AdsIsServerLoaded 函数</seealso>
     </AX_IsServerLoaded>
     <AX_PercentIndexed>
         <summary>表示索引构建完成的百分比</summary>
@@ -368,7 +368,7 @@
     <AX_SetConnectionHandle>
         <summary>设置所有后续表打开操作的连接句柄。</summary>
         <param name="ptrHandle">由 AdsConnect60 返回的连接句柄</param>
-        <seealso cref="AdsConnect60">AdsConnect60 Function</seealso>
+        <seealso cref="AdsConnect60">AdsConnect60 函数</seealso>
         <seealso cref="AdsGetLastError">AdsGetLastError FUNCTION</seealso>
     </AX_SetConnectionHandle>
     <AX_SetExactKeyPos>

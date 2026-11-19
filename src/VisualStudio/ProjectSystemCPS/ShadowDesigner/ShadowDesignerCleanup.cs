@@ -11,14 +11,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using System.Xml;
-
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-
-using Community.VisualStudio.Toolkit;
-
 
 namespace XSharp.ProjectSystem.ShadowDesigner
 {
@@ -48,6 +43,12 @@ namespace XSharp.ProjectSystem.ShadowDesigner
     /// prompt). The companion projects are then no longer in the solution, which is harmless: their paths stay
     /// tracked, the next View Designer adds the project back (SolutionWiring.EnsureProjectInSolution), and the
     /// folders are only deleted after a real close.
+    ///
+    /// Removing the companion makes the solution dirty. When nothing else was unsaved it is saved right away, so
+    /// VS does not ask to save the solution because of the companion. When VS does ask (other unsaved changes) and
+    /// the user answers No, the solution file can still list the companion (saved when it was added, or by a Save
+    /// All): OnAfterCloseSolution removes it from the file (SolutionFileCleanup), since VS 2026 reports a project
+    /// that is not found with an error on the next open.
     /// </summary>
     internal sealed class ShadowDesignerCleanup : IVsSolutionEvents
     {
@@ -68,6 +69,9 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         private readonly IVsSolution _vsSolution;
         private uint _eventsCookie;
 
+        // The file of the closing solution (OnQueryCloseSolution), cleaned in OnAfterCloseSolution
+        private string _closingSolutionFile;
+
         private ShadowDesignerCleanup(IServiceProvider serviceProvider)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -78,93 +82,14 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             }
             _vsSolution = (IVsSolution)solutionService;
             ErrorHandler.ThrowOnFailure(_vsSolution.AdviseSolutionEvents(this, out _eventsCookie));
-			// Trigger cleanup before solution is closed
-            VS.Commands.InterceptAsync(VSConstants.VSStd97CmdID.CloseSolution, () =>
-            {
-                ThreadHelper.ThrowIfNotOnUIThread();
-                CleanupAndSave();
-                return CommandProgression.Continue;
-            }).FileAndForget("XSharp/ShadowDesigner/CloseSolution");
-            VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_OnBeforeCloseSolution;
-            VS.Events.SolutionEvents.OnAfterCloseSolution += SolutionEvents_OnAfterCloseSolution;
         }
-
-        string solutionName = "";
-        private void SolutionEvents_OnBeforeCloseSolution()
-        {
-            solutionName = VS.Solutions.GetCurrentSolution().FullPath;
-        }
-
-        private void SolutionEvents_OnAfterCloseSolution()
-        {
-            const string folderName = "Shadow Designer (generated)";
-            if (File.Exists(solutionName))
-            {
-                var files = new List<string>();
-                foreach (var file in _companionCsprojPaths)
-                {
-                    files.Add(System.IO.Path.GetFileName(file));
-                }
-
-                var text = File.ReadAllText(solutionName);
-                // Slnx?
-                if (text.StartsWith("<"))
-                {
-                    var reader = new StreamReader(solutionName);
-                    var doc = new System.Xml.XmlDocument();
-                    doc.Load(reader);
-                    reader.Close();
-                    XmlNode root = doc.DocumentElement;
-                    var nodes = root.SelectNodes("Folder");
-                    foreach (XmlNode node in nodes)
-                    {
-                        if (node.OuterXml.Contains(folderName))
-                        {
-                            root.RemoveChild(node);
-                        }
-                    }
-                    doc.Save(solutionName);
-                    return;
-
-                }
-                // Sln
-                var lines = File.ReadAllLines(solutionName);
-
-                for (int i = 0; i < lines.Length; i++)
-                {
-                    var line = lines[i];
-                    foreach (var file in files)
-                    {
-                        if (line.IndexOf(file, StringComparison.OrdinalIgnoreCase) >= 0)
-                        {
-                            lines[i] = "";
-                            lines[i + 1] = "";
-                        }
-                    }
-                    if (line.IndexOf(folderName, StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        lines[i] = "";
-                        lines[i + 1] = "";
-                    }
-                }
-                File.WriteAllLines(solutionName, lines);
-            }
-            solutionName = "";
-        }
-
-        private void CleanupAndSave()
-        {
-            CleanupSolution();
-            VS.Commands.ExecuteAsync(VSConstants.VSStd97CmdID.SaveSolution).FileAndForget("XSharp/ShadowDesigner/SaveSolution");
-        }
-
 
         /// <summary>
         /// Registers a companion project for cleanup on solution close, lazily advising
         /// solution events the first time this is called. Safe to call every time
         /// ShadowDesignerBridge.TryOpenAsync prepares the companion -- idempotent (HashSet).
         /// </summary>
-        public static void Track(string companionCsprojPath)
+        internal static void Track(string companionCsprojPath)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             if (_instance == null)
@@ -184,7 +109,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// Stops a pending background deletion of <paramref name="companionDir"/> before the companion project is
         /// written there again. When this returns, no deletion of the folder is running or will start.
         /// </summary>
-        public static void CancelPendingDelete(string companionDir)
+        internal static void CancelPendingDelete(string companionDir)
         {
             if (string.IsNullOrEmpty(companionDir))
             {
@@ -201,10 +126,23 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             }
         }
 
-        private void CleanupSolution()
+        /// <remarks>
+        /// Runs for every close (Close Solution, exiting VS, opening another solution), before VS's save prompt.
+        /// </remarks>
+        public int OnQueryCloseSolution(object reserved, ref int cancel)
         {
-            if (_vsSolution != null)
+            // Another listener already cancelled the close: the solution stays open, keep the companions.
+            if (cancel != 0)
             {
+                return VSConstants.S_OK;
+            }
+            if (_vsSolution != null && _companionCsprojPaths.Count > 0)
+            {
+                _closingSolutionFile = SolutionWiring.GetSolutionFile(_vsSolution);
+                // Nothing else unsaved: the removal below is the only change, save it without asking (see
+                // SolutionWiring.EnsureProjectInSolution). Otherwise VS asks as usual; when the user answers No,
+                // OnAfterCloseSolution removes the companion from the solution file.
+                bool wasDirty = SolutionWiring.IsSolutionDirty(_vsSolution);
                 foreach (string csprojPath in _companionCsprojPaths)
                 {
                     try
@@ -234,11 +172,11 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                     // Best-effort, see above
                     Logger.Exception(ex, "ShadowDesignerCleanup: could not remove the Solution Folder");
                 }
+                if (!wasDirty)
+                {
+                    SolutionWiring.SaveSolutionFile(_vsSolution, "companion removed");
+                }
             }
-        }
-
-        public int OnQueryCloseSolution(object reserved, ref int cancel)
-        {
             return VSConstants.S_OK;
         }
 
@@ -376,6 +314,11 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             // that could take, retry on a background thread instead -- costs nothing (this is
             // best-effort cleanup either way) and gives the external process realistic time to
             // release its handle.
+            // Answering No to VS's save prompt keeps the companion in the solution file when it was saved earlier
+            // (EnsureProjectInSolution, or a Save All). The folder is deleted below, so VS would report the project
+            // as not found on the next open: remove it from the file too.
+            SolutionFileCleanup.RemoveCompanionProjects(_closingSolutionFile, _companionCsprojPaths);
+            _closingSolutionFile = null;
             foreach (string csprojPath in _companionCsprojPaths)
             {
                 string dir = Path.GetDirectoryName(csprojPath);

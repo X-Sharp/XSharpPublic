@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:30:54.285+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET MEMOWIDTH 命令</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SET commands</keyword>
+    <keyword>SET MEMOWIDTH command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET MEMOWIDTH 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">指定备注字段输出的宽度。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">SET MEMOWIDTH TO [&lt;nColumns&gt;]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;nColumns&gt;<tab/>列数。省略该值时，使用默认值 50。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">该值存储在运行时状态的 Set.MemoWidth 下。</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_MEMOBLOCK">SET MEMOBLOCKSIZE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_HEADINGS">SET HEADINGS</link></para>
+  </body>
+</topic>

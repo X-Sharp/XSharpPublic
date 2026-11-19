@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:45:33.876Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>INDEX 命令 (FoxPro)</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>INDEX command</keyword>
+    <keyword>INDEX command<keyword>FoxPro</keyword></keyword>
+    <keyword>Indexes</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">INDEX 命令 (FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">使用 FoxPro 方言的语法创建索引（复合索引文件中的标签，或独立索引文件）。这是 FoxPro 版本的 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_INDEX">INDEX</link> 命令。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">INDEX ON &lt;KeyExpression&gt; [TAG &lt;OrderName&gt;] [TO | OF &lt;IndexFile&gt;]<br/> &#160; [FOR &lt;lCondition&gt;] [WHILE &lt;lCondition&gt;] [&lt;Scope&gt;]<br/> &#160; [UNIQUE | CANDIDATE] [ASCENDING | DESCENDING] [COMPACT] [BINARY &lt;n&gt;] [COLLATE &lt;cCollation&gt;]<br/> &#160; [USECURRENT] [ADDITIVE] [CUSTOM] [NOOPTIMIZE]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">ON &lt;KeyExpression&gt;<tab />定义索引键的表达式。</para>
+    <para styleclass="List">TAG &lt;OrderName&gt;<tab />要创建的标签（订单）的名称。</para>
+    <para styleclass="List">TO | OF &lt;IndexFile&gt;<tab />索引文件的名称。当未指定 TAG 时，TO 会创建一个独立的索引文件；OF 则会在指定的复合索引文件中创建该标签。</para>
+    <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
+    <para styleclass="List"><snippet src="__While" inline="false"/></para>
+    <para styleclass="List"><snippet src="__For" inline="false"/></para>
+    <para styleclass="List">UNIQUE<tab />索引中仅包含具有特定键值的第一条记录。</para>
+    <para styleclass="List">CANDIDATE<tab />创建候选索引：键值必须是唯一的。</para>
+    <para styleclass="List">ASCENDING | DESCENDING<tab />索引的排序顺序。默认是升序。</para>
+    <para styleclass="List">COMPACT<tab />创建紧凑型索引文件。</para>
+    <para styleclass="List">BINARY &lt;n&gt;<tab />创建使用键值二进制（序数）比较的索引。</para>
+    <para styleclass="List">COLLATE &lt;cCollation&gt;<tab />用于字符键的排序规则。</para>
+    <para styleclass="List">USECURRENT<tab />使用当前排序顺序来限制放入新索引的记录。</para>
+    <para styleclass="List">ADDITIVE<tab />在创建新索引时，保持其他已打开的索引文件保持打开状态。</para>
+    <para styleclass="List">CUSTOM<tab />创建自定义（用户维护）索引。</para>
+    <para styleclass="List">NOOPTIMIZE<tab />禁用 FOR 子句的优化。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">在 FoxPro 方言中，订单名称使用 TAG 关键字指定，索引文件则使用 TO 或 OF 指定。该命令会被转换为对 OrdCondSet() 和 OrdCreate() 的调用。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Code Example">USE Customers EXCLUSIVE<br/>INDEX ON UPPER(LastName) TAG LastName<br/>INDEX ON Id TAG Id CANDIDATE<br/>INDEX ON Country + City TAG CountryCity FOR !DELETED()</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_INDEX">INDEX</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_INDEX_FoxPro">SET INDEX (FoxPro)</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_ORDER">SET ORDER</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_REINDEX">REINDEX</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_OrdCondSet.htm" domain="XSharpRef.chm">OrdCondSet()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_OrdCreate.htm" domain="XSharpRef.chm">OrdCreate()</link></para>
+  </body>
+</topic>

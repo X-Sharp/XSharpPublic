@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:46:07.900Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET INDEX 命令 (FoxPro)</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Indexes</keyword>
+    <keyword>SET INDEX command</keyword>
+    <keyword>SET INDEX command<keyword>FoxPro</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET INDEX 命令 (FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">为当前表打开一个或多个索引文件，并可选地指定控制顺序。这是 FoxPro 版本的 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_INDEX">SET INDEX</link> 命令。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">SET INDEX TO [&lt;IndexFile1&gt; [, &lt;IndexFile2&gt; ...]]<br/> &#160; [ORDER [TAG &lt;OrderName&gt; [OF &lt;IndexFile&gt;]]] [ASCENDING | DESCENDING] [ADDITIVE]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;IndexFile1&gt;, ...<tab />要打开的索引文件。如果省略该列表（即 SET INDEX TO 后不带参数），则会关闭当前表的所有已打开索引文件。</para>
+    <para styleclass="List">ORDER [TAG] &lt;排序名称&gt; [OF &lt;索引文件&gt;]<tab />在打开索引文件后选择控制顺序。</para>
+    <para styleclass="List">ASCENDING | DESCENDING<tab />更改控制顺序的方向。</para>
+    <para styleclass="List">ADDITIVE<tab />保持已打开的索引文件处于打开状态。如果没有此子句，则会在打开新文件之前关闭其他索引文件。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Code Example">USE Customers<br/>SET INDEX TO Customers.cdx ORDER TAG LastName DESCENDING<br/>SET INDEX TO Extra.cdx ADDITIVE</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_INDEX">SET INDEX</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_INDEX_FoxPro">INDEX (FoxPro)</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_ORDER">SET ORDER</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_OrdListAdd.htm" domain="XSharpRef.chm">OrdListAdd()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_OrdSetFocus.htm" domain="XSharpRef.chm">OrdSetFocus()</link></para>
+  </body>
+</topic>

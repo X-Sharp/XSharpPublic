@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:30:54.361+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET REFRESH 命令</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SET commands</keyword>
+    <keyword>SET REFRESH command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET REFRESH 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">指定工作区中的数据从磁盘刷新的频率（以秒为单位）。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">SET REFRESH TO [&lt;nSeconds&gt;]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;nSeconds&gt;<tab/>秒数。省略该值时，使用默认值 5。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">该命令等同于函数 <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetRefresh.htm" domain="XSharpRef.chm">SetRefresh()</link>。</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibRT" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_STRICTREAD">SET STRICTREAD</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetRefresh.htm" domain="XSharpRef.chm">SetRefresh()</link></para>
+  </body>
+</topic>

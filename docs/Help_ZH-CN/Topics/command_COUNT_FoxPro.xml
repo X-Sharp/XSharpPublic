@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:35:38.253Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>COUNT 命令 (FoxPro)</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>COUNT command</keyword>
+    <keyword>COUNT command<keyword>FoxPro</keyword></keyword>
+    <keyword>Records</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">COUNT 命令 (FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">统计当前表中符合指定条件的记录数。这是 FoxPro 版本的 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_COUNT">COUNT</link> 命令。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">COUNT [&lt;Scope&gt;] [FOR &lt;lCondition&gt;] [WHILE &lt;lCondition&gt;] [NOOPTIMIZE] [TO &lt;Variable&gt;]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
+    <para styleclass="List"><snippet src="__While" inline="false"/></para>
+    <para styleclass="List"><snippet src="__For" inline="false"/></para>
+    <para styleclass="List">NOOPTIMIZE<tab />禁用 FOR 子句的优化。出于兼容性考虑，该子句被接受。</para>
+    <para styleclass="List">TO &lt;变量&gt;<tab />用于接收记录数的变量。在 FoxPro 中，TO 子句是可选的。它可以直接置于 COUNT 之后，也可以置于命令末尾。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">匹配记录的数量始终存储在变量 _TALLY 中，即使省略了 TO 子句也是如此。这与标准版本的 COUNT 不同，后者要求必须使用 TO 子句。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Code Example">USE Customers<br/>COUNT FOR Country = &quot;NL&quot; TO nDutch<br/>COUNT<br/>? _TALLY</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COUNT">COUNT</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SUM">SUM</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_AVERAGE">AVERAGE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbEval.htm" domain="XSharpRef.chm">DbEval()</link></para>
+  </body>
+</topic>

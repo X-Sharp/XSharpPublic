@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:30:54.236+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET ESCAPE 命令</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SET commands</keyword>
+    <keyword>SET ESCAPE command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET ESCAPE 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">指定用户是否可以使用 Esc 键中断正在运行的程序或命令。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">SET ESCAPE ON | OFF | &amp;&lt;cMacro&gt;</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">ON | OFF<tab/>ON 允许用户使用 Esc 键中断程序。OFF 禁用此功能。该值也可以是一个宏（&amp;），其求值结果为 ON 或 OFF。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">该设置存储在运行时状态中，但运行时目前不使用它。</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_CONFIRM">SET CONFIRM</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_CURSOR">SET CURSOR</link></para>
+  </body>
+</topic>

@@ -25,13 +25,13 @@ namespace XSharp.ProjectSystem.ShadowDesigner
     /// since Microsoft.CSharp.CSharpCodeProvider.Parse() doesn't implement C# parsing at all
     /// (CodeDom only ever supported generation, not parsing, for this provider).
     /// </summary>
-    public static class EventHandlerSync
+    internal static class EventHandlerSync
     {
-        public sealed class SyncResult
+        internal sealed class SyncResult
         {
-            public List<string> NewHandlerNames { get; } = new List<string>();
-            public List<string> NewWiringDescriptions { get; } = new List<string>();
-            public bool HasChanges => NewHandlerNames.Count > 0 || NewWiringDescriptions.Count > 0;
+            internal List<string> NewHandlerNames { get; } = new List<string>();
+            internal List<string> NewWiringDescriptions { get; } = new List<string>();
+            internal bool HasChanges => NewHandlerNames.Count > 0 || NewWiringDescriptions.Count > 0;
         }
 
         // Only the couple of type keywords event-handler signatures actually need -- this is
@@ -54,7 +54,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             "InitializeComponent", "Dispose",
         };
 
-        public static SyncResult Sync(ShadowDesignerBridge.CompanionLocation location)
+        internal static SyncResult Sync(ShadowDesignerBridge.CompanionLocation location)
         {
             var result = new SyncResult();
 

@@ -279,7 +279,7 @@
     </param>
     <returns>
       如果函数成功，返回值大于 31。如果函数失败，返回值是以下错误值之一。
-      <list>
+      <list type="table">
         <listheader>
           <term>返回代码/值</term>
           <description>描述</description>
@@ -2401,18 +2401,18 @@
 
 <aspadr>
     <summary>
-      Convert a value to a right-padded string.
+      将值转换为右填充的字符串。
     </summary>
-    <param name="uValue">The value to be converted.</param>
-    <param name="wLen">The length of the padded string.</param>
+    <param name="uValue">要转换的值。</param>
+    <param name="wLen">填充后字符串的长度。</param>
     <returns>
-      A right-padded string of length <paramref name="wLen"/> containing the converted value.
+      长度为 <paramref name="wLen"/> 的右填充字符串，包含转换后的值。
     </returns>
     <remarks>
-      AsPadR(<paramref name="uValue"/>, <paramref name="wLen"/>) is like specifying PadR(AsString(<paramref name="uValue"/>), <paramref name="wLen"/>, " ").
+      AsPadR(<paramref name="uValue"/>, <paramref name="wLen"/>) 类似于指定 PadR(AsString(<paramref name="uValue"/>), <paramref name="wLen"/>, " ")。
     </remarks>
     <example>
-      This example uses AsPadR() to compare a number with the contents of a character field:
+      此示例使用 AsPadR() 将数字与字符字段的内容进行比较：
       <code language="X#">? _FIELD-&gt;cRegion == AsPadR(2048, 10)</code>
     </example>
     <seealso cref="O:XSharp.RT.Functions.AsString">AsString</seealso>
@@ -2775,12 +2775,12 @@
         ? AtLine("第三", cBigString)			// 3
       </code>
     </example>
-    <seealso cref="O:XSharp.Core.Functions.At">At Function</seealso>
-    <seealso cref="O:XSharp.Core.Functions.AtC">AtC Function</seealso>
-    <seealso cref="O:XSharp.Core.Functions.ATCLine">AtCLine Function</seealso>
-    <seealso cref="O:XSharp.Core.Functions.ATLine2">AtLine2 Function</seealso>
-    <seealso cref="O:XSharp.RT.Functions.StrTran">StrTran Function</seealso>
-    <seealso cref="O:XSharp.RT.Functions.SubStr">Substr Function</seealso>
+    <seealso cref="O:XSharp.Core.Functions.At">At 函数</seealso>
+    <seealso cref="O:XSharp.Core.Functions.AtC">AtC 函数</seealso>
+    <seealso cref="O:XSharp.Core.Functions.ATCLine">AtCLine 函数</seealso>
+    <seealso cref="O:XSharp.Core.Functions.ATLine2">AtLine2 函数</seealso>
+    <seealso cref="O:XSharp.RT.Functions.StrTran">StrTran 函数</seealso>
+    <seealso cref="O:XSharp.RT.Functions.SubStr">Substr 函数</seealso>
   </atline>
 
   <atline2>
@@ -3269,7 +3269,7 @@
     </param>
     <param name="kMode">
       一个常量，定义复制模式，如下表所示：<br/>
-      <list>
+      <list type="table">
         <listheader>
           <term>常量</term>
           <description>描述</description>
@@ -3513,7 +3513,7 @@
     </param>
     <param name="kMode">
       一个常量，定义复制模式，如下表所示：<br/>
-      <list>
+      <list type="table">
         <listheader>
           <term>常量</term>
           <description>描述</description>

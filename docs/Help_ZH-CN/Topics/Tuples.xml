@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" modified="2024-07-26T10:17:11.592+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Codeblock, Lambda and Anonymous Method Expressions</title>
+  <title>元组</title>
   <keywords>
     <keyword>Tuple</keyword>
   </keywords>

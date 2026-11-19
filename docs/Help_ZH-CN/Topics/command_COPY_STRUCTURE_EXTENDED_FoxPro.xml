@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:33:42.943Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>COPY STRUCTURE EXTENDED 命令 (FoxPro)</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>COPY STRUCTURE EXTENDED command</keyword>
+    <keyword>COPY STRUCTURE EXTENDED command<keyword>FoxPro</keyword></keyword>
+    <keyword>Tables</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">COPY STRUCTURE EXTENDED 命令 (FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">创建一个表，其中包含当前表的结构作为数据：每个字段对应一条记录。这是 FoxPro 版本的 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_STRUCTURE_EXTENDE">COPY STRUCTURE EXTENDED</link> 命令。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">COPY [STRUCTURE] EXTENDED TO &lt;TableName&gt; [DATABASE &lt;DbName&gt; [NAME &lt;LongTableName&gt;]]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">TO &lt;TableName&gt;<tab />新表的名称。该表包含描述源表字段的字段（名称、类型、宽度、小数位数等）。</para>
+    <para styleclass="List">DATABASE &lt;DbName&gt; [NAME &lt;LongTableName&gt;]<tab />将新表添加到指定的数据库中。NAME 子句指定该数据库中该表的长名称。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">关键字 STRUCTURE 和 EXTENDED 可以按所示顺序使用，但 STRUCTURE 关键字是可选的。您可以使用生成的表通过 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_FROM">CREATE FROM</link> 语句创建新表。</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_STRUCTURE_EXTENDE">COPY STRUCTURE EXTENDED</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_STRUCTURE_FoxPro">COPY STRUCTURE (FoxPro)</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_VFP_Functions_DbCopyXStructFox.htm" domain="XSharpRef.chm">DbCopyXStructFox()</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbCopyXStruct.htm" domain="XSharpRef.chm">DbCopyXStruct()</link></para>
+  </body>
+</topic>

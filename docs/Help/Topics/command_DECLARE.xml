@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-11-16T14:13:12.137+01:00" lasteditedby="Eva" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-11-17T13:15:44.597Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>DECLARE / DIMENSION Statement</title>
   <keywords>
     <keyword>Declaration statements</keyword>
@@ -14,7 +14,6 @@
     <header>
       <para styleclass="Heading1">DECLARE/DIMENSION Statement</para>
     </header>
-    <para styleclass="Normal"></para>
     <para styleclass="Body Text"><snippet src="__FoxProOnly" inline="false"/></para>
     <para styleclass="Heading1">Purpose</para>
     <para styleclass="Normal">Creates and initializes private variables of the FoxPro array type.<br/>Note: Dimension and Declare are synonyms.</para>

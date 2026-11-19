@@ -13,8 +13,8 @@
     <para styleclass="Normal">该 DLL 包含 X# 附带的各种 RDD：</para>
     <para styleclass="Normal"></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">DBFNTX (including DBT memos)</li>
-      <li styleclass="Normal">DBFCDX (Including FPT memos)</li>
+      <li styleclass="Normal">DBFNTX（包括 DBT 备注）</li>
+      <li styleclass="Normal">DBFCDX（包括 FPT 备注）</li>
     </list>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">DBFVFP = DBFCDX 并支持其他 Visual FoxPro 数据类型。</li>
@@ -47,7 +47,7 @@
     <para styleclass="Normal"><text style="font-weight:bold; font-style:italic;">在即将发布的版本中，我们将添加对以下功能的支持：</text></para>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">DBFMEMO = DBF + NTX + DBV</li>
-      <li styleclass="Normal">DBFBLOB = DBF without associated DBF file</li>
+      <li styleclass="Normal">DBFBLOB = 不带关联 DBF 文件的 DBF</li>
       <li styleclass="Normal">DELIM</li>
       <li styleclass="Normal">SDF</li>
     </list>

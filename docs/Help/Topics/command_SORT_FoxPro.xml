@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:10:52.587Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SORT Command (FoxPro)</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SORT command</keyword>
+    <keyword>SORT command<keyword>FoxPro</keyword></keyword>
+    <keyword>Tables</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SORT Command &#160;(FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Sorts the records of the current table and writes the result to a new table. This is the FoxPro version of the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SORT">SORT</link> command.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">SORT TO &lt;TableName&gt; ON &lt;Field1&gt; [/A | /D] [/C] [, &lt;Field2&gt; [/A | /D] [/C] ...]<br/> &#160; [ASCENDING | DESCENDING]<br/> &#160; [&lt;Scope&gt;] [FOR &lt;lCondition&gt;] [WHILE &lt;lCondition&gt;] [NOOPTIMIZE]<br/> &#160; [FIELDS &lt;FieldList&gt; | FIELDS LIKE &lt;Skeleton&gt; | FIELDS EXCEPT &lt;Skeleton&gt;]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">TO &lt;TableName&gt;<tab />The name of the table that receives the sorted records.</para>
+    <para styleclass="List">ON &lt;Field1&gt; [/A | /D] [/C], ...<tab />The fields on which the table is sorted. /A sorts ascending (default), /D sorts descending and /C ignores the case of character fields.</para>
+    <para styleclass="List">ASCENDING | DESCENDING<tab />The default direction for the fields that have no /A or /D option.</para>
+    <para styleclass="List"><snippet src="__FoxFieldList" inline="false"/></para>
+    <para styleclass="List"><snippet src="__Scope" inline="false"/></para>
+    <para styleclass="List"><snippet src="__While" inline="false"/></para>
+    <para styleclass="List"><snippet src="__For" inline="false"/></para>
+    <para styleclass="List">NOOPTIMIZE<tab />Disables the optimization of the FOR clause.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The FoxPro version of the command adds the FIELDS clause with the LIKE and EXCEPT options, which limits the fields that are written to the new table.</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Code Example">USE Customers<br/>SORT TO SortedCustomers ON Country, LastName /C FOR Active<br/>SORT TO Names ON LastName FIELDS LastName, FirstName</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SORT">SORT</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_TO_FoxPro">COPY TO (FoxPro)</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_VFP_Functions_DbSortFox.htm" domain="XSharpRef.chm">DbSortFox()</link></para>
+  </body>
+</topic>

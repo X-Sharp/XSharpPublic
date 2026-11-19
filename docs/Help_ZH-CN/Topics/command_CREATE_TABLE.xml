@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:36:48.841Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CREATE TABLE 命令</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>CREATE DBF command</keyword>
+    <keyword>CREATE TABLE command</keyword>
+    <keyword>SQL</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">CREATE TABLE 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">使用 Visual FoxPro 的 SQL 语法，创建一个包含指定字段的表（DBF 文件）。CREATE DBF 是 CREATE TABLE 的同义词。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">CREATE TABLE | DBF &lt;TableName&gt; [NAME &lt;LongTableName&gt;] [FREE] [CODEPAGE = &lt;nCodePage&gt;]<br/> &#160; ( &lt;FieldName&gt; &lt;FieldType&gt; [(&lt;nWidth&gt; [, &lt;nPrecision&gt;])]<br/> &#160; &#160; [NULL | NOT NULL] [CHECK &lt;lExpression&gt; [ERROR &lt;cMessage&gt;]]<br/> &#160; &#160; [DEFAULT &lt;eExpression&gt;] [AUTOINC [NEXTVALUE &lt;n1&gt;] [STEP &lt;n2&gt;]]<br/> &#160; &#160; [PRIMARY KEY | UNIQUE] [NOCPTRANS]<br/> &#160; [, &lt;FieldName2&gt; ...] )<br/><br/>CREATE TABLE | DBF &lt;TableName&gt; [NAME &lt;LongTableName&gt;] [FREE] [CODEPAGE = &lt;nCodePage&gt;] FROM ARRAY &lt;ArrayName&gt;</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;TableName&gt;<tab />要创建的表的名称。默认扩展名为 .DBF。</para>
+    <para styleclass="List">NAME &lt;LongTableName&gt;<tab />当前数据库中该表的长名称。</para>
+    <para styleclass="List">FREE<tab />创建一个自由表：该表不会被添加到当前数据库中，即使当前数据库已打开也是如此。</para>
+    <para styleclass="List">CODEPAGE = &lt;nCodePage&gt;<tab />新表的代码页。</para>
+    <para styleclass="List">&lt;FieldName&gt; &lt;FieldType&gt;<tab />字段的名称和类型。有效的类型包括 C（字符）、N（数值）、F（浮点数）、I（整数）、B（双精度）、Y（货币）、D（日期）、 T（日期时间）、L（逻辑）、M（备注）、G（通用）、W（BLOB）和 Q（可变二进制）。宽度和精度仅适用于可变大小的类型（C、N 和 F）。</para>
+    <para styleclass="List">NULL | NOT NULL<tab />允许或不允许字段中出现 NULL 值。</para>
+    <para styleclass="List">CHECK、DEFAULT<tab />字段的验证规则和默认值。这些信息存储在数据库容器中，仅当表属于某个数据库时才会被使用。</para>
+    <para styleclass="List">AUTOINC [NEXTVALUE n1] [STEP n2]<tab />将字段设为自增字段。NEXTVALUE 是起始值（默认值为 1），STEP 是增量（默认值为 1）。</para>
+    <para styleclass="List">FROM ARRAY &lt;ArrayName&gt;<tab />根据数组中描述的结构创建表。该数组的布局与 AFields() 函数返回的数组布局相同。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">表创建完成后，它将保持在当前工作区中处于打开状态。 当数据库处于打开状态时，该表会被添加到数据库中，除非使用了 FREE 子句。在自由表中，字段名称的长度限制为 10 个字符。当两个字段名称的前 10 个字符相同时，系统会通过将最后一个或几个字符替换为数字来确保名称的唯一性。</para>
+    <para styleclass="Normal">主键、外键、REFERENCES 及类似子句会被解析，但仅当表属于数据库容器时才会被使用。</para>
+    <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; color:#ff0000;">当前不支持</text>：使用 AS SELECT 子句创建表。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Code Example">CREATE TABLE Customers (Id I AUTOINC, Name C(40) NOT NULL, Birthday D NULL, Notes M)</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ALTER_TABLE">ALTER TABLE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_CURSOR">CREATE CURSOR</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_ADD_TABLE">ADD TABLE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE">CREATE</link></para>
+  </body>
+</topic>

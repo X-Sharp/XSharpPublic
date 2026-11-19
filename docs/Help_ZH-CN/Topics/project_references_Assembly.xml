@@ -4,7 +4,7 @@
   <title>.Net</title>
   <body>
     <header>
-      <para styleclass="Heading1">External .Net Assemblies</para>
+      <para styleclass="Heading1">外部 .Net 程序集</para>
     </header>
     <para styleclass="Body Text"></para>
     <para styleclass="Body Text">程序集引用页面显示在开发者机器上找到的程序集列表。</para>

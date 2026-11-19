@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET DEVICE Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SET commands</keyword>
+    <keyword>SET DEVICE command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET DEVICE Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Directs the output of the @...SAY commands to the screen, to the printer or to a file.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">SET DEVICE TO SCREEN | PRINTER | &amp;&lt;cMacro&gt;<br/>SET DEVICE TO FILE &lt;FileName&gt;</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">SCREEN<tab />Sends the output to the screen.</para>
+    <para styleclass="List">PRINTER<tab />Sends the output to the printer.</para>
+    <para styleclass="List">FILE &lt;FileName&gt;<tab />Sends the output to the specified file.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The setting is stored in the runtime state under Set.Device. The runtime checks for the value FILE when it writes the output of the devices.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="Command_SET_CONSOLE">SET CONSOLE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="Command_SET_ALTERNATE">SET ALTERNATE</link></para>
+  </body>
+</topic>

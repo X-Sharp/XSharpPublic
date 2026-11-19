@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:17:14.565Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>WAIT Command (FoxPro)</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Terminal</keyword>
+    <keyword>WAIT command</keyword>
+    <keyword>WAIT command<keyword>FoxPro</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">WAIT Command &#160;(FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Displays a message and pauses the program until a key is pressed or until a time-out occurs. This is the FoxPro version of the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_WAIT">WAIT</link> command.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">WAIT [&lt;cMessage&gt;] [TO &lt;Variable&gt;] [WINDOW [AT &lt;nRow&gt;, &lt;nColumn&gt;]] [NOWAIT] [NOCLEAR] [TIMEOUT &lt;nSeconds&gt;]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;cMessage&gt;<tab />The message to display. When this is omitted, the text &quot;Press any key to continue...&quot; is displayed. When the WINDOW clause is used and the message is omitted, no message is displayed.</para>
+    <para styleclass="List">TO &lt;Variable&gt;<tab />The variable that receives the key that was pressed. When no key was pressed (NOWAIT, TIMEOUT, or when the program is not interactive) the variable receives an empty string.</para>
+    <para styleclass="List">WINDOW [AT &lt;nRow&gt;, &lt;nColumn&gt;]<tab />Displays the message in a window instead of on the screen. When the program is a GUI program, the message is displayed in a message box. The position is only used when it is supported by the window.</para>
+    <para styleclass="List">NOWAIT<tab />Displays the message and continues the program immediately, without waiting for a key.</para>
+    <para styleclass="List">NOCLEAR<tab />Leaves the message window open after the command has finished. Use <link displaytype="text" defaultstyle="true" type="topiclink" href="command_WAIT_CLEAR">WAIT CLEAR</link> to close it.</para>
+    <para styleclass="List">TIMEOUT &lt;nSeconds&gt;<tab />The number of seconds to wait for a key before the command continues.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The WAIT command returns an empty string and does not wait when the program does not have a console or a user interface (for example in a service).</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Code Example">WAIT &quot;Continue?&quot; TO cKey<br/>WAIT WINDOW &quot;Please wait...&quot; NOWAIT<br/>WAIT &quot;Press a key within 5 seconds&quot; TIMEOUT 5</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_WAIT">WAIT</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_WAIT_CLEAR">WAIT CLEAR</link></para>
+  </body>
+</topic>

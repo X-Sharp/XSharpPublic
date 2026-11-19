@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" modified="2024-09-08T20:52:55.629+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>SCAN .. ENDSCAN Command</title>
+  <title>SCAN ... ENDSCAN 命令</title>
   <keywords>
     <keyword>ENDSCAN</keyword>
     <keyword>EXIT statement</keyword>
@@ -39,17 +39,23 @@
     <para styleclass="Heading1"><text styleclass="Body Text">SCAN 会自动将记录指针移动到符合指定条件的下一条记录，并执行命令块。</text></para>
     <para styleclass="Body Text">您可以在同一行的ENDSCAN后面添加注释。在程序编译和执行过程中，注释将被忽略。</para>
     <para styleclass="Body Text"></para>
+    <para styleclass="Body Text">预处理器将 SCAN 转换为对 DbLocate() 的调用，随后是 DO WHILE Found() 循环。ENDSCAN 被转换为对 DbContinue() 的调用，随后是 ENDDO。因此，扫描遵循与 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCATE">LOCATE</link> 和 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CONTINUE">CONTINUE</link> 命令相同的规则。END SCAN 是 ENDSCAN 的同义词。</para>
+    <para styleclass="Body Text"></para>
     <para styleclass="Body Text">SCAN ... ENDSCAN确保在达到ENDSCAN时，Visual FoxPro 重新选择 SCAN ... ENDSCAN循环开始时的当前表。</para>
     <para styleclass="Body Text"></para>
     <para styleclass="Heading1">示例</para>
     <para styleclass="Body Text">下面的示例使用 SCAN ... ENDSCAN 循环显示在 Sweden(瑞典) 的所有公司。</para>
     <para styleclass="Code Example"><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">USE</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> customer &#160;&amp;&amp; Opens Customer table</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">CLEAR</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">SCAN</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FOR</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> UPPER(country) = &apos;SWEDEN&apos;</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; ? contact, company, city</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">ENDSCAN</text></para>
     <para styleclass="Body Text"><snippet src="__IncludeLibRt" inline="false"/></para>
-    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Heading1">参见</para>
     <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_CASE">DO CASE Statement</link></para>
     <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_WHILE">DO WHILE </link><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_CASE">Statement</link></para>
     <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FOR">FOR Statement</link></para>
     <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_FOREACH">FOREACH </link><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DO_CASE">Statement</link></para>
     <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SWITCH">SWITCH Statement</link></para>
+    <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCATE">LOCATE Command</link></para>
+    <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CONTINUE">CONTINUE Command</link></para>
+    <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbLocate.htm" domain="XSharpRef.chm">DbLocate()</link></para>
+    <para styleclass="Body Text"><link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_DbContinue.htm" domain="XSharpRef.chm">DbContinue()</link></para>
   </body>
 </topic>

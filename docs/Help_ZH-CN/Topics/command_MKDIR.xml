@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:44:25.425Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>MKDIR 命令</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Files and folders</keyword>
+    <keyword>MD command</keyword>
+    <keyword>MKDIR command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">MKDIR | MD 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">创建一个新文件夹。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">MKDIR | MD &lt;FolderName&gt;</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;FolderName&gt;<tab />要创建的文件夹名称。可以是相对路径或绝对路径。若父文件夹不存在，系统也会自动创建。名称可以带引号，也可以不带引号。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">MD 是 MKDIR 的同义词。若无法创建文件夹，将引发错误。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Code Example">MKDIR C:\Temp\Test<br/>CHDIR C:\Temp\Test<br/>CD ..<br/>RMDIR C:\Temp\Test</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CHDIR">CHDIR</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RMDIR">RMDIR</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DIR">DIR</link></para>
+  </body>
+</topic>

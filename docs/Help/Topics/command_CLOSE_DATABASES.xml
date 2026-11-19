@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CLOSE DATABASES Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>CLOSE DATABASES command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">CLOSE DATABASES Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Closes databases and the tables that are open in the current data session. This is the FoxPro dialect version of <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLOSE">CLOSE DATABASES</link>.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">CLOSE DATABASES [ALL]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">ALL<tab />Closes all open databases, including the current database, and all tables, indexes and format files in all work areas of the current data session.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">Without the ALL clause the current database is closed, and there will be no current database afterwards. If there is no current database, then all free tables in the current data session are closed.</para>
+    <para styleclass="Normal">In both cases all work areas are closed and work area 1 is selected afterwards. Please note that without the ALL clause, X# closes all work areas, also the work areas with tables that do not belong to the current database. In Visual FoxPro only the tables of the current database are closed.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLOSE">CLOSE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLOSE_TABLES">CLOSE TABLES</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPEN_DATABASE">OPEN DATABASE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DATABASE">SET DATABASE TO</link></para>
+  </body>
+</topic>

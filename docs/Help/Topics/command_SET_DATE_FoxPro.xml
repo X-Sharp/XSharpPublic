@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:08:29.348Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET DATE Command (FoxPro)</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SET commands</keyword>
+    <keyword>SET DATE command</keyword>
+    <keyword>SET DATE command<keyword>FoxPro</keyword></keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET DATE Command &#160;(FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Specifies the format that is used to display dates. This is the FoxPro version of the <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DATE">SET DATE</link> command, which also accepts an expression.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">SET DATE [TO] &lt;cDateFormat&gt;<br/>SET DATE [TO] (&lt;cExpression&gt;)<br/>SET DATE [TO] &lt;function&gt;(&lt;Arguments&gt;)<br/>SET DATE [TO] &amp;&lt;cMacro&gt;</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;cDateFormat&gt;<tab />One of the following keywords: AMERICAN, ANSI, BRITISH, DMY, FRENCH, GERMAN, ITALIAN, DUTCH, JAPAN, JAPANESE, TAIWAN, MDY, USA, YMD, SHORT, SYSTEM. SHORT uses the short date format of the operating system, like SYSTEM. The keyword LONG is not supported and generates an error.</para>
+    <para styleclass="List">(&lt;cExpression&gt;)<tab />An expression between parentheses, a function call or a macro (&amp;) that returns a string with one of the keywords above, or a date picture such as &quot;DD.MM.YYYY&quot;.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The command calls the function <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDateCountry.htm" domain="XSharpRef.chm">SetDateCountry()</link> for the keywords and <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_Core_Functions_SetDateFormat.htm" domain="XSharpRef.chm">SetDateFormat()</link> for the date pictures. An error is generated when the value is not a string or is not a known keyword or date picture.</para>
+    <para styleclass="Heading1">Examples</para>
+    <para styleclass="Code Example">SET DATE TO GERMAN<br/>SET DATE TO (&quot;DD/MM/YYYY&quot;)</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DATE">SET DATE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DATE_FORMAT">SET DATE FORMAT</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_CENTURY">SET CENTURY</link></para>
+  </body>
+</topic>

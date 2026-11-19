@@ -60,7 +60,7 @@ namespace XSharp.LanguageService.NavigateTo
         {
             Kind.Method, Kind.Access, Kind.Assign, Kind.Property, Kind.Function, Kind.Procedure, Kind.Field,
             Kind.Event, Kind.Operator, Kind.EnumMember, Kind.VODefine, Kind.VODLL, Kind.VOGlobal, Kind.Define,
-            Kind.Delegate
+            Kind.Delegate, Kind.Using
         };
 
         /// <summary>

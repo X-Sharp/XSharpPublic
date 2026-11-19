@@ -34,16 +34,16 @@ namespace XSharp.ProjectSystem.ShadowDesigner
     /// wiring (+=) lines into Form1.Designer.prg, via targeted regex insertion rather than
     /// a full regenerate. Run event sync before this one when both apply in the same pass.
     /// </summary>
-    public static class DesignerChangesSync
+    internal static class DesignerChangesSync
     {
-        public sealed class SyncResult
+        internal sealed class SyncResult
         {
-            public int FieldCount { get; set; }
-            public int StatementCount { get; set; }
-            public List<string> SkippedStatements { get; } = new List<string>();
+            internal int FieldCount { get; set; }
+            internal int StatementCount { get; set; }
+            internal List<string> SkippedStatements { get; } = new List<string>();
         }
 
-        public static SyncResult Sync(ShadowDesignerBridge.CompanionLocation location)
+        internal static SyncResult Sync(ShadowDesignerBridge.CompanionLocation location)
         {
             string companionSource = File.ReadAllText(location.CompanionDesignerCsPath);
             var root = CSharpSyntaxTree.ParseText(companionSource).GetRoot();

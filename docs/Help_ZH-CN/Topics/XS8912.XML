@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="helpproject.xsl" ?>
+<topic template="Default" status="Under Construction" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="helpproject.xsd">
+<title>Error XS8912</title>
+<keywords>
+<keyword>XS8912</keyword>
+</keywords>
+<body>
+  <header>
+    <para styleclass="Heading1">Error XS8912</para>
+  </header>
+  <para styleclass="Normal">Inheriting from a record with a sealed 'Object.ToString' is not supported in X# {0}. Please use language version '{1}' or greater.</para>
+  <para styleclass="Normal"></para>
+</body>
+</topic>

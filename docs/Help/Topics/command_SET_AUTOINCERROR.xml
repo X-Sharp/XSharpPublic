@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET AUTOINCERROR Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SET commands</keyword>
+    <keyword>SET AUTOINCERROR command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET AUTOINCERROR Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Specifies whether an error is generated when a table with an auto-increment field is indexed with a tag that has a candidate or primary key.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">SET AUTOINCERROR ON | OFF | &amp;&lt;cMacro&gt;</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">ON | OFF<tab />ON generates the error. OFF suppresses the error. The value may also be a macro (&amp;) that evaluates to ON or OFF.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">The setting is stored in the runtime state, but the runtime does not use it at this moment.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_TABLE">CREATE TABLE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_ALTER_TABLE">ALTER TABLE</link></para>
+  </body>
+</topic>

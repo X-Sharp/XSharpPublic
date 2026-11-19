@@ -87,7 +87,7 @@ RELEASE This
 		[TestMethod];
 		[TestCategory("CodeConverter tests")];
 		METHOD CheckAddParenthesis1() AS VOID  STRICT
-			VAR cv := CodeConverter{ false, false, false, true, true }
+			VAR cv := CodeConverter{ false, false, true, true, true }
 			cv:Statements := SELF:GetStatements()
 			//
 			VAR testItemCode := TestItemCode{}
@@ -106,7 +106,7 @@ RELEASE This
 		[TestMethod];
 		[TestCategory("CodeConverter tests")];
 		METHOD CheckAddParenthesis2() AS VOID  STRICT
-			VAR cv := CodeConverter{ false, false, false, true, true }
+			VAR cv := CodeConverter{ false, false, true, true, true }
 			cv:Statements := SELF:GetStatements()
 			//
 			VAR testItemCode := TestItemCode{}
@@ -125,7 +125,7 @@ RELEASE This
 		[TestMethod];
 		[TestCategory("CodeConverter tests")];
 		METHOD CheckAddParenthesis3() AS VOID  STRICT
-			VAR cv := CodeConverter{ false, false, false, true, true }
+			VAR cv := CodeConverter{ false, false, true, true, true }
 			cv:Statements := SELF:GetStatements()
 			//
 			VAR testItemCode := TestItemCode{}

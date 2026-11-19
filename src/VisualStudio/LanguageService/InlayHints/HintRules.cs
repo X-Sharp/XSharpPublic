@@ -20,16 +20,16 @@ namespace XSharp.LanguageService.InlayHints
         /// True when the argument does not tell what it means: a literal (also NIL, NULL_*, TRUE/FALSE, a signed
         /// number) or a constructor call <c>Type{...}</c>.
         /// </summary>
-        internal static bool SaysNothing(IList<IToken> argument)
-        {
-            if (argument == null || argument.Count == 0)
-                return false;
-            if (argument.Count == 1)
-                return XSharpLexer.IsLiteral(argument[0].Type);
-            if (argument.Count == 2 && (argument[0].Type == XSharpLexer.MINUS || argument[0].Type == XSharpLexer.PLUS))
-                return XSharpLexer.IsLiteral(argument[1].Type);
-            return IsConstructor(argument);
-        }
+        //internal static bool SaysNothing(IList<IToken> argument)
+        //{
+        //    if (argument == null || argument.Count == 0)
+        //        return false;
+        //    if (argument.Count == 1)
+        //        return XSharpLexer.IsLiteral(argument[0].Type);
+        //    if (argument.Count == 2 && (argument[0].Type == XSharpLexer.MINUS || argument[0].Type == XSharpLexer.PLUS))
+        //        return XSharpLexer.IsLiteral(argument[1].Type);
+        //    return IsConstructor(argument);
+        //}
 
         /// <summary>The one member that fits the call, or null when none or several remain, or it declares no parameters.</summary>
         internal static IXMemberSymbol SingleFit(IList<IXSymbol> filtered, int argumentCount)
@@ -56,8 +56,8 @@ namespace XSharp.LanguageService.InlayHints
                     break;
                 var argument = call.Arguments[i];
                 var parameter = parameters[index];
-                if (!SaysNothing(argument))
-                    continue;
+                //if (!SaysNothing(argument))
+                //    continue;
                 result.Add(new InlayHint
                 {
                     Kind = InlayHintKind.Parameter,
@@ -75,17 +75,18 @@ namespace XSharp.LanguageService.InlayHints
         {
             if (initializer == null || initializer.Count == 0)
                 return false;
-            if (SaysNothing(initializer))
-                return true;
-            // (Type) expr
-            if (initializer[0].Type == XSharpLexer.LPAREN)
-            {
-                int i = 1;
-                while (i < initializer.Count && (IsTypeNamePart(initializer[i].Type)))
-                    i++;
-                return i > 1 && i < initializer.Count - 1 && initializer[i].Type == XSharpLexer.RPAREN;
-            }
-            return false;
+            //if (SaysNothing(initializer))
+            //    return true;
+            //// (Type) expr
+            //if (initializer[0].Type == XSharpLexer.LPAREN)
+            //{
+            //    int i = 1;
+            //    while (i < initializer.Count && (IsTypeNamePart(initializer[i].Type)))
+            //        i++;
+            //    return i > 1 && i < initializer.Count - 1 && initializer[i].Type == XSharpLexer.RPAREN;
+            //}
+            //return false;
+            return true;
         }
 
         /// <summary>

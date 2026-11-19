@@ -13,14 +13,13 @@
     </header>
     <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
     <para styleclass="Heading1">用途</para>
-    <para styleclass="Normal">接收键盘输入并将其赋值给内存变量。</para>
+    <para styleclass="Normal">清除屏幕并将光标定位在左上角。</para>
     <para styleclass="Heading1">语法</para>
     <para styleclass="Normal">CLEAR SCREEN</para>
     <para styleclass="Heading1">描述</para>
-    <para styleclass="Body Text">命令 CLEAR 可以擦除屏幕。</para>
-    <para styleclass="Body Text">执行 CLEAR 命令后，光标将定位在 0, 0 处，并更新函数 Row() 和 Col()。</para>
+    <para styleclass="Body Text">命令 CLEAR SCREEN 可以擦除屏幕。<br/>执行该命令后，光标将定位在 0, 0 处，并更新函数 Row() 和 Col()。预处理器会将该命令转换为对 <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_Cls.htm" domain="XSharpRef.chm">Cls()</link> 的调用，随后调用 <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_RT_Functions_SetPos.htm" domain="XSharpRef.chm">SetPos()</link>(0,0)。</para>
     <para styleclass="Heading1">示例</para>
-    <para styleclass="Normal">此示例使用 ACCEPT 获取用户的键盘输入：</para>
+    <para styleclass="Normal">此示例在设置颜色后清除屏幕：</para>
     <para styleclass="Code Example"><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Start </text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">VOID</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">SET</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">COLOR</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">TO</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> gr+/B &#160;</text><text style="font-weight:bold; font-style:italic; text-decoration:none; color:#339966;">// Yellow on Blue</text><br/><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">CLEAR</text><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">SCREEN</text><br/><text style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">? &quot;Hello world&quot;</text></para>
     <para styleclass="Normal"><snippet src="__IncludeLibRT" inline="false"/></para>
   </body>

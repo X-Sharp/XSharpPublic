@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
 <topic template="Default" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
-  <title>Runtime Declaration</title>
+  <title>运行时声明</title>
   <keywords>
     <keyword>Commands<keyword>Runtime Declaration</keyword></keyword>
     <keyword>Runtime Declaration Commands</keyword>
   </keywords>
   <body>
     <header>
-      <para styleclass="Heading1">Runtime Declaration</para>
+      <para styleclass="Heading1">运行时声明</para>
     </header>
-    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCAL">LOCAL Statement</link></para>
+    <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_LOCAL">LOCAL 语句</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_DECLARE">DECLARE</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PARAMETERS">PARAMETERS</link></para>
     <para styleclass="link"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_PRIVATE">PRIVATE</link></para>

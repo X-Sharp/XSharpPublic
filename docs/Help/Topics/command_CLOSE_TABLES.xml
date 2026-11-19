@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CLOSE TABLES Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>CLOSE TABLES command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">CLOSE TABLES Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Closes all open tables, but leaves the open databases open.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">CLOSE TABLES [ALL]</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">ALL<tab />Closes the tables of all open databases and all free tables.</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">Open databases remain open. All work areas of the current data session are closed and work area 1 is selected afterwards. Please note that X# closes all work areas, also when the ALL clause is omitted. In Visual FoxPro only the tables of the current database are closed in that case.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLOSE">CLOSE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLOSE_DATABASES">CLOSE DATABASES</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE">USE</link></para>
+  </body>
+</topic>

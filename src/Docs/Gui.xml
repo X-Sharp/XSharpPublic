@@ -132,10 +132,24 @@
     <remarks>
       The Create() method is called after the ActiveXControl object is instantiated. Note that the both methods are called from the ActiveX container application: they should never be called directly from your code.
       Inside Create(), you should:
-      1.	Instantiate a control or window object representing the user interface of the ActiveX control. This object should be assigned to OCXWindow.
-      2.	Instantiate an object representing the automation interface of the ActiveX control and assign it to AutoServer.
-      3.	Instantiate an object representing the event interface of the ActiveX control and assign it to Events—this step is optional.
-      4.	Perform other initializations tasks.
+      <list type="table">
+        <item>
+          <term>1</term>
+          <description>Instantiate a control or window object representing the user interface of the ActiveX control. This object should be assigned to OCXWindow.</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>Instantiate an object representing the automation interface of the ActiveX control and assign it to AutoServer.</description>
+        </item>
+        <item>
+          <term>3</term>
+          <description>Instantiate an object representing the event interface of the ActiveX control and assign it to Events—this step is optional.</description>
+        </item>
+        <item>
+          <term>4</term>
+          <description>Perform other initializations tasks.</description>
+        </item>
+      </list>
       For further details, see Creating OLE Servers in X# in the "How To" section of the online help, as well as the sample applications that are accessible from the Samples tab page of the Application Gallery.
     </remarks>
     <example>
@@ -2424,7 +2438,7 @@
     <param name="kStyle">The style of the combo box, specified as one of the Windows API constants listed below:</param>
     <param name="nResourceID">The resource ID of the combo box.</param>
     <remarks>
-      <list>
+      <list type="table">
         <listheader>
           <term>Constant</term>
           <description>Creates</description>
@@ -2906,15 +2920,34 @@
     <remarks>
       <include file="Gui.xml" path="doc/Callback/*"/>
       Controls receive events from the user and the system all of the time. Each control receives only the events that are relevant to it. For each event that is generated, two things happen:
-      1.	The event is converted to a particular Event object (an ExposeEvent or a MouseEvent, for example) according to the action that triggered the event.
-      2.	The appropriate event handler is called, and this typed Event object is passed to it.
+      <list type="table">
+        <item>
+          <term>1</term>
+          <description>The event is converted to a particular Event object (an ExposeEvent or a MouseEvent, for example) according to the action that triggered the event.</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>The appropriate event handler is called, and this typed Event object is passed to it.</description>
+        </item>
+      </list>
       <note type="tip">
         If you want to set a specific return value for the underlying window procedure, you have to change the EventReturnValue variable for the control object.
         If you want to handle other events (for example, timer events), you need to write your own Dispatch() method.
         The following guidelines should be followed when writing a customized Dispatch() method:
-        1.	Subclass an event type appropriate to the type of operation for which it is being used.
-        2.	Add an event handler function to your derived object. (This event handler should be called with the event when the event is received.)
-        3.	In general, the implementation of this event handler should call Default(). This keeps the same behavior as the base class, but it also allows other classes to provide useful event handlers for your new type of event, allowing you to provide a framework for other classes to use.
+        <list type="table">
+          <item>
+            <term>1</term>
+            <description>Subclass an event type appropriate to the type of operation for which it is being used.</description>
+          </item>
+          <item>
+            <term>2</term>
+            <description>Add an event handler function to your derived object. (This event handler should be called with the event when the event is received.)</description>
+          </item>
+          <item>
+            <term>3</term>
+            <description>In general, the implementation of this event handler should call Default(). This keeps the same behavior as the base class, but it also allows other classes to provide useful event handlers for your new type of event, allowing you to provide a framework for other classes to use.</description>
+          </item>
+        </list>
         The base class Dispatch() method should be called in those cases where the received event is not handled by the customized dispatcher. For example:
         <code language="X#">
           RETURN SUPER:Dispatch(<paramref name="oEvent"/>)
@@ -8386,7 +8419,7 @@
     <param name="dwDrawStyle">The style to set. See table in the remarks section.</param>
     <param name="lEnable">A logical value to set the style. TRUE sets the style on, FALSE turns it off.</param>
     <remarks>
-      <list>
+      <list type="table">
         <listheader>
           <term>Value</term>
           <description>Description</description>
@@ -8506,7 +8539,7 @@
     </summary>
     <param name="kTextStyle">
       The text alignment style, specified as one of the following constants:
-      <list type="Table">
+      <list type="table">
         <listheader>
           <term>Constant</term>
           <description>Description</description>
@@ -8565,8 +8598,16 @@
       Although you supply specifics for a new font, the GUI actually picks an actual font which best fits the description provided.
       Each window has a currently selected font. Window:TextPrint() and Window:SizeText() use this font when they are printing or sizing text.
       <note type="tip">
-        Deselecting a Font:	In Windows, the current font should be deselected before destroying the window. To do this, use Window:Font to assign the previous font, for example. However, this is only necessary if there is a font other than the default one currently selected.
-        Font Pitch:	A font's pitch can be either variable or fixed. In variable pitch fonts, characters are proportionally spaced (for example, a variable pitch font uses more space to print an "M" than an "i"). In fixed pitch fonts, the same amount of space is used by each character, regardless of the character width. Fixed pitch fonts are most commonly used by terminals and typewriters or to display program text.
+        <list type="table">
+          <item>
+            <term>Deselecting a Font</term>
+            <description>In Windows, the current font should be deselected before destroying the window. To do this, use Window:Font to assign the previous font, for example. However, this is only necessary if there is a font other than the default one currently selected.</description>
+          </item>
+          <item>
+            <term>Font Pitch</term>
+            <description>A font's pitch can be either variable or fixed. In variable pitch fonts, characters are proportionally spaced (for example, a variable pitch font uses more space to print an "M" than an "i"). In fixed pitch fonts, the same amount of space is used by each character, regardless of the character width. Fixed pitch fonts are most commonly used by terminals and typewriters or to display program text.</description>
+          </item>
+        </list>
         Variable pitched fonts are not always supported. This is dependent on the individual font.
       </note>
     </remarks>
@@ -9168,7 +9209,7 @@
       Instead, they are provided by the system to give you access to certain standard help features:
 
 
-      <list>
+      <list type="table">
         <listheader>
           <term>Reserved Keyword</term>
           <description>Description</description>
@@ -9531,7 +9572,7 @@
     <param name="oWindow">The window to which the HotKey object will be applied.</param>
     <returns>
       A numeric value indicating the result of applying the HotKey object to the window. The result can be one of the following values:
-      <list>
+      <list type="table">
         <listheader>
           <term>Value</term>
           <description>Result</description>
@@ -11731,11 +11772,28 @@
     </summary>
     <remarks>
       The IRequest class retrieves the values that the client browser passed to the server during an HTTP request. The variables are internally stored by collections in the following order:
-      1.	QueryString
-      2.	Form
-      3.	Cookies
-      4.	ClientCertificate
-      5.	ServerVariables
+      <list type="table">
+        <item>
+          <term>1</term>
+          <description>QueryString</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>Form</description>
+        </item>
+        <item>
+          <term>3</term>
+          <description>Cookies</description>
+        </item>
+        <item>
+          <term>4</term>
+          <description>ClientCertificate</description>
+        </item>
+        <item>
+          <term>5</term>
+          <description>ServerVariables</description>
+        </item>
+      </list>
       The IRequest class provides the following kinds of methods:
       Methods to retrieve these collections as arrays containing value {name, value} pairs for each collection (e.g., GetForms()).
       Methods to retrieve a certain value of one of these collections (e.g., GetForm("firstname")).
@@ -17840,7 +17898,7 @@
       If <paramref name="kResourceID"/> is specified, use one of the constants listed below:
     </param>
     <remarks>
-      <list>
+      <list type="table">
         <item>
           <term>Pointer</term>
           <description>Description</description>
@@ -18353,51 +18411,184 @@
     <value>Specifies the size of the paper to print on.</value>
     <remarks>
       Specifies the size of the paper to print on. This member may be set to zero if the length and width of the paper are specified by the members of the DevMode structure, PaperLength and PaperWidth, respectively. Otherwise, the dmPaperSize member can be set to one of the following predefined values:
-      Value	Desription
-      DMPAPER_FIRST	DMPAPER_LETTER
-      DMPAPER_LETTER	Letter, 8 1/2 x 11 in.
-      DMPAPER_LETTERSMALL	Letter Small, 8 1/2 x 11 in.
-      DMPAPER_TABLOID	Tabloid, 11 x 17 in.
-      DMPAPER_LEDGER	Ledger, 17 x 11 in.
-      DMPAPER_LEGAL	Legal, 8 1/2 x 14 in.
-      DMPAPER_STATEMENT	Statement, 5 1/2 x 8 1/2 in.
-      DMPAPER_EXECUTIVE	Executive, 7 1/2 x 10 1/2 in.
-      DMPAPER_A3	A3, 297 x 420 mm
-      DMPAPER_A4	A4, 210 x 297 mm
-      DMPAPER_A4SMALL	A4 Small, 210 x 297 mm
-      DMPAPER_A5	A5, 148 x 210 mm
-      DMPAPER_B4	B4, 250 x 354 mm
-      DMPAPER_B5	B5, 182 x 257 mm
-      DMPAPER_FOLIO	Folio, 8 1/2 x 13 in.
-      DMPAPER_QUARTO	Quarto, 215 x 275 mm
-      DMPAPER_10X14	10 x 14 in.
-      DMPAPER_11X17	11 x 17 in.
-      DMPAPER_NOTE	Note, 8 1/2 x 11 in.
-      DMPAPER_ENV_9	Envelope #9, 3 7/8 x 87/8in.
-      DMPAPER_ENV_10	Envelope #10, 4 1/8 x 91/2in.
-      DMPAPER_ENV_11	Envelope #11, 4 1/2 x 103/8in.
-      DMPAPER_ENV_12	Envelope #12, 4 1/2 x 11 in.
-      DMPAPER_ENV_14	Envelope #14, 5 x 11 1/2 in.
-      DMPAPER_CSHEET	C size sheet
-      DMPAPER_DSHEET	D size sheet
-      DMPAPER_ESHEET	E size sheet
-      DMPAPER_ENV_DL	Envelope DL, 110 x 220 mm
-      DMPAPER_ENV_C3	Envelope C3, 324 x 458 mm
-      DMPAPER_ENV_C4	Envelope C4, 229 x 324 mm
-      DMPAPER_ENV_C5	Envelope C5, 162 x 229 mm
-      DMPAPER_ENV_C6	Envelope C6, 114 x 162 mm
-      DMPAPER_ENV_C65	Envelope C65, 114 x 229 mm
-      DMPAPER_ENV_B4	Envelope B4, 250 x 353 mm
-      DMPAPER_ENV_B5	Envelope B5, 176 x 250 mm
-      DMPAPER_ENV_B6	Envelope B6, 176 x 125 mm
-      DMPAPER_ENV_ITALY	Envelope, 110 x 230 mm
-      DMPAPER_ENV_MONARCH	Envelope Monarch, 3 7/8 x 71/2 in.
-      DMPAPER_ENV_PERSONAL	Envelope, 3 5/8 x 6 1/2 in.
-      DMPAPER_FANFOLD_US	U.S. Standard Fanfold, 147/8 x 11 in.
-      DMPAPER_FANFOLD_STD_GERMAN	German Standard Fanfold, 81/2 x 12 in.
-      DMPAPER_FANFOLD_LGL_GERMAN	German Legal Fanfold, 81/2 x 13 in.
-      DMPAPER_LAST	German Legal Fanfold, 81/2 x 13 in.
-      DMPAPER_USER	User-defined
+<list type="table">
+        <item>
+          <term>DMPAPER_FIRST</term>
+          <description>First</description>
+        </item>
+        <item>
+          <term>DMPAPER_LETTER</term>
+          <description>Letter，8 1/2 x 11 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_LETTERSMALL</term>
+          <description>Letter Small, 8 1/2 x 11 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_TABLOID</term>
+          <description>Tabloid，11 x 17 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_LEDGER</term>
+          <description> Ledger，17 x 11 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_LEGAL</term>
+          <description>Legal，8 1/2 x 14 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_STATEMENT</term>
+          <description>Statement，5 1/2 x 8 1/2 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_EXECUTIVE</term>
+          <description>Executive，7 1/2 x 10 1/2 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_A3</term>
+          <description>A3, 297 x 420 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_A4</term>
+          <description>A4，210 x 297 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_A4SMALL</term>
+          <description>A4 Small, 210 x 297 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_A5</term>
+          <description>A5，148 x 210 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_B4</term>
+          <description>B4, 250 x 354 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_B5</term>
+          <description>B5, 182 x 257 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_FOLIO</term>
+          <description>Folio，8 1/2 x 13 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_QUARTO</term>
+          <description>Quarto, 215 x 275 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_10X14</term>
+          <description>10 x 14 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_11X17</term>
+          <description>11 x 17 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_NOTE</term>
+          <description>Note，8 1/2 x 11 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_9</term>
+          <description>Envelope #9 ，3 7/8 x 87/8 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_10</term>
+          <description>Envelope #10，4 1/8 x 91/2 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_11</term>
+          <description>Envelope #11，4 1/2 x 103/8 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_12</term>
+          <description>Envelope #12，4 1/2 x 11 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_14</term>
+          <description>Envelope #14，5 x 11 1/2 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_CSHEET</term>
+          <description>C size sheet</description>
+        </item>
+        <item>
+          <term>DMPAPER_DSHEET</term>
+          <description>D size sheet</description>
+        </item>
+        <item>
+          <term>DMPAPER_ESHEET</term>
+          <description>E size sheet</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_DL</term>
+          <description>Envelope DL, 110 x 220 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_C3</term>
+          <description>Envelope C3, 324 x 458 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_C4</term>
+          <description>Envelope C4, 229 x 324 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_C5</term>
+          <description>Envelope C5, 162 x 229 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_C6</term>
+          <description>Envelope C6, 114 x 162 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_C65</term>
+          <description>Envelope C65, 114 x 229 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_B4</term>
+          <description>Envelope B4, 250 x 353 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_B5</term>
+          <description>Envelope B5, 176 x 250 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_B6</term>
+          <description>Envelope B6, 176 x 125 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_ITALY</term>
+          <description>Envelope, 110 x 230 mm</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_MONARCH</term>
+          <description>Envelope Monarch ，3 7/8 x 71/2 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_ENV_PERSONAL</term>
+          <description>Envelope,3 5/8 x 6 1/2 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_FANFOLD_US</term>
+          <description>U.S. Standard Fanfold，147/8 x 11 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_FANFOLD_STD_GERMAN</term>
+          <description>German Standard Fanfold，81/2 x 12 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_FANFOLD_LGL_GERMAN</term>
+          <description>German Legal Fanfold，81/2 x 13 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_LAST</term>
+          <description>German Legal Fanfold，81/2 x 13 in.</description>
+        </item>
+        <item>
+          <term>DMPAPER_USER</term>
+          <description>User-defined</description>
+        </item>
+      </list>
     </remarks>
   </PrintingDevice.PaperSize>
   <PrintingDevice.PaperWidth>
@@ -18727,8 +18918,16 @@
     <param name="aContents">
       The array containing existing radio buttons or the values that should be used to create radio buttons. A two-dimensional array may be used to define the values to be returned to the program when a radio button is selected; this 'other' value is what is returned in the RadioButtonGroup:Value property, and what is stored in the database if the control is associated with a database field. If a one-dimensional array is specified, the values are returned as 1, 2, 3...
       Thus, the array may be specified in one of two formats:
-      1.	One-dimensional array containing radio button objects that are to be linked to the group
-      2.	Two-dimensional arrays, each element containing a RadioButton object and the corresponding value returned to the program
+      <list type="table">
+        <item>
+          <term>1</term>
+          <description>One-dimensional array containing radio button objects that are to be linked to the group</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>Two-dimensional arrays, each element containing a RadioButton object and the corresponding value returned to the program</description>
+        </item>
+      </list>
       Note: the two dimensional array has the same structure as that returned by DBServer:GetLookupTable().
     </param>
     <remarks>
@@ -25379,15 +25578,34 @@
     <remarks>
       Windows receive events from the user and the system all of the time. Each window receives only the events that are
       relevant to it. For each event that is generated, two things happen:
-      1.	The event is converted to a particular Event object (an ExposeEvent or a MouseEvent, for example) according to the action that triggered the event.
-      2.	The appropriate event handler is called, and this typed Event object is passed to it.
+      <list type="table">
+        <item>
+          <term>1</term>
+          <description>The event is converted to a particular Event object (an ExposeEvent or a MouseEvent, for example) according to the action that triggered the event.</description>
+        </item>
+        <item>
+          <term>2</term>
+          <description>The appropriate event handler is called, and this typed Event object is passed to it.</description>
+        </item>
+      </list>
       <note type="tip">
         If you want to set a specific return value for the underlying window procedure, you have to change the EventReturnValue variable for the window object.
         If you want to handle other events (for example, timer events), you need to write your own Dispatch() method.
         The following guidelines should be followed when writing a customized Dispatch() method:
-        1.	Subclass an event type appropriate to the type of operation for which it is being used.
-        2.	Add an event handler function to your derived object. (This event handler should be called with the event when the event is received.)
-        3.	In general, the implementation of this event handler should call Default(). This keeps the same behavior as the base class, but it also
+        <list type="table">
+          <item>
+            <term>1</term>
+            <description>Subclass an event type appropriate to the type of operation for which it is being used.</description>
+          </item>
+          <item>
+            <term>2</term>
+            <description>Add an event handler function to your derived object. (This event handler should be called with the event when the event is received.)</description>
+          </item>
+          <item>
+            <term>3</term>
+            <description>In general, the implementation of this event handler should call Default(). This keeps the same behavior as the base class, but it also</description>
+          </item>
+        </list>
         allows other classes to provide useful event handlers for your new type of event, allowing you to provide a framework for other classes to use.
         The base class Dispatch() method should be called in those cases where the received event is not handled by the customized dispatcher.
         For example:

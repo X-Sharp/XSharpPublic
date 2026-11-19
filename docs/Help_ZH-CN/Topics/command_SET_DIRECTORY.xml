@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:44:50.960Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET DIRECTORY 命令</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SET commands</keyword>
+    <keyword>SET DIRECTORY command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET DIRECTORY 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">指定用于文件操作的默认文件夹（和驱动器）。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">SET DIRECTORY TO [&lt;FolderName&gt;]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;FolderName&gt;<tab />文件夹的名称。该名称可以带引号或不带引号指定。如果省略文件夹名称，则默认文件夹将被清空。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">SET DIRECTORY TO 是 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DEFAULT">SET DEFAULT TO</link> 的同义词。</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DEFAULT">SET DEFAULT</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_PATH">SET PATH</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CHDIR">CHDIR</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\Overload_XSharp_Core_Functions_SetDefault.htm" domain="XSharpRef.chm">SetDefault()</link></para>
+  </body>
+</topic>

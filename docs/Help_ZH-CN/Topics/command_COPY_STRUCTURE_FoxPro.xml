@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:33:27.471Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>COPY STRUCTURE 命令 (FoxPro)</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>COPY STRUCTURE command</keyword>
+    <keyword>COPY STRUCTURE command<keyword>FoxPro</keyword></keyword>
+    <keyword>Tables</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">COPY STRUCTURE 命令 (FoxPro)</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">使用 FoxPro 语法创建一个与当前表结构相同的新空表。这是 FoxPro 版本的 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_STRUCTURE">COPY STRUCTURE</link> 命令。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">COPY STRUCTURE TO &lt;TableName&gt;<br/> &#160; [FIELDS &lt;FieldList&gt; | FIELDS LIKE &lt;Skeleton&gt; | FIELDS EXCEPT &lt;Skeleton&gt;]<br/> &#160; [WITH CDX | WITH PRODUCTION]<br/> &#160; [DATABASE &lt;DbName&gt; [NAME &lt;LongTableName&gt;]]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">TO &lt;表名&gt;<tab />新表的名称。</para>
+    <para styleclass="List"><snippet src="__FoxFieldList" inline="false"/></para>
+    <para styleclass="List">WITH CDX | WITH PRODUCTION<tab />还会将当前表的生产索引文件（CDX）中的标签复制到新表的 CDX 文件中。</para>
+    <para styleclass="List">DATABASE &lt;DbName&gt; [NAME &lt;LongTableName&gt;]<tab />将新表添加到指定的数据库中。NAME 子句指定该数据库中表的完整名称。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">新表已创建但尚未打开。新表的结构中只能包含通过 FIELDS 子句选定的字段。</para>
+    <para styleclass="Heading1">示例</para>
+    <para styleclass="Code Example">USE Customers<br/>COPY STRUCTURE TO CustomersEmpty WITH CDX<br/>COPY STRUCTURE TO Names FIELDS LastName, FirstName</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_STRUCTURE">COPY STRUCTURE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_STRUCTURE_EXTENDED_FoxPro">COPY STRUCTURE EXTENDED (FoxPro)</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_COPY_TO_FoxPro">COPY TO (FoxPro)</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="html\M_XSharp_VFP_Functions_DbCopyStructFox.htm" domain="XSharpRef.chm">DbCopyStructFox()</link></para>
+  </body>
+</topic>

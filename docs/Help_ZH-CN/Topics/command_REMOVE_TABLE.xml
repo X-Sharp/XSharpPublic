@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:39:11.900Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>REMOVE TABLE 命令</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+    <keyword>REMOVE TABLE command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">REMOVE TABLE 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">从当前数据库中删除一张表。该表将变为空闲表，或从磁盘中删除。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">REMOVE TABLE &lt;TableName&gt; [DELETE | RECYCLE]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">&lt;TableName&gt;<tab />当前数据库中表的名称。</para>
+    <para styleclass="List">DELETE<tab />在将表从数据库中删除后，将其表文件（及其备忘录文件和索引文件）从磁盘中删除。</para>
+    <para styleclass="List">RECYCLE<tab />旨在将文件移至“回收站”。此时，文件将被永久删除，与 DELETE 子句的效果相同。<text styleclass="Body Text" style="font-weight:bold; color:#ff0000;">目前 RECYCLE 尚未得到完全支持</text></para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">如果不使用 DELETE 和 RECYCLE 子句，表文件将作为空表保留在磁盘上。</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_ADD_TABLE">ADD TABLE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_RENAME_TABLE">RENAME TABLE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_DELETE_DATABASE">DELETE DATABASE</link></para>
+  </body>
+</topic>

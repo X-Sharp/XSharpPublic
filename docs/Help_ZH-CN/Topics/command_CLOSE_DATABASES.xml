@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:30:53.680+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CLOSE DATABASES 命令</title>
+  <keywords>
+    <keyword>CLOSE DATABASES command</keyword>
+    <keyword>Commands</keyword>
+    <keyword>Databases</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">CLOSE DATABASES 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">关闭当前数据会话中打开的数据库和表。这是 FoxPro 方言中 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLOSE">CLOSE DATABASES</link> 语句的对应版本。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">CLOSE DATABASES [ALL]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">ALL<tab/>关闭所有打开的数据库（包括当前数据库），以及当前数据会话中所有工作区内的所有表、索引和格式文件。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">如果不使用 ALL 子句，则会关闭当前数据库，此后将不再存在当前数据库。如果不存在当前数据库，则会关闭当前数据会话中的所有空闲表。</para>
+    <para styleclass="Normal">在这两种情况下，所有工作区都会被关闭，随后将选择工作区 1。请注意，如果不使用 ALL 子句，X# 将关闭所有工作区，包括那些包含不属于当前数据库的表的工作区。而在 Visual FoxPro 中，仅会关闭当前数据库中的表。</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLOSE">CLOSE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CLOSE_TABLES">CLOSE TABLES</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_OPEN_DATABASE">OPEN DATABASE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_DATABASE">SET DATABASE TO</link></para>
+  </body>
+</topic>

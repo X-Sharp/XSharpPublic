@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:31:45.321Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>ALTER TABLE 命令</title>
+  <keywords>
+    <keyword>ALTER TABLE command</keyword>
+    <keyword>Commands</keyword>
+    <keyword>SQL</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">ALTER TABLE 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">更改现有表的结构。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">ALTER TABLE &lt;TableName&gt; ADD [COLUMN] &lt;FieldName&gt; &lt;FieldType&gt; [(&lt;nWidth&gt; [, &lt;nPrecision&gt;])] [NULL | NOT NULL]<br/>ALTER TABLE &lt;TableName&gt; ALTER [COLUMN] &lt;FieldName&gt; &lt;FieldType&gt; [(&lt;nWidth&gt; [, &lt;nPrecision&gt;])] [NULL | NOT NULL]<br/>ALTER TABLE &lt;TableName&gt; DROP [COLUMN] &lt;FieldName&gt;</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">ADD [COLUMN]<tab />向表中添加一个新字段。</para>
+    <para styleclass="List">ALTER [COLUMN]<tab />更改现有字段的类型、大小或 NULL 设置。</para>
+    <para styleclass="List">DROP [COLUMN]<tab />从表中删除一个字段。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">表将被重建。旧表将作为扩展名为 .BAK（备忘录表为 .TBK）的备份文件保留，直到新表成功创建为止。字段类型和子句与 <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_TABLE">CREATE TABLE</link> 命令相同。</para>
+    <para styleclass="Normal"><text styleclass="Body Text" style="font-weight:bold; color:#ff0000;">当前不支持</text>：预处理器虽然接受用于更改表属性或约束（如主键和外键、规则及触发器）的命令变体，但会忽略这些内容。</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_TABLE">CREATE TABLE</link></para>
+  </body>
+</topic>

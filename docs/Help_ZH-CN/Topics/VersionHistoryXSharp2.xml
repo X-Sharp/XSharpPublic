@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-03-19T20:10:15.829+08:00" lasteditedby="niuji" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-11-17T15:33:48.827Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>历史：XSharp 2</title>
   <keywords>
     <keyword>Changes</keyword>
@@ -13,8 +13,8 @@
     <header>
       <para styleclass="Heading1">历史：XSharp 2</para>
     </header>
-    <para styleclass="Heading1">Changes in 2.24.0.1</para>
-    <para styleclass="Heading1"><text styleclass="Heading2">编译器</text><br/><text styleclass="Heading3">Bug修复</text></para>
+    <para styleclass="Heading1">2.24.0.1 中的更改</para>
+    <para styleclass="Heading1"><text styleclass="Heading2">编译器 </text><br/><text styleclass="Heading3">Bug修复</text></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">为不带可见性修饰符的 VFP 类成员生成文档的功能失效（<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1664" target="_blank">#1664</link>）</li>
     </list>
@@ -70,7 +70,7 @@
       <li styleclass="Normal">·在浮动窗口中的文件也添加了常规上下文菜单选项</li>
       <li styleclass="Normal">·工具窗口现在也可以通过中间鼠标按钮点击关闭</li>
     </list>
-    <para styleclass="Heading1">Changes in 2.23.0.2</para>
+    <para styleclass="Heading1">2.23.0.2 中的更改</para>
     <para styleclass="Heading1"><text styleclass="Heading2">编译器</text></para>
     <para styleclass="Heading3">新特性</para>
     <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -99,7 +99,7 @@
       <li styleclass="Normal">允许注册特殊错误处理程序，在宏编译过程中出现错误时调用 (#1686)<br/>要使用此功能，请声明具有以下原型的函数或方法：<br/><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">DELEGATE</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> CodeblockErrorHandler(cMacro </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">STRING</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">, oException </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">as</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Exception) </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> ICodeBlock</text></li>
     </list>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><br/><text styleclass="Normal">然后像这样将其注册为代码块错误处理程序：</text><br/><text styleclass="Normal">RuntimeState.CodeBlockErrorHandler := CodeBlockErrorHandler</text><br/><text styleclass="Normal">当函数/方法返回 NULL 时，就会抛出异常。</text><br/><text styleclass="Normal">当函数/错误处理程序返回一个代码块时，该代码块将用于评估宏。例如</text><br/><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> CodeBlockErrorHandler(cMacro </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">STRING</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">, oEx </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Exception) </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> ICodeblock</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; ? Mmacro</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; ? oEx:Message</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#339966;">// 出现类似错误时，Visual Objects 返回 NIL</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">RETURN</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> {|| NIL }</text><br/><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">FUNCTION</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> Start() </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">VOID</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#ff0000;">STRICT</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; RuntimeState.MacroCompilerErrorHandler := CodeBlockErrorHandler</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; ? &amp;(&quot;&apos;aaa&apos;bbb&apos;&quot;) &#160; &#160;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#339966;">// 单引号数量不均，错误。</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; text-decoration:none; color:#000000;"> &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; text-decoration:none; color:#339966;">// 返回 NIL，因为 ErrorHandler 返回的代码块为 NIL</text></para>
-    <para styleclass="Heading3">Bug fixes</para>
+    <para styleclass="Heading3">Bug 修复</para>
     <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">修复了 COPY TO ARRAY / DbCopyToArray() 在处理类型为 &quot;G&quot; 的字段时的问题(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1530" target="_blank">#1530</link>)</li>
       <li styleclass="Normal">修复了 ASort() 在使用 .Net Framework 4.5 排序例程时返回不一致结果的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1653" target="_blank">#1653</link>)</li>
@@ -154,7 +154,7 @@
     <list id="15" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">修复了 CONSTRUCTOR、DESTRUCTOR、ENUM、EVENT、FUNCTION、METHOD OPERATOR、PROPERTY、STRUCTURE 主题的文档问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1655" target="_blank">#1655</link>)</li>
     </list>
-    <para styleclass="Heading1">Changes in 2.22.0.1</para>
+    <para styleclass="Heading1">2.22.0.1 中的更改</para>
     <para styleclass="Heading1"><text styleclass="Heading2">编译器</text></para>
     <para styleclass="Heading3">Bug 修复</para>
     <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -209,7 +209,7 @@
       <li styleclass="Normal">在项目窗口中添加了使用 F3 重复上次搜索的功能</li>
       <li styleclass="Normal">为 Locals 详细信息编辑框添加了垂直滚动条</li>
     </list>
-    <para styleclass="Heading3">Editor</para>
+    <para styleclass="Heading3">编辑器</para>
     <list id="15" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">修正了识别某些位置关键字(如 CONSTRUCTOR)的问题</li>
       <li styleclass="Normal">修正了 X# 特定数据类型(USUAL、FLOAT、DATE 等)的 intellisense 问题</li>
@@ -235,7 +235,7 @@
       <li styleclass="Normal">[查看源代码] 链接指向的是 Github 上的功能分支。现在指向的是主分支。</li>
       <li styleclass="Normal">更新了关于插值字符串的帮助主题。</li>
     </list>
-    <para styleclass="Heading1">Changes in 2.21.0.5</para>
+    <para styleclass="Heading1">2.21.0.5 中的更改</para>
     <para styleclass="Heading2">2.21.0.5 中可能出现的中断性更改</para>
     <para styleclass="Heading3">所有方言</para>
     <para styleclass="Body Text">到目前为止，编译器根据方言为命令行选项提供了几种内置默认值。</para>
@@ -308,7 +308,7 @@
       </tr>
       <tr style="vertical-align:top">
         <td>
-          <para styleclass="Normal">Other</para>
+          <para styleclass="Normal">其他</para>
         </td>
         <td>
           <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo15">Vo15</link></para>
@@ -361,7 +361,7 @@
       <li styleclass="Normal">修正了<link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo9"> /vo9</link>(处理丢失的 RETURN 语句和返回值)编译器选项的若干问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1544" target="_blank">#1544</link>)</li>
     </list>
     <list id="20" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Fixed parser problem with END DEFINE, END PROCEDURE and END FUNCTION in the VFP dialect (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1564" target="_blank">#1564</link>)</li>
+      <li styleclass="Normal">修复了 VFP 方言中 END DEFINE、END PROCEDURE 和 END FUNCTION 的解析器问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1564" target="_blank">#1564</link>)</li>
     </list>
     <list id="19" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">修正了在 FoxPro 方言的 CLASS 语句中使用特性(attributes)的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1566" target="_blank">#1566</link>)</li>
@@ -379,7 +379,7 @@
       <li styleclass="Normal">更改了处理命令行参数缺失的方式(见上文)</li>
     </list>
     <list id="21" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Body Text">We have added the double colon (<text style="font-size:12pt; font-weight:bold;">::</text>) separator for interpolated strings to separate the expression from the format specifier. C# uses the single colon (<text style="font-size:12pt; font-weight:bold;">:) </text>but that character is also used as member access operator in X#.See the <link displaytype="text" defaultstyle="true" type="topiclink" href="StringLiterals">String Literals</link> topic for more information.</li>
+      <li styleclass="Body Text">我们为内插字符串添加了双冒号 (<text style="font-size:12pt; font-weight:bold;">::</text>) 分隔符，用于将表达式与格式说明符分隔开。C# 使用单冒号 (<text style="font-size:12pt; font-weight:bold;">:) </text>，但该字符在 X# 中也用作成员访问运算符。有关更多信息，请参阅 <link displaytype="text" defaultstyle="true" type="topiclink" href="StringLiterals">String Literals</link> 主题。</li>
     </list>
     <para styleclass="Heading2">生成系统</para>
     <list id="19" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -446,7 +446,7 @@
       <li styleclass="Normal">修复了编辑器中代码片段在 VS 2022 17.11 版中不再工作的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1564" target="_blank">#1564</link>)</li>
     </list>
     <list id="20" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
-      <li styleclass="Normal">Fixed problem with the parameter list auto-showing tooltip when using &lt;Enter&gt; to accept a method from the member completion list (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1570" target="_blank">#1570</link>)</li>
+      <li styleclass="Normal">修复了使用 &lt;Enter&gt; 从成员补全列表中接受方法时，参数列表自动显示工具提示的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1570" target="_blank">#1570</link>)</li>
     </list>
     <list id="19" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">修复了带有结束关键字（如 NEXT 和 ENDDO）的缩进行的问题(当这些关键字后跟有 “垃圾 ”时)。</li>
@@ -571,7 +571,7 @@
     <list id="30" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">修正了文档中有关 -memvar 选项的错误文本 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1621" target="_blank">#1621</link>)</li>
     </list>
-    <para styleclass="Heading1">Changes in 2.20.0.3</para>
+    <para styleclass="Heading1">2.20.0.3 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <para styleclass="Heading3">Bug 修复</para>
     <list id="19" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -676,7 +676,7 @@
       <li styleclass="Normal">我们添加了几个关于修饰符(<link displaytype="text" defaultstyle="true" type="topiclink" href="Modifiers">modifiers) </link>的章节</li>
       <li styleclass="Normal">我们添加了(部分)翻译成简体中文的帮助文件。</li>
     </list>
-    <para styleclass="Heading1">Changes in 2.19.0.2</para>
+    <para styleclass="Heading1">2.19.0.2 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <para styleclass="Heading3">Bug 修复</para>
     <list id="19" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -783,7 +783,7 @@
     <list id="50" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">我们在 X# 编程指南中添加了有关多个主题的附加文档。</li>
     </list>
-    <para styleclass="Heading1">Changes in 2.18.0.4</para>
+    <para styleclass="Heading1">2.18.0.4 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <para styleclass="Heading3">Bug 修复</para>
     <list id="51" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -890,7 +890,7 @@
     <list id="49" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Normal">安装程序现在会检测是否安装了所需的 Visual Studio 组件 “Core Editor ”和“.Net Desktop Development”。<br/>如果发现一个或多个 VS 安装，但其中没有一个安装同时具备所需的组件，则会显示警告。</li>
     </list>
-    <para styleclass="Heading1">Changes in 2.17.0.3</para>
+    <para styleclass="Heading1">2.17.0.3 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <para styleclass="Heading3">Bug 修复</para>
     <list id="51" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -927,8 +927,8 @@
     <list id="53" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="Body Text">我们为以下项目添加了调试器面板窗口：</text></li>
       <list id="53" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
-        <li styleclass="List"><link displaytype="text" defaultstyle="true" type="topiclink" href="debugger-Globals-Window">Global variables</link></li>
-        <li styleclass="List"><link displaytype="text" defaultstyle="true" type="topiclink" href="debugger-Publics-and-Privates-Window">Dynamic memory variables (Privates and Publics)</link></li>
+        <li styleclass="List"><link displaytype="text" defaultstyle="true" type="topiclink" href="debugger-Globals-Window">全局变量</link></li>
+        <li styleclass="List"><link displaytype="text" defaultstyle="true" type="topiclink" href="debugger-Publics-and-Privates-Window">动态内存变量 (Privates 和 Publics)</link></li>
         <li styleclass="List"><link displaytype="text" defaultstyle="true" type="topiclink" href="debugger-Workareas-window">Workareas</link></li>
         <li styleclass="List"><link displaytype="text" defaultstyle="true" type="topiclink" href="debugger-Settings-Window">Settings</link></li>
       </list>
@@ -977,7 +977,7 @@
     <list id="51" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">已添加对特殊标记 {VOXP:COM}、{VOXP:UNC} 和 {VOXP:DEL} 的支持。/ {VOXP:REM}，以注释、取消注释和删除原始 VO 代码中的行 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1303" target="_blank">#1303</link>)</li>
     </list>
-    <para styleclass="Heading1">Changes in 2.16.0.5</para>
+    <para styleclass="Heading1">2.16.0.5 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Xbase++ 方言的新特性</text></para>
     <para styleclass="Body Text">我们对 Xbase++ 类定义的生成方式进行了多项修改。请使用新版本并检查您的代码！</para>
@@ -1072,7 +1072,7 @@
       <li styleclass="Body Text">修正了在表单设计器中打开包含用函数调用初始化的字段的表单时出现的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1251" target="_blank">#1251</link>)</li>
       <li styleclass="Body Text">关闭解决方案时处于 [设计] 模式的窗口，现在重新打开解决方案时可在 [设计] 模式下正确打开。</li>
     </list>
-    <para styleclass="Heading1">Changes in 2.15.0.3</para>
+    <para styleclass="Heading1">2.15.0.3 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">新特性</text></para>
     <list id="55" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -1143,7 +1143,7 @@
       <li styleclass="Body Text">类型化 SDK 中的一些方法被记录为 Function。现在它们被正确地记录为 Method</li>
       <li styleclass="Body Text">类的 “属性列表” 和 “方法列表” 现在包括对继承自父类的方法的引用。不包括从 .Net 类继承的方法，如从 System.Object 继承的 ToString()。</li>
     </list>
-    <para styleclass="Heading1">Changes in 2.14.0.2, 3 &amp; 4</para>
+    <para styleclass="Heading1">2.14.0.2、3 和 4 中的更改</para>
     <para styleclass="Heading2">Visual Studio 集成</para>
     <para styleclass="Heading3">Bug 修复</para>
     <list id="55" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -1161,7 +1161,7 @@
       <li styleclass="Body Text">修复了 “格式化文档” 在某些文档中不起作用的问题</li>
       <li styleclass="Body Text">更改了 VS 内部负责关键词着色和衍生任务的后台扫描的优先级。</li>
     </list>
-    <para styleclass="Heading1">Changes in 2.14.0.1</para>
+    <para styleclass="Heading1">2.14.0.1 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <para styleclass="Heading3">Bug 修复</para>
     <list id="55" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -1173,7 +1173,7 @@
     <list id="55" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">2.14.0.0 的运行时 DLL 标记了 TargetFramework 属性。这造成了一些问题。运行时动态链接库不再设置该属性 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1177" target="_blank">#1177</link>)</li>
     </list>
-    <para styleclass="Heading1">Changes in 2.14.0.0</para>
+    <para styleclass="Heading1">2.14.0.0 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <para styleclass="Heading3">Bug 修复</para>
     <list id="55" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -1250,7 +1250,7 @@
       <li styleclass="Body Text">UDC 中的可选标记在源代码编辑器中未着色为关键字</li>
       <li styleclass="Body Text">修正了 CodeDom 提供程序中的一个问题，即在为 WPF 项目生成代码时，由于依赖 Microsoft.VisualStudio.Shell.Design 15.0 版本，因此无法在生成服务器上加载。</li>
     </list>
-    <para styleclass="Heading1">Changes in 2.13.2.2</para>
+    <para styleclass="Heading1">2.13.2.2 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <para styleclass="Heading3">Bug 修复</para>
     <list id="57" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -1281,7 +1281,7 @@
       <li styleclass="Body Text">在 quickinfo 工具提示中，“ptr ”类型没有用关键字颜色标出</li>
       <li styleclass="Body Text">在关键字大小写上，nameof、typeof 和 sizeof 关键字不同步</li>
     </list>
-    <para styleclass="Heading1">Changes in 2.13.2.1</para>
+    <para styleclass="Heading1">2.13.2.1 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">新特性</text></para>
     <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -1312,7 +1312,7 @@
       <li styleclass="Normal"><text styleclass="Body Text">修复了 CATCH、ELSEIF、FOR、FOREACH 等行中变量的识别问题 (</text><link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1118" target="_blank" styleclass="Body Text">#1118</link><text styleclass="Body Text">)</text></li>
       <li styleclass="Normal"><text styleclass="Body Text">修复了默认命名空间中类型的识别问题 (</text><link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1122" target="_blank" styleclass="Body Text">#1122</link><text styleclass="Body Text">)</text></li>
     </list>
-    <para styleclass="Heading1">Changes in 2.13.1</para>
+    <para styleclass="Heading1">2.13.1 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">新特性</text></para>
     <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -1351,7 +1351,7 @@
       <li styleclass="Body Text">当项目的生成过程因缺少资源或其他资源相关问题而失败时，错误列表不会正确更新。这一问题已得到修复 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1102" target="_blank">#1102</link>)</li>
       <li styleclass="Body Text">XSharpDebugger.DLL 未正确安装到 VS2017 和 VS2019 中。</li>
     </list>
-    <para styleclass="Heading1">Changes in 2.13</para>
+    <para styleclass="Heading1">2.13 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <para styleclass="" style="text-align:left; text-indent:0px; margin-top:8px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:avoid; page-break-after:avoid; border:none; tabstops:none;"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">新特性</text></para>
     <list id="59" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="" style="text-align:left; text-indent:-24px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:24px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none; font-family:Symbol; font-size:11pt; color:#000000;">
@@ -1455,7 +1455,7 @@
     <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">在 VS 中编译 X# 项目时，负责创建命令行的 XSharp.Build.Dll 无法正确地将 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-noconfig">/noconfig</link> 和 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-shared">/shared</link> 编译器选项传递给编译器。因此，即使启用了使用共享编译器的项目属性，也无法使用共享编译器。此外，编译器还会自动包含对 xsc.rsp 文件中列出的所有程序集的引用，该文件位于 XSharp\bin 文件夹中。<br/>您现在可能会遇到程序集因缺少类型而无法编译的情况。如果您使用的类型位于 xsc.rsp 中列出的程序集内，就会出现这种情况。您现在应该在 X# 项目中添加对这些程序集的明确引用。</li>
     </list>
-    <para styleclass="Heading1">Changes in 2.12.2.0</para>
+    <para styleclass="Heading1">2.12.2.0 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <para styleclass="Heading3">Bug 修复</para>
     <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -1584,7 +1584,7 @@
     <list id="66" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">如果在 VO 应用程序中启用了允许 MEMVAR/Undeclared vars 编译器选项，VOXporter 现在可以正确启用或禁用这些选项 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/1000" target="_blank">#1000</link>)</li>
     </list>
-    <para styleclass="Heading1">Changes in 2.11.0.1</para>
+    <para styleclass="Heading1">2.11.0.1 中的更改</para>
     <para styleclass="Heading1"><text styleclass="Heading2">编译器</text></para>
     <para styleclass="Body Text"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Bug 修复</text></para>
     <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -1680,7 +1680,7 @@
       <li styleclass="Body Text">修正了错误检测字面字符串和注释中函数指针的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/932" target="_blank">#932</link>)</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.10.0.3 </para>
+    <para styleclass="Heading1">2.10.0.3 中的更改</para>
     <para styleclass="Heading1"><text styleclass="Heading2">编译器</text></para>
     <para styleclass="Body Text"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Bug 修复</text></para>
     <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -1773,7 +1773,7 @@
       <li styleclass="Body Text">修正了在宏表达式中使用括号运算符访问 FoxPro 数组的问题(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/805" target="_blank">#805</link>)。<br/>请注意，要使主程序正常运行，必须在编译主程序时使用 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-fox2">/fox2</link></li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.9.1.1 (Cahors)</para>
+    <para styleclass="Heading1">2.9.1.1 (Cahors) 中的更改</para>
     <para styleclass="Heading1"><text styleclass="Heading2">编译器</text></para>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">Bug 修复</text></para>
     <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -1849,7 +1849,7 @@
       <li styleclass="Body Text">修正了在 PUBLIC 声明前添加“@@”不正确的问题</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.9.0.2 (Cahors)</para>
+    <para styleclass="Heading1">2.9.0.2 (Cahors) 中的更改</para>
     <para styleclass="Heading1"><text styleclass="Heading2">编译器</text></para>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">新特性</text></para>
     <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -2001,7 +2001,7 @@
       <li styleclass="Body Text">修正了窗口编辑器中事件代码生成的一些问题(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/441" target="_blank">#441</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/46" target="_blank">#46</link>)</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.8.3.15 (Cahors)</para>
+    <para styleclass="Heading1">2.8.3.15 (Cahors) 中的更改</para>
     <para styleclass="Heading1"><text styleclass="Heading2">编译器</text></para>
     <para styleclass="Heading3"><text styleclass="" style="font-family:Arial; font-size:12pt; font-weight:bold; color:#00a8d2;">新特性</text></para>
     <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -2067,7 +2067,7 @@
       <li styleclass="Body Text">修正了 VOXPorter 中有关资源和复制到资源子文件夹的问题</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.8.2.13 (Cahors)</para>
+    <para styleclass="Heading1">2.8.2.13 (Cahors) 中的更改</para>
     <para styleclass="Heading1"><text styleclass="Heading2">编译器</text></para>
     <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">修正了扩展方法未标记为 STATIC 的问题 (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/660" target="_blank">#660</link>)</li>
@@ -2122,7 +2122,7 @@
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.8.1.12 (Cahors)</para>
+    <para styleclass="Heading1">2.8.1.12 (Cahors) 中的更改</para>
     <para styleclass="Heading1"><text styleclass="Heading2">编译器</text></para>
     <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">修正了插值字符串的问题(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/598" target="_blank">#598</link>、<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/622" target="_blank">#622</link>)：</li>
@@ -2185,7 +2185,7 @@
       <li styleclass="Body Text">安装程序将错误版本的 XSharp.CodeAnalysis.dll 添加到了全局程序集缓存中。这一问题已得到修复。</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.8.0.0 (Cahors)</para>
+    <para styleclass="Heading1">2.8.0.0 (Cahors) 中的更改</para>
     <para styleclass="Heading1"><text styleclass="Heading2">编译器</text></para>
     <para styleclass="Heading3">常规</para>
     <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -2384,7 +2384,7 @@
       <li styleclass="Body Text">我们新增了 X# t4 模板(.tt 文件)</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.7.0.0 (Cahors)</para>
+    <para styleclass="Heading1">2.7.0.0 (Cahors) 中的更改</para>
     <para styleclass="Heading1"><text styleclass="Heading2">编译器</text></para>
     <para styleclass="Heading3">常规</para>
     <list id="54" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -2481,7 +2481,7 @@
       <li styleclass="Normal"><text styleclass="Body Text">已添加项目属性，用于设置新标志以抑制资源编译器出现 RC4005(重复定义)错误。</text></li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.6.1.0 (Cahors)</para>
+    <para styleclass="Heading1">2.6.1.0 (Cahors) 中的更改</para>
     <para styleclass="Normal">这是一个错误修复版本，修复了 2.6.0.0 中发现的一些问题</para>
     <para styleclass="Heading1"><text styleclass="Heading2">编译器</text></para>
     <list id="75" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -2508,7 +2508,7 @@
       <li styleclass="Body Text">修正了导致 VS 任务列表无法用于 X# 项目的回归问题。</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.6.0.0 (Cahors)</para>
+    <para styleclass="Heading1">2.6.0.0 (Cahors) 中的更改</para>
     <para styleclass="Normal"><text style="font-weight:bold; font-style:italic;">请注意，此版本中有一些破坏性更改。</text></para>
     <para styleclass="Normal"><text style="font-weight:bold; font-style:italic;">因此，运行时组件的 Assembly 版本号已更改，您需要重新编译所有代码，并需要第三方组件的新版本！</text></para>
     <para styleclass="Heading1"><text styleclass="Heading2">编译器</text></para>
@@ -2620,7 +2620,7 @@
       <li styleclass="Normal">安装程序会自动添加该环境变量，并将其指向 &lt;XSharpDir&gt;\MsBuild 文件夹。</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.5.2.0 (Cahors)</para>
+    <para styleclass="Heading1">2.5.2.0 (Cahors) 中的更改</para>
     <para styleclass="Heading1"><text styleclass="Heading2">编译器</text></para>
     <list id="75" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">如果定义中的表达式包含值大于 127 的 _Chr()函数，则会生成警告，提示开发机器和最终用户机器之间可能存在代码页差异。</li>
@@ -2663,7 +2663,7 @@
       <li styleclass="Normal">更正了一些文档</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.5.1.0 (Cahors)</para>
+    <para styleclass="Heading1">2.5.1.0 (Cahors) 中的更改</para>
     <para styleclass="Heading1"><text styleclass="Heading2">编译器</text></para>
     <list id="75" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">此版本中的编译器没有变化(仍称为 2.5.0.0)</li>
@@ -2691,7 +2691,7 @@
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.5.0.0 (Cahors)</para>
+    <para styleclass="Heading1">2.5.0.0 (Cahors) 中的更改</para>
     <para styleclass="Heading1"><text styleclass="Heading2">编译器</text></para>
     <list id="75" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">如果 #pragma 行后面跟着不正确的语法，就会 “吃掉 ”不正确的语法，导致整个方法被排除在编译之外。这一问题已得到修复。</li>
@@ -2822,7 +2822,7 @@
       <li styleclass="Body Text">我们添加了将 AEF 中的 VO 菜单导出为 XML 格式的支持</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.4.1.0 (Bandol GA 2.4a)</para>
+    <para styleclass="Heading1">2.4.1.0 (Bandol GA 2.4a) 中的更改</para>
     <para styleclass="Heading1"><text styleclass="Heading2">编译器</text></para>
     <list id="75" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">Core 方言现在不再支持括号字符串，以避免在 GET 和 SET 关键字之间包含属性的单行外部特性(<text styleclass="f_bodytext" style="font-family:&apos;Times New Roman&apos;; font-size:12pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;">attributes</text>)声明出现问题</li>
@@ -2872,7 +2872,7 @@
       <li styleclass="Body Text">修复了 VO 兼容表单编辑器中选项卡页面的代码生成问题</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.4.0.0 (Bandol GA 2.4)</para>
+    <para styleclass="Heading1">2.4.0.0 (Bandol GA 2.4) 中的更改</para>
     <para styleclass="Heading1"><text styleclass="Heading2">编译器</text></para>
     <list id="75" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">修正了某些整数运算仍会返回错误变量类型的问题</li>
@@ -2928,7 +2928,7 @@
       <li styleclass="Body Text">此版本无任何更改</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.3.2 (Bandol GA 2.3b)</para>
+    <para styleclass="Heading1">2.3.2 (Bandol GA 2.3b) 中的更改</para>
     <para styleclass="Heading1"><text styleclass="Heading2">编译器</text></para>
     <list id="75" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">已添加对括号字符串的支持([包含引号的字符串：&apos;&apos;和&apos; ] )</li>
@@ -3026,7 +3026,7 @@
       <li styleclass="Normal">编译器生成的特殊类</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.3.1.0 (Bandol GA 2.3a)</para>
+    <para styleclass="Heading1">2.3.1.0 (Bandol GA 2.3a) 中的更改</para>
     <para styleclass="Heading1"><text styleclass="Heading2">编译器</text></para>
     <list id="94" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text">在大小写敏感模式下编译时，编译器现在会检查子类声明的方法是否与父类中的方法只有大小写上的区别</li>
@@ -3061,7 +3061,7 @@
       <li styleclass="Body Text">修正了关键字大小写同步中可能损坏编辑器内容的问题。</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.3.0.0 (Bandol GA 2.3)</para>
+    <para styleclass="Heading1">2.3.0.0 (Bandol GA 2.3) 中的更改</para>
     <para styleclass="Heading1"><text styleclass="Heading2">编译器</text></para>
     <list id="94" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:48px left,96px left,144px left,192px left,240px left ; font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:48px left,96px left,144px left,192px left,240px left ;"><text styleclass="Normal">源文件中的语法错误 (</text><link displaytype="text" defaultstyle="true" type="topiclink" href="XS1003" styleclass="Normal">1003</link><text styleclass="Normal">) 或解析器错误 (</text><link displaytype="text" defaultstyle="true" type="topiclink" href="XS9002" styleclass="Normal">9002</link><text styleclass="Normal">) 可能导致错误列表中出现多个错误。现在我们只报告源文件中这些错误类型中的第一个。</text></li>
@@ -3166,7 +3166,7 @@
       <li styleclass="Body Text"><text styleclass="List1">VOXPorter 不会触及 #ifdef ... #endif 之间的代码</text></li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.2.1.0 (Bandol GA 2.2a)</para>
+    <para styleclass="Heading1">2.2.1.0 (Bandol GA 2.2a) 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="94" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Body Text" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="Body Text"><text styleclass="List1">在编译包含赋值而非 access 的代码时，尝试读取 access 可能会导致编译器异常。这一问题已得到修复。</text></li>
@@ -3190,7 +3190,7 @@
       <li styleclass="Body Text">现在，我们在 “Trace ”名称前加上 @@，因为这通常用于在 VS 中有条件地编译跟踪代码。</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.2.0.0 (Bandol GA 2.2)</para>
+    <para styleclass="Heading1">2.2.0.0 (Bandol GA 2.2) 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="106" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">编译器现在可以识别函数 Date()、DateTime() 和 Array()，即使它们的名称与类型名称相同。<br/>`Date()`带有一个参数仍然会被视为将该参数转换为`Date()`，就像下面的例子中一样。<br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> dwJulianDate </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">DWORD</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">LOCAL</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> dJulianDate &#160;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">AS</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">DATE</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">dwJulianDate &#160; &#160; &#160; := </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">DWORD</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">( 1901.01.01)</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">dJulianDate &#160; &#160; &#160; &#160;:= </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">DATE</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">(dwJulianDate) </text><text styleclass="Code Example" style="font-weight:bold; font-style:italic; color:#339966;">// 这仍然是从 Date 到 DWORD 的转换</text><br/>然而，当调用带有 0 个或 3 个参数的 Date 时，要么返回当前日期(如 Today())，要么根据 3 个参数构造一个日期(如 ConDate())。<br/>DateTime() 函数接受 3 个或更多参数并构造一个 DateTime() 值。<br/>Array() 函数的参数与 ArrayNew() 函数相同。</li>
@@ -3255,7 +3255,7 @@
       <li styleclass="List1">以反斜线结尾的文件夹名称可能会混淆 VOXPorter</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.1.1.0 (Bandol GA 2.11)</para>
+    <para styleclass="Heading1">2.1.1.0 (Bandol GA 2.11) 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="106" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">我们为 OUT 参数添加了新语法。现在您可以使用以下语法之一</li>
@@ -3289,7 +3289,7 @@
       <li styleclass="List1">为完全清空的 DBF 文件创建 CDX 索引时，会为幽灵记录插入索引键。这一问题已得到修复。</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.1.0.0 (Bandol GA 2.1)</para>
+    <para styleclass="Heading1">2.1.0.0 (Bandol GA 2.1) 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="106" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">我们为函数和方法调用中的未类型化参数添加了对引用参数的支持</li>
@@ -3371,7 +3371,7 @@
       <li styleclass="List">运行 VOXPorter 时，您现在可以选择导出到 XIDE、Visual Studio 或两者。</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.0.8.1 (Bandol GA 2.08a)</para>
+    <para styleclass="Heading1">2.0.8.1 (Bandol GA 2.08a) 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="106" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">修正了预处理器中的递归问题</li>
@@ -3392,7 +3392,7 @@
       <li styleclass="List">TEXT ... ENDTEXT 块的内容以及 \ 和 \\ 标记后的一行现在有了自己的颜色</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.0.8 (Bandol GA 2.08)</para>
+    <para styleclass="Heading1">2.0.8 (Bandol GA 2.08) 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="106" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">编译器在 “return ”属性目标上出了问题</li>
@@ -3459,7 +3459,7 @@
       <li styleclass="List">我们新增了对 DIMENSION 和 DECLARE 语句的支持(这些语句可创建一个用数组初始化的 MEMVAR)</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.0.7 (Bandol GA 2.07)</para>
+    <para styleclass="Heading1">2.0.7 (Bandol GA 2.07) 中的更改</para>
     <para styleclass="Heading2">可能的突破性变化</para>
     <list id="108" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1"><text style="font-weight:normal; font-style:normal; color:#000000;">我们删除了标准头文件中的 #define CRLF。现在 XSharp.Core 中有一个 DEFINE CRLF。如果你在针对 Vulcan 进行编译时发现缺少 CRLF 的错误，那么你可能需要在代码中添加以下内容：</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">DEFINE</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> CRLF := e”\r\n”</text><text style="font-weight:normal; font-style:normal; color:#000000;">&#32;</text></li>
@@ -3532,7 +3532,7 @@
       <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">我们已经“提取”了一些 Visual Objects 运行时函数的文档，并将其添加到我们的运行时文档中。这是一个正在进行中的工作，一些主题需要额外的工作。</text></li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.0.6.0 (Bandol GA 2.06)</para>
+    <para styleclass="Heading1">2.0.6.0 (Bandol GA 2.06) 中的更改</para>
     <para styleclass="Heading2">常规</para>
     <list id="110" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1"><text style="font-weight:normal; font-style:normal; color:#000000;">我们收到了关于简化版本号的请求。因此，新版本被称为 Bandol 2.06，文件版本也是 2.06。运行时程序集的程序集版本均为 2.0，我们打算尽可能保持这些版本的稳定，因此您不必被迫重新编译依赖于运行时程序集的代码。</text></li>
@@ -3573,7 +3573,7 @@
       <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">生成的 Start 函数中的 CATCH 块现在调用 ErrorDialog() 来显示错误。它使用新的语言资源来显示完整的错误，并提供与 VO 兼容的错误信息(Gencode、Subcode 等)。</text></li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.0.5.0 (Bandol GA 2.01)</para>
+    <para styleclass="Heading1">2.0.5.0 (Bandol GA 2.01) 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="106" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">END PROPERTY 后的空行可能会使编译器感到困惑。现已修复</text></li>
@@ -3615,7 +3615,7 @@
       <li styleclass="List"><text style="font-weight:normal; font-style:normal; color:#000000;">在查找类型时，XSharp 命名空间现在是首先搜索的命名空间。</text></li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.0.4.0 (Bandol GA)</para>
+    <para styleclass="Heading1">2.0.4.0 (Bandol GA) 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="106" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">修正赋值表达式中的一个问题，即左侧是一个带有括号中工作区的别名表达式：<br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">(nArea)-&gt;LastName := AnotherArea-&gt;LastName</text></li>
@@ -3672,7 +3672,7 @@
     </list>
     <para styleclass="Code Example" style="margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; white-space:nowrap; border:none; tabstops:none;"><tab /><tab /><text style="font-family:&apos;Courier New&apos;; vertical-align:baseline; color:#000000;">// VXP-COM : comments the line when exporting it</text><br/><tab /><tab /><text style="font-family:&apos;Courier New&apos;; vertical-align:baseline; color:#000000;">// VXP-UNC : uncomments the line</text><br/><tab /><tab /><text style="font-family:&apos;Courier New&apos;; vertical-align:baseline; color:#000000;">// VXP-DEL : deletes the line contents</text><br/><br/><tab /><tab /><text style="font-family:&apos;Courier New&apos;; vertical-align:baseline; color:#000000;">示例：</text><br/><tab /><tab /><text style="font-family:&apos;Courier New&apos;; vertical-align:baseline; color:#000000;">// METHOD ThisMethodDoesNotGetDefinedInVOcode() // VXP-UNC</text><br/><tab /><tab /><text style="font-family:&apos;Courier New&apos;; vertical-align:baseline; color:#000000;">// RETURN NIL // VXP-UNC</text></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.0.3.0 (Bandol RC3)</para>
+    <para styleclass="Heading1">2.0.3.0 (Bandol RC3) 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="106" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">选择 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-vo2">/vo2</link> 时，STRING 类型的 STATIC LOCALs 的代码生成不会将变量初始化为空字符串。我们还改进了用编译时常数初始化 STATIC LOCAL 时的代码生成。</li>
@@ -3762,7 +3762,7 @@
       <li styleclass="List">VOXporter 现在也可导出 VERSIONINFO 资源</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.0.2.0 (Bandol RC 2)</para>
+    <para styleclass="Heading1">2.0.2.0 (Bandol RC 2) 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="106" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List">文件范围的 PUBLIC 声明(用于 MEMVAR)被错误地解析为 GLOBAL。因此，它们被初始化为 NIL，而不是 FALSE。现在它们被正确生成为 public Memvars。memvars 的创建和初始化是在程序集中的 Init3 程序运行后进行的。</li>
@@ -3915,7 +3915,7 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.0.1.0 (Bandol RC 1)</para>
+    <para styleclass="Heading1">2.0.1.0 (Bandol RC 1) 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="106" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">添加了对所谓 IF 模式表达式语法的支持，该语法由 IS 测试和变量赋值组成，前缀为 VAR 关键字：<br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">IF</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> x </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">is</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> Foo </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">VAR </text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">oFoo</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ? oFoo:DoSomething()</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">ENDIF</text><br/><br/><text styleclass="Body Text">表达式中引入的变量 oFoo 只在 IF 语句中可见。</text><br/><text styleclass="Body Text">当然，您也可以在其他地方使用该模式，如 ELSEIF 块、CASE 语句、WHILE 表达式等：</text><br/><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">IF</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> x </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">is</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> Foo </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">VAR </text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">oFoo</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ? oFoo:DoSomething()</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">ELSEIF</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> x </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">is</text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> Bar </text><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">VAR </text><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;">oBar</text><br/><text styleclass="Code Example" style="font-weight:normal; font-style:normal; color:#000000;"> &#160; ? oBar:DoSomethingElse()</text><br/><text styleclass="Code Example" style="font-weight:bold; font-style:normal; color:#ff0000;">ENDIF</text><br/></li>
@@ -3991,7 +3991,7 @@
     </list>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.0.0.9 (Bandol Beta 9)</para>
+    <para styleclass="Heading1">2.0.0.9 (Bandol Beta 9) 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="106" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">Lexer(编译器中识别关键字和文字等的部分)已重写，速度略有加快。</li>
@@ -4069,7 +4069,7 @@
     </list>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.0.0.8 (Bandol Beta 8)</para>
+    <para styleclass="Heading1">2.0.0.8 (Bandol Beta 8) 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="126" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">编译器源代码已升级到Roslyn 2.10(C# 7.3)。因此，出现了一些新的编译器选项，比如 <link displaytype="text" defaultstyle="true" type="topiclink" href="opt-refout">/refout</link>，并且我们还支持&quot;PRIVATE PROTECTED&quot;修饰符的组合，该修饰符将类型成员定义为对同一程序集中的子类可访问，但对其他程序集中的子类不可访问。</li>
@@ -4133,7 +4133,7 @@
     </list>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.0.0.7 (Bandol Beta 7)</para>
+    <para styleclass="Heading1">2.0.0.7 (Bandol Beta 7) 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="126" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">在调用带有 USUAL 参数的运行时函数时，编译器现在会自动优先选择带有 “传统 ”VO 类型的方法或函数，而不是带有增强 .Net 类型的方法或函数。例如，如果有两个重载，一个接收 byte[]，另一个接收字符串，那么接收字符串的重载将优先于接收 byte[] 的重载。</li>
@@ -4169,7 +4169,7 @@
     </list>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.0.0.6 (Bandol Beta 6)</para>
+    <para styleclass="Heading1">2.0.0.6 (Bandol Beta 6) 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="126" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">编译器有时仍会对编译器生成的未使用变量发出警告。这一问题已得到修复。</li>
@@ -4229,13 +4229,13 @@
       <li styleclass="List1">该版本包含根据 X# 运行时编译的第一版 VO SDK。我们包含了以下类库</li>
       <list id="126" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="List1">Win32API</li>
-        <li styleclass="List1">System Classes</li>
-        <li styleclass="List1">RDD Classes</li>
-        <li styleclass="List1">SQL Classes</li>
-        <li styleclass="List1">GUI Classes</li>
-        <li styleclass="List1">Internet Classes</li>
-        <li styleclass="List1">Console Classes</li>
-        <li styleclass="List1">Report Classes</li>
+        <li styleclass="List1">系统类</li>
+        <li styleclass="List1">RDD 类</li>
+        <li styleclass="List1">SQL 类</li>
+        <li styleclass="List1">GUI 类</li>
+        <li styleclass="List1">Internet 类</li>
+        <li styleclass="List1">控制台类</li>
+        <li styleclass="List1">报表类</li>
       </list>
     </list>
     <list id="128" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -4257,7 +4257,7 @@
       <li styleclass="List1">有关 RDD 系统的更多文档将在稍后发布。当然，您也可以查看 GitHub 上的帮助文件和源代码。</li>
     </list>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.0.0.5 (Bandol Beta 5)</para>
+    <para styleclass="Heading1">2.0.0.5 (Bandol Beta 5) 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="126" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">使用本地资源的程序集的强命名密钥无效。现已修复</li>
@@ -4281,7 +4281,7 @@
     </list>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.0.0.4 (Bandol Beta 4)</para>
+    <para styleclass="Heading1">2.0.0.4 (Bandol Beta 4) 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="126" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1"><text style="font-weight:bold;">可能的突破性改变：函数现在总是优先于同名方法。</text>如果要调用同一类中的方法，需要在方法前加上类型名(静态方法)或 SELF: 前缀。如果没有冲突的函数名，则仍可使用方法名调用该方法。我们建议在方法调用前加上前缀，以便代码更易于阅读。</li>
@@ -4336,7 +4336,7 @@
     </list>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.0.0.3 (Bandol Beta 3)</para>
+    <para styleclass="Heading1">2.0.0.3 (Bandol Beta 3) 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="126" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">当两个方法重载的原型相匹配时，编译器现在会优先选择非泛型方法，而不是泛型方法</li>
@@ -4373,7 +4373,7 @@
     </list>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.0.0.2 (Bandol Beta 2)</para>
+    <para styleclass="Heading1">2.0.0.2 (Bandol Beta 2) 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <list id="126" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">编译器现在可以透明地同时接受用于 XBase Array 索引的 Int 和 Dword 参数</li>
@@ -4409,7 +4409,7 @@
     </list>
     <para styleclass="Normal"><line style="height:1px; color:#000000;" /></para>
     <para styleclass="Heading1"></para>
-    <para styleclass="Heading1">Changes in 2.0.0.1 (Bandol Beta 1)</para>
+    <para styleclass="Heading1">2.0.0.1 (Bandol Beta 1) 中的更改</para>
     <para styleclass="Heading2">编译器</para>
     <para styleclass="Heading3">新特性</para>
     <list id="126" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">

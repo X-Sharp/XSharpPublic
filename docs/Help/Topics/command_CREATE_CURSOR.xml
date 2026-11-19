@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T12:00:00.000+01:00" lasteditedby="Copilot" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>CREATE CURSOR Command</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SQL</keyword>
+    <keyword>CREATE CURSOR command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">CREATE CURSOR Command</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">Purpose</para>
+    <para styleclass="Normal">Creates a temporary table (cursor) and opens it in the next available work area.</para>
+    <para styleclass="Heading1">Syntax</para>
+    <para styleclass="Code with box">CREATE CURSOR &lt;Alias&gt; ( &lt;FieldName&gt; &lt;FieldType&gt; [(&lt;nWidth&gt; [, &lt;nPrecision&gt;])] [NULL | NOT NULL] [AUTOINC [NEXTVALUE &lt;n1&gt;] [STEP &lt;n2&gt;]] [, ...] )<br/><br/>CREATE CURSOR &lt;Alias&gt; FROM ARRAY &lt;ArrayName&gt;</para>
+    <para styleclass="Heading1">Arguments</para>
+    <para styleclass="List">&lt;Alias&gt;<tab />The alias of the cursor.</para>
+    <para styleclass="List">&lt;FieldName&gt; &lt;FieldType&gt;<tab />The fields of the cursor. See <link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_TABLE">CREATE TABLE</link> for a description of the field types and the field clauses.</para>
+    <para styleclass="List">FROM ARRAY &lt;ArrayName&gt;<tab />Creates the cursor from a structure array, like the one that is returned by AFields().</para>
+    <para styleclass="Heading1">Remarks</para>
+    <para styleclass="Normal">A cursor is a normal table that is opened exclusively and that is marked as temporary. The file is removed when the cursor is closed. A cursor is never part of a database.</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">See Also</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_CREATE_TABLE">CREATE TABLE</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_USE_FoxPro">USE (FoxPro)</link></para>
+  </body>
+</topic>

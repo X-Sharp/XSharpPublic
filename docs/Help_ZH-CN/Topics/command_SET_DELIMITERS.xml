@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2026-11-17T13:30:54.197+01:00" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title>SET DELIMITERS 命令</title>
+  <keywords>
+    <keyword>Commands</keyword>
+    <keyword>SET commands</keyword>
+    <keyword>SET DELIMITERS command</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1">SET DELIMITERS 命令</para>
+    </header>
+    <para styleclass="Normal"><snippet src="__FoxProOnly" inline="false"/></para>
+    <para styleclass="Normal"><snippet src="__CommandInclude" inline="false"/></para>
+    <para styleclass="Heading1">用途</para>
+    <para styleclass="Normal">指定是否在全屏输入的字段周围显示分隔符，以及使用哪些字符作为分隔符。</para>
+    <para styleclass="Heading1">语法</para>
+    <para styleclass="Code with box">SET DELIMITERS ON | OFF | &amp;&lt;cMacro&gt;<br/>SET DELIMITERS TO [&lt;cDelimiters&gt; | DEFAULT]</para>
+    <para styleclass="Heading1">参数</para>
+    <para styleclass="List">ON | OFF<tab/>ON 显示分隔符。OFF 移除分隔符。该值也可以是一个宏（&amp;），其求值结果为 ON 或 OFF。</para>
+    <para styleclass="List">TO &lt;cDelimiters&gt;<tab/>分隔符字符。指定一个字符时，左右两侧都使用该字符。指定两个字符时，分别表示左分隔符和右分隔符。</para>
+    <para styleclass="List">TO DEFAULT<tab/>恢复默认分隔符（两侧均为冒号）。不带参数的 SET DELIMITERS TO 效果相同。</para>
+    <para styleclass="Heading1">备注</para>
+    <para styleclass="Normal">这些设置存储在运行时状态中，但运行时目前不使用它们。</para>
+    <para styleclass="Body Text"><snippet src="__IncludeLibVFP" inline="false"/></para>
+    <para styleclass="Heading1">参见</para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_TEXTMERGE_DELIMITERS">SET TEXTMERGE DELIMITERS</link>, <link displaytype="text" defaultstyle="true" type="topiclink" href="command_SET_CONFIRM">SET CONFIRM</link></para>
+  </body>
+</topic>

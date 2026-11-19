@@ -75,14 +75,18 @@ BEGIN NAMESPACE VFPXPorterLib
             XPorterLogger.Instance:Verbose("ValidateTemplate '" + templateName + "': All required placeholders present")
 
         /// <summary>
-        /// Replaces all placeholders in a template and validates that all placeholders were replaced.
-        /// Throws an exception if the template contains unreplaced placeholders or has placeholders not in the replacements dictionary.
+        /// Replaces all placeholders in a template, in a single pass.
+        /// - Placeholder names are matched case-insensitively against the replacement keys.
+        /// - A placeholder with no replacement (typo, or a name unknown to the exporter) is logged
+        ///   as a Warning and replaced by an empty string: the export goes on.
+        /// - Replacement values are inserted verbatim and never re-scanned, so generated/user code
+        ///   that happens to contain "&lt;@" cannot break the substitution.
+        /// - Replacement keys not used by the template are ignored (a customised template may drop them).
         /// </summary>
         /// <param name="template">The template string with placeholders</param>
-        /// <param name="templateName">Name of template for error messages</param>
+        /// <param name="templateName">Name of template for log messages</param>
         /// <param name="replacements">Dictionary of placeholder->replacement pairs (without the <@ @> delimiters)</param>
         /// <returns>Template string with all placeholders replaced</returns>
-        /// <throws>Exception if validation fails</throws>
         PUBLIC STATIC METHOD ReplaceAndValidate(template AS STRING, templateName AS STRING, ;
             replacements AS Dictionary<STRING, STRING>) AS STRING
 
@@ -94,45 +98,38 @@ BEGIN NAMESPACE VFPXPorterLib
             XPorterLogger.Instance:Information("ReplaceAndValidate '" + templateName + "': Starting replacement with " + ;
                 replacements:Count:ToString() + " placeholders")
 
-            // Extract all placeholders in the template
-            VAR foundPlaceholders := TemplateHelper.ExtractPlaceholders(template)
-
-            // Check for unrequested placeholders (likely typos in template or code)
-            VAR unrequested := HashSet<STRING>{}
-            FOREACH VAR placeholder IN foundPlaceholders
-                IF !replacements:ContainsKey(placeholder)
-                    unrequested:Add(placeholder)
-                ENDIF
-            NEXT
-
-            IF unrequested:Count > 0
-                VAR unrequestedText := String.Join(", ", unrequested:Select( {p => "<@" + p + "@>"}):ToList())
-                XPorterLogger.Instance:Error("ReplaceAndValidate '" + templateName + "': Unexpected placeholders: " + unrequestedText)
-                THROW Exception{"Template '" + templateName + "' contains unexpected placeholders not provided: " + ;
-                    unrequestedText + ;
-                    ". This may indicate a typo in the template or missing replacement data."}
-            ENDIF
-
-            // Perform replacements
-            VAR result := template
+            // Case-insensitive view of the replacements
+            VAR lookup := Dictionary<STRING, STRING>{ StringComparer.OrdinalIgnoreCase }
             FOREACH VAR kvp IN replacements
-                VAR placeholder := "<@" + kvp:Key + "@>"
-                result := result:Replace(placeholder, kvp:Value)
-                XPorterLogger.Instance:Verbose("ReplaceAndValidate '" + templateName + "': Replaced <@" + kvp:Key + "@>")
+                lookup[kvp:Key] := kvp:Value
             NEXT
 
-            // Final check: ensure no unreplaced placeholders remain
-            IF result:Contains("<@")
-                VAR remaining := TemplateHelper.ExtractPlaceholders(result)
-                VAR remainingText := String.Join(", ", remaining:Select({p => "<@" + p + "@>"}):ToList())
-                XPorterLogger.Instance:Error("ReplaceAndValidate '" + templateName + "': Unreplaced placeholders remain: " + remainingText)
-                THROW Exception{"Template '" + templateName + "' still contains unreplaced placeholders: " + ;
-                    remainingText + ;
-                    ". This indicates a replacement value was null or empty, which should not occur."}
+            VAR unknown := HashSet<STRING>{ StringComparer.OrdinalIgnoreCase }
+            VAR result := StringBuilder{ template:Length }
+            VAR lastPos := 0
+            VAR regex := Regex{"<@(\w+)@>"}
+            FOREACH match AS Match IN regex:Matches(template)
+                // Copy the template text before this placeholder
+                result:Append( template, lastPos, match:Index - lastPos )
+                VAR name := match:Groups[1]:Value
+                LOCAL value AS STRING
+                IF lookup:TryGetValue( name, OUT value )
+                    result:Append( IIF( value == NULL, "", value ) )
+                ELSE
+                    unknown:Add( name )
+                ENDIF
+                lastPos := match:Index + match:Length
+            NEXT
+            result:Append( template, lastPos, template:Length - lastPos )
+
+            IF unknown:Count > 0
+                VAR unknownText := String.Join(", ", unknown:Select({p => "<@" + p + "@>"}):ToList())
+                XPorterLogger.Instance:Warning("ReplaceAndValidate '" + templateName + "': Unknown placeholders replaced by empty text: " + ;
+                    unknownText + ". Check the template for a typo.")
             ENDIF
 
             XPorterLogger.Instance:Information("ReplaceAndValidate '" + templateName + "': Successfully completed")
-            RETURN result
+            RETURN result:ToString()
 
     END CLASS
 

@@ -196,7 +196,7 @@ partial class SQLRDD
                 local dbColumn := self:_Fields[index] as RddFieldInfo
                 // use the BlankValue() from the RddFieldInfo class. One place to define blanks is enough
                 var blank := dbColumn:BlankValue()
-                if blank is string var strBlank
+                if blank is string var strBlank .and. !_oTd:TrimTrailingSpaces
                     blank := strBlank:PadRight(dbColumn:Length, ' ')
                 endif
                 self:_phantomRow[index] := blank

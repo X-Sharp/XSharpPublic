@@ -103,7 +103,7 @@
     <Folder Include="Support" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MacroCompiler\MacroCompiler.csproj">
+    <ProjectReference Include="..\MacroCompiler\XSharp.MacroCompiler.csproj">
       <Name>MacroCompiler (Macrocompiler\MacroCompiler)</Name>
       <Project>{eb3f3142-07f7-48ca-b38d-f611c45a9511}</Project>
       <Private>True</Private>

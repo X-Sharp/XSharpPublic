@@ -12,6 +12,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -262,15 +263,17 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// solution file), and saving the solution from inside OnAfterSave failed with "A recursive save operation
         /// is in progress for '....slnx'" (VS 2026, after adding a Solution Folder).
         /// </summary>
-        private void SaveCompanionDocuments(CompanionLocation location)
+        /// <returns>False when a document could not be saved.</returns>
+        private bool SaveCompanionDocuments(CompanionLocation location)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             string companionDir = Path.GetDirectoryName(location.CompanionDesignerCsPath);
             if (string.IsNullOrEmpty(companionDir) ||
                 ErrorHandler.Failed(_rdt.GetRunningDocumentsEnum(out IEnumRunningDocuments documents)) || documents == null)
             {
-                return;
+                return true;
             }
+            bool allSaved = true;
             // Collected first: saving while enumerating could change the table
             var toSave = new List<uint>();
             var cookies = new uint[1];
@@ -291,10 +294,80 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                     int hr = _rdt.SaveDocuments((uint)__VSRDTSAVEOPTIONS.RDTSAVEOPT_SaveIfDirty, hierarchy, itemId, cookie);
                     if (ErrorHandler.Failed(hr))
                     {
+                        allSaved = false;
                         Logger.Information($"CompanionSaveWatcher: could not save {path}, hr=0x{hr:X8}");
                     }
                 }
             }
+            return allSaved;
+        }
+
+        /// <summary>
+        /// When the Designer creates an event handler it shows the code view while it is still busy: saving its
+        /// Form1.Designer.cs from OnBeforeDocumentWindowShow can fail (hr=0x80131500, seen 2026-11-18), or succeed
+        /// before the Designer has written the "+=" wiring into it; either way the sync reads a file without the
+        /// wiring and it never reaches Form1.Designer.prg. Saves the companion again once VS is idle (the Designer
+        /// writes its pending code when its document is saved); that save runs the full sync through OnAfterSave.
+        /// </summary>
+        private void RetrySaveWhenIdle(CompanionLocation location, int attempt = 1)
+        {
+#pragma warning disable VSSDK007
+            ThreadHelper.JoinableTaskFactory.StartOnIdle(() =>
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                if (_syncing)
+                {
+                    // The existing-handler redirect is still running: try again on the next idle
+                    if (attempt < 20)
+                    {
+                        RetrySaveWhenIdle(location, attempt + 1);
+                    }
+                    return;
+                }
+                Logger.Information($"CompanionSaveWatcher: idle save of the companion (attempt {attempt}), dirty: {string.Join(", ", GetDirtyCompanionDocuments(location))}");
+                bool saved = SaveCompanionDocuments(location);
+                Logger.Information($"CompanionSaveWatcher: idle save of the companion {(saved ? "succeeded" : "failed")}");
+            }).FileAndForget("XSharp/ShadowDesigner/RetrySave");
+#pragma warning restore VSSDK007
+        }
+
+        /// <summary>Diagnostics: file names of the companion documents whose doc data is dirty.</summary>
+        private List<string> GetDirtyCompanionDocuments(CompanionLocation location)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var dirty = new List<string>();
+            string companionDir = Path.GetDirectoryName(location.CompanionDesignerCsPath);
+            if (string.IsNullOrEmpty(companionDir) ||
+                ErrorHandler.Failed(_rdt.GetRunningDocumentsEnum(out IEnumRunningDocuments documents)) || documents == null)
+            {
+                return dirty;
+            }
+            var cookies = new uint[1];
+            while (documents.Next(1, cookies, out uint fetched) == VSConstants.S_OK && fetched == 1)
+            {
+                if (ErrorHandler.Failed(_rdt.GetDocumentInfo(cookies[0], out _, out _, out _, out string path, out _, out _, out IntPtr docData)))
+                {
+                    continue;
+                }
+                try
+                {
+                    if (path != null && docData != IntPtr.Zero &&
+                        string.Equals(Path.GetDirectoryName(path), companionDir, StringComparison.OrdinalIgnoreCase) &&
+                        Marshal.GetObjectForIUnknown(docData) is IVsPersistDocData persist &&
+                        ErrorHandler.Succeeded(persist.IsDocDataDirty(out int isDirty)) && isDirty != 0)
+                    {
+                        dirty.Add(Path.GetFileName(path));
+                    }
+                }
+                finally
+                {
+                    if (docData != IntPtr.Zero)
+                    {
+                        Marshal.Release(docData);
+                    }
+                }
+            }
+            return dirty;
         }
 
         private string GetDocumentMoniker(uint docCookie)
@@ -342,8 +415,21 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 // Same reasoning as OnAfterSave: the sync command reads from disk, and the
                 // Designer's own navigation flow may have flushed its pending edits into the
                 // companion buffer without that being on disk yet.
-                SaveCompanionDocuments(location);
+                bool saved = SaveCompanionDocuments(location);
+                // Always, not only when this save failed: the Designer can also write the "+=" wiring into its
+                // Form1.Designer.cs after this point (2026-11-18: save succeeded, stub synced, wiring never did)
+                RetrySaveWhenIdle(location);
                 result = EventHandlerSync.Sync(location);
+                Logger.Information($"CompanionSaveWatcher.OnBeforeDocumentWindowShow: new handlers [{string.Join(", ", result.NewHandlerNames)}], new wiring [{string.Join(", ", result.NewWiringDescriptions)}], companion saved: {saved}");
+                // Also the full Form1.Designer.prg regeneration, as after a save: the save above wrote the Designer's
+                // other pending changes too (a new button), and no later OnAfterSave may come, since nothing is dirty
+                // anymore. Without it Form1.Designer.prg got "SELF:button1:Click += ..." but no button1, and the
+                // Designer failed on the next open (2026-11-18). Skipped when the save failed: the disk file is
+                // then outdated, and the idle retry's save runs it.
+                if (saved)
+                {
+                    DesignerChangesSync.Sync(location);
+                }
                 CompanionResourceSync.Sync(location);
             }
             catch (Exception ex)

@@ -42,6 +42,8 @@ namespace XSharp.LanguageService.FindReferences
             var stats = new FindReferencesStats();
             var watch = Stopwatch.StartNew();
             ModelWalker.Suspend();
+            // each database type is built once per search (on this thread, dropped at the end)
+            var typeCache = XTypeCacheScope.Begin();
             try
             {
                 var name = SearchName(target);
@@ -99,6 +101,7 @@ namespace XSharp.LanguageService.FindReferences
             }
             finally
             {
+                typeCache.Dispose();
                 ModelWalker.Resume();
                 stats.Elapsed = watch.Elapsed;
                 Logger.Information($"FindReferences {target.Kind} '{target.Name}' ({target.FullName}): {stats}");

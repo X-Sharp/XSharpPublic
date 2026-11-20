@@ -108,6 +108,7 @@
     <Compile Include="PE\XPESymbol.prg" />
     <Compile Include="PE\XPETypeSymbol.prg" />
     <Compile Include="ProjectSystem\XInclude.prg" />
+    <Compile Include="ProjectSystem\XTypeCacheScope.prg" />
     <Compile Include="Settings\Enums.prg" />
     <Compile Include="Settings\KnownTypes.prg" />
     <Compile Include="Settings\OptionsBase.prg" />

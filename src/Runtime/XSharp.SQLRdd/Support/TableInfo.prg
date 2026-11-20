@@ -95,6 +95,7 @@ class SqlDbTableInfo inherit SqlDbObject
         self:AllowUpdates       := oConn:AllowUpdates
         self:LongFieldNames     := oConn:LongFieldNames
         self:TrimTrailingSpaces := oConn:TrimTrailingSpaces
+        self:UseLocks           := oConn:UseLocks
         self:ServerFilter    := ""
         self:ColumnList      := "*"
         self:Indexes         := List<SqlDbIndexInfo>{}

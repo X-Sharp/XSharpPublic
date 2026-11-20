@@ -627,7 +627,7 @@ partial class SQLRDD inherit Workarea
         if Connection?:Provider is null .or. !self:Connection:IsOpen .or. _oTd == null
             return recNos:ToArray()
         endif
-        if !self:Connection:UseLocks
+        if !self:UseLocks
             // No lock table entries are ever written without UseLocks. Code that asks for the
             // lock list after every movement (RLockList/IsLocked()) paid a query each time.
             return recNos:ToArray()
@@ -1081,8 +1081,8 @@ partial class SQLRDD inherit Workarea
         if self:_oTd != null
             self:Connection:ResultCache?:Invalidate(self:_oTd:RealName)
         endif
-        if !self:Connection:UseLocks
-            // Locking switched off for this connection (see SqlDbConnection.UseLocks). Nothing is
+        if !self:UseLocks
+            // Locking switched off for this table (see SqlDbTableInfo.UseLocks). Nothing is
             // locked, so the record is not read again either (see _RefreshLockedRow()).
             lockInfo:Result := true
             return true
@@ -1173,7 +1173,7 @@ partial class SQLRDD inherit Workarea
         if Connection?:Provider is null .or. !self:Connection:IsOpen
             return false
         endif
-        if !self:Connection:UseLocks
+        if !self:UseLocks
             // No lock rows are written when locking is switched off.
             return true
         endif
@@ -1228,7 +1228,7 @@ partial class SQLRDD inherit Workarea
         case DBRI_DELETED
             return self:_deletedRowIds:Contains((int)oRecId)
         case DBRI_LOCKED
-            return !self:Connection:UseLocks .or. self:_ownLocks:Contains((int)oRecId)
+            return !self:UseLocks .or. self:_ownLocks:Contains((int)oRecId)
         case DBRI_UPDATED
             return self:_updatedRecNos:Contains((int)oRecId)
         case DBRI_RECNO

@@ -40,4 +40,8 @@
     /// Should all columns be updated, or only the columns that were changed
     /// </summary>
     property UpdateAllColumns as logic auto
+    /// <summary>
+    /// Should record and file locks (RLock/FLock) be emulated through the lock table? (default TRUE)
+    /// </summary>
+    property UseLocks as logic auto
 

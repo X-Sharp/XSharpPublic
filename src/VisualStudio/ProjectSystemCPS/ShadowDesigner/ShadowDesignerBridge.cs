@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Versioning;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CSharp;
 using Microsoft.VisualStudio;
@@ -22,6 +23,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using XSharp.CodeDom;
 using XSharp.Settings;
+
 using XSharpModel;
 
 namespace XSharp.ProjectSystem.ShadowDesigner
@@ -194,20 +196,45 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         }
 
         // How long to wait for the NuGet restore of a freshly created companion project
-        private static readonly TimeSpan CompanionRestoreTimeout = TimeSpan.FromSeconds(60);
+        private static readonly TimeSpan CompanionRestoreTimeout = TimeSpan.FromSeconds(30);
 
-        private static string GetCompanionAssetsFile(string companionDir) =>
-            Path.Combine(companionDir, "obj", "project.assets.json");
+        private static string GetCompanionAssetsFile(string intermediateDirectory) =>
+            Path.Combine(intermediateDirectory, "project.assets.json");
 
         /// <summary>
         /// True when the companion project of <paramref name="xProject"/> exists and has been restored. Lets the
         /// command handler decide to open the designer in the background, since waiting for the restore must not
         /// block the UI thread.
         /// </summary>
-        internal static bool IsCompanionRestored(XProject xProject) =>
-            File.Exists(GetCompanionAssetsFile(CompanionProjectWriter.ComputeCompanionDir(xProject.FileName)));
+        internal static bool IsProjectRestored(XProject xProject)
+        {
+            var intermediateDir = xProject.ProjectNode.BaseIntermediateOutputPath;
+            return File.Exists(GetCompanionAssetsFile(intermediateDir));
+        }
 
-        /// <remarks>
+        internal static string GetCsBaseIntermediateOutputPath(CompanionLocation location)
+        {
+            string folder = "obj";
+            var project = SolutionWiring.FindProjectByFullPath(location.CompanionCsprojPath);
+
+            if (project is IVsBuildPropertyStorage propertyStorage)
+            {
+                int hr = propertyStorage.GetPropertyValue(
+                    pszPropName: XSharpProjectFileConstants.BaseIntermediateOutputPath,
+                    pszConfigName: null, // null for configuration-independent properties
+                    storage: (uint)_PersistStorageType.PST_PROJECT_FILE,
+                    pbstrPropValue: out folder);
+            }
+            if (!Path.IsPathRooted(folder))
+            {
+                folder = Path.Combine(Path.GetDirectoryName(location.CompanionCsprojPath), folder);
+            }
+            ShadowDesignerCleanup.AddIntermediateFolder(folder);
+            return folder;
+
+        }
+
+         /// <remarks>
         /// Verified in VS: when the designer is opened before the companion is restored, the out-of-process designer
         /// fails ("OutputGroupService didn't return output group DesignerRuntimeImplementationProjectOutputGroup",
         /// then "Designer load encountered an error. Please ensure that the project can be built successfully.") and
@@ -218,14 +245,29 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         private static async Task<bool> WaitForCompanionRestoreAsync(CompanionLocation location)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            string assetsFile = GetCompanionAssetsFile(Path.GetDirectoryName(location.CompanionCsprojPath));
+
+            string folder = GetCsBaseIntermediateOutputPath(location);
+            ShadowDesignerCleanup.AddIntermediateFolder(folder);
+            string assetsFile = GetCompanionAssetsFile(folder);
             if (File.Exists(assetsFile))
             {
                 return true;
             }
             Logger.Information($"ShadowDesignerBridge: waiting for the restore of {location.CompanionCsprojPath}");
+
             var statusBar = await AsyncServiceProvider.GlobalProvider.GetServiceAsync(typeof(SVsStatusbar)) as IVsStatusbar;
             statusBar?.SetText("X# WinForms Designer: waiting for the NuGet restore of " + Path.GetFileNameWithoutExtension(location.CompanionCsprojPath) + "...");
+
+            IVsProjectBuildSystem project = SolutionWiring.FindProjectByFullPath(location.CompanionCsprojPath) as IVsProjectBuildSystem;
+            if (project != null)
+            {
+                project.BuildTarget("Restore", out bool success);
+                if (! success)
+                {
+                    Logger.Information($"ShadowDesignerBridge: {location.CompanionCsprojPath} failed to run 'Restore' target");
+                }
+            }
+
             try
             {
                 var deadline = DateTime.UtcNow + CompanionRestoreTimeout;
@@ -317,10 +359,11 @@ namespace XSharp.ProjectSystem.ShadowDesigner
 
                 var referencePaths = GetFilteredReferencePaths(xProject);
 
+                var encoding = CompanionLocation.GetEncoding(mainPrgPath);
                 // A background deletion from the previous solution close may still be retrying on this folder
                 ShadowDesignerCleanup.CancelPendingDelete(CompanionProjectWriter.ComputeCompanionDir(xProject.FileName));
                 var companion = CompanionProjectWriter.EnsureCompanionProject(
-                    xProject.FileName, GetEvaluatedTargetFramework(xProject.FileName), referencePaths, shadowCSharp, stubCSharp, className);
+                    xProject.FileName, GetEvaluatedTargetFramework(xProject.FileName), referencePaths, shadowCSharp, stubCSharp, className, encoding);
 
                 location = new CompanionLocation
                 {
@@ -328,12 +371,13 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                     DesignerPrgPath = designerPrgPath,
                     CompanionCsprojPath = companion.CsprojPath,
                     CompanionFormCsPath = CompanionProjectWriter.ComputeFormCsPath(xProject.FileName, className),
+                    Encoding = encoding,
                     CompanionDesignerCsPath = companion.DesignerCsPath,
                 };
                 CompanionSaveWatcher.Watch(ServiceProvider.GlobalProvider, location);
                 ShadowDesignerCleanup.Track(companion.CsprojPath);
 
-                SolutionWiring.EnsureProjectInSolution(companion.CsprojPath);
+                SolutionWiring.EnsureProjectInSolution(location);
                 error = null;
                 return true;
             }
@@ -357,6 +401,31 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             internal string CompanionCsprojPath { get; set; }
             internal string CompanionFormCsPath { get; set; }
             internal string CompanionDesignerCsPath { get; set; }
+            internal Encoding Encoding { get; set; }
+
+            internal static Encoding GetEncoding(string filename)
+            {
+                // Read the BOM
+                var bom = new byte[4];
+                using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                {
+                    file.Read(bom, 0, 4);
+                }
+
+                // Analyze the BOM
+                if (bom[0] == 0x2b && bom[1] == 0x2f && bom[2] == 0x76) return Encoding.UTF7;
+                if (bom[0] == 0xef && bom[1] == 0xbb && bom[2] == 0xbf) return Encoding.UTF8;
+                if (bom[0] == 0xff && bom[1] == 0xfe && bom[2] == 0 && bom[3] == 0) return Encoding.UTF32; //UTF-32LE
+                if (bom[0] == 0xff && bom[1] == 0xfe) return Encoding.Unicode; //UTF-16LE
+                if (bom[0] == 0xfe && bom[1] == 0xff) return Encoding.BigEndianUnicode; //UTF-16BE
+                if (bom[0] == 0 && bom[1] == 0 && bom[2] == 0xfe && bom[3] == 0xff) return new UTF32Encoding(true, true);  //UTF-32BE
+
+                // We actually have no idea what the encoding is if we reach this point, so
+                // you may wish to return null instead of defaulting to ASCII
+                return Encoding.ASCII;
+            }
+
+
         }
 
         /// <summary>
@@ -402,6 +471,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                     DesignerPrgPath = designerPrgPath,
                     CompanionCsprojPath = companionPaths.CsprojPath,
                     CompanionFormCsPath = CompanionProjectWriter.ComputeFormCsPath(xProject.FileName, className),
+                    Encoding = CompanionLocation.GetEncoding(mainPrgPath),
                     CompanionDesignerCsPath = companionPaths.DesignerCsPath,
                 };
                 error = null;

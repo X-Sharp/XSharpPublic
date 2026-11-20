@@ -2604,7 +2604,7 @@ namespace Microsoft.VisualStudio.Project
             {
                 this.InvokeMsBuild(MsBuildTarget.Clean);
 			    // Clean intermediate window to get rid of 'Nasty' Nuget files
-                var outputDir = this.GetProjectProperty("BaseIntermediateOutputPath");
+                var outputDir = this.GetProjectProperty(ProjectFileConstants.BaseIntermediateOutputPath);
                 if (!string.IsNullOrEmpty(outputDir) && Directory.Exists(outputDir))
                 {
                     try

@@ -14,6 +14,8 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
+using static XSharp.ProjectSystem.ShadowDesigner.ShadowDesignerBridge;
+
 namespace XSharp.ProjectSystem.ShadowDesigner
 {
     /// <summary>
@@ -31,14 +33,17 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         /// (created on first use) rather than at the solution root, unless a project with
         /// that exact full path is already present -- safe to call every time.
         /// </summary>
-        internal static void EnsureProjectInSolution(string csprojPath)
+        internal static void EnsureProjectInSolution(CompanionLocation location)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+            string CsProjectPath = location.CompanionCsprojPath;
             var solution = GetSolution();
-            if (FindProjectByFullPath(csprojPath) != null)
+            var project = FindProjectByFullPath(CsProjectPath);
+            if ( project != null)
             {
                 return;
             }
+
             if (!(solution is IVsSolution6 solution6))
             {
                 throw new InvalidOperationException("The solution service does not support adding companion projects.");
@@ -49,12 +54,11 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             // companion never makes VS ask to save the solution.
             bool wasDirty = IsSolutionDirty(solution);
 
-            RemoveStaleHierarchy(solution, csprojPath);
-            RemoveStaleProjectItem(solution, Path.GetFileNameWithoutExtension(csprojPath));
+            RemoveStaleHierarchy(solution, CsProjectPath);
+            RemoveStaleProjectItem(solution, Path.GetFileNameWithoutExtension(CsProjectPath));
 
             var folder = EnsureSolutionFolder(solution, ShadowDesignerFolderName);
-            ErrorHandler.ThrowOnFailure(solution6.AddExistingProject(csprojPath, folder, out _));
-
+            ErrorHandler.ThrowOnFailure(solution6.AddExistingProject(CsProjectPath, folder, out var hierarchy));
             if (!wasDirty)
             {
                 SaveSolutionFile(solution, "companion added");

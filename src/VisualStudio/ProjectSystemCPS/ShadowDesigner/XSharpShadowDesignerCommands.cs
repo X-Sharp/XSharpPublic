@@ -59,7 +59,8 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             var xProject = XSolution.FindFile(path)?.Project;
             // The companion's NuGet restore is waited for as well (ShadowDesignerBridge.TryOpenAsync), so a companion
             // that is not restored yet (it is recreated after every solution close) also takes the background path
-            if (xProject == null || (!ShadowDesignerBridge.IsMissingAnyPackageReference(xProject) && ShadowDesignerBridge.IsCompanionRestored(xProject)))
+            if (xProject == null || (!ShadowDesignerBridge.IsMissingAnyPackageReference(xProject)
+                && ShadowDesignerBridge.IsProjectRestored(xProject)))
                 return await TryOpenAsync(path);
             // Deliberately fire-and-forget, like CompanionSaveWatcher: VSSDK007 wants a package JoinableTaskFactory;
             // the project's one (IProjectThreadingService) would make an unload wait for the build prompt.

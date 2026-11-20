@@ -22,6 +22,7 @@ INTERFACE IXSharpProject
         // Properties
     PROPERTY DisplayName AS STRING GET
     PROPERTY IntermediateOutputPath AS STRING GET
+    PROPERTY BaseIntermediateOutputPath AS STRING GET
     PROPERTY OutputFile AS STRING GET
     PROPERTY ParseOptions AS XParseOptions GET
     PROPERTY PrefixClassesWithDefaultNamespace AS LOGIC GET

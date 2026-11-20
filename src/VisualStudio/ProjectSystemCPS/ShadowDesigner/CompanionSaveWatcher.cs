@@ -496,25 +496,26 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         }
 
         /// <summary>
-        /// True when the given frame is the WinForms Designer's own Design-surface view of
-        /// the companion file, false when it's the Code (text editor) view of the same file --
-        /// see OnBeforeDocumentWindowShow's doc comment for how this was determined (both
-        /// views share the same VSFPROPID_guidEditorType, so that property can't be used;
-        /// VSFPROPID_EditorCaption's " [Design]" suffix reliably can). Fails safe: if the
-        /// caption can't be read at all, treat it as the Designer view (don't redirect
-        /// something we can't positively identify as the Code view).
+		// We can't use the caption because that gets translated for localized VS versions.
+		// Therefore we check the type of the docView.
         /// </summary>
         private static bool IsDesignerView(IVsWindowFrame frame)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
-                frame.GetProperty((int)__VSFPROPID.VSFPROPID_EditorCaption, out object captionObj);
-                string caption = captionObj as string;
-                return caption != null && caption.IndexOf("[Design]", StringComparison.Ordinal) >= 0;
+                // DocView is the editor's view object. The Code editor hosts an IVsCodeWindow,
+                // the Designer hosts something else (designer pane / proxy), or nothing at all
+                // for the out-of-process designer.
+                frame.GetProperty((int)__VSFPROPID.VSFPROPID_DocView, out object docView);
+                if (docView == null)
+                    return true;                      // not a text editor, so treat it as the designer
+
+                return !(docView is IVsCodeWindow) && !(docView is IVsTextView);
             }
             catch (Exception ex)
             {
-                Logger.Exception(ex, "CompanionSaveWatcher.IsDesignerView: GetProperty(EditorCaption) failed, treating as Designer view (fail-safe)");
+                Logger.Exception(ex, "CompanionSaveWatcher.IsDesignerView: GetProperty(DocView) failed, treating as Designer view (fail-safe)");
                 return true;
             }
         }

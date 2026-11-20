@@ -106,7 +106,8 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             IReadOnlyList<string> referencePaths,
             string generatedDesignerCsharp,
             string stubCsharp,
-            string className)
+            string className,
+            Encoding encoding)
         {
             string companionDir = GetCompanionDir(realXsprojPath);
             Directory.CreateDirectory(companionDir);
@@ -131,15 +132,15 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 .ToList();
 
             var paths = ComputePaths(realXsprojPath, className);
-            WriteIfChanged(paths.CsprojPath, BuildCsprojContent(targetFramework, filteredReferencePaths, packageReferences));
-            WriteIfChanged(paths.DesignerCsPath, generatedDesignerCsharp);
+            WriteIfChanged(paths.CsprojPath, BuildCsprojContent(targetFramework, filteredReferencePaths, packageReferences), encoding);
+            WriteIfChanged(paths.DesignerCsPath, generatedDesignerCsharp, encoding);
 
             // The stub is where the Designer puts new members (event handler stubs, picked up by EventHandlerSync).
             // Always regenerated: every method of the real Form1.prg is already in the generated Form1.Designer.cs,
             // so a handler the Designer added to the stub in an earlier open (and that was synced into the .prg since)
             // was there twice, and the Designer failed with CS0121 "call is ambiguous between Form1.button1_Click and
             // Form1.button1_Click" (seen 2026-11-18, reopening the form without closing the solution).
-            WriteIfChanged(ComputeFormCsPath(realXsprojPath, className), stubCsharp);
+            WriteIfChanged(ComputeFormCsPath(realXsprojPath, className), stubCsharp, encoding);
 
             return paths;
         }
@@ -251,15 +252,15 @@ namespace XSharp.ProjectSystem.ShadowDesigner
 
         private static string Escape(string value) => System.Security.SecurityElement.Escape(value);
 
-        private static void WriteIfChanged(string path, string content)
+        private static void WriteIfChanged(string path, string content, Encoding encoding)
         {
             // Avoids spurious "file changed outside the environment, reload?" prompts in VS
             // on re-runs that produce byte-identical output.
-            if (File.Exists(path) && File.ReadAllText(path) == content)
+            if (File.Exists(path) && File.ReadAllText(path, encoding) == content)
             {
                 return;
             }
-            File.WriteAllText(path, content);
+            File.WriteAllText(path, content, encoding);
         }
     }
 }

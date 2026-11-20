@@ -60,6 +60,9 @@ namespace XSharp.ProjectSystem.ShadowDesigner
         private static readonly HashSet<string> _companionCsprojPaths =
             new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
+        private static readonly HashSet<string> _intermediateFolders =
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
         // Background deletions of companion folders (OnAfterCloseSolution), by folder. A folder that is used again
         // (the solution is reopened while the deletion still retries) cancels its deletion, see CancelPendingDelete.
         private static readonly Dictionary<string, CancellationTokenSource> _pendingDeletes =
@@ -84,12 +87,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             ErrorHandler.ThrowOnFailure(_vsSolution.AdviseSolutionEvents(this, out _eventsCookie));
         }
 
-        /// <summary>
-        /// Registers a companion project for cleanup on solution close, lazily advising
-        /// solution events the first time this is called. Safe to call every time
-        /// ShadowDesignerBridge.TryOpenAsync prepares the companion -- idempotent (HashSet).
-        /// </summary>
-        internal static void Track(string companionCsprojPath)
+        private static void EnsureInstance()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             if (_instance == null)
@@ -102,7 +100,25 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                     }
                 }
             }
+
+        }
+
+        /// <summary>
+        /// Registers a companion project for cleanup on solution close, lazily advising
+        /// solution events the first time this is called. Safe to call every time
+        /// ShadowDesignerBridge.TryOpenAsync prepares the companion -- idempotent (HashSet).
+        /// </summary>
+        internal static void Track(string companionCsprojPath)
+        {
+            EnsureInstance();
             _companionCsprojPaths.Add(companionCsprojPath);
+        }
+
+        internal static void AddIntermediateFolder(string folder)
+        {
+            EnsureInstance();
+            _intermediateFolders.Add(folder);
+
         }
 
         /// <summary>
@@ -319,6 +335,10 @@ namespace XSharp.ProjectSystem.ShadowDesigner
             // as not found on the next open: remove it from the file too.
             SolutionFileCleanup.RemoveCompanionProjects(_closingSolutionFile, _companionCsprojPaths);
             _closingSolutionFile = null;
+            var folders = new List<string>();
+
+            folders.AddRange(_intermediateFolders);
+
             foreach (string csprojPath in _companionCsprojPaths)
             {
                 string dir = Path.GetDirectoryName(csprojPath);
@@ -326,6 +346,10 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 {
                     continue;
                 }
+                folders.Add(dir);
+            }
+            foreach (var dir in folders)
+            {
                 var cancellation = new CancellationTokenSource();
                 lock (_deleteLock)
                 {
@@ -340,6 +364,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 _ = System.Threading.Tasks.Task.Run(() => DeleteWithRetry(dir, cancellation));
             }
             _companionCsprojPaths.Clear();
+            _intermediateFolders.Clear();
             return VSConstants.S_OK;
         }
 

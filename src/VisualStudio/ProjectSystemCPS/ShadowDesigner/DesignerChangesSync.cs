@@ -140,7 +140,7 @@ namespace XSharp.ProjectSystem.ShadowDesigner
 
             string generatedXSharp = GenerateXSharpText(compileUnit);
 
-            File.WriteAllText(location.DesignerPrgPath, generatedXSharp);
+            File.WriteAllText(location.DesignerPrgPath, generatedXSharp, location.Encoding);
 
             var result = new SyncResult
             {

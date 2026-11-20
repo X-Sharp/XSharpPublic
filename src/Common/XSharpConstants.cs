@@ -115,6 +115,7 @@ namespace XSharp
         internal const string AutoGenerateBindingRedirects = nameof(AutoGenerateBindingRedirects);
         internal const string AZ = nameof(AZ);
         internal const string BaseInputPaths = nameof(BaseInputPaths);
+        internal const string BaseIntermediateOutputPath = nameof(BaseIntermediateOutputPath);
         internal const string CommandLineOption = nameof(CommandLineOption);
         internal const string CS = nameof(CS);
         internal const string Cultures = nameof(Cultures);

@@ -111,11 +111,11 @@ $@"    PRIVATE METHOD {name}({string.Join(", ", paramTexts)}) AS VOID
             // file back with its own line ends, otherwise VS shows "Inconsistent Line Endings" when it opens it.
             if (result.NewHandlerNames.Count > 0)
             {
-                File.WriteAllText(location.MainPrgPath, NormalizeLineEnds(mainSource, DetectNewLine(File.ReadAllText(location.MainPrgPath))));
+                File.WriteAllText(location.MainPrgPath, NormalizeLineEnds(mainSource, DetectNewLine(File.ReadAllText(location.MainPrgPath))), location.Encoding);
             }
             if (result.NewWiringDescriptions.Count > 0)
             {
-                File.WriteAllText(location.DesignerPrgPath, NormalizeLineEnds(designerSource, DetectNewLine(File.ReadAllText(location.DesignerPrgPath))));
+                File.WriteAllText(location.DesignerPrgPath, NormalizeLineEnds(designerSource, DetectNewLine(File.ReadAllText(location.DesignerPrgPath))), location.Encoding);
             }
 
             return result;

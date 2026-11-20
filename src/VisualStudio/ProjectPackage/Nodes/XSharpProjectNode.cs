@@ -2010,6 +2010,20 @@ namespace XSharp.Project
                 return "";
             }
         }
+        public string BaseIntermediateOutputPath
+        {
+            get
+            {
+                if (this.BuildProject != null)
+                {
+                    var result = this.BuildProject.GetPropertyValue(XSharpProjectFileConstants.BaseIntermediateOutputPath);
+                    if (!Path.IsPathRooted(result))
+                        result = Path.Combine(this.ProjectFolder, result);
+                    return result;
+                }
+                return "";
+            }
+        }
 
 
 

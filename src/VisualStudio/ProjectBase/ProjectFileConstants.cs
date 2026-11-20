@@ -141,6 +141,7 @@ namespace Microsoft.VisualStudio.Project
         public const string IntermediateOutputPath = nameof(IntermediateOutputPath);
         public const string DocumentationFile = nameof(DocumentationFile);
         public const string FileAlignment = nameof(FileAlignment);
+        public const string BaseIntermediateOutputPath = nameof(BaseIntermediateOutputPath);
 
     }
 

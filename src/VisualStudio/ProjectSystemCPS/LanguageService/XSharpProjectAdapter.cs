@@ -101,6 +101,7 @@ namespace XSharp.ProjectSystem.LanguageService
         private XParseOptions parseOptions = XParseOptions.Default;
         private string rootNamespace = "";
         private string intermediateOutputPath = "";
+        private string baseintermediateOutputPath = "";
         private string outputFile = "";
         private bool prefixClassesWithDefaultNamespace;
 
@@ -795,6 +796,7 @@ namespace XSharp.ProjectSystem.LanguageService
         private void ReadProjectProperties(IProjectRuleSnapshot snapshot)
         {
             rootNamespace = GetProperty(snapshot, "RootNamespace");
+            baseintermediateOutputPath = GetProperty(snapshot, XSharpProjectFileConstants.BaseIntermediateOutputPath);
             intermediateOutputPath = GetProperty(snapshot, "IntermediateOutputPath");
             if (intermediateOutputPath.Length > 0)
                 intermediateOutputPath = XSharpCommandLine.MakeFullPath(intermediateOutputPath, ProjectFolder);
@@ -925,6 +927,7 @@ namespace XSharp.ProjectSystem.LanguageService
 
         public string DisplayName => Path.GetFileNameWithoutExtension(project.FullPath);
         public string IntermediateOutputPath => intermediateOutputPath;
+        public string BaseIntermediateOutputPath => baseintermediateOutputPath;
         public string OutputFile => outputFile;
         public XParseOptions ParseOptions => parseOptions;
         public bool PrefixClassesWithDefaultNamespace => prefixClassesWithDefaultNamespace;

@@ -15,6 +15,7 @@ CLASS OrphanedFilesProject IMPLEMENTS IXSharpProject
     PUBLIC CONST OrphanName := "(OrphanedFiles)" AS STRING
 #region properties
     PROPERTY IntermediateOutputPath AS STRING GET ""
+    PROPERTY BaseIntermediateOutputPath AS STRING GET ""
     PROPERTY OutputFile AS STRING GET ""
     PROPERTY ParseOptions AS XParseOptions GET _parseOptions
     PROPERTY PrefixClassesWithDefaultNamespace AS LOGIC GET FALSE

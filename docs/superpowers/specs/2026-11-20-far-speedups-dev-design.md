@@ -9,6 +9,18 @@ the parser branch (`feature/parser-phase1-diff`, not merged) cut that to 3.5–6
 `SqlSelectBase` 142 → 37 s, method `Execute` 418 → 68 s, property `SqlString` 255 → 54 s, method `GetData` 49 → 3.5 s.
 The code they touch is the same on dev, so they are ported here on their own.
 
+## Who is affected
+
+- **Find All References** and **Rename**: Rename (`RenameCommand`) searches with the same `FindReferencesEngine.FindAsync`,
+  so it gets all three changes. Its results stay the same: the comment and string hits it can include are whole words
+  already (`FindWordInText`). The edits are applied after the search has ended, when the cache is gone.
+- **Everything else that uses the code model** (completion, parameter info, QuickInfo, Go To Definition, the
+  ModelWalker): `XProject.GetType(IList<XDbResult>)` (behind `XProject.Lookup`) and `XProject.GetExtensions` are shared,
+  but they cache only while a scope is open on the calling thread. Outside a search the only addition is the check
+  `XTypeCacheScope.IsOpen` (one thread static int compare); the code behind it is unchanged.
+- Within a search, callers on the search thread share one `XSourceTypeSymbol` per database request. That is not new:
+  `XProject.Lookup` already returns its `_lastFound` instance again. Extension lists are copied per caller.
+
 ## What is ported
 
 1. **Whole-word prefilter** — `ReferenceCandidateScanner.MayContain` accepts a file only when the name occurs as a whole
@@ -33,8 +45,11 @@ The code they touch is the same on dev, so they are ported here on their own.
 
 ## Trade-offs
 
-- During one search the code model does not see a type or an assembly that changes in the middle of it. A search is a
-  snapshot anyway (the ModelWalker is suspended while it runs); the next search builds everything again.
+- During one search the code model does not see a type or an assembly that changes in the middle of it. The database
+  rows are still read for every request; only the type built from them is reused, so a type whose source changes
+  without new database ids (e.g. an edited buffer written back by another thread) keeps its old shape for the rest of
+  that search. A search is a snapshot anyway (the ModelWalker is suspended while it runs); the next search builds
+  everything again.
 - Memory: the cache holds the types and extension lists one search touches, and is released at the end of the search.
 
 ## Relation to `hpetriffer/xassembly-refresh-throttle`
@@ -52,3 +67,7 @@ numbers show what this branch adds to it.
   thread isolation, key, extension copies).
 - VS measurement: RadixWf copy in the Exp instance, alternating runs in one session with the caches switched on and
   off (switch only in the local measurement build).
+- Rename in the Exp instance (dialog driven by UI Automation, closed with Cancel): `SqlString`, `GetData` and
+  `SqlSelectBase`, each with the default options, + comments, + strings. The dialog's counts (changes, files, places
+  not changed) are identical with the speed-ups on and off; the searches took 33–35 s / 4–5 s / 24–25 s instead of
+  74–75 s / 15 s / 58–61 s.

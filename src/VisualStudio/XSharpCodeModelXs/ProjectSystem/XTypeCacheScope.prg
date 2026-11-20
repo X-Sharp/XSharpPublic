@@ -7,8 +7,8 @@ USING System.Collections.Generic
 
 BEGIN NAMESPACE XSharpModel
 /// <summary>
-/// The types XProject.GetType builds from the database, kept while a search (Find All References) holds the
-/// scope open. Thread static: only the thread that opened the scope sees the cache, and it is dropped when the outermost
+/// The types XProject.GetType builds from the database, kept while a search (Find All References, and Rename, which
+/// searches with the same engine) holds the scope open. Thread static: only the thread that opened the scope sees the cache, and it is dropped when the outermost
 /// scope is disposed, so a cached type never outlives the search that built it.
 /// </summary>
 CLASS XTypeCacheScope IMPLEMENTS IDisposable

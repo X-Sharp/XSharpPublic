@@ -11,7 +11,7 @@
     <para styleclass="Normal"><text styleclass="Body Text" translate="true">When the connection is opened the RDD calls the Callback for the table called &quot;Defaults&quot; to retrieve some default values. Later when a table is opened the RDD calls the event handle for the table with the name from the USE statement.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="18" colcount="5">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="19" colcount="5">
       <thead style="vertical-align:top">
         <td style="width:168px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">SqlRDDEventReason</text></para>
@@ -316,6 +316,23 @@
         </td>
         <td style="width:656px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">Should all columns be included (written) in update statements, or only the changed columns</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:168px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">UseLocks</text></para>
+        </td>
+        <td style="width:87px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Logic</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Yes</text></para>
+        </td>
+        <td style="width:100px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">No</text></para>
+        </td>
+        <td style="width:656px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Should record and file locks (RLock/FLock) be emulated through the lock table. When FALSE locks always succeed and nothing is written to the lock table.</text></para>
         </td>
       </tr>
     </table></para>

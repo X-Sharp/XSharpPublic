@@ -66,6 +66,7 @@ end class
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.DeletedColumn),"C", 50,0},_connection:DeletedColumn})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.TrimTrailingSpaces),"L", 1,0},_connection:TrimTrailingSpaces})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.CompareMemo),"L", 1,0},_connection:CompareMemo})
+            _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.UseLocks),"L", 1,0},_connection:UseLocks})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.UpdatableColumns),"C", 255,0},DEFAULT_UPDATABLECOLUMNS})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.ColumnList),"C", 255,0},DEFAULT_COLUMNLIST})
             _tablecols:Add(MetaFieldInfo{RddFieldInfo{nameof(SqlRDDEventReason.KeyColumns),"C", 255,0},DEFAULT_KEYCOLUMNS})
@@ -236,6 +237,22 @@ end class
         RETURN
     end method
 
+    PRIVATE METHOD AddMissingColumn(cmd as SqlDbCommand, oInfo as RddFieldInfo, cValue as STRING) AS LOGIC
+        var colName := Connection:Provider:QuoteIdentifier(oInfo:Name)
+        cmd:CommandText := i"Select {colName} from {tableDict}"
+        local ok := cmd:ExecuteNonQuery(tableDict) as logic
+        if ! ok
+            var colInfo := Connection:Provider:GetSqlColumnInfo(oInfo, Connection)
+            cmd:CommandText := i"alter table {tableDict} add "+colInfo
+            ok := cmd:ExecuteNonQuery(tableDict)
+            if ok
+                cmd:CommandText := i"update {tableDict} set "+colName+" = "+cValue
+                ok := cmd:ExecuteNonQuery(tableDict)
+            endif
+        endif
+        return ok
+    end method
+
     PRIVATE METHOD ReadDefaults() AS VOID
         if hasDefaults
             RETURN
@@ -254,22 +271,10 @@ end class
             if Convert.ToInt64(count) == 0
                 SELF:CreateDictionary()
             endif
-            // Check new bufferSize field
-            cmd:CommandText := i"Select bufferSize from {tableDict}"
-            local ok := false as logic
-
-            ok := cmd:ExecuteNonQuery(tableDict)
-            if ! ok
-                var oInfo := RddFieldInfo{nameof(SqlRDDEventReason.BufferSize),"N", 10,0}
-                var colInfo := Connection:Provider:GetSqlColumnInfo(oInfo, Connection)
-                cmd:CommandText := i"alter table {tableDict} add "+colInfo
-                ok := cmd:ExecuteNonQuery(tableDict)
-                if ok
-                    colInfo := Connection:Provider:QuoteIdentifier(oInfo:Name)
-                    cmd:CommandText := i"update {tableDict} set "+colInfo+" = 1"
-                    ok := cmd:ExecuteNonQuery(tableDict)
-                endif
-            endif
+            // Add columns that were introduced later
+            SELF:AddMissingColumn(cmd, RddFieldInfo{nameof(SqlRDDEventReason.BufferSize),"N", 10,0}, "1")
+            // Existing rows get the connection value, so the behavior does not change
+            SELF:AddMissingColumn(cmd, RddFieldInfo{nameof(SqlRDDEventReason.UseLocks),"L", 1,0}, iif(Connection:UseLocks, "1", "0"))
 
             // Read the defaults from the database
             cmd:AddParameter("@p1",DefaultSection)

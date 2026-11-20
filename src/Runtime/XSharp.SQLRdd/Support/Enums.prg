@@ -80,6 +80,8 @@ enum SqlRDDEventReason
     member LockRefreshInterval
 /// <summary>Specifies the age (in seconds) after which another connection's lock is considered abandoned and cleared</summary>
     member LockStaleThreshold
+/// <summary>Specifies if record and file locks should be emulated through the lock table</summary>
+    member UseLocks
 
 end enum
 

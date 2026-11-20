@@ -222,7 +222,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 					NOP
 				END TRY
 			ENDIF
-			RETURN success
+            RETURN success
 
 	END CLASS
 
@@ -299,7 +299,7 @@ BEGIN NAMESPACE XSharp.VFP.UI
 			// Restore normal picture after click
 			IF !String.IsNullOrEmpty(SELF:_picture)
 				SELF:Image := VFPTools.ImageFromFile(SELF:_picture)
-			ENDIF
+            ENDIF
 
 	END CLASS
 

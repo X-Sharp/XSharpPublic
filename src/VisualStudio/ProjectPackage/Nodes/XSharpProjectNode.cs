@@ -2652,7 +2652,9 @@ namespace XSharp.Project
                 if (vers.StartsWith("v4", StringComparison.OrdinalIgnoreCase) && Dialect != XDialect.Core)
                 {
                     vers = vers.ToLower().Substring(3);
-                    double.TryParse(vers, out double dvers);
+                    // "v4.7.2" -> "7.2": parse with the invariant culture. With the current culture (fr-FR, de-DE...)
+                    // "7.2" does not parse, dvers stays 0 and the project was silently retargeted to v4.7.
+                    double.TryParse(vers, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double dvers);
                     if (dvers < 7.0)
                     {
                         ok = false;

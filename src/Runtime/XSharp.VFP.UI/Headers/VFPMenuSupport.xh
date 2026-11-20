@@ -34,6 +34,11 @@
     => __VFPDefinePad(#<padName>, #<menuName>, <cCaption>)
 
 #command DEFINE PAD <padName> OF <menuName> PROMPT <cCaption> ;
+    SKIP [<*rest*>] ;
+    => __VFPDefinePad(#<padName>, #<menuName>, <cCaption>) ;
+     ; __VFPSetSkipOfPad(#<padName>, #<menuName>, TRUE)
+
+#command DEFINE PAD <padName> OF <menuName> PROMPT <cCaption> ;
     SKIP FOR <lSkipExpr> [<*rest*>] ;
     => __VFPDefinePad(#<padName>, #<menuName>, <cCaption>) ;
      ; __VFPSetSkipOfPad(#<padName>, #<menuName>, <lSkipExpr>)
@@ -54,6 +59,11 @@
 // A PROMPT of "\-" inserts a separator.
 #command DEFINE BAR <nBar> OF <popupName> PROMPT <cCaption> [<*rest*>] ;
     => __VFPDefineBar(<nBar>, #<popupName>, <cCaption>)
+
+#command DEFINE BAR <nBar> OF <popupName> PROMPT <cCaption> ;
+    SKIP [<*rest*>] ;
+    => __VFPDefineBar(<nBar>, #<popupName>, <cCaption>) ;
+     ; __VFPSetSkipOfBar(<nBar>, #<popupName>, TRUE)
 
 #command DEFINE BAR <nBar> OF <popupName> PROMPT <cCaption> ;
     SKIP FOR <lSkipExpr> [<*rest*>] ;

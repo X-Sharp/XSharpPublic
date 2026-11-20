@@ -93,6 +93,25 @@ namespace XSharp.LanguageService.Tests
         }
 
         [Fact]
+        public void Extensions_CachedPerScope_CallerGetsOwnCopy()
+        {
+            Assert.False(XTypeCacheScope.TryGetExtensions("p|T", out _));
+            using (XTypeCacheScope.Begin())
+            {
+                var found = new List<IXMemberSymbol>();
+                XTypeCacheScope.AddExtensions("p|T", found);
+                found.Add(null);
+                Assert.True(XTypeCacheScope.TryGetExtensions("p|T", out var first));
+                Assert.Empty(first);
+                first.Add(null);
+                Assert.True(XTypeCacheScope.TryGetExtensions("p|T", out var second));
+                Assert.Empty(second);
+                Assert.False(XTypeCacheScope.TryGetExtensions("p|U", out _));
+            }
+            Assert.False(XTypeCacheScope.TryGetExtensions("p|T", out _));
+        }
+
+        [Fact]
         public void Key_DiffersByProject()
         {
             var rows = new List<XDbResult>

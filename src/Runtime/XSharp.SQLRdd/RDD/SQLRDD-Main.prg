@@ -1219,6 +1219,25 @@ partial class SQLRDD inherit Workarea
 
     #endregion
 
+    public override METHOD RecInfo(nOrdinal AS LONG, oRecId AS OBJECT, oNewValue AS OBJECT) AS OBJECT
+        if oRecId == null .or. not oRecId is int
+            return null
+        endif
+
+        switch nOrdinal
+        case DBRI_DELETED
+            return self:_deletedRowIds:Contains((int)oRecId)
+        case DBRI_LOCKED
+            return !self:Connection:UseLocks .or. self:_ownLocks:Contains((int)oRecId)
+        case DBRI_UPDATED
+            return self:_updatedRecNos:Contains((int)oRecId)
+        case DBRI_RECNO
+            return self:RecNo
+        end switch
+
+        return null
+    end method
+
 end class
 
 end namespace // XSharp.RDD.SqlRDD

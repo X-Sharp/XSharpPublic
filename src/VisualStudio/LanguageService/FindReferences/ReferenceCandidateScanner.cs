@@ -77,9 +77,22 @@ namespace XSharp.LanguageService.FindReferences
                 (start + length >= text.Length || !IsWordChar(text[start + length]));
         }
 
+        /// <summary>
+        /// The text has the name as a whole word (not only inside a longer word such as GetDataSet for GetData): every
+        /// identifier, symbol, interpolation hole or word in a comment that the search can report is one.
+        /// </summary>
         internal static bool MayContain(string text, string name)
         {
-            return text.IndexOf(name, StringComparison.OrdinalIgnoreCase) >= 0;
+            if (string.IsNullOrEmpty(name))
+                return false;
+            int start = text.IndexOf(name, StringComparison.OrdinalIgnoreCase);
+            while (start >= 0)
+            {
+                if (IsWordAt(text, start, name.Length))
+                    return true;
+                start = text.IndexOf(name, start + 1, StringComparison.OrdinalIgnoreCase);
+            }
+            return false;
         }
 
         internal static IList<IToken> FindIdentifierTokens(IList<IToken> tokens, string name)

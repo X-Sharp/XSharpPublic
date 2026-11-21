@@ -7,7 +7,8 @@
 // Measured on VFP 9 SP2: PRMBAR() and MRKBAR() take the bar number given in
 // DEFINE BAR, not its position, a separator has an empty prompt, the prompt
 // comes back without the \< hotkey marker, and menu, pad and popup names
-// are not case sensitive.
+// are not case sensitive. SKPBAR() and SKPPAD() follow SET SKIP OF and the
+// SKIP clause, and SET SKIP OF POPUP or MENU skips every bar or pad.
 
 #include "VFPMenuSupport.xh"
 
@@ -154,6 +155,147 @@ BEGIN NAMESPACE XSharp.VFP.UI.Tests
                 Assert.Equal(0, (INT) CNTPAD("nosuchmenu"))
             FINALLY
                 RELEASE MENUS mdt_m4
+            END TRY
+        END METHOD
+
+        // SKPBAR() follows SET SKIP OF BAR and the SKIP clause of DEFINE BAR
+        [Fact, Trait("Category", "MenuFunctions")];
+        METHOD SkpBarFollowsSetSkipOfBarAndTheSkipClause AS VOID
+            DEFINE POPUP mdt_pop9
+            DEFINE BAR 1 OF mdt_pop9 PROMPT "Open"
+            DEFINE BAR 2 OF mdt_pop9 PROMPT "Save" SKIP
+            TRY
+                Assert.False(SKPBAR("mdt_pop9", 1))
+                Assert.True(SKPBAR("mdt_pop9", 2))
+                Assert.True(SKPBAR("MDT_POP9", 2))
+                SET SKIP OF BAR 1 OF mdt_pop9 .T.
+                SET SKIP OF BAR 2 OF mdt_pop9 .F.
+                Assert.True(SKPBAR("mdt_pop9", 1))
+                Assert.False(SKPBAR("mdt_pop9", 2))
+            FINALLY
+                RELEASE POPUPS mdt_pop9
+            END TRY
+        END METHOD
+
+        // VFP reports a separator and a gap in the numbering as skipped
+        [Fact, Trait("Category", "MenuFunctions")];
+        METHOD SkpBarIsTrueForASeparatorAndAGap AS VOID
+            DEFINE POPUP mdt_pop10
+            DEFINE BAR 1 OF mdt_pop10 PROMPT "Open"
+            DEFINE BAR 2 OF mdt_pop10 PROMPT "\-"
+            DEFINE BAR 5 OF mdt_pop10 PROMPT "Exit"
+            TRY
+                Assert.True(SKPBAR("mdt_pop10", 2))
+                Assert.True(SKPBAR("mdt_pop10", 3))
+                Assert.False(SKPBAR("mdt_pop10", 5))
+                Assert.False(SKPBAR("mdt_pop10", 0))
+                Assert.False(SKPBAR("mdt_pop10", 6))
+                Assert.False(SKPBAR("nosuchpopup", 1))
+            FINALLY
+                RELEASE POPUPS mdt_pop10
+            END TRY
+        END METHOD
+
+        [Fact, Trait("Category", "MenuFunctions")];
+        METHOD SkpBarIsTrueWhileThePopupIsSkipped AS VOID
+            DEFINE POPUP mdt_pop11
+            DEFINE BAR 1 OF mdt_pop11 PROMPT "Open"
+            DEFINE BAR 2 OF mdt_pop11 PROMPT "Save"
+            TRY
+                SET SKIP OF POPUP mdt_pop11 .T.
+                Assert.True(SKPBAR("mdt_pop11", 1))
+                Assert.True(SKPBAR("mdt_pop11", 2))
+                SET SKIP OF POPUP mdt_pop11 .F.
+                Assert.False(SKPBAR("mdt_pop11", 1))
+                Assert.False(SKPBAR("mdt_pop11", 2))
+            FINALLY
+                RELEASE POPUPS mdt_pop11
+            END TRY
+        END METHOD
+
+        [Fact, Trait("Category", "MenuFunctions")];
+        METHOD SkpBarWorksOnAShortcutPopup AS VOID
+            DEFINE POPUP mdt_pop12 SHORTCUT
+            DEFINE BAR 1 OF mdt_pop12 PROMPT "Copy"
+            DEFINE BAR 2 OF mdt_pop12 PROMPT "Paste" SKIP
+            TRY
+                Assert.False(SKPBAR("mdt_pop12", 1))
+                Assert.True(SKPBAR("mdt_pop12", 2))
+            FINALLY
+                RELEASE POPUPS mdt_pop12
+            END TRY
+        END METHOD
+
+        // SKPPAD() follows SET SKIP OF PAD and the SKIP clause of DEFINE PAD
+        [Fact, Trait("Category", "MenuFunctions")];
+        METHOD SkpPadFollowsSetSkipOfPadAndTheSkipClause AS VOID
+            DEFINE MENU mdt_m5 BAR
+            DEFINE PAD mdt_p1 OF mdt_m5 PROMPT "File"
+            DEFINE PAD mdt_p2 OF mdt_m5 PROMPT "Edit" SKIP
+            TRY
+                Assert.False(SKPPAD("mdt_m5", "mdt_p1"))
+                Assert.True(SKPPAD("mdt_m5", "mdt_p2"))
+                Assert.True(SKPPAD("MDT_M5", "MDT_P2"))
+                SET SKIP OF PAD mdt_p1 OF mdt_m5 .T.
+                SET SKIP OF PAD mdt_p2 OF mdt_m5 .F.
+                Assert.True(SKPPAD("mdt_m5", "mdt_p1"))
+                Assert.False(SKPPAD("mdt_m5", "mdt_p2"))
+                Assert.False(SKPPAD("mdt_m5", "nosuchpad"))
+                Assert.False(SKPPAD("nosuchmenu", "mdt_p1"))
+            FINALLY
+                RELEASE MENUS mdt_m5
+            END TRY
+        END METHOD
+
+        [Fact, Trait("Category", "MenuFunctions")];
+        METHOD SkpPadIsTrueWhileTheMenuIsSkipped AS VOID
+            DEFINE MENU mdt_m6 BAR
+            DEFINE PAD mdt_p1 OF mdt_m6 PROMPT "File"
+            TRY
+                SET SKIP OF MENU mdt_m6 .T.
+                Assert.True(SKPPAD("mdt_m6", "mdt_p1"))
+                SET SKIP OF MENU mdt_m6 .F.
+                Assert.False(SKPPAD("mdt_m6", "mdt_p1"))
+            FINALLY
+                RELEASE MENUS mdt_m6
+            END TRY
+        END METHOD
+
+        // BARCOUNT() and BARPROMPT() are the dBASE names of CNTBAR() and PRMBAR(),
+        // and BARPROMPT() takes the bar number first
+        [Fact, Trait("Category", "MenuFunctions")];
+        METHOD BarCountAndBarPromptTakeThePopupName AS VOID
+            DEFINE POPUP mdt_pop13
+            DEFINE BAR 1 OF mdt_pop13 PROMPT "\<Open"
+            DEFINE BAR 2 OF mdt_pop13 PROMPT "\-"
+            DEFINE BAR 5 OF mdt_pop13 PROMPT "Exit"
+            TRY
+                Assert.Equal(5, (INT) BARCOUNT("mdt_pop13"))
+                Assert.Equal(5, (INT) BARCOUNT("MDT_POP13"))
+                Assert.Equal(0, (INT) BARCOUNT("nosuchpopup"))
+                Assert.Equal("Open", BARPROMPT(1, "mdt_pop13"))
+                Assert.Equal("", BARPROMPT(2, "mdt_pop13"))
+                Assert.Equal("Exit", BARPROMPT(5, "MDT_POP13"))
+                Assert.Equal("", BARPROMPT(1, "nosuchpopup"))
+            FINALLY
+                RELEASE POPUPS mdt_pop13
+            END TRY
+        END METHOD
+
+        // without a popup name they take the active popup, the one POPUP() returns
+        [Fact, Trait("Category", "MenuFunctions")];
+        METHOD BarCountAndBarPromptWithoutANameTakeTheActivePopup AS VOID
+            DEFINE POPUP mdt_pop14
+            DEFINE BAR 1 OF mdt_pop14 PROMPT "Open"
+            DEFINE BAR 2 OF mdt_pop14 PROMPT "\-"
+            DEFINE BAR 5 OF mdt_pop14 PROMPT "\<Exit"
+            ON SELECTION BAR 1 OF mdt_pop14 MenuDefinitionTests.Seen := TRANSFORM(BARCOUNT()) + "/" + BARPROMPT(5) + "/" + BARPROMPT(BAR())
+            TRY
+                MenuDefinitionTests.Seen := ""
+                Popup.Find("mdt_pop14"):Bars[1]:PerformClick()
+                Assert.Equal("5/Exit/Open", MenuDefinitionTests.Seen)
+            FINALLY
+                RELEASE POPUPS mdt_pop14
             END TRY
         END METHOD
 

@@ -1297,6 +1297,18 @@ CLASS XProject
         if found:Count == 0
             RETURN NULL
         ENDIF
+        // inside a search scope (Find All References) each request is built once
+        VAR key := IIF(XTypeCacheScope.IsOpen, XTypeCacheScope.KeyOf(SELF:Id, found), NULL)
+        IF key != NULL .AND. XTypeCacheScope.TryGet(key, OUT VAR cached)
+            RETURN cached
+        ENDIF
+        VAR built := SELF:BuildTypeFromDatabase(found)
+        IF key != NULL
+            XTypeCacheScope.Add(key, built)
+        ENDIF
+        RETURN built
+
+    PRIVATE METHOD BuildTypeFromDatabase(found AS IList<XDbResult>) AS XSourceTypeSymbol
         LOCAL idProject := -1 AS INT64
         LOCAL fullTypeName:= ""  AS STRING
         LOCAL namespace := "" AS STRING
@@ -1562,6 +1574,19 @@ CLASS XProject
 
 
     METHOD GetExtensions( TypeName AS STRING) AS IList<IXMemberSymbol>
+        // inside a search scope each project and type is searched once: the search below checks every
+        // assembly reference on disk (XAssembly.Refresh), for every candidate of a Find All References
+        VAR key := IIF(XTypeCacheScope.IsOpen, SELF:Id:ToString() + "|" + TypeName, NULL)
+        IF key != NULL .AND. XTypeCacheScope.TryGetExtensions(key, OUT VAR cached)
+            RETURN cached
+        ENDIF
+        VAR found := SELF:FindExtensions(TypeName)
+        IF key != NULL
+            XTypeCacheScope.AddExtensions(key, found)
+        ENDIF
+        RETURN found
+
+    PRIVATE METHOD FindExtensions( TypeName AS STRING) AS IList<IXMemberSymbol>
         local result := List<IXMemberSymbol>{} as List<IXMemberSymbol>
         local type as IXTypeSymbol
         local names as List<String>

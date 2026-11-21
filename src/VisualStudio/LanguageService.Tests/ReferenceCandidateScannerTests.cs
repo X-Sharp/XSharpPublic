@@ -178,6 +178,19 @@ namespace XSharp.LanguageService.Tests
             Assert.True(ReferenceCandidateScanner.MayContain("x := FOO", "foo"));
             Assert.False(ReferenceCandidateScanner.MayContain("x := Bar", "foo"));
         }
+
+        [Fact]
+        public void MayContainNeedsAWholeWord()
+        {
+            Assert.False(ReferenceCandidateScanner.MayContain("o:GetDataSet() + MyGetData() + GetData_2", "GetData"));
+            Assert.True(ReferenceCandidateScanner.MayContain("o:GetDataSet() + o:GetData()", "GetData"));
+            Assert.True(ReferenceCandidateScanner.MayContain("GetData", "getdata"));
+            Assert.True(ReferenceCandidateScanner.MayContain("Send(o, #GetData)", "GetData"));
+            Assert.True(ReferenceCandidateScanner.MayContain("i\"{o:GetData()}\"", "GetData"));
+            Assert.True(ReferenceCandidateScanner.MayContain("// calls @@GetData", "GetData"));
+            Assert.True(ReferenceCandidateScanner.MayContain("Foo{1}", "Foo"));
+            Assert.False(ReferenceCandidateScanner.MayContain("", "Foo"));
+        }
     }
 
     internal static class TestLexer

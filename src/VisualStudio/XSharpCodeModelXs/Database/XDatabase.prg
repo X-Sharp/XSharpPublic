@@ -137,6 +137,7 @@ STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
             Log(i"DB {cFileName} restored ")
             oDiskDb:Close()
         END USING
+        ReindexAfterRestore()
         DeleteOrphanFiles()
         DeleteMissingFiles()
     ENDIF
@@ -180,14 +181,36 @@ STATIC METHOD SetPragmas(oConn AS DbConnection) AS VOID
             Log("Set the pragmas for the database")
             USING VAR oCmd := CreateCommand("PRAGMA foreign_keys = ON", oConn)
             oCmd:ExecuteNonQuery()
-            // Register the collation before the VACUUM: the VACUUM rebuilds the NOCASE indexes with the collation
-            // that is registered at that moment. With the built-in NOCASE the indexes no longer match the custom
-            // NOCASE of Microsoft.Data.Sqlite, lookups miss rows and SQLite reports "database disk image is malformed".
+            // Register the collation before anything rebuilds an index (the VACUUM in SaveToDisk, the REINDEX
+            // in ReindexAfterRestore): an index is rebuilt with the collation that is registered at that moment.
+            // With the built-in NOCASE the indexes no longer match the custom NOCASE of Microsoft.Data.Sqlite,
+            // lookups miss rows and SQLite reports "database disk image is malformed".
+            // No VACUUM here: this runs for every connection, and CreateOrOpenDatabase opens the disk database
+            // twice. That was two full rewrites of the file on the UI thread for every solution that opens
+            // (15 s for a 284 MB database). SaveToDisk compacts the file after every backup, and a file that
+            // the other SQLite provider wrote does not get this far: ValidateSchema rejects it (Db_Version.MsSqlite).
             oConn:SetCollation()
-            oCmd:CommandText := "VACUUM"
-            oCmd:ExecuteNonQuery()
         CATCH e AS Exception
             Log("Error setting pragmas")
+            XSettings.Exception(e)
+        END TRY
+    END LOCK
+    RETURN
+
+STATIC PRIVATE METHOD ReindexAfterRestore() AS VOID
+    // The custom NOCASE of Microsoft.Data.Sqlite compares with the current culture, so the order of an
+    // index may differ from the one the file was written with. Rebuild the NOCASE indexes of the in memory
+    // copy, which is what the VACUUM of the disk database did at this point before.
+    // System.Data.SQLite uses the built-in NOCASE, which always sorts the same way.
+    IF ! UseMicrosoftSQLite
+        RETURN
+    ENDIF
+    BEGIN LOCK dbLock
+        TRY
+            Log("Rebuild the NOCASE indexes")
+            ExecuteSimpleSql("REINDEX NOCASE")
+        CATCH e AS Exception
+            Log("Error rebuilding the NOCASE indexes")
             XSettings.Exception(e)
         END TRY
     END LOCK

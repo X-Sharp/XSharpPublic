@@ -515,7 +515,6 @@ CLASS XProject
     METHOD RemoveProjectReference(Url AS STRING) AS LOGIC
         IF ! String.IsNullOrEmpty(Url)
             LOCAL prj AS XProject
-            LOCAL outputname AS STRING
             SELF:_dependentProjectList  := ""
             SELF:_clearTypeCache()
             IF SELF:_unprocessedProjectReferences:Contains(Url)
@@ -523,11 +522,10 @@ CLASS XProject
                 SELF:_unprocessedProjectReferences:Remove(Url)
                 RETURN TRUE
             ENDIF
-            // Does this url belongs to a project in the Solution ?
-            prj := XSolution.FindProjectByFileName(Url)
-            IF (SELF:_ReferencedProjects:Contains(prj))
-                //
-                outputname := prj:ProjectNode:OutputFile
+            // The referenced project itself, not the first project in the solution with this file name: that may be
+            // another TargetFramework of a cross targeting project, or nothing when the project was removed already.
+            prj := SELF:FindProjectReference(Url)
+            IF prj != NULL
                 SELF:_ReferencedProjects:Remove(prj)
                 SELF:_dependentProjectList  := ""
                 RETURN TRUE
@@ -551,7 +549,18 @@ CLASS XProject
             SELF:LogReferenceMessage("ResolveUnprocessedProjectReferences()")
             existing := List<STRING>{}
             FOREACH sProject AS STRING IN SELF:_unprocessedProjectReferences:ToArray()
-                p := XSolution.FindProjectByFileName(sProject)
+                // The code model of the same TargetFramework when the referenced project has one
+                p := NULL
+                IF ! String.IsNullOrEmpty(SELF:_framework)
+                    p := XSolution.FindProject(sProject, SELF:_framework)
+                    // FindProject looks at the name only
+                    IF p != NULL .AND. ! String.Equals(p:FileName, sProject, StringComparison.OrdinalIgnoreCase)
+                        p := NULL
+                    ENDIF
+                ENDIF
+                IF p == NULL
+                    p := XSolution.FindProjectByFileName(sProject)
+                ENDIF
                 IF p != NULL
                     existing:Add(sProject)
                     SELF:_ReferencedProjects:Add(p)

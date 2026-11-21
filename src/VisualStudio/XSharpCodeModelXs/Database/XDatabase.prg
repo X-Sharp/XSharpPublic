@@ -1208,6 +1208,21 @@ STATIC METHOD Read(oFile AS XFile) AS VOID
             IF (count == 0)
                 cmd:CommandText := "INSERT INTO FilesPerProject(idFile, idProject) VALUES ($idFile, $idProject)"
                 cmd:ExecuteNonQuery()
+                IF lOk .AND. oFile:LastChanged != DateTime.MinValue
+                    // LastChanged and Size belong to the file, not to the project. Another project (for example the
+                    // other TargetFramework of a cross targeting project) has already parsed the file, so this project
+                    // has no types for it yet. Mark the file as not parsed in the database, not only in this XFile:
+                    // the walk reads the file again through FindXFile. The next parse writes the types for all
+                    // projects of the file (UpdateFileContents).
+                    cmd:CommandText := "UPDATE Files SET LastChanged = $last, Size = 0 WHERE Id = $idFile"
+                    cmd:Parameters:Clear()
+                    cmd:Parameters:AddWithValue("$idFile",oFile:Id)
+                    cmd:Parameters:AddWithValue("$last", DateTime.MinValue)
+                    cmd:ExecuteNonQuery()
+                    oFile:LastChanged := DateTime.MinValue
+                    oFile:Size        := 0
+                    lUpdated := TRUE
+                ENDIF
             ENDIF
 
         CATCH e AS Exception
@@ -1256,9 +1271,17 @@ STATIC METHOD Update(oFile AS XFile) AS VOID
         XDatabase.Read(oFile)
     ENDIF
     IF oFile:HasCode
-        UpdateFileContents(oFile)
+        // Before the lock: this may wait for a lock that another thread holds while it waits for dbLock
+        ResolveExtensionMethodParameters(oFile)
     ENDIF
-    UpdateFileData(oFile)
+    // One lock for both: Read(XFile) may add the file to another project in between. It then marks the file as
+    // not parsed, because UpdateFileContents wrote no types for that project, and UpdateFileData must not undo that.
+    BEGIN LOCK dbLock
+        IF oFile:HasCode
+            UpdateFileContents(oFile)
+        ENDIF
+        UpdateFileData(oFile)
+    END LOCK
     MarkChanged()
     CommitWhenNeeded()
     RETURN
@@ -1513,10 +1536,8 @@ static private method UpdateIncludeFiles(oFile as XFile) AS VOID
     next
 
     RETURN
-STATIC PRIVATE METHOD UpdateFileContents(oFile AS XFile) AS VOID
-    CHECKIFOPEN
+STATIC PRIVATE METHOD ResolveExtensionMethodParameters(oFile AS XFile) AS VOID
     IF oFile:TypeList == null
-        Log("Empty typelist")
         RETURN
     ENDIF
     Log(i"Look for extension methods in file {oFile.FullPath}")
@@ -1533,6 +1554,13 @@ STATIC PRIVATE METHOD UpdateFileContents(oFile AS XFile) AS VOID
             endif
         NEXT
     NEXT
+
+STATIC PRIVATE METHOD UpdateFileContents(oFile AS XFile) AS VOID
+    CHECKIFOPEN
+    IF oFile:TypeList == null
+        Log("Empty typelist")
+        RETURN
+    ENDIF
     Log(i"Start Updating File contents for file {oFile.FullPath} : # of Entities {oFile.EntityList.Count}")
     LOCAL lInTransaction := FALSE AS LOGIC
     BEGIN LOCK dbLock

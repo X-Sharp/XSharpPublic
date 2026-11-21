@@ -63,6 +63,37 @@ namespace XSharp.LanguageService.Tests
             Assert.Equal(new[] { "A", "B", "C" }, FindReferencesEngine.ProjectsInScope("A", Projects, RefsOf, true));
         }
 
+        // The code models of a cross targeting project: A and B target net472 and net10, C targets one framework.
+        // B:net10 references A:net10, C references whichever model of B it found (here B:net10).
+        private static readonly string[] TargetModels = { "A:net472", "A:net10", "B:net472", "B:net10", "C", "D" };
+        private static IEnumerable<string> TargetRefsOf(string project)
+        {
+            switch (project)
+            {
+                case "B:net472": return new[] { "A:net472" };
+                case "B:net10": return new[] { "A:net10" };
+                case "C": return new[] { "B:net10" };
+                default: return Array.Empty<string>();
+            }
+        }
+        private static object ProjectFileOf(string model) => model.Split(':')[0];
+
+        [Fact]
+        public void ScopeTreatsTheModelsOfOneProjectAsOne()
+        {
+            Assert.Equal(new[] { "A:net472", "A:net10", "B:net472", "B:net10" },
+                FindReferencesEngine.ProjectsInScope("A:net472", TargetModels, TargetRefsOf, false, ProjectFileOf));
+            Assert.Equal(new[] { "B:net472", "B:net10", "C" },
+                FindReferencesEngine.ProjectsInScope("B:net472", TargetModels, TargetRefsOf, false, ProjectFileOf));
+        }
+
+        [Fact]
+        public void TransitiveScopeTreatsTheModelsOfOneProjectAsOne()
+        {
+            Assert.Equal(new[] { "A:net472", "A:net10", "B:net472", "B:net10", "C" },
+                FindReferencesEngine.ProjectsInScope("A:net472", TargetModels, TargetRefsOf, true, ProjectFileOf));
+        }
+
         [Fact]
         public void SymbolLiteralsAreCollectedForTypesAndFunctionsWhenRenaming()
         {

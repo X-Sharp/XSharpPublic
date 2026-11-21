@@ -53,11 +53,13 @@ STATIC METHOD AddProject(xProject AS XProject) AS VOID
         Walk()
 ENDIF
 
+// Compare the instances, not the names: the code models of the TargetFrameworks of a cross targeting project
+// share the name of the project.
 PRIVATE STATIC METHOD EnqueueProject(xProject AS XProject) AS VOID
     BEGIN LOCK _gate
         VAR lAdd2Queue := TRUE
         FOREACH project AS XProject IN _projects
-            IF (String.Equals(project:Name, xProject:Name, StringComparison.OrdinalIgnoreCase))
+            IF project == xProject
                 lAdd2Queue := FALSE
                 EXIT
             ENDIF
@@ -78,7 +80,7 @@ STATIC METHOD RemoveProject(xProject AS XProject) AS VOID
         LOCAL found := FALSE AS LOGIC
         VAR  aList  := List<XProject>{}
         FOREACH project AS XProject IN _projects
-            IF (String.Equals(project:Name, xProject:Name, StringComparison.OrdinalIgnoreCase))
+            IF project == xProject
                 found := TRUE
             ELSE
                 aList:Add(project)
@@ -160,14 +162,18 @@ STATIC METHOD Suspend() AS VOID
 STATIC METHOD Walk() AS VOID
     IF ModelWalker.suspendLevel <= 0 .AND. XSolution.IsOpen
         TRY
-            IF _WalkerThread == NULL .or. ! _WalkerThread:IsAlive
-                VAR start := System.Threading.ParameterizedThreadStart{ null, @Walker() }
-                _state := WalkerthreadState.Running
-                _WalkerThread := System.Threading.Thread{start}
-                _WalkerThread:IsBackground := TRUE
-                _WalkerThread:Name := "X# CodeModel Walker"
-                _WalkerThread:Start(_generation)
-            ENDIF
+            // AddProject is called from several threads (the CPS subscriptions): without the lock two of them
+            // could both see no running thread and start two walker threads.
+            BEGIN LOCK _gate
+                IF _WalkerThread == NULL .or. ! _WalkerThread:IsAlive
+                    VAR start := System.Threading.ParameterizedThreadStart{ null, @Walker() }
+                    _state := WalkerthreadState.Running
+                    _WalkerThread := System.Threading.Thread{start}
+                    _WalkerThread:IsBackground := TRUE
+                    _WalkerThread:Name := "X# CodeModel Walker"
+                    _WalkerThread:Start(_generation)
+                ENDIF
+            END LOCK
         CATCH exception AS System.Exception
             XSettings.Exception(exception)
 

@@ -42,6 +42,8 @@ namespace XSharp.LanguageService.FindReferences
             var stats = new FindReferencesStats();
             var watch = Stopwatch.StartNew();
             ModelWalker.Suspend();
+            // each database type is built once per search (on this thread, dropped at the end)
+            var typeCache = XTypeCacheScope.Begin();
             try
             {
                 var name = SearchName(target);
@@ -99,6 +101,7 @@ namespace XSharp.LanguageService.FindReferences
             }
             finally
             {
+                typeCache.Dispose();
                 ModelWalker.Resume();
                 stats.Elapsed = watch.Elapsed;
                 Logger.Information($"FindReferences {target.Kind} '{target.Name}' ({target.FullName}): {stats}");
@@ -156,21 +159,44 @@ namespace XSharp.LanguageService.FindReferences
         /// The root and the projects that reference it; with <paramref name="transitive"/> also the projects that
         /// reference it through other projects. Each project once, the root first.
         /// </summary>
-        internal static IList<T> ProjectsInScope<T>(T root, IEnumerable<T> all, Func<T, IEnumerable<T>> referencedProjects, bool transitive)
+        /// <param name="projectOf">
+        /// The project of a code model. A cross targeting project has one code model per TargetFramework, and a
+        /// project that references it may reference any of them: the models of one project count as one project.
+        /// Null: every item is its own project.
+        /// </param>
+        internal static IList<T> ProjectsInScope<T>(T root, IEnumerable<T> all, Func<T, IEnumerable<T>> referencedProjects, bool transitive,
+            Func<T, object> projectOf = null)
         {
+            projectOf = projectOf ?? (p => p);
+            var rootProject = projectOf(root);
             var result = new List<T> { root };
+            var inScope = new HashSet<object> { rootProject };
             var candidates = all.Where(p => !Equals(p, root)).ToList();
+            // the other models of the root project
+            foreach (var model in candidates.Where(p => Equals(projectOf(p), rootProject)).ToList())
+            {
+                result.Add(model);
+                candidates.Remove(model);
+            }
             bool added = true;
             while (added)
             {
                 added = false;
                 foreach (var project in candidates.ToList())
                 {
+                    if (!candidates.Contains(project))
+                        continue;
                     var references = referencedProjects(project);
-                    if (transitive ? references.Any(r => result.Contains(r)) : references.Contains(root))
+                    if (transitive ? references.Any(r => inScope.Contains(projectOf(r))) : references.Any(r => Equals(projectOf(r), rootProject)))
                     {
-                        result.Add(project);
-                        candidates.Remove(project);
+                        // the project with all its models
+                        var key = projectOf(project);
+                        inScope.Add(key);
+                        foreach (var model in candidates.Where(p => Equals(projectOf(p), key)).ToList())
+                        {
+                            result.Add(model);
+                            candidates.Remove(model);
+                        }
                         added = transitive;
                     }
                 }
@@ -183,7 +209,8 @@ namespace XSharp.LanguageService.FindReferences
             var project = SourceFileOf(target)?.Project;
             if (project == null)
                 return Enumerable.Empty<XFile>();
-            var projects = ProjectsInScope(project, XSolution.Projects, p => p.ReferencedProjects, transitive);
+            var projects = ProjectsInScope(project, XSolution.Projects, p => p.ReferencedProjects, transitive,
+                p => string.IsNullOrEmpty(p.FileName) ? (object)p : p.FileName.ToLowerInvariant());
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var result = new List<XFile>();
             foreach (var p in projects)

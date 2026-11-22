@@ -66,16 +66,6 @@ FUNCTION AVCXCLASSES( )
 RETURN NIL
 
 [Obsolete( "This function will not be supported" )];
-[FoxProFunction("BARCOUNT", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.NotSupported, FoxCriticality.Medium)];
-FUNCTION BARCOUNT( )
-RETURN NIL
-
-[Obsolete( "This function will not be supported" )];
-[FoxProFunction("BARPROMPT", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.NotSupported, FoxCriticality.Medium)];
-FUNCTION BARPROMPT( )
-RETURN NIL
-
-[Obsolete( "This function will not be supported" )];
 [FoxProFunction("BINDEVENT", FoxFunctionCategory.ClassAndObject, FoxEngine.LanguageCore, FoxFunctionStatus.NotSupported, FoxCriticality.High)];
 FUNCTION BINDEVENT( )
 RETURN NIL
@@ -289,16 +279,6 @@ RETURN NIL
 [Obsolete( "This function will not be supported" )];
 [FoxProFunction("SCOLS", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.NotSupported, FoxCriticality.Medium)];
 FUNCTION SCOLS( )
-RETURN NIL
-
-[Obsolete( "This function will not be supported" )];
-[FoxProFunction("SKPBAR", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.NotSupported, FoxCriticality.Medium)];
-FUNCTION SKPBAR( )
-RETURN NIL
-
-[Obsolete( "This function will not be supported" )];
-[FoxProFunction("SKPPAD", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.NotSupported, FoxCriticality.Medium)];
-FUNCTION SKPPAD( )
 RETURN NIL
 
 [Obsolete( "This function will not be supported" )];

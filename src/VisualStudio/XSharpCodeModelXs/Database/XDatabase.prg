@@ -137,6 +137,7 @@ STATIC METHOD CreateOrOpenDatabase(cFileName AS STRING) AS VOID
             Log(i"DB {cFileName} restored ")
             oDiskDb:Close()
         END USING
+        ReindexAfterRestore()
         DeleteOrphanFiles()
         DeleteMissingFiles()
     ENDIF
@@ -180,14 +181,36 @@ STATIC METHOD SetPragmas(oConn AS DbConnection) AS VOID
             Log("Set the pragmas for the database")
             USING VAR oCmd := CreateCommand("PRAGMA foreign_keys = ON", oConn)
             oCmd:ExecuteNonQuery()
-            // Register the collation before the VACUUM: the VACUUM rebuilds the NOCASE indexes with the collation
-            // that is registered at that moment. With the built-in NOCASE the indexes no longer match the custom
-            // NOCASE of Microsoft.Data.Sqlite, lookups miss rows and SQLite reports "database disk image is malformed".
+            // Register the collation before anything rebuilds an index (the VACUUM in SaveToDisk, the REINDEX
+            // in ReindexAfterRestore): an index is rebuilt with the collation that is registered at that moment.
+            // With the built-in NOCASE the indexes no longer match the custom NOCASE of Microsoft.Data.Sqlite,
+            // lookups miss rows and SQLite reports "database disk image is malformed".
+            // No VACUUM here: this runs for every connection, and CreateOrOpenDatabase opens the disk database
+            // twice. That was two full rewrites of the file on the UI thread for every solution that opens
+            // (15 s for a 284 MB database). SaveToDisk compacts the file after every backup, and a file that
+            // the other SQLite provider wrote does not get this far: ValidateSchema rejects it (Db_Version.MsSqlite).
             oConn:SetCollation()
-            oCmd:CommandText := "VACUUM"
-            oCmd:ExecuteNonQuery()
         CATCH e AS Exception
             Log("Error setting pragmas")
+            XSettings.Exception(e)
+        END TRY
+    END LOCK
+    RETURN
+
+STATIC PRIVATE METHOD ReindexAfterRestore() AS VOID
+    // The custom NOCASE of Microsoft.Data.Sqlite compares with the current culture, so the order of an
+    // index may differ from the one the file was written with. Rebuild the NOCASE indexes of the in memory
+    // copy, which is what the VACUUM of the disk database did at this point before.
+    // System.Data.SQLite uses the built-in NOCASE, which always sorts the same way.
+    IF ! UseMicrosoftSQLite
+        RETURN
+    ENDIF
+    BEGIN LOCK dbLock
+        TRY
+            Log("Rebuild the NOCASE indexes")
+            ExecuteSimpleSql("REINDEX NOCASE")
+        CATCH e AS Exception
+            Log("Error rebuilding the NOCASE indexes")
             XSettings.Exception(e)
         END TRY
     END LOCK
@@ -1185,6 +1208,21 @@ STATIC METHOD Read(oFile AS XFile) AS VOID
             IF (count == 0)
                 cmd:CommandText := "INSERT INTO FilesPerProject(idFile, idProject) VALUES ($idFile, $idProject)"
                 cmd:ExecuteNonQuery()
+                IF lOk .AND. oFile:LastChanged != DateTime.MinValue
+                    // LastChanged and Size belong to the file, not to the project. Another project (for example the
+                    // other TargetFramework of a cross targeting project) has already parsed the file, so this project
+                    // has no types for it yet. Mark the file as not parsed in the database, not only in this XFile:
+                    // the walk reads the file again through FindXFile. The next parse writes the types for all
+                    // projects of the file (UpdateFileContents).
+                    cmd:CommandText := "UPDATE Files SET LastChanged = $last, Size = 0 WHERE Id = $idFile"
+                    cmd:Parameters:Clear()
+                    cmd:Parameters:AddWithValue("$idFile",oFile:Id)
+                    cmd:Parameters:AddWithValue("$last", DateTime.MinValue)
+                    cmd:ExecuteNonQuery()
+                    oFile:LastChanged := DateTime.MinValue
+                    oFile:Size        := 0
+                    lUpdated := TRUE
+                ENDIF
             ENDIF
 
         CATCH e AS Exception
@@ -1233,9 +1271,17 @@ STATIC METHOD Update(oFile AS XFile) AS VOID
         XDatabase.Read(oFile)
     ENDIF
     IF oFile:HasCode
-        UpdateFileContents(oFile)
+        // Before the lock: this may wait for a lock that another thread holds while it waits for dbLock
+        ResolveExtensionMethodParameters(oFile)
     ENDIF
-    UpdateFileData(oFile)
+    // One lock for both: Read(XFile) may add the file to another project in between. It then marks the file as
+    // not parsed, because UpdateFileContents wrote no types for that project, and UpdateFileData must not undo that.
+    BEGIN LOCK dbLock
+        IF oFile:HasCode
+            UpdateFileContents(oFile)
+        ENDIF
+        UpdateFileData(oFile)
+    END LOCK
     MarkChanged()
     CommitWhenNeeded()
     RETURN
@@ -1490,10 +1536,8 @@ static private method UpdateIncludeFiles(oFile as XFile) AS VOID
     next
 
     RETURN
-STATIC PRIVATE METHOD UpdateFileContents(oFile AS XFile) AS VOID
-    CHECKIFOPEN
+STATIC PRIVATE METHOD ResolveExtensionMethodParameters(oFile AS XFile) AS VOID
     IF oFile:TypeList == null
-        Log("Empty typelist")
         RETURN
     ENDIF
     Log(i"Look for extension methods in file {oFile.FullPath}")
@@ -1510,6 +1554,13 @@ STATIC PRIVATE METHOD UpdateFileContents(oFile AS XFile) AS VOID
             endif
         NEXT
     NEXT
+
+STATIC PRIVATE METHOD UpdateFileContents(oFile AS XFile) AS VOID
+    CHECKIFOPEN
+    IF oFile:TypeList == null
+        Log("Empty typelist")
+        RETURN
+    ENDIF
     Log(i"Start Updating File contents for file {oFile.FullPath} : # of Entities {oFile.EntityList.Count}")
     LOCAL lInTransaction := FALSE AS LOGIC
     BEGIN LOCK dbLock

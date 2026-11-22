@@ -133,6 +133,8 @@ partial class SQLRDD
     internal property ServerFilterWhere as string get _serverFilterWhere
     internal property Connection     as SqlDbConnection get _connection
     internal property Provider       as ISqlDbProvider get _connection?:Provider
+    /// <summary>Emulate locks through the lock table? Table setting, falls back to the connection.</summary>
+    internal property UseLocks       as logic get iif(_oTd != null, _oTd:UseLocks, _connection:UseLocks)
     internal property Command        as SqlDbCommand get _command
     internal property OrderBagList   as List<SqlDbOrderBag> get _orderBagList
     internal property RecnoColumnName as string
@@ -2236,7 +2238,7 @@ partial class SQLRDD
 
             // Check row lock - unless we hold it (or the file lock) ourselves: our lock row in
             // the lock table already keeps everybody else out, so there is nothing to ask.
-            if SELF:Connection:UseLocks .and. !SELF:_ownLocks:Contains(nRecNo) .and. !SELF:_ownLocks:Contains(0)
+            if SELF:UseLocks .and. !SELF:_ownLocks:Contains(nRecNo) .and. !SELF:_ownLocks:Contains(0)
                 var dbLockInfo := DbLockInfo{}
                 dbLockInfo:RecId := row[_oTd:RecnoColumn]
                 var myLock := false

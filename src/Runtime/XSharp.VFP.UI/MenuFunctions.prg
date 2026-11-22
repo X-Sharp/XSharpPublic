@@ -7,8 +7,9 @@
 // VFP-compatible menu information functions.
 // BAR(), PAD(), POPUP(), MENU() read from MenuState, which Bar.OnVFPClick
 // populates before dispatching each handler.
-// MRKBAR/MRKPAD/PRMBAR/PRMPAD and CNTBAR/CNTPAD look up the named registry
-// on Popup/Menu.
+// MRKBAR/MRKPAD/PRMBAR/PRMPAD, CNTBAR/CNTPAD and SKPBAR/SKPPAD look up the
+// named registry on Popup/Menu. BARCOUNT/BARPROMPT are the dBASE names of
+// CNTBAR/PRMBAR.
 
 USING XSharp.VFP.UI
 
@@ -112,6 +113,50 @@ FUNCTION CNTPAD( cMenuName AS STRING ) AS INT
 		RETURN oMenu:PadCount
 	ENDIF
 	RETURN 0
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/skpbar/*" />
+[FoxProFunction("SKPBAR", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
+FUNCTION SKPBAR( cMenuName AS STRING, MenuItemNumber AS INT ) AS LOGIC
+	IF String.IsNullOrEmpty( cMenuName ) .OR. MenuItemNumber < 1 .OR. MenuItemNumber > CNTBAR( cMenuName )
+		RETURN FALSE
+	ENDIF
+	LOCAL oPopup := __VFPFindPopupContainer( cMenuName ) AS IVfpPopupContainer
+	LOCAL oBar := __VFPFindBarByNumber( oPopup, MenuItemNumber ) AS Bar
+	// a separator and a gap in the numbering are not Bar objects, and VFP reports
+	// both as skipped. SET SKIP OF POPUP skips every bar of the popup
+	RETURN oBar == NULL .OR. oPopup:Skip .OR. oBar:Skip
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/skppad/*" />
+[FoxProFunction("SKPPAD", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
+FUNCTION SKPPAD( cMenuBarName AS STRING, cMenuTitleName AS STRING ) AS LOGIC
+	IF String.IsNullOrEmpty( cMenuBarName )
+		RETURN FALSE
+	ENDIF
+	LOCAL oMenu := Menu.Find( cMenuBarName ) AS Menu
+	LOCAL oPad := __VFPFindPadByName( oMenu, cMenuTitleName ) AS Pad
+	IF oPad == NULL
+		RETURN FALSE
+	ENDIF
+	// SET SKIP OF MENU skips every pad of the menu
+	RETURN oMenu:Skip .OR. oPad:Skip
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/barcount/*" />
+[FoxProFunction("BARCOUNT", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
+FUNCTION BARCOUNT( cPopupName := NULL AS STRING ) AS INT
+	// the dBASE name of CNTBAR(). Without a name it takes the active popup
+	IF cPopupName == NULL
+		cPopupName := POPUP()
+	ENDIF
+	RETURN CNTBAR( cPopupName )
+
+/// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/barprompt/*" />
+[FoxProFunction("BARPROMPT", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
+FUNCTION BARPROMPT( nBar AS INT, cPopupName := NULL AS STRING ) AS STRING
+	// the dBASE name of PRMBAR(), with the bar first. Without a name it takes the active popup
+	IF cPopupName == NULL
+		cPopupName := POPUP()
+	ENDIF
+	RETURN PRMBAR( cPopupName, nBar )
 
 
 /// <summary>The prompt of a bar or pad the way PRMBAR() and PRMPAD() report it.</summary>

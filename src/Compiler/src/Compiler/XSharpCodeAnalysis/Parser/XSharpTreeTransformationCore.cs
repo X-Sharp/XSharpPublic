@@ -8846,6 +8846,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region Arguments
+        // _emptyArgs and _emptyBracketedArgs are shared by all compilations of the process: never Put() them on a context or
+        // change them otherwise (see ExitArgumentList).
         private static ArgumentListSyntax _emptyArgs = null;
         protected ArgumentListSyntax EmptyArgumentList()
         {
@@ -8938,12 +8940,17 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             // argumentList        :  Args+=namedArgument (COMMA Args+=namedArgument)*
             //                     ;
             // namedArgument may match an empty argument.
-            var args = _pool.AllocateSeparated<ArgumentSyntax>();
             if (context.IsMissing)
             {
-                context.Put(EmptyArgumentList());
+                // A node of its own for every call: Put() stores this context as the node's XNode, and the source location
+                // of the list ('(' is where Roslyn takes [CallerLineNumber] from) is mapped through that XNode. The shared
+                // EmptyArgumentList(), and any list from the syntax factory, whose node cache returns one node for the same
+                // singleton tokens, gave every call without arguments the line of the last such call transformed.
+                // Created directly to bypass the cache; the singleton tokens keep the positions of the other lists.
+                context.Put(new ArgumentListSyntax(SyntaxKind.ArgumentList, SyntaxFactory.OpenParenToken, null, SyntaxFactory.CloseParenToken));
                 return;
             }
+            var args = _pool.AllocateSeparated<ArgumentSyntax>();
             var openParen = SyntaxFactory.OpenParenToken;
             var closeParen = SyntaxFactory.CloseParenToken;
             foreach (var argCtx in context._Args)

@@ -21,6 +21,8 @@ BEGIN NAMESPACE XSharp.VFP.UI
 		PRIVATE _caption     AS STRING
 		PRIVATE _vfpClick    AS VFPOverride
 		PRIVATE _clickBlock  AS USUAL
+		PRIVATE _skip        AS LOGIC
+		PRIVATE _skipFor     AS USUAL
 
 		CONSTRUCTOR() STRICT
 			SUPER()
@@ -54,10 +56,30 @@ BEGIN NAMESPACE XSharp.VFP.UI
 
 		// ── Skip ──────────────────────────────────────────────────────────────
 		// VFP SET SKIP OF BAR .T. = disabled; maps to !Enabled.
+		// A bar with SKIP FOR is enabled by its expression alone, and Skip only keeps
+		// what SET SKIP OF left, which is what SKPBAR() returns in VFP.
 		PROPERTY Skip AS LOGIC
-			GET ; RETURN !SELF:Enabled ; END GET
-			SET ; SELF:Enabled := !VALUE ; END SET
+			GET ; RETURN IIF( SELF:_skipFor == NIL, !SELF:Enabled, SELF:_skip ) ; END GET
+			SET
+				SELF:_skip := VALUE
+				IF SELF:_skipFor == NIL
+					SELF:Enabled := !VALUE
+				ENDIF
+			END SET
 		END PROPERTY
+
+		// The SKIP FOR expression of DEFINE BAR, as a codeblock.
+		INTERNAL METHOD SetSkipFor( block AS USUAL ) AS VOID
+			SELF:_skipFor := block
+			SELF:_skip    := FALSE
+			SELF:RefreshSkipFor()
+
+		// VFP evaluates SKIP FOR every time the popup is shown, so the popup
+		// calls this when it opens.
+		INTERNAL METHOD RefreshSkipFor() AS VOID
+			IF SELF:_skipFor != NIL
+				SELF:Enabled := !(LOGIC) Eval( SELF:_skipFor )
+			ENDIF
 
 		// ── vfpClick — VFPOverride event ──────────────────────────────────────
 		[System.ComponentModel.Category("VFP Events"),System.ComponentModel.Description("Fires when the user clicks this menu item")];

@@ -123,8 +123,8 @@ FUNCTION SKPBAR( cMenuName AS STRING, MenuItemNumber AS INT ) AS LOGIC
 	LOCAL oPopup := __VFPFindPopupContainer( cMenuName ) AS IVfpPopupContainer
 	LOCAL oBar := __VFPFindBarByNumber( oPopup, MenuItemNumber ) AS Bar
 	// a separator and a gap in the numbering are not Bar objects, and VFP reports
-	// both as skipped. SET SKIP OF POPUP skips every bar of the popup
-	RETURN oBar == NULL .OR. oPopup:Skip .OR. oBar:Skip
+	// both as skipped
+	RETURN oBar == NULL .OR. oBar:Skip
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/skppad/*" />
 [FoxProFunction("SKPPAD", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];
@@ -134,11 +134,7 @@ FUNCTION SKPPAD( cMenuBarName AS STRING, cMenuTitleName AS STRING ) AS LOGIC
 	ENDIF
 	LOCAL oMenu := Menu.Find( cMenuBarName ) AS Menu
 	LOCAL oPad := __VFPFindPadByName( oMenu, cMenuTitleName ) AS Pad
-	IF oPad == NULL
-		RETURN FALSE
-	ENDIF
-	// SET SKIP OF MENU skips every pad of the menu
-	RETURN oMenu:Skip .OR. oPad:Skip
+	RETURN oPad != NULL .AND. oPad:Skip
 
 /// <include file="VfpRuntimeDocs.xml" path="Runtimefunctions/barcount/*" />
 [FoxProFunction("BARCOUNT", FoxFunctionCategory.UIAndWindow, FoxEngine.UI, FoxFunctionStatus.Full, FoxCriticality.Medium)];

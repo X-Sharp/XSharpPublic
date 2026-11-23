@@ -68,7 +68,7 @@
 #command DEFINE BAR <nBar> OF <popupName> PROMPT <cCaption> ;
     SKIP FOR <lSkipExpr> [<*rest*>] ;
     => __VFPDefineBar(<nBar>, #<popupName>, <cCaption>) ;
-     ; __VFPSetSkipOfBar(<nBar>, #<popupName>, <lSkipExpr>)
+     ; __VFPSetSkipForOfBar(<nBar>, #<popupName>, {|| <lSkipExpr>})
 
 // ── ON PAD ───────────────────────────────────────────────────────────────────
 // ON PAD <padName> OF <menuName> ACTIVATE POPUP <popupName>  — attach dropdown

@@ -8,11 +8,13 @@
 // DEFINE BAR, not its position, a separator has an empty prompt, the prompt
 // comes back without the \< hotkey marker, and menu, pad and popup names
 // are not case sensitive. SKPBAR() and SKPPAD() follow SET SKIP OF and the
-// SKIP clause, and SET SKIP OF POPUP or MENU skips every bar or pad.
+// SKIP clause. SET SKIP OF POPUP or MENU sets the skip of each bar or pad, and
+// SKIP FOR is evaluated every time the popup is shown and SKPBAR() ignores it.
 
 #include "VFPMenuSupport.xh"
 
 USING System
+USING System.Reflection
 USING XUnit
 USING XSharp.VFP.UI
 
@@ -25,6 +27,15 @@ BEGIN NAMESPACE XSharp.VFP.UI.Tests
 
         // what the ON SELECTION handler saw, read back by the selection test
         STATIC PROPERTY Seen AS STRING AUTO := ""
+
+        // the condition of the SKIP FOR tests
+        STATIC PROPERTY Flag AS LOGIC AUTO
+
+        // a popup evaluates SKIP FOR when it opens. This raises Opening without showing it
+        STATIC METHOD Open(oPopup AS OBJECT) AS VOID
+            VAR oMethod := oPopup:GetType():GetMethod("OnOpening", BindingFlags.Instance | BindingFlags.NonPublic)
+            oMethod:Invoke(oPopup, <OBJECT>{System.ComponentModel.CancelEventArgs{}})
+        END METHOD
 
         [Fact, Trait("Category", "MenuFunctions")];
         METHOD PrmBarTakesTheBarNumberNotThePosition AS VOID
@@ -196,8 +207,10 @@ BEGIN NAMESPACE XSharp.VFP.UI.Tests
             END TRY
         END METHOD
 
+        // SET SKIP OF POPUP sets the skip of the bars the popup has at that moment:
+        // a bar can be enabled again and a bar defined later is not skipped
         [Fact, Trait("Category", "MenuFunctions")];
-        METHOD SkpBarIsTrueWhileThePopupIsSkipped AS VOID
+        METHOD SetSkipOfPopupSetsTheSkipOfEachBar AS VOID
             DEFINE POPUP mdt_pop11
             DEFINE BAR 1 OF mdt_pop11 PROMPT "Open"
             DEFINE BAR 2 OF mdt_pop11 PROMPT "Save"
@@ -205,11 +218,58 @@ BEGIN NAMESPACE XSharp.VFP.UI.Tests
                 SET SKIP OF POPUP mdt_pop11 .T.
                 Assert.True(SKPBAR("mdt_pop11", 1))
                 Assert.True(SKPBAR("mdt_pop11", 2))
+                DEFINE BAR 3 OF mdt_pop11 PROMPT "Exit"
+                SET SKIP OF BAR 2 OF mdt_pop11 .F.
+                Assert.True(SKPBAR("mdt_pop11", 1))
+                Assert.False(SKPBAR("mdt_pop11", 2))
+                Assert.False(SKPBAR("mdt_pop11", 3))
                 SET SKIP OF POPUP mdt_pop11 .F.
                 Assert.False(SKPBAR("mdt_pop11", 1))
                 Assert.False(SKPBAR("mdt_pop11", 2))
             FINALLY
                 RELEASE POPUPS mdt_pop11
+            END TRY
+        END METHOD
+
+        // VFP evaluates SKIP FOR every time the popup is shown and SKPBAR() ignores
+        // it. SET SKIP OF changes what SKPBAR() returns, the expression still decides
+        [Fact, Trait("Category", "MenuFunctions")];
+        METHOD SkipForIsEvaluatedWhenThePopupOpens AS VOID
+            MenuDefinitionTests.Flag := .T.
+            DEFINE POPUP mdt_pop15
+            DEFINE BAR 1 OF mdt_pop15 PROMPT "Open" SKIP FOR MenuDefinitionTests.Flag
+            TRY
+                Assert.False(Popup.Find("mdt_pop15"):Bars[1]:Enabled)
+                Assert.False(SKPBAR("mdt_pop15", 1))
+                MenuDefinitionTests.Flag := .F.
+                MenuDefinitionTests.Open(Popup.Find("mdt_pop15"))
+                Assert.True(Popup.Find("mdt_pop15"):Bars[1]:Enabled)
+                SET SKIP OF BAR 1 OF mdt_pop15 .T.
+                Assert.True(SKPBAR("mdt_pop15", 1))
+                Assert.True(Popup.Find("mdt_pop15"):Bars[1]:Enabled)
+                MenuDefinitionTests.Flag := .T.
+                SET SKIP OF POPUP mdt_pop15 .F.
+                MenuDefinitionTests.Open(Popup.Find("mdt_pop15"))
+                Assert.False(SKPBAR("mdt_pop15", 1))
+                Assert.False(Popup.Find("mdt_pop15"):Bars[1]:Enabled)
+            FINALLY
+                RELEASE POPUPS mdt_pop15
+            END TRY
+        END METHOD
+
+        [Fact, Trait("Category", "MenuFunctions")];
+        METHOD SkipForWorksOnAShortcutPopup AS VOID
+            MenuDefinitionTests.Flag := .T.
+            DEFINE POPUP mdt_pop16 SHORTCUT
+            DEFINE BAR 1 OF mdt_pop16 PROMPT "Copy" SKIP FOR MenuDefinitionTests.Flag
+            TRY
+                Assert.False(ContextMenu.Find("mdt_pop16"):Bars[1]:Enabled)
+                MenuDefinitionTests.Flag := .F.
+                MenuDefinitionTests.Open(ContextMenu.Find("mdt_pop16"))
+                Assert.True(ContextMenu.Find("mdt_pop16"):Bars[1]:Enabled)
+                Assert.False(SKPBAR("mdt_pop16", 1))
+            FINALLY
+                RELEASE POPUPS mdt_pop16
             END TRY
         END METHOD
 
@@ -247,13 +307,21 @@ BEGIN NAMESPACE XSharp.VFP.UI.Tests
             END TRY
         END METHOD
 
+        // SET SKIP OF MENU does with the pads what SET SKIP OF POPUP does with the bars
         [Fact, Trait("Category", "MenuFunctions")];
-        METHOD SkpPadIsTrueWhileTheMenuIsSkipped AS VOID
+        METHOD SetSkipOfMenuSetsTheSkipOfEachPad AS VOID
             DEFINE MENU mdt_m6 BAR
             DEFINE PAD mdt_p1 OF mdt_m6 PROMPT "File"
+            DEFINE PAD mdt_p2 OF mdt_m6 PROMPT "Edit"
             TRY
                 SET SKIP OF MENU mdt_m6 .T.
                 Assert.True(SKPPAD("mdt_m6", "mdt_p1"))
+                Assert.True(SKPPAD("mdt_m6", "mdt_p2"))
+                DEFINE PAD mdt_p3 OF mdt_m6 PROMPT "Help"
+                SET SKIP OF PAD mdt_p2 OF mdt_m6 .F.
+                Assert.True(SKPPAD("mdt_m6", "mdt_p1"))
+                Assert.False(SKPPAD("mdt_m6", "mdt_p2"))
+                Assert.False(SKPPAD("mdt_m6", "mdt_p3"))
                 SET SKIP OF MENU mdt_m6 .F.
                 Assert.False(SKPPAD("mdt_m6", "mdt_p1"))
             FINALLY

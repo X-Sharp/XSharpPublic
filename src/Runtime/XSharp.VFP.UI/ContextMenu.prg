@@ -122,6 +122,13 @@ PARTIAL CLASS ContextMenu INHERIT System.Windows.Forms.ContextMenuStrip IMPLEMEN
 			SET ; SELF:Enabled := !VALUE ; END SET
 		END PROPERTY
 
+		// VFP evaluates the SKIP FOR of each bar every time the popup is shown.
+		PROTECTED OVERRIDE METHOD OnOpening( e AS System.ComponentModel.CancelEventArgs ) AS VOID
+			FOREACH VAR oBar IN SELF:_bars
+				oBar:RefreshSkipFor()
+			NEXT
+			SUPER:OnOpening( e )
+
 		// -- IndexOf -----------------------------------------------------------
 		// Returns the 1-based Bar index of the given bar (0 = not found).
 		INTERNAL METHOD IndexOf( bar AS Bar ) AS INT

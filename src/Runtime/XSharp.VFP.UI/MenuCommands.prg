@@ -458,7 +458,12 @@ FUNCTION __VFPSetSkipOfMenu( cMenuName AS STRING, lSkip AS LOGIC ) AS VOID
     LOCAL oMenu AS Menu
     oMenu := Menu.Find( cMenuName )
     IF oMenu != NULL_OBJECT
-        oMenu:Skip := lSkip
+        // VFP sets the skip of each pad the menu has at this moment, so a later
+        // SET SKIP OF PAD can enable one of them again
+        LOCAL i AS INT
+        FOR i := 1 TO (INT) oMenu:PadCount
+            oMenu:Pads[i]:Skip := lSkip
+        NEXT
     ENDIF
 
 /// <summary>Implements SET SKIP OF PAD &lt;pad&gt; OF &lt;menu&gt; &lt;expr&gt;.</summary>
@@ -479,7 +484,11 @@ FUNCTION __VFPSetSkipOfPopup( cPopupName AS STRING, lSkip AS LOGIC ) AS VOID
     LOCAL oPopup AS IVfpPopupContainer
     oPopup := __VFPFindPopupContainer( cPopupName )
     IF oPopup != NULL_OBJECT
-        oPopup:Skip := lSkip
+        // same as SET SKIP OF MENU: it sets the skip of each bar
+        LOCAL i AS INT
+        FOR i := 1 TO (INT) oPopup:BarCount
+            oPopup:Bars[i]:Skip := lSkip
+        NEXT
     ENDIF
 
 /// <summary>Implements SET SKIP OF BAR &lt;n&gt; OF &lt;popup&gt; &lt;expr&gt;.</summary>
@@ -493,6 +502,17 @@ FUNCTION __VFPSetSkipOfBar( nBar AS INT, cPopupName AS STRING, lSkip AS LOGIC ) 
     oBar := __VFPFindBarByNumber( oPopup, nBar )
     IF oBar != NULL_OBJECT
         oBar:Skip := lSkip
+    ENDIF
+
+/// <summary>
+/// Implements the SKIP FOR &lt;expr&gt; clause of DEFINE BAR. The expression comes as a
+/// codeblock because VFP evaluates it every time the popup is shown.
+/// </summary>
+FUNCTION __VFPSetSkipForOfBar( nBar AS INT, cPopupName AS STRING, bSkip AS USUAL ) AS VOID
+    LOCAL oBar AS Bar
+    oBar := __VFPFindBarByNumber( __VFPFindPopupContainer( cPopupName ), nBar )
+    IF oBar != NULL_OBJECT
+        oBar:SetSkipFor( bSkip )
     ENDIF
 
 // ── SET SYSMENU helper ────────────────────────────────────────────────────────

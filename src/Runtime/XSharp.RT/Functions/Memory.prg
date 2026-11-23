@@ -217,7 +217,7 @@ FUNCTION MemClear( ptrDest AS IntPtr, dwCount AS DWORD ) AS IntPtr
 	IF ptrDest == IntPtr.Zero
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(ptrDest), 1)
 	ENDIF
-	RETURN FixedMemory.Clear(ptrDest, (INT) dwCount)
+	RETURN FixedMemory.Clear(ptrDest, dwCount)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memcomp/*" />
 FUNCTION MemComp( ptrFirst AS IntPtr, ptrSecond AS IntPtr, dwCount AS DWORD ) AS INT
@@ -258,7 +258,7 @@ FUNCTION MemCopy( ptrDest AS IntPtr, ptrSource AS IntPtr, dwCount AS DWORD ) AS 
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(ptrSource), 2)
 	ENDIF
 
-	RETURN FixedMemory.Copy(ptrDest, ptrSource, (INT) dwCount)
+	RETURN FixedMemory.Copy(ptrDest, ptrSource, dwCount)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memcopystring/*" />
 FUNCTION MemCopyString( ptrDest AS IntPtr, cSource AS STRING, dwCount AS DWORD ) AS VOID
@@ -275,11 +275,11 @@ FUNCTION MemCopyString( ptrDest AS IntPtr, cSource AS STRING, dwCount AS DWORD )
 	   VAR srcLen := (DWORD) cSource:Length
 
 	   IF srcLen < dwCount
-		  FixedMemory.Set( ptrDest, 0, (INT) dwCount )
+		  FixedMemory.Set( ptrDest, 0, dwCount )
 	   ENDIF
 
 		dwCount := Math.Min( srcLen, dwCount )
-		FixedMemory.Copy(ptrDest, pszSrc, (INT)dwCount)
+		FixedMemory.Copy(ptrDest, pszSrc, dwCount)
    FINALLY
 		XSharp.Internal.CompilerServices.String2PszRelease(pszList)
    END TRY
@@ -361,7 +361,7 @@ FUNCTION MemMove( ptrDest AS IntPtr, ptrSource AS IntPtr, dwCount AS DWORD ) AS 
     IF dwCount > 0
 	    IF (ptrDest:ToInt32() <= ptrSource:ToInt32() || ptrDest:ToInt32() >= (ptrSource:ToInt32() + (INT) dwCount))
 		    // copy from source to dest from lower to higher bound
-		    FixedMemory.Copy(ptrDest, ptrSource, (INT) dwCount)
+		    FixedMemory.Copy(ptrDest, ptrSource, dwCount)
 	    ELSE
 		    // overlapping
 		    // copy from higher address to lower address
@@ -381,7 +381,7 @@ FUNCTION MemSet( ptrBuffer AS IntPtr, bValue AS BYTE, wCount AS DWORD ) AS IntPt
 	IF ptrBuffer == IntPtr.Zero
 		THROW Error.NullArgumentError(__FUNCTION__,NAMEOF(ptrBuffer), 1)
 	ENDIF
-	RETURN FixedMemory.Set(ptrBuffer, bValue, (INT) wCount)
+	RETURN FixedMemory.Set(ptrBuffer, bValue, wCount)
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memshort/*" />
 FUNCTION MemShort( ptrBuffer AS IntPtr, siValue AS SHORT, dwCount AS DWORD ) AS IntPtr

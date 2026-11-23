@@ -5,12 +5,9 @@
 //
 
 USING System.Runtime.InteropServices
-USING System.Reflection
-USING System.Reflection.Emit
 USING System.Collections.Generic
 USING System.Collections.Concurrent
 USING System.Runtime.CompilerServices
-
 
 /// <include file="XSharp.RT.Docs.xml" path="doc/MemWalker/*" />
 DELEGATE MemWalker(pMem AS IntPtr, nSize AS DWORD) AS LOGIC
@@ -24,9 +21,6 @@ INTERNAL STATIC CLASS XSharp.FixedMemory
     INTERNAL STATIC Total		AS DWORD
     INTERNAL STATIC MemTrace	AS LOGIC
     INTERNAL STATIC AllocatedBlocks AS ConcurrentDictionary<IntPtr, DWORD>
-    //PRIVATE STATIC _memSetDelegate  AS Action<IntPtr, BYTE, DWORD>
-    //PRIVATE STATIC _memCopyDelegate AS Action<IntPtr, IntPtr, DWORD>
-
     STATIC CONSTRUCTOR()
         Groups			:= ConcurrentDictionary<DWORD, MemGroup>{}
         AllocatedBlocks := ConcurrentDictionary<IntPtr, DWORD>{}
@@ -35,28 +29,6 @@ INTERNAL STATIC CLASS XSharp.FixedMemory
         Total	  := 0
         MemTrace  := FALSE
         Is32Bits  := IntPtr.Size == 4
-
-        // Generate 2 dynamic methods for speedy MemSet and MemCopy
-        // using IL instructions that C# and X# do not have.
-        //VAR atts := MethodAttributes.Public | MethodAttributes.Static
-        //        VAR dm := DynamicMethod{"Memset", atts, CallingConventions.Standard, NULL,  <System.Type> { TYPEOF(IntPtr), TYPEOF(BYTE), TYPEOF(DWORD) }, TYPEOF(FixedMemory), TRUE}
-        //        VAR generator	  := dm:GetILGenerator()
-        //        generator:Emit(OpCodes.Ldarg_0)
-        //        generator:Emit(OpCodes.Ldarg_1)
-        //        generator:Emit(OpCodes.Ldarg_2)
-        //        generator:Emit(OpCodes.Initblk)
-        //        generator:Emit(OpCodes.Ret)
-        //        _memSetDelegate := (Action<IntPtr, BYTE, DWORD>) dm:CreateDelegate(TYPEOF(Action<IntPtr, BYTE, DWORD>))
-        //
-        //        VAR dm := DynamicMethod{"Memcopy", atts, CallingConventions.Standard, NULL,  <System.Type> { TYPEOF(IntPtr), TYPEOF(IntPtr), TYPEOF(DWORD) }, TYPEOF(FixedMemory), TRUE}
-        //        VAR generator := dm:GetILGenerator()
-        //        generator:Emit(OpCodes.Ldarg_0)
-        //        generator:Emit(OpCodes.Ldarg_1)
-        //        generator:Emit(OpCodes.Ldarg_2)
-        //        generator:Emit(OpCodes.Cpblk)
-        //        generator:Emit(OpCodes.Ret)
-        //        _memCopyDelegate := (Action<IntPtr, IntPtr, DWORD>) dm:CreateDelegate(TYPEOF(Action<IntPtr, IntPtr, DWORD>))
-
 
     INTERNAL STATIC METHOD AddGroup(nGroup AS DWORD) AS MemGroup
         LOCAL oGroup AS MemGroup
@@ -123,7 +95,7 @@ INTERNAL STATIC CLASS XSharp.FixedMemory
         pBlock := Marshal.AllocHGlobal( (INT) nTotal)
         IF pBlock != IntPtr.Zero
             // Clear whole block
-            Clear(pBlock, (INT) nTotal)
+            Clear(pBlock, nTotal)
             // Keep track of allocated memory per Group and Total
             oGroup:Allocated += nSize
             Total 			 += nSize
@@ -160,7 +132,7 @@ INTERNAL STATIC CLASS XSharp.FixedMemory
                 Total -= nSize
                 oGroup := FindGroup(pMemBlockStart:dwGroup)
                 // Overwrite memory including header and footer so it will not be valid anymore
-                FixedMemory.Set(pMemBlockStart, 0xFF, (INT) nTotal)
+                FixedMemory.Set(pMemBlockStart, 0xFF, nTotal)
                 IF oGroup != NULL_OBJECT
                     oGroup:Allocated -= nSize
                     Marshal.FreeHGlobal(pMemBlockStart)
@@ -245,7 +217,7 @@ INTERNAL STATIC CLASS XSharp.FixedMemory
                             // allocate new block
                             pResult := Alloc(pMemBlockStart:dwGroup, nNewSize)
                             // copy data over
-                            Copy(pResult, pMem, (INT) nOldSize)
+                            Copy(pResult, pMem, nOldSize)
                             // free old block
                             Free(pMem)
                         ENDIF
@@ -260,73 +232,82 @@ INTERNAL STATIC CLASS XSharp.FixedMemory
         RETURN pResult
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)];
-    INTERNAL STATIC METHOD Clear(pMemory AS IntPtr, iCount AS INT) AS IntPtr
+    INTERNAL STATIC METHOD Clear(pMemory AS IntPtr, iCount AS DWORD) AS IntPtr
         // No pointer validation for speed. Should be done in wrapper function
         FixedMemory.Set(pMemory, 0, iCount)
         RETURN pMemory
 
 
-    INTERNAL STATIC METHOD Copy( pDestination AS IntPtr, pSource AS IntPtr, iCount AS INT ) AS IntPtr
+    INTERNAL STATIC METHOD Copy( pDestination AS IntPtr, pSource AS IntPtr, iCount AS DWORD ) AS IntPtr
         // No pointer validation for speed. Should be done in wrapper function
-        // check if we need a temporary buffer when the pointers overlap
-        LOCAL lDirect as LOGIC
-        if pSource + iCount < pDestination
-            // source is completely before destination
-            lDirect := TRUE
-        elseif pDestination + iCount < pSource
-            lDirect := TRUE
-        ELSE // buffers Overlap
-            lDirect := FALSE
-        ENDIF
-        IF lDirect
-            Buffer.MemoryCopy(pSource, pDestination, iCount, iCount)
-        ELSE
-            local bTemp := BYTE[]{iCount} AS BYTE[]
-            Marshal.Copy(pSource, bTemp, 0, iCount)
-            Marshal.Copy(bTemp, 0,  pDestination, iCount)
-        ENDIF
+        // Buffer.MemoryCopy handles overlapping buffers
+        Buffer.MemoryCopy(pSource, pDestination, iCount, iCount)
         RETURN pDestination
 
-    INTERNAL STATIC METHOD Set( pMemory AS IntPtr, b AS BYTE, iCount AS INT) AS IntPtr
-        // Write 8 bytes at the same time when possible
-        VAR pInt64 := (INT64 PTR) pMemory
-        IF iCount > 24
-            LOCAL i64 AS INT64
-            // The most common values that we are using are 0 (MemAlloc), 255 (MemFree) and 32 (for strings)
-            SWITCH b
-            CASE 0
-                i64 := 0
-            CASE 255
-                i64 := -1
-            CASE 32
-                i64 := 0x2020202020202020
-            OTHERWISE
-                i64 := BitConverter.ToInt64( <Byte>{b,b,b,b,b,b,b,b},0)
-            END SWITCH
-            // copy 8 bytes per iteration
-            DO WHILE iCount >= 8
-                pInt64[1] := i64
-                pInt64 += 1
-                iCount -= 8
-            ENDDO
-        ENDIF
-        IF iCount > 0
-            VAR pByte  := (BYTE PTR) pInt64
-            DO WHILE iCount > 0
+    INTERNAL STATIC METHOD Set( pMemory AS IntPtr, b AS BYTE, iCount AS DWORD ) AS IntPtr
+#ifdef NET5_0_OR_GREATER
+        Unsafe.InitBlockUnaligned((BYTE PTR) pMemory, b,  iCount)
+#else
+        LOCAL pByte := (BYTE PTR) pMemory AS BYTE PTR
+        IF iCount >= 32
+            // Replicate the byte into all 8 bytes of a 64 bit value
+            LOCAL u64 := (UINT64) b * (UINT64) 0x0101010101010101 AS UINT64
+            // Write the leading bytes so the 64 bit writes are aligned
+            LOCAL nLead := (DWORD) ((8 - (pMemory:ToInt64() & 7)) & 7) AS DWORD
+            DO WHILE nLead > 0
                 pByte[1] := b
                 pByte += 1
+                nLead -= 1
                 iCount -= 1
             ENDDO
+            LOCAL pU64 := (UINT64 PTR) pByte AS UINT64 PTR
+            IF iCount >= 256
+                // Large block: seed the first 64 bytes and then keep doubling the filled
+                // area with Buffer.MemoryCopy. Source and target never overlap.
+                LOCAL nFilled := 0 AS DWORD
+                DO WHILE nFilled < 64
+                    pU64[1] := u64
+                    pU64 += 1
+                    nFilled += 8
+                ENDDO
+                DO WHILE nFilled < iCount
+                    LOCAL nCopy := Math.Min(nFilled, iCount - nFilled) AS DWORD
+                    Buffer.MemoryCopy(pByte, pByte + nFilled, (INT64) nCopy, (INT64) nCopy)
+                    nFilled += nCopy
+                ENDDO
+                RETURN pMemory
+            ENDIF
+            // 32 bytes per iteration
+            DO WHILE iCount >= 32
+                pU64[1] := u64
+                pU64[2] := u64
+                pU64[3] := u64
+                pU64[4] := u64
+                pU64 += 4
+                iCount -= 32
+            ENDDO
+            DO WHILE iCount >= 8
+                pU64[1] := u64
+                pU64 += 1
+                iCount -= 8
+            ENDDO
+            pByte := (BYTE PTR) pU64
         ENDIF
+        // remaining bytes
+        DO WHILE iCount > 0
+            pByte[1] := b
+            pByte += 1
+            iCount -= 1
+        ENDDO
+#endif
         RETURN pMemory
-
 
 END CLASS
 
 
 /// <include file="XSharp.RT.Docs.xml" path="doc/FixedMemBlockStart/*" />
 [StructLayout(LayoutKind.Explicit)];
-STRUCTURE	 XSharp.FixedMemBlockStart
+STRUCTURE XSharp.FixedMemBlockStart
     /// <include file="XSharp.RT.Docs.xml" path="doc/FixedMemBlockStart.dwMagic/*" />
     [FieldOffset(00)] EXPORT dwMagic AS DWORD	// Checksum
     /// <include file="XSharp.RT.Docs.xml" path="doc/FixedMemBlockStart.dwCargo/*" />

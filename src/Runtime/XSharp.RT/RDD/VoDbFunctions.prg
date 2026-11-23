@@ -331,7 +331,7 @@ FUNCTION VoDbRecordPut(aRecord AS BYTE PTR) AS LOGIC
     LOCAL nRecSize := uSize AS LONG
     LOCAL aRecordBuf AS BYTE[]
     aRecordBuf := BYTE[]{ nRecSize }
-    FixedMemory.Copy(@aRecordBuf, aRecord, nRecSize)
+    FixedMemory.Copy(@aRecordBuf, aRecord, (DWORD) nRecSize)
     RETURN VoDb.RecordPut(aRecordBuf)
 
 

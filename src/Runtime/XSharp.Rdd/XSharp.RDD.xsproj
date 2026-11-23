@@ -22,4 +22,5 @@
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>
+  <Import Project="..\XmlDoc.Props" />
 </Project>

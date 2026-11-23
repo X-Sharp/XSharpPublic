@@ -2,6 +2,9 @@
 <!-- Specific targets for Framework type projects-->
 <Project>
   <Import Project="VOSDK.Common.Props" />
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'" >
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'" >
@@ -11,13 +14,5 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocChinese|AnyCPU'" >
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DocSpanish|AnyCPU'" >
-  </PropertyGroup>
-  <PropertyGroup>
-    <!-- Adjusted for X# 3.1: output to Net47 folder-->
-    <OutputPath>$(OutputPath)\net47\</OutputPath>
-    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-  </PropertyGroup>
-  <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
-    <DocumentationFile>$(MSBuildProjectName).Xml</DocumentationFile>
   </PropertyGroup>
 </Project>

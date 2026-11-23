@@ -1,4 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
+  <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
+    <Configurations>Documentation;DocChinese</Configurations>
+    <DocumentationFile>$(MSBuildProjectName).Xml</DocumentationFile>
+  </PropertyGroup>
   <Import Condition="$(Configuration.Contains('Doc'))" Project="$(Commondir)XmlCommon.Props" />
 </Project>

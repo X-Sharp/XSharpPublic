@@ -1,20 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
-<PropertyGroup >
-    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+<PropertyGroup Condition="$(Configuration.Contains('Doc'))">
+    <!-- Change target framework so we only build documentation for net47-->
+    <TargetFrameworks>net47</TargetFrameworks>
+    <Configurations>Documentation;DocChinese</Configurations>
+  <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <XmlDocFolder Condition="'$(Configuration)' == 'Documentation'">$(SolutionDir)Docs\</XmlDocFolder>
     <XmlDocFolder Condition="'$(Configuration)' == 'DocChinese'">$(SolutionDir)DocChinese\</XmlDocFolder>
     <XmlDocFolder Condition="'$(Configuration)' == 'DocSpanish'">$(SolutionDir)DocSpanish\</XmlDocFolder>
-	
     <DefineConstants>$(DefineConstants);DOCUMENTATION</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
-    <PreBuildEvent>copy $(XmlDocFolder)*.xml $(MSBuildProjectDirectory) &gt; nul</PreBuildEvent>
-    <PostBuildEvent>erase $(MSBuildProjectDirectory)\*.Xml</PostBuildEvent>  
-    <RunPostBuildEvent>Allways</RunPostBuildEvent>
+    <!-- The /y flag prevents error when the files already exist by automatically overwriting existing XML files -->
+    <PrebuildEvent>xcopy $(XmlDocFolder)*.xml $(MSBuildProjectDirectory) /y &gt; nul</PrebuildEvent>
+    <!-- The /q flag is to silently delete the files  -->
+    <PostBuildEvent>erase /q $(MSBuildProjectDirectory)\*.Xml</PostBuildEvent>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
     <DocumentationFile>$(AssemblyName).Xml</DocumentationFile>
     <DefineConstants>$(DefineConstants);DOC</DefineConstants>
     <EmitDebugInformation>false</EmitDebugInformation>
-	<GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
   </PropertyGroup>
 </Project>

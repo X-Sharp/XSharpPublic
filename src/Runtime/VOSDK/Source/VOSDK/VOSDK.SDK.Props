@@ -5,7 +5,6 @@
   <Import Project="Version.Props" />
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <Configurations>Debug;Release;Documentation;DocChinese</Configurations>
     <cs>True</cs>
     <NS>true</NS>
     <DefineConstants>$(DefineConstants);NETNEXT;RUNTIME</DefineConstants>

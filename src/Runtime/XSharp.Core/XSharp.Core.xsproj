@@ -21,12 +21,6 @@
     <StandardDefs />
     <DefineConstants>CPS;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <NoWarn />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <NoWarn />
-  </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(CommonInclude)\Constants.prg" />
     <compile Remove="CollationHelpers\*.prg" />

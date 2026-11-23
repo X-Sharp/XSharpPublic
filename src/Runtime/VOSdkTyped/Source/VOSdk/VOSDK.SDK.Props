@@ -4,16 +4,15 @@
   <Import Project="VOSDK.Common.Props" />
   <Import Project="Version.Props" />
   <PropertyGroup>
-    <Configurations>Debug;Release;Documentation;DocChinese</Configurations>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <cs>True</cs>
     <NS>true</NS>
     <DefineConstants>$(DefineConstants);NETNEXT;RUNTIME</DefineConstants>
-	<ImplicitlyExpandNETStandardFacades>false</ImplicitlyExpandNETStandardFacades>	
+	<ImplicitlyExpandNETStandardFacades>false</ImplicitlyExpandNETStandardFacades>
   </PropertyGroup>
   <PropertyGroup Condition="$(Configuration.Contains('Doc'))">
     <DocumentationFile>$(MSBuildProjectName).Xml</DocumentationFile>
-    <NoWarn>165,9032,170,618,9068,108,9043,169,9015,649,414,1591,1573</NoWarn>
+    <NoWarn>$(Nowarn);67;165,9032,170,618,9068,108,9043,169,9015,649,414,1591,1573</NoWarn>
     <CommandLineOption>/noclipcall</CommandLineOption>
   </PropertyGroup>
 </Project>

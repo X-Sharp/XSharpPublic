@@ -12,7 +12,6 @@
     <NamedArgs>true</NamedArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(Solutiondir)Common\constants.prg">

@@ -9,28 +9,3 @@
 // Multi-table UPDATE ... FROM is experimental and belongs to this test only.
 #command UPDATE <*tableName*> SET <*setclauses*> FROM <*fromclause*> ;
   [JOIN <*joinclause*>] [WHERE <*whereclause*>] => __SqlUpdate(<"udc">)
-
-// Test-only dispatch shims: the shared SQL rules are not selected for these
-// forms by the FoxPro command fallback, so route the supported SELECT subset.
-#command SELECT [<*distinct*>] [TOP <*topcount*>] <*selectlist*> ;
-  FROM <*tablelist*> ;
-  [WHERE <*whereclause*>] ;
-  [ORDER BY <*orderbylist*>] => __SqlSelect(<"udc">)
-
-#command SELECT <*selectlist*> ;
-  FROM <*tablelist*> ;
-  [WHERE <*whereclause*>] ;
-  [ORDER BY <*orderbylist*>] => __SqlSelect(<"udc">)
-
-#command SELECT [<*distinct*>] [TOP <*topcount*>] <*selectlist*> ;
-  FROM <*tablelist*> ;
-  [WHERE <*whereclause*>] ;
-  [ORDER BY <*orderbylist*>] ;
-  INTO CURSOR <(targetCursor)> => __SqlSelect(<"udc">)
-
-#command SELECT <*selectlist*> ;
-  FROM <*tablelist*> ;
-  [WHERE <*whereclause*>] ;
-  [ORDER BY <*orderbylist*>] ;
-  INTO CURSOR <(targetCursor)> => __SqlSelect(<"udc">)
-

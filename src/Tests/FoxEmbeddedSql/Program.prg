@@ -11,6 +11,8 @@ USING SYstem.Linq
 USING SYstem.Text
 USING XSharp.Parsers
 USING XSharp.RDD.Enums
+USING XSharp.Data
+USING XSharp.Data.Query
 
 #include "foxcmd.xh"
 #command __NOFOXPROSQL__ <any> => #error This Embedded SQL command is not (yet) supported: <(any)>
@@ -99,6 +101,7 @@ FUNCTION Start(args AS STRING[]) AS VOID STRICT
     RegisterTest("TestNewSqlFeatures", { => TestNewSqlFeatures() })
     RegisterTest("TestSelectFunctionality", { => TestSelectFunctionality() })
     RegisterTest("TestQueryOptimizer", { => TestQueryOptimizer() })
+    RegisterTest("TestOptimizerBitmap", { => TestOptimizerBitmap() })
     RegisterTest("TestMultiTableOptimizer", { => TestMultiTableOptimizer() })
 
     LOCAL results := RunTests()
@@ -1071,6 +1074,78 @@ FUNCTION TestQueryOptimizer() AS VOID
 
     USE IN test_optimizer_table
 
+    RETURN
+
+FUNCTION TestOptimizerBitmap() AS VOID
+    CREATE CURSOR optimizer_bitmap_table (Age N(3), City C(20))
+    INSERT INTO optimizer_bitmap_table VALUES (30, "New York")
+    INSERT INTO optimizer_bitmap_table VALUES (25, "Boston")
+    INSERT INTO optimizer_bitmap_table VALUES (35, "New York")
+    INSERT INTO optimizer_bitmap_table VALUES (30, "Chicago")
+    INSERT INTO optimizer_bitmap_table VALUES (40, "New York")
+
+    CREATE CURSOR optimizer_bitmap_other (Age N(3))
+    INSERT INTO optimizer_bitmap_other VALUES (30)
+
+    LOCAL tableAliases := Dictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase} AS Dictionary<STRING, STRING>
+    tableAliases["optimizer_bitmap_table"] := "optimizer_bitmap_table"
+    tableAliases["optimizer_bitmap_other"] := "optimizer_bitmap_other"
+
+    VAR andBitmap := QueryOptimizer.OptimizeQuery( ;
+        ParseSqlExpressionForTest("optimizer_bitmap_table.Age > 25 AND optimizer_bitmap_table.City = 'New York'"), ;
+        5, tableAliases)
+    IF andBitmap:IsAllMatch() .OR. andBitmap:CountMatches() != 3
+        THROW Exception{"Single-table AND bitmap should match exactly 3 rows"}
+    ENDIF
+    IF andBitmap:GetMatchState(1) != RecordBitmap.RecordMatchState.Match .OR. ;
+       andBitmap:GetMatchState(2) != RecordBitmap.RecordMatchState.NoMatch .OR. ;
+       andBitmap:GetMatchState(3) != RecordBitmap.RecordMatchState.Match .OR. ;
+       andBitmap:GetMatchState(4) != RecordBitmap.RecordMatchState.NoMatch .OR. ;
+       andBitmap:GetMatchState(5) != RecordBitmap.RecordMatchState.Match
+        THROW Exception{"Single-table AND bitmap contains incorrect record numbers"}
+    ENDIF
+
+    VAR orBitmap := QueryOptimizer.OptimizeQuery( ;
+        ParseSqlExpressionForTest("optimizer_bitmap_table.Age = 25 OR optimizer_bitmap_table.City = 'Chicago'"), ;
+        5, tableAliases)
+    IF orBitmap:IsAllMatch() .OR. orBitmap:CountMatches() != 2
+        THROW Exception{"Single-table OR bitmap should match exactly 2 rows"}
+    ENDIF
+    IF orBitmap:GetMatchState(2) != RecordBitmap.RecordMatchState.Match .OR. ;
+       orBitmap:GetMatchState(4) != RecordBitmap.RecordMatchState.Match
+        THROW Exception{"Single-table OR bitmap omitted an expected record"}
+    ENDIF
+
+    VAR multiTableBitmap := QueryOptimizer.OptimizeQuery( ;
+        ParseSqlExpressionForTest("optimizer_bitmap_table.Age = optimizer_bitmap_other.Age"), ;
+        5, tableAliases)
+    IF !multiTableBitmap:IsAllMatch()
+        THROW Exception{"Multi-table predicate must fall back instead of combining unrelated record domains"}
+    ENDIF
+
+    LOCAL tableRecordCounts := Dictionary<STRING, LONG>{StringComparer.OrdinalIgnoreCase} AS Dictionary<STRING, LONG>
+    tableRecordCounts["optimizer_bitmap_table"] := 5
+    tableRecordCounts["optimizer_bitmap_other"] := 1
+    VAR candidatePlan := QueryOptimizer.OptimizeMultiTableQuery( ;
+        ParseSqlExpressionForTest("optimizer_bitmap_table.Age > 25 AND optimizer_bitmap_table.City = 'New York' AND optimizer_bitmap_other.Age = 30"), ;
+        tableAliases, tableRecordCounts)
+    IF candidatePlan:CandidateBitmaps:Count != 2
+        THROW Exception{"Independent AND predicates should produce one candidate bitmap per table"}
+    ENDIF
+    IF candidatePlan:CandidateBitmaps["optimizer_bitmap_table"]:CountMatches() != 3 .OR. ;
+       candidatePlan:CandidateBitmaps["optimizer_bitmap_other"]:CountMatches() != 1
+        THROW Exception{"Per-table candidate bitmaps contain incorrect matches"}
+    ENDIF
+
+    VAR orCandidatePlan := QueryOptimizer.OptimizeMultiTableQuery( ;
+        ParseSqlExpressionForTest("optimizer_bitmap_table.Age = 30 OR optimizer_bitmap_other.Age = 30"), ;
+        tableAliases, tableRecordCounts)
+    IF orCandidatePlan:CandidateBitmaps:Count != 0
+        THROW Exception{"Cross-table OR must remain on the full WHERE evaluation path"}
+    ENDIF
+
+    DbCloseArea("optimizer_bitmap_other")
+    DbCloseArea("optimizer_bitmap_table")
     RETURN
 
 

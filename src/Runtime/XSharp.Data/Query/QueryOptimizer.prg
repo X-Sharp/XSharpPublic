@@ -40,6 +40,74 @@ PUBLIC CLASS QueryOptimizer
         emptyTableAliases := Dictionary<STRING, STRING>{}
         RETURN OptimizeQuery(query, recordCount, emptyTableAliases)
 
+    /// <summary>
+    /// Builds per-table candidate bitmaps from safe predicates in a multi-table WHERE expression.
+    /// The caller must still evaluate the complete expression for every remaining row combination.
+    /// </summary>
+    PUBLIC STATIC METHOD OptimizeMultiTableQuery(query AS SqlExpressionContext, ;
+        tableAliases AS Dictionary<STRING, STRING>, ;
+        tableRecordCounts AS Dictionary<STRING, LONG>) AS QueryOptimizationPlan
+
+        LOCAL plan := QueryOptimizationPlan{} AS QueryOptimizationPlan
+        IF query != NULL
+            CollectTableCandidates(query, tableAliases, tableRecordCounts, plan)
+        ENDIF
+        RETURN plan
+
+    PRIVATE STATIC METHOD CollectTableCandidates(expression AS SqlExpressionContext, ;
+        tableAliases AS Dictionary<STRING, STRING>, ;
+        tableRecordCounts AS Dictionary<STRING, LONG>, ;
+        plan AS QueryOptimizationPlan) AS VOID
+
+        // Parentheses do not change which table domains a safe candidate can constrain.
+        IF expression IS SqlParenExpressionContext VAR parenExpr
+            CollectTableCandidates(parenExpr:Expr, tableAliases, tableRecordCounts, plan)
+            RETURN
+        ENDIF
+
+        IF expression IS SqlLogicExpressionContext VAR logicExpr
+            // A same-table logical subtree has an exact bitmap representation. If an AND
+            // spans tables, visit each side independently to extract safe conjuncts.
+            IF IsOptimizable(expression, tableAliases)
+                AddTableCandidate(expression, tableAliases, tableRecordCounts, plan)
+            ELSEIF logicExpr:Op:Type == XTokenType.AND
+                CollectTableCandidates(logicExpr:Left, tableAliases, tableRecordCounts, plan)
+                CollectTableCandidates(logicExpr:Right, tableAliases, tableRecordCounts, plan)
+            ENDIF
+            RETURN
+        ENDIF
+
+        AddTableCandidate(expression, tableAliases, tableRecordCounts, plan)
+        RETURN
+
+    PRIVATE STATIC METHOD AddTableCandidate(expression AS SqlExpressionContext, ;
+        tableAliases AS Dictionary<STRING, STRING>, ;
+        tableRecordCounts AS Dictionary<STRING, LONG>, ;
+        plan AS QueryOptimizationPlan) AS VOID
+
+        IF !IsOptimizable(expression, tableAliases)
+            RETURN
+        ENDIF
+
+        VAR dependencies := expression:GetTableDependencies(tableAliases)
+        IF dependencies:Count != 1
+            RETURN
+        ENDIF
+
+        LOCAL recordCount AS LONG
+        IF !tableRecordCounts:TryGetValue(dependencies[0], OUT recordCount)
+            RETURN
+        ENDIF
+
+        VAR candidateBitmap := EvaluateOptimizableExpression(expression, recordCount, tableAliases)
+        LOCAL existingBitmap AS RecordBitmap
+        IF plan:CandidateBitmaps:TryGetValue(dependencies[0], OUT existingBitmap)
+            existingBitmap:And(candidateBitmap)
+        ELSE
+            plan:CandidateBitmaps[dependencies[0]] := candidateBitmap
+        ENDIF
+        RETURN
+
     PRIVATE STATIC METHOD IsOptimizable(expression AS SqlExpressionContext, tableAliases AS Dictionary<STRING, STRING>) AS LOGIC
         // An expression is optimizable if it depends on at most one table and contains comparisons
         IF expression IS SqlSimpleExpressionContext .OR. expression IS SqlCompositeExpressionContext
@@ -58,35 +126,21 @@ PUBLIC CLASS QueryOptimizer
             VAR rightInvariant := compExpr:Right:GetTableDependencies(tableAliases):Count == 0
             VAR leftOpt := IsOptimizable(compExpr:Left, tableAliases)
             VAR rightOpt := IsOptimizable(compExpr:Right, tableAliases)
-            RETURN leftOpt .AND. rightOpt .AND. (leftInvariant .OR. rightInvariant)
+            VAR dependencies := compExpr:GetTableDependencies(tableAliases)
+            RETURN leftOpt .AND. rightOpt .AND. dependencies:Count == 1 .AND. (leftInvariant .OR. rightInvariant)
         ENDIF
 
         IF expression IS SqlLogicExpressionContext VAR logicExpr
             VAR leftOpt := IsOptimizable(logicExpr:Left, tableAliases)
             VAR rightOpt := IsOptimizable(logicExpr:Right, tableAliases)
 
-            // Check that Left and Right don't share tables (independent expressions)
             IF leftOpt .AND. rightOpt
-                VAR leftDeps := logicExpr:GetTableDependencies(tableAliases)
-                VAR rightDeps := logicExpr:GetTableDependencies(tableAliases)
-
-                // Check no overlap between Left and Right dependencies
-                VAR hasOverlap := FALSE
-                FOREACH VAR dep IN leftDeps
-                    IF rightDeps:Contains(dep)
-                        hasOverlap := TRUE
-                        EXIT
-                    ENDIF
-                NEXT
-
-                IF !hasOverlap
-                    RETURN TRUE  // Independent single-table expressions combined with AND/OR
-                ELSE
-                    RETURN FALSE  // Shared table dependency - not optimizable for multi-table optimization
-                ENDIF
-            ELSE
-                RETURN FALSE
+                // A single RecordBitmap indexes one table's record numbers. Combining
+                // predicates is safe only when both sides share that same table domain.
+                VAR dependencies := logicExpr:GetTableDependencies(tableAliases)
+                RETURN dependencies:Count == 1
             ENDIF
+            RETURN FALSE
         ENDIF
 
         // For prefix expressions, check the inner expression

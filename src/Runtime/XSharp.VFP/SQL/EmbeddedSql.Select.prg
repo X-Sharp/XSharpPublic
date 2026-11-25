@@ -10,6 +10,7 @@ using XSharp.Parsers
 using XSharp.Internal
 using XSharp.RDD
 using XSharp.RDD.Support
+using XSharp.RDD.Enums
 using System.Collections.Generic
 using System.IO
 using System.Linq
@@ -45,6 +46,36 @@ INTERNAL CLASS SqlSelectResultRowComparer IMPLEMENTS IComparer<SqlSelectResultRo
             ENDIF
         NEXT
         RETURN left:Sequence:CompareTo(right:Sequence)
+END CLASS
+
+INTERNAL CLASS SqlAggregateState
+    PUBLIC PROPERTY FunctionName AS STRING AUTO
+    PUBLIC PROPERTY Count AS LONG AUTO
+    PUBLIC PROPERTY NumericTotal AS FLOAT AUTO
+    PUBLIC PROPERTY Value AS USUAL AUTO
+    PUBLIC PROPERTY HasValue AS LOGIC AUTO
+    INTERNAL CONSTRUCTOR(functionName AS STRING)
+        SELF:FunctionName := functionName
+        SELF:Count := 0
+        SELF:NumericTotal := 0
+        SELF:HasValue := FALSE
+        RETURN
+END CLASS
+
+INTERNAL CLASS SqlAggregateGroup
+    PUBLIC PROPERTY KeyValues AS USUAL[] AUTO
+    PUBLIC PROPERTY States AS Dictionary<SqlAggregateExpressionContext,SqlAggregateState> AUTO
+    PUBLIC PROPERTY Sequence AS LONG AUTO
+    PUBLIC PROPERTY InputCount AS LONG AUTO
+    INTERNAL CONSTRUCTOR(keyValues AS USUAL[], aggregates AS IList<SqlAggregateExpressionContext>, sequence AS LONG)
+        SELF:KeyValues := keyValues
+        SELF:Sequence := sequence
+        SELF:InputCount := 0
+        SELF:States := Dictionary<SqlAggregateExpressionContext,SqlAggregateState>{}
+        FOREACH VAR aggregate IN aggregates
+            SELF:States[aggregate] := SqlAggregateState{aggregate:FunctionName}
+        NEXT
+        RETURN
 END CLASS
 
 INTERNAL CLASS SqlHashJoinCursor
@@ -99,6 +130,284 @@ INTERNAL CLASS SqlHashJoinCursor
 END CLASS
 
 PARTIAL STATIC CLASS FoxEmbeddedSQL
+
+    PRIVATE STATIC METHOD CollectAggregates(expression AS SqlExpressionContext, aggregates AS List<SqlAggregateExpressionContext>, insideAggregate := FALSE AS LOGIC) AS VOID
+        IF expression == NULL
+            RETURN
+        ENDIF
+        IF expression IS SqlAggregateExpressionContext VAR aggregate
+            IF insideAggregate
+                THROW Error{"Nested aggregate functions are not supported"}
+            ENDIF
+            IF !aggregates:Contains(aggregate)
+                aggregates:Add(aggregate)
+            ENDIF
+            IF aggregate:Argument != NULL
+                CollectAggregates(aggregate:Argument, aggregates, TRUE)
+            ENDIF
+        ELSEIF expression IS SqlCompositeExpressionContext VAR composite
+            FOREACH VAR child IN composite:Exprs
+                CollectAggregates(child, aggregates, insideAggregate)
+            NEXT
+        ELSEIF expression IS SqlParenExpressionContext VAR parenthesized
+            CollectAggregates(parenthesized:Expr, aggregates, insideAggregate)
+        ELSEIF expression IS SqlBinaryExpressionContext VAR binary
+            CollectAggregates(binary:Left, aggregates, insideAggregate)
+            CollectAggregates(binary:Right, aggregates, insideAggregate)
+        ELSEIF expression IS SqlPrefixExpressionContext VAR prefix
+            CollectAggregates(prefix:Expr, aggregates, insideAggregate)
+        ENDIF
+        RETURN
+
+    PRIVATE STATIC METHOD AggregateLiteral(value AS USUAL) AS STRING
+        IF value:IsNull
+            RETURN "NIL"
+        ENDIF
+        SWITCH UsualType(value)
+        CASE __UsualType.String
+        CASE __UsualType.Memo
+            RETURN Chr(34) + value:ToString():Replace(Chr(34), Chr(34) + Chr(34)) + Chr(34)
+        CASE __UsualType.Logic
+            RETURN IIF((LOGIC)value, ".T.", ".F.")
+        CASE __UsualType.Date
+            RETURN "CTOD(" + Chr(34) + value:ToString():Replace(Chr(34), Chr(34) + Chr(34)) + Chr(34) + ")"
+        OTHERWISE
+            RETURN value:ToString():Replace(",", ".")
+        END SWITCH
+
+    PRIVATE STATIC METHOD GroupKey(groupValues AS USUAL[]) AS STRING
+        VAR key := StringBuilder{}
+        FOR LOCAL i := 1 AS INT TO groupValues:Length
+            VAR value := groupValues[i]
+            VAR textValue := IIF(value:IsNull, "", value:ToString())
+            IF UsualType(value) == __UsualType.String
+                textValue := AllTrim(textValue):ToUpperInvariant()
+            ELSEIF !value:IsNull .AND. IsAggregateNumeric(value)
+                textValue := ((FLOAT)value):ToString("R", System.Globalization.CultureInfo.InvariantCulture)
+            ENDIF
+            key:Append(UsualType(value):ToString())
+            key:Append(":")
+            key:Append(textValue:Length)
+            key:Append(":")
+            key:Append(textValue)
+            key:Append("|")
+        NEXT
+        RETURN key:ToString()
+
+    PRIVATE STATIC METHOD IsAggregateNumeric(value AS USUAL) AS LOGIC
+        SWITCH UsualType(value)
+        CASE __UsualType.Long
+        CASE __UsualType.Float
+        CASE __UsualType.Fixed
+        CASE __UsualType.Byte
+        CASE __UsualType.ShortInt
+        CASE __UsualType.Word
+        CASE __UsualType.DWord
+        CASE __UsualType.Real4
+        CASE __UsualType.Real8
+        CASE __UsualType.Int64
+        CASE __UsualType.UInt64
+        CASE __UsualType.Decimal
+        CASE __UsualType.Currency
+            RETURN TRUE
+        OTHERWISE
+            RETURN FALSE
+        END SWITCH
+
+    PRIVATE STATIC METHOD UpdateAggregate(state AS SqlAggregateState, value AS USUAL, isStar AS LOGIC) AS VOID
+        IF state:FunctionName == "COUNT" .OR. state:FunctionName == "CNT"
+            IF isStar .OR. !value:IsNull
+                state:Count++
+            ENDIF
+            RETURN
+        ENDIF
+        IF value:IsNull
+            RETURN
+        ENDIF
+        VAR valueType := UsualType(value)
+        IF state:FunctionName == "SUM" .OR. state:FunctionName == "AVG"
+            SWITCH valueType
+            CASE __UsualType.Long
+            CASE __UsualType.Float
+            CASE __UsualType.Fixed
+            CASE __UsualType.Byte
+            CASE __UsualType.ShortInt
+            CASE __UsualType.Word
+            CASE __UsualType.DWord
+            CASE __UsualType.Real4
+            CASE __UsualType.Real8
+            CASE __UsualType.Int64
+            CASE __UsualType.UInt64
+            CASE __UsualType.Decimal
+            CASE __UsualType.Currency
+                state:NumericTotal += (FLOAT)value
+                state:Count++
+            OTHERWISE
+                THROW Error{i"{state:FunctionName} requires a numeric expression"}
+            END SWITCH
+            RETURN
+        ENDIF
+        IF !state:HasValue
+            state:Value := value
+            state:HasValue := TRUE
+            RETURN
+        ENDIF
+        VAR comparison := value:CompareTo(state:Value)
+        IF (state:FunctionName == "MIN" .AND. comparison < 0) .OR. ;
+           (state:FunctionName == "MAX" .AND. comparison > 0)
+            state:Value := value
+        ENDIF
+        state:Count++
+        RETURN
+
+    PRIVATE STATIC METHOD AggregateValue(aggregate AS SqlAggregateExpressionContext, group AS SqlAggregateGroup) AS USUAL
+        VAR state := group:States[aggregate]
+        IF group:InputCount == 0
+            RETURN NIL
+        ENDIF
+        SWITCH state:FunctionName
+        CASE "COUNT"
+        CASE "CNT"
+            RETURN state:Count
+        CASE "SUM"
+            IF state:Count == 0
+                RETURN NIL
+            ENDIF
+            RETURN state:NumericTotal
+        CASE "AVG"
+            IF state:Count == 0
+                RETURN NIL
+            ENDIF
+            RETURN state:NumericTotal / state:Count
+        CASE "MIN"
+        CASE "MAX"
+            IF !state:HasValue
+                RETURN NIL
+            ENDIF
+            RETURN state:Value
+        OTHERWISE
+            THROW Error{"Unsupported aggregate function: " + state:FunctionName}
+        END SWITCH
+
+    PRIVATE STATIC METHOD GroupExpressionValue(expression AS SqlExpressionContext, selectCtx AS FoxSelectContext, ;
+        group AS SqlAggregateGroup, aggregates AS List<SqlAggregateExpressionContext>, groupExpressions AS IList<SqlExpressionContext>) AS STRING
+        FOR LOCAL groupIndex := 0 AS INT TO groupExpressions:Count - 1
+            IF expression:ToResolvedString(selectCtx:TableAliases):Equals( ;
+               groupExpressions[groupIndex]:ToResolvedString(selectCtx:TableAliases), StringComparison.OrdinalIgnoreCase)
+                RETURN AggregateLiteral(group:KeyValues[groupIndex+1])
+            ENDIF
+        NEXT
+        IF expression IS SqlAggregateExpressionContext VAR aggregate
+            RETURN AggregateLiteral(AggregateValue(aggregate, group))
+        ENDIF
+        IF expression IS SqlNameExpressionContext VAR name
+            FOR LOCAL selectIndex := 0 AS INT TO selectCtx:FieldSelectionList:Count - 1
+                IF !String.IsNullOrEmpty(selectCtx:FieldSelectionList[selectIndex]:Alias) .AND. ;
+                   name:Name:Equals(selectCtx:FieldSelectionList[selectIndex]:Alias, StringComparison.OrdinalIgnoreCase)
+                    FOR LOCAL groupIndex := 0 AS INT TO groupExpressions:Count - 1
+                        IF selectCtx:FieldSelectionList[selectIndex]:Expression:ToResolvedString(selectCtx:TableAliases):Equals( ;
+                           groupExpressions[groupIndex]:ToResolvedString(selectCtx:TableAliases), StringComparison.OrdinalIgnoreCase)
+                            RETURN AggregateLiteral(group:KeyValues[groupIndex+1])
+                        ENDIF
+                    NEXT
+                    RETURN GroupExpressionValue(selectCtx:FieldSelectionList[selectIndex]:Expression, ;
+                        selectCtx, group, aggregates, groupExpressions)
+                ENDIF
+            NEXT
+            FOR LOCAL i := 0 AS INT TO groupExpressions:Count - 1
+                IF groupExpressions[i] IS SqlNameExpressionContext VAR groupName
+                    IF name:Name:Equals(groupName:Name, StringComparison.OrdinalIgnoreCase) .AND. ;
+                       (String.IsNullOrEmpty(name:Table) .OR. String.IsNullOrEmpty(groupName:Table) .OR. ;
+                        name:Table:Equals(groupName:Table, StringComparison.OrdinalIgnoreCase))
+                        RETURN AggregateLiteral(group:KeyValues[i+1])
+                    ENDIF
+                ENDIF
+                IF groupExpressions[i]:ToString():Equals(name:Name, StringComparison.OrdinalIgnoreCase) .AND. ;
+                   i < selectCtx:SelectList:Count
+                    RETURN AggregateLiteral(group:KeyValues[i+1])
+                ENDIF
+                IF i < selectCtx:FieldSelectionList:Count .AND. ;
+                   !String.IsNullOrEmpty(selectCtx:FieldSelectionList[i]:Alias) .AND. ;
+                   name:Name:Equals(selectCtx:FieldSelectionList[i]:Alias, StringComparison.OrdinalIgnoreCase)
+                    RETURN AggregateLiteral(group:KeyValues[i+1])
+                ENDIF
+            NEXT
+            THROW Error{"Column '" + name:Name + "' must appear in GROUP BY or be used in an aggregate"}
+        ENDIF
+        IF expression IS SqlCompositeExpressionContext VAR composite
+            VAR sb := StringBuilder{}
+            FOREACH VAR child IN composite:Exprs
+                sb:Append(GroupExpressionValue(child, selectCtx, group, aggregates, groupExpressions))
+            NEXT
+            RETURN sb:ToString()
+        ENDIF
+        IF expression IS SqlParenExpressionContext VAR paren
+            RETURN "(" + GroupExpressionValue(paren:Expr, selectCtx, group, aggregates, groupExpressions) + ")"
+        ENDIF
+        IF expression IS SqlBinaryExpressionContext VAR binary
+            RETURN GroupExpressionValue(binary:Left, selectCtx, group, aggregates, groupExpressions) + ;
+                binary:Op:Leadingws + binary:Op:Text + ;
+                GroupExpressionValue(binary:Right, selectCtx, group, aggregates, groupExpressions)
+        ENDIF
+        IF expression IS SqlPrefixExpressionContext VAR prefix
+            RETURN prefix:Op:Text + GroupExpressionValue(prefix:Expr, selectCtx, group, aggregates, groupExpressions)
+        ENDIF
+        RETURN expression:ToResolvedString(selectCtx:TableAliases)
+
+    PRIVATE STATIC METHOD ResolveGroupItem(groupItem AS SqlExpressionContext, selectCtx AS FoxSelectContext) AS SqlExpressionContext
+        IF groupItem IS SqlSimpleExpressionContext VAR simple .AND. simple:Tokens:Count == 1
+            IF Int32.TryParse(simple:Tokens[0]:Text, OUT VAR ordinal)
+                IF ordinal < 1 .OR. ordinal > selectCtx:SelectList:Count
+                    THROW Error{"GROUP BY ordinal is outside the SELECT list"}
+                ENDIF
+                RETURN selectCtx:SelectList[ordinal-1]
+            ENDIF
+        ENDIF
+        IF groupItem IS SqlNameExpressionContext VAR aliasName
+            FOR LOCAL i := 0 AS INT TO selectCtx:FieldSelectionList:Count - 1
+                IF !String.IsNullOrEmpty(selectCtx:FieldSelectionList[i]:Alias) .AND. ;
+                   aliasName:Name:Equals(selectCtx:FieldSelectionList[i]:Alias, StringComparison.OrdinalIgnoreCase)
+                    RETURN selectCtx:FieldSelectionList[i]:Expression
+                ENDIF
+            NEXT
+        ENDIF
+        RETURN groupItem
+
+    PRIVATE STATIC METHOD EvaluateGroupedExpression(expression AS SqlExpressionContext, selectCtx AS FoxSelectContext, ;
+        group AS SqlAggregateGroup, aggregates AS List<SqlAggregateExpressionContext>, ;
+        groupExpressions AS IList<SqlExpressionContext>) AS USUAL
+        IF group:InputCount == 0
+            RETURN NIL
+        ENDIF
+        IF expression IS SqlAggregateExpressionContext VAR aggregate
+            RETURN AggregateValue(aggregate, group)
+        ENDIF
+        FOR LOCAL i := 0 AS INT TO groupExpressions:Count - 1
+            IF expression:ToResolvedString(selectCtx:TableAliases):Equals( ;
+               groupExpressions[i]:ToResolvedString(selectCtx:TableAliases), StringComparison.OrdinalIgnoreCase)
+                RETURN group:KeyValues[i+1]
+            ENDIF
+        NEXT
+        VAR source := GroupExpressionValue(expression, selectCtx, group, aggregates, groupExpressions)
+        VAR groupEvalBlock := MCompile(source)
+        IF groupEvalBlock == NULL
+            THROW Error{"Could not compile grouped expression: " + source}
+        ENDIF
+        RETURN groupEvalBlock:Eval()
+
+    PRIVATE STATIC METHOD UpdateGroup(group AS SqlAggregateGroup, aggregates AS List<SqlAggregateExpressionContext>, ;
+        aggregateCodeBlocks AS Dictionary<SqlAggregateExpressionContext,CODEBLOCK>) AS VOID
+        group:InputCount++
+        FOREACH VAR aggregate IN aggregates
+            LOCAL value AS USUAL
+            IF aggregate:IsStar
+                value := NIL
+            ELSE
+                value := aggregateCodeBlocks[aggregate]:Eval()
+            ENDIF
+            UpdateAggregate(group:States[aggregate], value, aggregate:IsStar)
+        NEXT
+        RETURN
 
     PRIVATE STATIC METHOD FindHashJoinKey(expression AS SqlExpressionContext, ;
         tableAliases AS IDictionary<STRING,STRING>, outerTable AS STRING, innerTable AS STRING, ;
@@ -326,6 +635,11 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 IF expr IS SqlNameExpressionContext VAR nameCtx
                     exprTable := nameCtx:Table
                     exprField := nameCtx:Name
+                ELSEIF expr IS SqlAggregateExpressionContext VAR schemaAggregate .AND. ;
+                       (schemaAggregate:FunctionName == "MIN" .OR. schemaAggregate:FunctionName == "MAX") .AND. ;
+                       schemaAggregate:Argument IS SqlNameExpressionContext VAR schemaName
+                    exprTable := schemaName:Table
+                    exprField := schemaName:Name
                 ENDIF
 
                 IF ! System.String.IsNullOrEmpty(exprTable)
@@ -355,10 +669,28 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 AAdd(selectExpressions, resolvedExprStr)
 
                 IF fieldFound .AND. fieldInfo != NULL
-                    AAdd(fieldList, {exprStr, fieldInfo[2], fieldInfo[3], fieldInfo[4], exprStr, fieldInfo[6]})
+                    LOCAL expressionAggregates := List<SqlAggregateExpressionContext>{} AS List<SqlAggregateExpressionContext>
+                    CollectAggregates(expr, expressionAggregates)
+                    IF expressionAggregates:Count > 0
+                        AAdd(fieldList, {exprStr, fieldInfo[2], fieldInfo[3], fieldInfo[4], exprStr, ;
+                            ((LONG)fieldInfo[6]) | (LONG)DBFFieldFlags.Nullable})
+                    ELSE
+                        AAdd(fieldList, {exprStr, fieldInfo[2], fieldInfo[3], fieldInfo[4], exprStr, fieldInfo[6]})
+                    ENDIF
                 ELSE
-                    // If field doesn't exist in source, assume it's an expression (TODO: determine the type)
-                    AAdd(fieldList, {exprStr, "C", 50, 0, exprStr, 0})
+                    LOCAL expressionAggregates := List<SqlAggregateExpressionContext>{} AS List<SqlAggregateExpressionContext>
+                    CollectAggregates(expr, expressionAggregates)
+                    IF expressionAggregates:Count > 0
+                        LOCAL aggregateFunction := expressionAggregates[0]:FunctionName AS STRING
+                        IF aggregateFunction == "COUNT" .OR. aggregateFunction == "CNT"
+                            AAdd(fieldList, {exprStr, "N", 10, 0, exprStr, (LONG)DBFFieldFlags.Nullable})
+                        ELSE
+                            AAdd(fieldList, {exprStr, "N", 20, 4, exprStr, (LONG)DBFFieldFlags.Nullable})
+                        ENDIF
+                    ELSE
+                        // If field doesn't exist in source, assume it's an expression.
+                        AAdd(fieldList, {exprStr, "C", 50, 0, exprStr, 0})
+                    ENDIF
                 ENDIF
             NEXT
         ENDIF
@@ -500,9 +832,91 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         ENDIF
 
         LOCAL hasOrderBy := selectCtx:OrderByClause:Count > 0 AS LOGIC
+        LOCAL aggregates := List<SqlAggregateExpressionContext>{} AS List<SqlAggregateExpressionContext>
+        FOREACH VAR selectExpression IN selectCtx:SelectList
+            CollectAggregates(selectExpression, aggregates)
+        NEXT
+        CollectAggregates(selectCtx:HavingClause, aggregates)
+        FOREACH VAR orderItem IN selectCtx:OrderByClause
+            CollectAggregates(orderItem:Expression, aggregates)
+        NEXT
+        LOCAL aggregateMode := aggregates:Count > 0 .OR. selectCtx:GroupByItems:Count > 0 AS LOGIC
+        LOCAL groupExpressions := List<SqlExpressionContext>{} AS List<SqlExpressionContext>
+        LOCAL groupCodeBlocks := List<CODEBLOCK>{} AS List<CODEBLOCK>
+        LOCAL aggregateCodeBlocks := Dictionary<SqlAggregateExpressionContext,CODEBLOCK>{} AS Dictionary<SqlAggregateExpressionContext,CODEBLOCK>
+        LOCAL havingCodeBlock AS CODEBLOCK
+        LOCAL hasRowHaving := selectCtx:HavingClause != NULL .AND. !aggregateMode AS LOGIC
+        IF aggregateMode
+            IF hasStarSelection
+                THROW Error{"SELECT * is not valid with GROUP BY or aggregate functions"}
+            ENDIF
+            FOREACH VAR groupItem IN selectCtx:GroupByItems
+                VAR resolvedGroupItem := ResolveGroupItem(groupItem, selectCtx)
+                VAR groupAggregates := List<SqlAggregateExpressionContext>{}
+                CollectAggregates(resolvedGroupItem, groupAggregates)
+                IF groupAggregates:Count > 0
+                    THROW Error{"Aggregate functions are not allowed in GROUP BY"}
+                ENDIF
+                IF resolvedGroupItem IS SqlNameExpressionContext VAR groupField
+                    LOCAL sourceTable := groupField:Table AS STRING
+                    IF !String.IsNullOrEmpty(sourceTable)
+                        selectCtx:TableAliases:TryGetValue(sourceTable, OUT sourceTable)
+                    ELSE
+                        FOREACH VAR tableAlias IN selectCtx:TableAliases
+                            VAR candidateTable := tableAlias:Value
+                            VAR fieldPosition := (candidateTable)->FieldPos(groupField:Name)
+                            IF fieldPosition > 0
+                                sourceTable := candidateTable
+                                EXIT
+                            ENDIF
+                        NEXT
+                    ENDIF
+                    IF !String.IsNullOrEmpty(sourceTable)
+                        VAR fieldPosition := (sourceTable)->FieldPos(groupField:Name)
+                        IF fieldPosition > 0
+                            VAR groupFieldType := ((STRING)(sourceTable)->DbStruct()[fieldPosition][2]):ToUpperInvariant()
+                            IF groupFieldType == "M" .OR. groupFieldType == "G" .OR. groupFieldType == "W"
+                                THROW Error{"Memo, General, and Blob fields cannot be used as GROUP BY keys"}
+                            ENDIF
+                        ENDIF
+                    ENDIF
+                ENDIF
+                groupExpressions:Add(resolvedGroupItem)
+                VAR groupExpression := resolvedGroupItem:ToResolvedString(selectCtx:TableAliases)
+                VAR groupCodeBlock := MCompile(groupExpression)
+                IF groupCodeBlock == NULL
+                    THROW Error{"Could not compile GROUP BY expression: " + groupExpression}
+                ENDIF
+                groupCodeBlocks:Add(groupCodeBlock)
+            NEXT
+            FOREACH VAR aggregate IN aggregates
+                IF aggregate:FunctionName != "COUNT" .AND. aggregate:FunctionName != "CNT" .AND. ;
+                   aggregate:FunctionName != "SUM" .AND. aggregate:FunctionName != "AVG" .AND. ;
+                   aggregate:FunctionName != "MIN" .AND. aggregate:FunctionName != "MAX"
+                    THROW Error{"Unsupported aggregate function: " + aggregate:FunctionName}
+                ENDIF
+                IF !aggregate:IsStar
+                    VAR argument := aggregate:Argument:ToResolvedString(selectCtx:TableAliases)
+                    VAR argumentCodeBlock := MCompile(argument)
+                    IF argumentCodeBlock == NULL
+                        THROW Error{"Could not compile aggregate argument: " + argument}
+                    ENDIF
+                    aggregateCodeBlocks[aggregate] := argumentCodeBlock
+                ELSEIF aggregate:FunctionName != "COUNT" .AND. aggregate:FunctionName != "CNT"
+                    THROW Error{"Only COUNT(*) is supported with '*'"}
+                ENDIF
+            NEXT
+        ENDIF
+        IF hasRowHaving
+            VAR havingExpression := selectCtx:HavingClause:ToResolvedString(selectCtx:TableAliases)
+            havingCodeBlock := MCompile(havingExpression)
+            IF havingCodeBlock == NULL
+                THROW Error{"Could not compile HAVING expression: " + havingExpression}
+            ENDIF
+        ENDIF
         LOCAL orderCodeBlocks := List<CODEBLOCK>{} AS List<CODEBLOCK>
         LOCAL orderedRows := List<SqlSelectResultRow>{} AS List<SqlSelectResultRow>
-        IF hasOrderBy
+        IF hasOrderBy .AND. !aggregateMode
             FOREACH VAR orderItem IN selectCtx:OrderByClause
                 VAR orderExpression := orderItem:Expression:ToResolvedString(selectCtx:TableAliases)
                 VAR orderCodeBlock := MCompile(orderExpression)
@@ -515,6 +929,13 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
 
         LOCAL recordCount AS DWORD
         recordCount := 0
+        LOCAL aggregateGroups := Dictionary<STRING,SqlAggregateGroup>{} AS Dictionary<STRING,SqlAggregateGroup>
+        LOCAL aggregateGroupList := List<SqlAggregateGroup>{} AS List<SqlAggregateGroup>
+        IF aggregateMode .AND. groupExpressions:Count == 0
+            VAR emptyGroup := SqlAggregateGroup{USUAL[]{0}, aggregates, 0}
+            aggregateGroups[""] := emptyGroup
+            aggregateGroupList:Add(emptyGroup)
+        ENDIF
 
         // Perform cross join by iterating through all possible combinations
         LOCAL tablePositions AS ARRAY
@@ -531,6 +952,12 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         LOCAL currentOuterRecNo AS LONG
         LOCAL currentInnerRecNo AS LONG
         continueProcessing := TRUE
+        FOR LOCAL tableIndex := 1 AS DWORD TO ALen(tableNames)
+            IF (tableNames[tableIndex])->Eof()
+                continueProcessing := FALSE
+                EXIT
+            ENDIF
+        NEXT
         IF continueProcessing .AND. useHashJoin
             continueProcessing := hashJoinCursor:MoveNext(OUT currentOuterRecNo, OUT currentInnerRecNo)
             IF continueProcessing
@@ -587,8 +1014,30 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 ENDIF
             ENDIF
 
+            IF includeRecord .AND. hasRowHaving
+                TRY
+                    includeRecord := havingCodeBlock:Eval()
+                CATCH ex AS Exception
+                    includeRecord := FALSE
+                END TRY
+            ENDIF
+
             // If the record matches the criteria, add it to the result
             IF includeRecord
+                IF aggregateMode
+                    LOCAL keyValues := USUAL[]{groupCodeBlocks:Count} AS USUAL[]
+                    FOR LOCAL keyIndex := 1 AS INT TO groupCodeBlocks:Count
+                        keyValues[keyIndex] := groupCodeBlocks[keyIndex-1]:Eval()
+                    NEXT
+                    VAR key := GroupKey(keyValues)
+                    LOCAL group AS SqlAggregateGroup
+                    IF !aggregateGroups:TryGetValue(key, OUT group)
+                        group := SqlAggregateGroup{keyValues, aggregates, (LONG)aggregateGroupList:Count}
+                        aggregateGroups[key] := group
+                        aggregateGroupList:Add(group)
+                    ENDIF
+                    UpdateGroup(group, aggregates, aggregateCodeBlocks)
+                ELSE
                 // Get values from current record combination
                 LOCAL sourceValues AS USUAL[]
                 sourceValues := USUAL[]{ALen(selectFieldNames)}
@@ -632,6 +1081,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                         continueProcessing := FALSE
                     ENDIF
                 ENDIF
+                ENDIF // aggregateMode
             ENDIF
 
             // Only continue if we haven't reached the TOP limit
@@ -687,6 +1137,43 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             ENDIF
         ENDDO
 
+        IF aggregateMode
+            FOREACH VAR group IN aggregateGroupList
+                IF selectCtx:HavingClause != NULL
+                    VAR havingValue := EvaluateGroupedExpression(selectCtx:HavingClause, selectCtx, group, aggregates, groupExpressions)
+                    IF havingValue:IsNull .OR. !(LOGIC)havingValue
+                        LOOP
+                    ENDIF
+                ENDIF
+                LOCAL resultValues := USUAL[]{selectCtx:SelectList:Count} AS USUAL[]
+                FOR LOCAL selectIndex := 0 AS INT TO selectCtx:SelectList:Count - 1
+                    resultValues[selectIndex+1] := EvaluateGroupedExpression( ;
+                        selectCtx:SelectList[selectIndex], selectCtx, group, aggregates, groupExpressions)
+                NEXT
+                LOCAL recordAdded := TRUE AS LOGIC
+                IF isDistinct
+                    VAR distinctKey := GroupKey(resultValues)
+                    recordAdded := !distinctValues:Contains(distinctKey)
+                    IF recordAdded
+                        distinctValues:Add(distinctKey)
+                    ENDIF
+                ENDIF
+                IF recordAdded
+                    IF hasOrderBy
+                        LOCAL sortValues := USUAL[]{selectCtx:OrderByClause:Count} AS USUAL[]
+                        FOR LOCAL orderIndex := 0 AS INT TO selectCtx:OrderByClause:Count - 1
+                            sortValues[orderIndex+1] := EvaluateGroupedExpression( ;
+                                selectCtx:OrderByClause[orderIndex]:Expression, selectCtx, group, aggregates, groupExpressions)
+                        NEXT
+                        orderedRows:Add(SqlSelectResultRow{resultValues, sortValues, group:Sequence})
+                    ELSEIF maxRecords <= 0 .OR. recordCount < maxRecords
+                        AppendSelectResult(resultTable, fieldList, resultValues)
+                    ENDIF
+                    recordCount++
+                ENDIF
+            NEXT
+        ENDIF
+
         IF hasOrderBy
             orderedRows:Sort(SqlSelectResultRowComparer{selectCtx:OrderByClause})
             LOCAL rowsToWrite := orderedRows:Count AS LONG
@@ -713,7 +1200,11 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
     STATIC METHOD AppendSelectResult(resultTable AS STRING, fieldList AS ARRAY, sourceValues AS USUAL[]) AS VOID
         (resultTable)->DbAppend()
         FOR LOCAL i := 1 AS DWORD TO sourceValues:Length
-            IF fieldList[i][2] == "C"
+            // Nullable DBF fields start with their null bit set after append.
+            // Leave that value intact instead of coercing NIL to the field type.
+            IF sourceValues[i]:IsNull
+                LOOP
+            ELSEIF fieldList[i][2] == "C"
                 (resultTable)->FieldPut(i, sourceValues[i]:ToString())
             ELSE
                 (resultTable)->FieldPut(i, sourceValues[i])
@@ -731,9 +1222,23 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         IF expr IS SqlNameExpressionContext VAR nameCtx
             // For name expressions, use the name part
             result := nameCtx:Name
+        ELSEIF expr IS SqlAggregateExpressionContext VAR aggregate
+            VAR functionName := aggregate:FunctionName
+            IF functionName == "COUNT"
+                functionName := "CNT"
+            ENDIF
+            VAR argumentName := "ROWS"
+            IF aggregate:Argument IS SqlNameExpressionContext VAR aggregateName
+                argumentName := aggregateName:Name
+            ENDIF
+            result := functionName + "_" + argumentName
         ELSEIF expr IS SqlCompositeExpressionContext VAR compCtx
-            // For composite expressions, use the first name if available
-            IF compCtx:Names:Count > 0
+            VAR expressionAggregates := List<SqlAggregateExpressionContext>{}
+            CollectAggregates(expr, expressionAggregates)
+            IF expressionAggregates:Count > 0
+                result := "EXP"
+            // For ordinary composite expressions, preserve the existing name rule.
+            ELSEIF compCtx:Names:Count > 0
                 result := compCtx:Names[0]:Name
             ELSE
                 result := compCtx:ToString()

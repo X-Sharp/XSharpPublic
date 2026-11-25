@@ -231,7 +231,7 @@ PARTIAL CLASS SQLParser
                 IF SELF:_parsingOrderBy .AND. isOrderDirection .AND. (tokens:Count > 0 .OR. terms:Count > 0)
                     done := TRUE
                 ELSE
-                    IF tokens:Count == 0 .AND. terms:Count == 0 .AND. SELF:La2 == XTokenType.LPAREN .AND. ;
+                    IF SELF:La2 == XTokenType.LPAREN .AND. ;
                        (SELF:Lt1:Text:Equals("COUNT", StringComparison.OrdinalIgnoreCase) .OR. ;
                         SELF:Lt1:Text:Equals("CNT", StringComparison.OrdinalIgnoreCase) .OR. ;
                         SELF:Lt1:Text:Equals("SUM", StringComparison.OrdinalIgnoreCase) .OR. ;
@@ -241,6 +241,7 @@ PARTIAL CLASS SQLParser
                         VAR functionName := SELF:ConsumeAndGetText()
                         SELF:Consume() // opening parenthesis
                         VAR aggregate := SqlAggregateExpressionContext{} { FunctionName := functionName:ToUpperInvariant() }
+                        AddPartialTerm()
                         IF SELF:Matches(XTokenType.MULT)
                             aggregate:IsStar := TRUE
                             SELF:Consume()

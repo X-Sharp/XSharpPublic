@@ -13,6 +13,7 @@ USING XSharp.Parsers
 USING XSharp.RDD.Enums
 USING XSharp.Data
 USING XSharp.Data.Query
+USING XSharp.VFP
 
 #include "foxcmd.xh"
 
@@ -772,6 +773,89 @@ FUNCTION TestSelectFunctionality() AS VOID
               {1}, ;
               {2} } )
 
+    // GROUP BY, aggregate execution, HAVING aliases, and aggregate schema.
+    SELECT Age, COUNT(*) AS OrderCount, SUM(Id) AS TotalId ;
+        FROM test_select_table GROUP BY Age HAVING OrderCount >= 2 ORDER BY TotalId DESC
+    VerifyTable(1, "Failed: GROUP BY/HAVING should return the matching age group", FALSE, ;
+        { {30, 2, 5} } )
+    VAR groupedStruct := DbStruct()
+    IF FCount() != 3 .OR. groupedStruct[2][1]:ToString():Trim():ToUpperInvariant() != "ORDERCOUNT" .OR. ;
+       groupedStruct[3][1]:ToString():Trim():ToUpperInvariant() != "TOTALID" .OR. ;
+       groupedStruct[2][2]:ToString():Trim():ToUpperInvariant() != "N" .OR. ;
+       groupedStruct[3][2]:ToString():Trim():ToUpperInvariant() != "N"
+        THROW Exception{"Aggregate aliases and numeric DBF field types should be preserved"}
+    ENDIF
+    USE IN QUERYRESULT
+
+    SELECT Age, SUM(Id) / COUNT(*) + Age AS Adjusted ;
+        FROM test_select_table GROUP BY Age HAVING COUNT(*) > 1 ORDER BY Adjusted
+    VerifyTable(1, "Failed: composed aggregate expressions should use grouped values", TRUE, ;
+        { {30, 32.5} } )
+
+    SELECT AVG(Id), MIN(Name), MAX(Name), CNT(Name) FROM test_select_table
+    VerifyTable(1, "Failed: AVG/MIN/MAX/CNT should calculate over the global group", FALSE, ;
+        { {2.5, "Alice Brown", "John Doe", 4} } )
+    VAR aggregateStruct := DbStruct()
+    IF FCount() != 4 .OR. aggregateStruct[1][2] != "N" .OR. ;
+       aggregateStruct[2][2] != "C" .OR. aggregateStruct[3][2] != "C" .OR. aggregateStruct[4][2] != "N"
+        THROW Exception{"Implicit aggregate columns should retain aggregate result types"}
+    ENDIF
+    USE IN QUERYRESULT
+
+    LOCAL rejectedAggregateQuery := FALSE AS LOGIC
+    TRY
+        __SqlSelect("SELECT SUM(COUNT(Id)) FROM test_select_table")
+    CATCH aggregateError AS Exception
+        rejectedAggregateQuery := TRUE
+    END TRY
+    IF !rejectedAggregateQuery
+        THROW Exception{"Nested aggregate functions should be rejected"}
+    ENDIF
+
+    rejectedAggregateQuery := FALSE
+    TRY
+        __SqlSelect("SELECT Name, COUNT(*) FROM test_select_table GROUP BY Age")
+    CATCH groupingError AS Exception
+        rejectedAggregateQuery := TRUE
+    END TRY
+    IF !rejectedAggregateQuery
+        THROW Exception{"Ungrouped projected fields should be rejected"}
+    ENDIF
+
+    SELECT Age AS GroupAge, COUNT(*) AS RowCount FROM test_select_table GROUP BY GroupAge ORDER BY GroupAge
+    VerifyTable(3, "Failed: GROUP BY should resolve a SELECT-list alias", TRUE, ;
+        { {25, 1}, {30, 2}, {35, 1} } )
+
+    SELECT Age, COUNT(*) AS RowCount FROM test_select_table GROUP BY 1 ORDER BY Age
+    VerifyTable(3, "Failed: GROUP BY should resolve a SELECT-list ordinal", TRUE, ;
+        { {25, 1}, {30, 2}, {35, 1} } )
+
+    SELECT Name FROM test_select_table HAVING Id > 2 ORDER BY Id
+    VerifyTable(2, "Failed: HAVING without grouping should filter source rows", TRUE, ;
+        { {"Bob Johnson"}, {"Alice Brown"} } )
+
+    SELECT Age, Name, COUNT(*) AS RowCount FROM test_select_table GROUP BY Age, Name ORDER BY Age, Name
+    VerifyTable(4, "Failed: multiple GROUP BY keys should form distinct groups", TRUE, ;
+        { {25, "Jane Smith", 1}, ;
+          {30, "Alice Brown", 1}, ;
+          {30, "John Doe", 1}, ;
+          {35, "Bob Johnson", 1} } )
+
+    SELECT COUNT(*), SUM(Id) FROM test_select_table
+    VerifyTable(1, "Failed: global aggregate should return one row", TRUE, { {4, 10} } )
+
+    CREATE CURSOR empty_aggregate_source (Id N(5))
+    SELECT COUNT(*), SUM(Id) FROM empty_aggregate_source
+    IF RecCount() != 1
+        THROW Exception{"Failed: empty global aggregate should return one result row"}
+    ENDIF
+    GO TOP
+    IF !IsNull(FieldGet(1)) .OR. !IsNull(FieldGet(2))
+        THROW Exception{"Failed: empty global aggregate fields should be NULL"}
+    ENDIF
+    DbCloseArea()
+    USE IN empty_aggregate_source
+
     // Test cross join with multiple tables
     IF Verbose
         ? "Creating additional tables for cross join test..."
@@ -799,6 +883,11 @@ FUNCTION TestSelectFunctionality() AS VOID
     IF Verbose
         ? "Inserted test data for cross join"
     ENDIF
+
+    SELECT a.Id, COUNT(*) AS MatchCount FROM test_table_a a ;
+        INNER JOIN test_table_b b ON a.Id = b.Id GROUP BY 1 ORDER BY a.Id
+    VerifyTable(2, "Failed: aggregate execution should consume joined rows", TRUE, ;
+        { {1, 1}, {2, 1} } )
 
 // Test cross join (Cartesian product)
     IF Verbose

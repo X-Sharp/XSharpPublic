@@ -166,6 +166,7 @@ PARTIAL CLASS SQLParser
     PRIVATE METHOD ParseExpressionTerm() AS SqlExpressionContext
         VAR done := FALSE
         VAR hasComplexTerms := FALSE
+        VAR hasAggregateTerm := FALSE
         VAR terms := List<SqlExpressionContext>{}
         VAR names := List<SqlNameExpressionContext>{}
         VAR parens := Stack<XTokenType>{}
@@ -230,6 +231,30 @@ PARTIAL CLASS SQLParser
                 IF SELF:_parsingOrderBy .AND. isOrderDirection .AND. (tokens:Count > 0 .OR. terms:Count > 0)
                     done := TRUE
                 ELSE
+                    IF tokens:Count == 0 .AND. terms:Count == 0 .AND. SELF:La2 == XTokenType.LPAREN .AND. ;
+                       (SELF:Lt1:Text:Equals("COUNT", StringComparison.OrdinalIgnoreCase) .OR. ;
+                        SELF:Lt1:Text:Equals("CNT", StringComparison.OrdinalIgnoreCase) .OR. ;
+                        SELF:Lt1:Text:Equals("SUM", StringComparison.OrdinalIgnoreCase) .OR. ;
+                        SELF:Lt1:Text:Equals("AVG", StringComparison.OrdinalIgnoreCase) .OR. ;
+                        SELF:Lt1:Text:Equals("MIN", StringComparison.OrdinalIgnoreCase) .OR. ;
+                        SELF:Lt1:Text:Equals("MAX", StringComparison.OrdinalIgnoreCase))
+                        VAR functionName := SELF:ConsumeAndGetText()
+                        SELF:Consume() // opening parenthesis
+                        VAR aggregate := SqlAggregateExpressionContext{} { FunctionName := functionName:ToUpperInvariant() }
+                        IF SELF:Matches(XTokenType.MULT)
+                            aggregate:IsStar := TRUE
+                            SELF:Consume()
+                        ELSE
+                            aggregate:Argument := SELF:ParseExpressionContext()
+                        ENDIF
+                        IF !SELF:Expect(XTokenType.RPAREN)
+                            THROW ArgumentException{i"Expected closing parenthesis for aggregate {functionName}","SQLParser"}
+                        ENDIF
+                        terms:Add(aggregate)
+                        hasComplexTerms := TRUE
+                        hasAggregateTerm := TRUE
+                        LOOP
+                    ENDIF
                     VAR idTokens := List<XToken>{}
                     DO WHILE SELF:La2 == XTokenType.DOT .AND. SELF:La3 == XTokenType.ID
                         idTokens:Add(SELF:ConsumeAndGet())
@@ -262,7 +287,7 @@ PARTIAL CLASS SQLParser
         ENDDO
         AddPartialTerm()
         IF terms:Count > 1
-            IF hasComplexTerms
+            IF hasComplexTerms .AND. !hasAggregateTerm
                 THROW ArgumentException{i"Unsupported combine or compare operator within expression term","SQLParser"}
             ENDIF
             RETURN SqlCompositeExpressionContext{} { Exprs := terms, Names := names }

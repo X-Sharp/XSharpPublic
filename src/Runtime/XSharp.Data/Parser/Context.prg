@@ -144,6 +144,9 @@ CLASS FoxSelectContext
     PROPERTY TargetCursor AS STRING AUTO  // Property to store the target cursor name for INTO CURSOR
     PROPERTY WhereClause AS SqlExpressionContext AUTO
     PROPERTY GroupByClause AS SqlExpressionContext AUTO
+    // GroupByClause remains the first item for callers compiled against the
+    // original single-expression representation.
+    PROPERTY GroupByItems AS List<SqlExpressionContext> AUTO
     PROPERTY HavingClause AS SqlExpressionContext AUTO
     PROPERTY OrderByClause AS List<FoxOrderByItem> AUTO
     CONSTRUCTOR()
@@ -154,6 +157,7 @@ CLASS FoxSelectContext
         JoinList := List<String>{}
         Joins := List<FoxSelectJoinContext>{}
         OrderByClause := List<FoxOrderByItem>{}
+        GroupByItems := List<SqlExpressionContext>{}
         RETURN
 
 END CLASS

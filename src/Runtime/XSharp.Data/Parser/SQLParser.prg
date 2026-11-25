@@ -860,7 +860,16 @@ PARTIAL CLASS SQLParser
 
         // Parse optional GROUP BY clause
         IF SELF:Expect(XTokenType.GROUP) .AND. SELF:Expect(XTokenType.BY)
-            stmt:GroupByClause := SELF:ParseExpressionContext()
+            DO WHILE TRUE
+                VAR groupItem := SELF:ParseExpressionContext()
+                stmt:GroupByItems:Add(groupItem)
+                IF !SELF:Expect(XTokenType.COMMA)
+                    EXIT
+                ENDIF
+            ENDDO
+            IF stmt:GroupByItems:Count > 0
+                stmt:GroupByClause := stmt:GroupByItems[0]
+            ENDIF
         ENDIF
 
         // Parse optional HAVING clause

@@ -132,6 +132,39 @@ CLASS SqlNameExpressionContext INHERIT SqlSimpleExpressionContext
         RETURN NIL
 END CLASS
 
+/// Aggregate call represented in the expression tree so SELECT, HAVING, and
+/// ORDER BY consumers can distinguish it from an ordinary scalar function.
+CLASS SqlAggregateExpressionContext INHERIT SqlExpressionContext
+    PROPERTY FunctionName AS STRING AUTO
+    PROPERTY Argument AS SqlExpressionContext AUTO
+    PROPERTY IsStar AS LOGIC AUTO
+    CONSTRUCTOR()
+        RETURN
+    OVERRIDE METHOD BuildString(sb AS StringBuilder) AS VOID
+        sb:Append(FunctionName)
+        sb:Append("(")
+        IF IsStar
+            sb:Append("*")
+        ELSEIF Argument != NULL
+            Argument:BuildString(sb)
+        ENDIF
+        sb:Append(")")
+    OVERRIDE METHOD BuildStringWithFieldResolution(sb AS StringBuilder, tableAliases AS IDictionary<STRING,STRING>) AS VOID
+        sb:Append(FunctionName)
+        sb:Append("(")
+        IF IsStar
+            sb:Append("*")
+        ELSEIF Argument != NULL
+            Argument:BuildStringWithFieldResolution(sb, tableAliases)
+        ENDIF
+        sb:Append(")")
+    OVERRIDE METHOD GetTableDependencies(tableAliases AS IDictionary<STRING,STRING>) AS IList<STRING>
+        IF Argument != NULL
+            RETURN Argument:GetTableDependencies(tableAliases)
+        ENDIF
+        RETURN List<STRING>{}
+END CLASS
+
 CLASS SqlCompositeExpressionContext INHERIT SqlExpressionContext
     PROPERTY Exprs AS IList<SqlExpressionContext> AUTO
     PROPERTY Names AS IList<SqlNameExpressionContext> AUTO

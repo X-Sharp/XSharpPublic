@@ -348,6 +348,20 @@ FUNCTION TestSelectParsing() AS VOID
         THROW Exception{"Failed to parse chained INNER JOIN metadata: " + joinParser:Error}
     ENDIF
 
+    VAR aggregateLexer := XSqlLexer{"SELECT Region, SUM(Amount) / COUNT(*) + Tax AS Adjusted FROM Sales GROUP BY Region HAVING SUM(Amount) > 0"}
+    VAR aggregateParser := SQLParser{XTokenList{aggregateLexer:AllTokens()}}
+    LOCAL aggregateCtx AS FoxSelectContext
+    IF !aggregateParser:ParseSelectStatement(OUT aggregateCtx)
+        THROW Exception{"Failed to parse composed aggregate expression: " + aggregateParser:Error}
+    ENDIF
+    IF aggregateCtx:SelectList:Count != 2 .OR. aggregateCtx:GroupByItems:Count != 1
+        THROW Exception{"Aggregate SELECT should preserve select and grouping items"}
+    ENDIF
+    IF !aggregateCtx:SelectList[1]:ToString():Contains("SUM(Amount)") .OR. ;
+       !aggregateCtx:SelectList[1]:ToString():Contains("COUNT(*)")
+        THROW Exception{"Aggregate expression should preserve COUNT and SUM calls"}
+    ENDIF
+
     VAR outerJoinLexer := XSqlLexer{"SELECT a.Id FROM TableA a LEFT OUTER JOIN TableB b ON a.Id = b.Id"}
     VAR outerJoinParser := SqlParser{XTokenList{outerJoinLexer:AllTokens()}}
     LOCAL outerJoinCtx AS FoxSelectContext
@@ -480,6 +494,19 @@ FUNCTION TestTableResolution() AS VOID
     // Verify parsing succeeded
     IF selectCtx:TableList:Count == 0 .OR. selectCtx:SelectList:Count == 0
         THROW Exception{"Failed: Parsing did not produce expected results"}
+    ENDIF
+
+    lexer := XSqlLexer{"SELECT CustomerId, ProductId FROM Sales GROUP BY CustomerId, ProductId HAVING CustomerId > 0"}
+    parser := SQLParser{XTokenList{lexer:AllTokens()}}
+    selectCtx := FoxSelectContext{}
+    IF !parser:ParseSelectStatement(OUT selectCtx)
+        THROW Exception{"Failed to parse multi-key GROUP BY: " + parser:Error}
+    ENDIF
+    IF selectCtx:GroupByItems:Count != 2 .OR. selectCtx:GroupByClause != selectCtx:GroupByItems[0]
+        THROW Exception{"GROUP BY should preserve all keys and the legacy first-key property"}
+    ENDIF
+    IF selectCtx:HavingClause == NULL
+        THROW Exception{"HAVING should be parsed after a multi-key GROUP BY"}
     ENDIF
 
     // Test another SQL statement with different constructs

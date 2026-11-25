@@ -10,6 +10,8 @@ USING System.Linq
 USING XSharp.Parsers
 USING XSharp.Data
 USING XSharp
+USING XSharp.RDD
+USING XSharp.RDD.Support
 
 BEGIN NAMESPACE XSharp.Data.Query
 
@@ -259,6 +261,18 @@ PUBLIC CLASS QueryOptimizer
             ENDIF
         ENDIF
 
+        LOCAL savedFilterActive := FALSE AS LOGIC
+        LOCAL savedFilterBlock AS ICodeblock
+        LOCAL savedFilterText := "" AS STRING
+        VAR rddObject := DbInfo(DBI_RDD_OBJECT)
+        IF rddObject IS Workarea VAR workarea
+            IF workarea:FilterInfo != NULL
+                savedFilterActive := workarea:FilterInfo:Active
+                savedFilterBlock := workarea:FilterInfo:FilterBlock
+                savedFilterText := workarea:FilterInfo:FilterText
+            ENDIF
+        ENDIF
+
         TRY
             // Check if there are any orders/indexes available for optimization
             LOCAL orderCount := DbOrderInfo(DBOI_ORDERCOUNT, 0, 0) as LONG
@@ -354,11 +368,15 @@ PUBLIC CLASS QueryOptimizer
                 ENDIF
             ENDDO
 
-            // Clear filter
-            (tableName)->DbSetFilter(NULL)
-
         FINALLY
-            // Clear filter and restore workarea
+            // Restore the caller's table filter after the temporary SQL predicate.
+            IF savedFilterActive
+                (tableName)->DbSetFilter(savedFilterBlock, savedFilterText)
+            ELSE
+                (tableName)->DbSetFilter(NULL)
+            ENDIF
+
+            // Restore workarea
             IF savedArea > 0
                 DbSelectArea(savedArea)
             ELSE

@@ -28,15 +28,17 @@ CLASS TestInfo
     PUBLIC Name AS STRING
     PUBLIC TestFunc AS Action
     PUBLIC Result AS STRING
+    PUBLIC DisableSqlOptimizations AS LOGIC
 
-    CONSTRUCTOR(name AS STRING, testFunc AS Action)
+    CONSTRUCTOR(name AS STRING, testFunc AS Action, disableSqlOptimizations := FALSE AS LOGIC)
         ::Name := name
         ::TestFunc := testFunc
         ::Result := "NotRun"
+        ::DisableSqlOptimizations := disableSqlOptimizations
 END CLASS
 
-FUNCTION RegisterTest(name AS STRING, testFunc AS Action) AS VOID
-    AllTests:Add(TestInfo{name, testFunc})
+FUNCTION RegisterTest(name AS STRING, testFunc AS Action, disableSqlOptimizations := FALSE AS LOGIC) AS VOID
+    AllTests:Add(TestInfo{name, testFunc, disableSqlOptimizations})
     RETURN
 FUNCTION SetVerbose(v AS LOGIC) AS VOID
     Verbose := v
@@ -60,13 +62,21 @@ FUNCTION RunTests(tests := NULL AS List<TestInfo>) AS TUPLE(INT, INT)
     RETURN TUPLE(passed, failed)
 
 FUNCTION TestRunner(test AS TestInfo) AS VOID
+    LOCAL switchName := "XSharp.VFP.EmbeddedSql.DisableOptimizations" AS STRING
+    LOCAL previousSwitch := FALSE AS LOGIC
+    LOCAL switchWasSet := AppContext.TryGetSwitch(switchName, OUT previousSwitch) AS LOGIC
+    AppContext.SetSwitch(switchName, test:DisableSqlOptimizations)
     TRY
-        ?
-        ? "Starting test:", test:Name
-        test:TestFunc()
-        test:Result := "Passed"
-    CATCH e AS Exception
-        test:Result := "Failed: " + e:ToString()
+        TRY
+            ?
+            ? "Starting test:", test:Name
+            test:TestFunc()
+            test:Result := "Passed"
+        CATCH e AS Exception
+            test:Result := "Failed: " + e:ToString()
+        END TRY
+    FINALLY
+        AppContext.SetSwitch(switchName, IIF(switchWasSet, previousSwitch, FALSE))
     END
 
     IF test:Result != "Passed" .OR. Verbose
@@ -90,12 +100,19 @@ FUNCTION Start(args AS STRING[]) AS VOID STRICT
     RegisterTest("TestFieldResolution", { => TestFieldResolution() })
     RegisterTest("TestTableResolution", { => TestTableResolution() })
     RegisterTest("TestNewSqlFeatures", { => TestNewSqlFeatures() })
-    RegisterTest("TestSelectFunctionality", { => TestSelectFunctionality() })
-    RegisterTest("TestCrossJoinFunctionality", { => TestCrossJoinFunctionality() })
-    RegisterTest("TestHashJoin", { => TestHashJoin() })
+    RegisterTest("TestSelectFunctionality [optimized]", { => TestSelectFunctionality() })
+    RegisterTest("TestSelectFunctionality [baseline]", { => TestSelectFunctionality() }, TRUE)
+    RegisterTest("TestCrossJoinFunctionality [optimized]", { => TestCrossJoinFunctionality() })
+    RegisterTest("TestCrossJoinFunctionality [baseline]", { => TestCrossJoinFunctionality() }, TRUE)
+    RegisterTest("TestDeletedCandidateRows [optimized]", { => TestDeletedCandidateRows() })
+    RegisterTest("TestDeletedCandidateRows [baseline]", { => TestDeletedCandidateRows() }, TRUE)
+    RegisterTest("TestHashJoin [optimized]", { => TestHashJoin() })
+    RegisterTest("TestHashJoin [baseline]", { => TestHashJoin() }, TRUE)
     RegisterTest("TestQueryOptimizer", { => TestQueryOptimizer() })
     RegisterTest("TestOptimizerBitmap", { => TestOptimizerBitmap() })
-    RegisterTest("TestMultiTableOptimizer", { => TestMultiTableOptimizer() })
+    RegisterTest("TestMultiTableOptimizer [optimized]", { => TestMultiTableOptimizer() })
+    RegisterTest("TestMultiTableOptimizer [baseline]", { => TestMultiTableOptimizer() }, TRUE)
+    RegisterTest("TestSparseOptimizationBenchmark", { => TestSparseOptimizationBenchmark() })
 
     LOCAL results := RunTests()
 
@@ -1062,9 +1079,6 @@ FUNCTION TestSelectFunctionality() AS VOID
     // Close the test table
     USE IN test_cursor_target
 
-    // Test CROSS JOIN functionality
-    TestCrossJoinFunctionality()
-
     // Close the test table
     USE IN test_select_table
 
@@ -1146,6 +1160,12 @@ FUNCTION TestCrossJoinFunctionality() AS VOID
               {"Item A1", "Description B2"}, ;
               {"Item A1", "Description B3"} } )
 
+    SELECT a.Name, b.Desc ;
+        FROM cross_join_table_a a ;
+        CROSS JOIN cross_join_table_b b ;
+        WHERE b.Id >= 2
+    VerifyTable(4, "Failed: Inner-table-only candidates changed cross-join results", TRUE)
+
     // Multi-table candidate bitmaps must prune both sides without changing
     // the nested-loop result set. The full WHERE expression remains authoritative.
     SELECT a.Name, b.Desc ;
@@ -1156,11 +1176,24 @@ FUNCTION TestCrossJoinFunctionality() AS VOID
             { {"Item A2", "Description B2"}, ;
               {"Item A2", "Description B3"} } )
 
+    SELECT a.Name, b.Desc, c.Label ;
+        FROM cross_join_table_a a ;
+        CROSS JOIN cross_join_table_b b ;
+        CROSS JOIN cross_join_table_c c ;
+        WHERE a.Id = 2 AND b.Id >= 2 AND c.Id >= 2
+    VerifyTable(4, "Failed: Three-table candidate carry/reset changed rows", TRUE)
+
     SELECT a.Name, b.Desc ;
         FROM cross_join_table_a a ;
         CROSS JOIN cross_join_table_b b ;
         WHERE a.Id = 99 AND b.Id = 2
     VerifyTable(0, "Failed: Empty candidate list should produce no rows", TRUE)
+
+    SELECT a.Name, b.Desc ;
+        FROM cross_join_table_a a ;
+        CROSS JOIN cross_join_table_b b ;
+        WHERE a.Id = 2 AND b.Id = 99
+    VerifyTable(0, "Failed: Empty inner candidate list should produce no rows", TRUE)
 
     SELECT a.Name, b.Desc ;
         FROM cross_join_table_a a ;
@@ -1194,11 +1227,87 @@ FUNCTION TestCrossJoinFunctionality() AS VOID
     VerifyTable(1, "Failed: Expected chained JOIN predicates to apply", TRUE, ;
             { {"Item A2", "Label C2"} } )
 
+    // Duplicate source rows must remain distinct result combinations.
+    INSERT INTO cross_join_table_b VALUES (2, "Description B2 duplicate")
+    SELECT a.Name, b.Desc ;
+        FROM cross_join_table_a a ;
+        CROSS JOIN cross_join_table_b b ;
+        WHERE a.Id = 1 AND b.Id = 2
+    VerifyTable(2, "Failed: Duplicate candidate rows were collapsed", TRUE)
+
+    // Existing RDD filters must remain in effect through candidate generation.
+    DbSelectArea("cross_join_table_b")
+    DbSetFilter("Id = 2")
+    SELECT a.Name, b.Desc ;
+        FROM cross_join_table_a a ;
+        CROSS JOIN cross_join_table_b b ;
+        WHERE b.Id >= 2
+    VerifyTable(4, "Failed: SELECT ignored an active source-table filter", TRUE)
+    DbSelectArea("cross_join_table_b")
+    IF String.IsNullOrWhiteSpace((STRING)DbInfo(DBI_DBFILTER))
+        THROW Exception{"SELECT cleared the source-table filter"}
+    ENDIF
+    DbSetFilter(NULL)
+
+    // Candidate record lists must preserve the source's active RDD order.
+    INSERT INTO cross_join_table_b VALUES (4, "Description B4")
+    INSERT INTO cross_join_table_b VALUES (0, "Description B0")
+    DbSelectArea("cross_join_table_b")
+    IF !DbCreateOrder("IdOrder",, "Id")
+        THROW Exception{"Could not create order for candidate traversal test"}
+    ENDIF
+    OrdSetFocus("IdOrder")
+    SELECT a.Name, b.Id ;
+        FROM cross_join_table_a a ;
+        CROSS JOIN cross_join_table_b b ;
+        WHERE a.Id = 1 AND b.Id >= 0
+    VerifyTable(6, "Failed: Candidate lists changed active-index traversal order", TRUE, ;
+        { {"Item A1", 0}, ;
+          {"Item A1", 1}, ;
+          {"Item A1", 2}, ;
+          {"Item A1", 2}, ;
+          {"Item A1", 3}, ;
+          {"Item A1", 4} } )
+    DbSelectArea("cross_join_table_b")
+    OrdSetFocus(0)
+
     // Close the test tables
     USE IN cross_join_table_a
     USE IN cross_join_table_b
     USE IN cross_join_table_c
 
+    RETURN
+
+FUNCTION TestDeletedCandidateRows() AS VOID
+    CREATE CURSOR deleted_candidate_left (Id N(5))
+    CREATE CURSOR deleted_candidate_right (Id N(5))
+    INSERT INTO deleted_candidate_left VALUES (1)
+    INSERT INTO deleted_candidate_left VALUES (2)
+    INSERT INTO deleted_candidate_right VALUES (1)
+    INSERT INTO deleted_candidate_right VALUES (2)
+    DbSelectArea("deleted_candidate_right")
+    GO 2
+    __DbDelete()
+    INSERT INTO deleted_candidate_right VALUES (3)
+
+    LOCAL oldDeleted := SetDeleted() AS LOGIC
+    TRY
+        SetDeleted(TRUE)
+
+        SELECT a.Id, b.Id ;
+            FROM deleted_candidate_left a ;
+            CROSS JOIN deleted_candidate_right b ;
+            WHERE b.Id >= 1
+        VerifyTable(4, "Failed: Candidate scan included a deleted source row", TRUE)
+    FINALLY
+        SetDeleted(oldDeleted)
+        IF Used("deleted_candidate_left")
+            USE IN deleted_candidate_left
+        ENDIF
+        IF Used("deleted_candidate_right")
+            USE IN deleted_candidate_right
+        ENDIF
+    END TRY
     RETURN
 
 FUNCTION TestHashJoin() AS VOID
@@ -1384,6 +1493,17 @@ FUNCTION TestOptimizerBitmap() AS VOID
         THROW Exception{"Single-table AND bitmap contains incorrect record numbers"}
     ENDIF
 
+    VAR reversedRangeBitmap := QueryOptimizer.OptimizeQuery( ;
+        ParseSqlExpressionForTest("25 < optimizer_bitmap_table.Age"), 5, tableAliases)
+    IF reversedRangeBitmap:CountMatches() != 4 .OR. ;
+       reversedRangeBitmap:GetMatchState(1) != RecordBitmap.RecordMatchState.Match .OR. ;
+       reversedRangeBitmap:GetMatchState(2) != RecordBitmap.RecordMatchState.NoMatch .OR. ;
+       reversedRangeBitmap:GetMatchState(3) != RecordBitmap.RecordMatchState.Match .OR. ;
+       reversedRangeBitmap:GetMatchState(4) != RecordBitmap.RecordMatchState.Match .OR. ;
+       reversedRangeBitmap:GetMatchState(5) != RecordBitmap.RecordMatchState.Match
+        THROW Exception{"Constant-on-left range bitmap contains incorrect record numbers"}
+    ENDIF
+
     VAR orBitmap := QueryOptimizer.OptimizeQuery( ;
         ParseSqlExpressionForTest("optimizer_bitmap_table.Age = 25 OR optimizer_bitmap_table.City = 'Chicago'"), ;
         5, tableAliases)
@@ -1414,6 +1534,14 @@ FUNCTION TestOptimizerBitmap() AS VOID
     IF candidatePlan:CandidateBitmaps["optimizer_bitmap_table"]:CountMatches() != 3 .OR. ;
        candidatePlan:CandidateBitmaps["optimizer_bitmap_other"]:CountMatches() != 1
         THROW Exception{"Per-table candidate bitmaps contain incorrect matches"}
+    ENDIF
+    IF candidatePlan:CandidateBitmaps["optimizer_bitmap_table"]:GetMatchState(1) != RecordBitmap.RecordMatchState.Match .OR. ;
+       candidatePlan:CandidateBitmaps["optimizer_bitmap_table"]:GetMatchState(2) != RecordBitmap.RecordMatchState.NoMatch .OR. ;
+       candidatePlan:CandidateBitmaps["optimizer_bitmap_table"]:GetMatchState(3) != RecordBitmap.RecordMatchState.Match .OR. ;
+       candidatePlan:CandidateBitmaps["optimizer_bitmap_table"]:GetMatchState(4) != RecordBitmap.RecordMatchState.NoMatch .OR. ;
+       candidatePlan:CandidateBitmaps["optimizer_bitmap_table"]:GetMatchState(5) != RecordBitmap.RecordMatchState.Match .OR. ;
+       candidatePlan:CandidateBitmaps["optimizer_bitmap_other"]:GetMatchState(1) != RecordBitmap.RecordMatchState.Match
+        THROW Exception{"Per-table candidate bitmap has incorrect physical record matches"}
     ENDIF
 
     VAR orCandidatePlan := QueryOptimizer.OptimizeMultiTableQuery( ;
@@ -1717,6 +1845,61 @@ FUNCTION TestMultiTableOptimizer() AS VOID STRICT
 
     DbCloseAll()
 RETURN
+
+FUNCTION TestSparseOptimizationBenchmark() AS VOID
+    CREATE CURSOR sparse_left (Id N(5), MatchFlag N(1))
+    CREATE CURSOR sparse_right (Id N(5), MatchFlag N(1))
+
+    FOR LOCAL rowIndex := 1 AS INT TO 100
+        INSERT INTO sparse_left VALUES (rowIndex, IIF(rowIndex <= 2, 1, 0))
+        INSERT INTO sparse_right VALUES (rowIndex, IIF(rowIndex <= 2, 1, 0))
+    NEXT
+
+    LOCAL query := "SELECT COUNT(*) AS PairCount FROM sparse_left a CROSS JOIN sparse_right b WHERE a.MatchFlag = 1 AND b.MatchFlag = 1 INTO CURSOR SparseResult" AS STRING
+    LOCAL switchName := "XSharp.VFP.EmbeddedSql.DisableOptimizations" AS STRING
+    LOCAL previousSwitch := FALSE AS LOGIC
+    LOCAL switchWasSet := AppContext.TryGetSwitch(switchName, OUT previousSwitch) AS LOGIC
+    LOCAL optimizedMilliseconds AS INT64
+    LOCAL baselineMilliseconds AS INT64
+    LOCAL timer := Stopwatch{} AS Stopwatch
+
+    TRY
+        AppContext.SetSwitch(switchName, FALSE)
+        timer:Restart()
+        __SqlSelect(query)
+        timer:Stop()
+        optimizedMilliseconds := timer:ElapsedMilliseconds
+        GO TOP
+        IF (LONG)FieldGet(1) != 4
+            THROW Exception{"Optimized sparse join returned an incorrect count"}
+        ENDIF
+
+        AppContext.SetSwitch(switchName, TRUE)
+        timer:Restart()
+        __SqlSelect(query)
+        timer:Stop()
+        baselineMilliseconds := timer:ElapsedMilliseconds
+        GO TOP
+        IF (LONG)FieldGet(1) != 4
+            THROW Exception{"Baseline sparse join returned an incorrect count"}
+        ENDIF
+
+        IF Verbose
+            ? "Sparse join milliseconds (optimized, baseline):", optimizedMilliseconds, baselineMilliseconds
+        ENDIF
+    FINALLY
+        AppContext.SetSwitch(switchName, IIF(switchWasSet, previousSwitch, FALSE))
+        IF Used("SparseResult")
+            USE IN SparseResult
+        ENDIF
+        IF Used("sparse_left")
+            USE IN sparse_left
+        ENDIF
+        IF Used("sparse_right")
+            USE IN sparse_right
+        ENDIF
+    END TRY
+    RETURN
 
 FUNCTION Title(title AS STRING) AS VOID
     IF Verbose

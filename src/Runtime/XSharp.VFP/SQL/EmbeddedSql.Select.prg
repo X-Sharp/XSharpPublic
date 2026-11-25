@@ -492,6 +492,11 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             RETURN FALSE
         END SWITCH
 
+    PRIVATE STATIC METHOD SqlOptimizationsEnabled() AS LOGIC
+        LOCAL disabled := FALSE AS LOGIC
+        AppContext.TryGetSwitch("XSharp.VFP.EmbeddedSql.DisableOptimizations", OUT disabled)
+        RETURN !disabled
+
     STATIC METHOD ParseSqlSelect(sCommand as STRING) AS FoxSelectContext
         VAR lexer := XSqlLexer{sCommand}
         VAR tokens := lexer:AllTokens()
@@ -743,7 +748,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         // expression remains in joinCodeBlocks and is evaluated for every candidate.
         LOCAL useHashJoin := FALSE AS LOGIC
         LOCAL hashJoinCursor := NULL AS SqlHashJoinCursor
-        IF tableNames:Count == 2 .AND. selectCtx:Joins:Count == 1 .AND. ;
+        IF SqlOptimizationsEnabled() .AND. tableNames:Count == 2 .AND. selectCtx:Joins:Count == 1 .AND. ;
            selectCtx:Joins[0]:Kind == FoxSelectJoinKind.Inner .AND. ;
            !((STRING)tableNames[1]):Equals((STRING)tableNames[2], StringComparison.OrdinalIgnoreCase)
             VAR outerTable := (STRING)tableNames[1]
@@ -797,7 +802,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         multiTableCandidates := NULL
         multiTableCandidateRows := NULL
 
-        IF hasWhereClause .AND. tableNames:Count == 1
+        IF SqlOptimizationsEnabled() .AND. hasWhereClause .AND. tableNames:Count == 1
             // Get the record count for optimization (only single table queries supported)
             LOCAL tableName AS STRING
             tableName := tableNames[1]
@@ -815,7 +820,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             IF optimizedBitmap != NULL .AND. !optimizedBitmap:IsAllMatch()
                 useOptimization := TRUE
             ENDIF
-        ELSEIF hasWhereClause .AND. tableNames:Count > 1 .AND. !useHashJoin
+        ELSEIF SqlOptimizationsEnabled() .AND. hasWhereClause .AND. tableNames:Count > 1 .AND. !useHashJoin
             // Build conservative per-table candidates for the nested-loop path.
             // The full WHERE and JOIN ON predicates are still evaluated below.
             LOCAL tableRecordCounts := Dictionary<STRING,LONG>{StringComparer.OrdinalIgnoreCase} AS Dictionary<STRING,LONG>

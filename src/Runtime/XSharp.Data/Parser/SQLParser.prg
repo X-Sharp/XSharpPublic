@@ -22,7 +22,11 @@ PARTIAL CLASS SQLParser
     METHOD SetError(message as STRING) AS VOID
         SELF:SetError(message, Lt1)
     METHOD SetError(message as STRING, token as XToken) AS VOID
-        _Error := message+", found '" + token:Text+"' at position "+SELF:Lt1:Start:ToString()
+        IF token == NULL
+            _Error := message+" at end of input"
+        ELSE
+            _Error := message+", found '" + token:Text+"' at position "+token:Start:ToString()
+        ENDIF
         RETURN
 
 #region Properties and Methods that are delegated to the XSharpTokenList type
@@ -725,7 +729,12 @@ PARTIAL CLASS SQLParser
         LOCAL firstAliasName := NULL AS STRING
         IF SELF:Expect(XTokenType.AS) .AND. SELF:Matches(XTokenType.ID)
             firstAliasName := SELF:ConsumeAndGetText()
-        ELSEIF SELF:Matches(XTokenType.ID)
+        ELSEIF SELF:Matches(XTokenType.ID) .AND. ;
+                !(SELF:La2 == XTokenType.JOIN .AND. (SELF:Lt1:Text:Equals("INNER", StringComparison.OrdinalIgnoreCase) .OR. ;
+                  SELF:Lt1:Text:Equals("LEFT", StringComparison.OrdinalIgnoreCase) .OR. ;
+                  SELF:Lt1:Text:Equals("RIGHT", StringComparison.OrdinalIgnoreCase) .OR. ;
+                  SELF:Lt1:Text:Equals("FULL", StringComparison.OrdinalIgnoreCase) .OR. ;
+                  SELF:Lt1:Text:Equals("OUTER", StringComparison.OrdinalIgnoreCase)))
             firstAliasName := SELF:ConsumeAndGetText()
         ENDIF
 
@@ -757,53 +766,81 @@ PARTIAL CLASS SQLParser
             ENDDO
         ELSE
             // Check for explicit JOIN syntax
-            DO WHILE (SELF:Matches(XTokenType.JOIN) .OR. SELF:Matches(XTokenType.CROSS))
-                // Check for CROSS JOIN
-                IF SELF:Expect(XTokenType.CROSS)
+            DO WHILE SELF:Matches(XTokenType.JOIN) .OR. SELF:Matches(XTokenType.CROSS) .OR. ;
+                    (SELF:Matches(XTokenType.ID) .AND. (SELF:Lt1:Text:Equals("INNER", StringComparison.OrdinalIgnoreCase) .OR. ;
+                     SELF:Lt1:Text:Equals("LEFT", StringComparison.OrdinalIgnoreCase) .OR. ;
+                     SELF:Lt1:Text:Equals("RIGHT", StringComparison.OrdinalIgnoreCase) .OR. ;
+                     SELF:Lt1:Text:Equals("FULL", StringComparison.OrdinalIgnoreCase) .OR. ;
+                     SELF:Lt1:Text:Equals("OUTER", StringComparison.OrdinalIgnoreCase)))
+                LOCAL joinKind AS FoxSelectJoinKind
+                IF SELF:Matches(XTokenType.CROSS)
+                    SELF:ConsumeAndGet()
                     IF ! SELF:Expect(XTokenType.JOIN)
                         SELF:SetError("Expected JOIN after CROSS")
                         RETURN FALSE
                     ENDIF
-
-                    // For CROSS JOIN, we just add the next table without any join condition
-                    VAR found := SELF:ParseTableName(OUT VAR crossTableName)
-
-                    // Check for optional alias (AS alias or just alias)
-                    LOCAL crossAliasName := NULL AS STRING
-                    IF SELF:Expect(XTokenType.AS) .AND. SELF:Matches(XTokenType.ID)
-                        crossAliasName := SELF:ConsumeAndGetText()
-                    ELSEIF SELF:Matches(XTokenType.ID)
-                        crossAliasName := SELF:ConsumeAndGetText()
-                    ENDIF
-
-                    stmt:TableList:Add(crossTableName)
-                    stmt:TableAliases[crossAliasName ?? crossTableName] := crossTableName
-                // Check for regular JOIN (INNER, LEFT, RIGHT, etc.) - though not implemented yet
-                ELSEIF SELF:Expect(XTokenType.JOIN)
-                    // For now, treat all JOINs similar to CROSS JOIN (cartesian product)
-                    VAR found := SELF:ParseTableName(OUT VAR joinTableName)
-
-                    // Check for optional alias (AS alias or just alias)
-                    LOCAL joinAliasName := NULL AS STRING
-                    IF SELF:Expect(XTokenType.AS) .AND. SELF:Matches(XTokenType.ID)
-                        joinAliasName := SELF:ConsumeAndGetText()
-                    ELSEIF SELF:Matches(XTokenType.ID)
-                        joinAliasName := SELF:ConsumeAndGetText()
-                    ENDIF
-
-                    stmt:TableList:Add(joinTableName)
-                    stmt:TableAliases[joinAliasName ?? joinTableName] := joinTableName
-
-                    // Check for ON clause (optional for now, since we implement as cartesian product)
-                    IF SELF:Expect(XTokenType.ON)
-                        // Skip the join condition for now - we'll implement full JOIN later
-                        // Just consume the condition expression
-                        VAR dummyExpr := SELF:ParseExpressionContext()
-                    ENDIF
+                    joinKind := FoxSelectJoinKind.Cross
                 ELSE
-                    // This shouldn't happen if our logic is correct
-                    EXIT
+                    IF SELF:Matches(XTokenType.ID) .AND. ;
+                            (SELF:Lt1:Text:Equals("LEFT", StringComparison.OrdinalIgnoreCase) .OR. ;
+                             SELF:Lt1:Text:Equals("RIGHT", StringComparison.OrdinalIgnoreCase) .OR. ;
+                             SELF:Lt1:Text:Equals("FULL", StringComparison.OrdinalIgnoreCase) .OR. ;
+                             SELF:Lt1:Text:Equals("OUTER", StringComparison.OrdinalIgnoreCase))
+                        SELF:SetError("Outer joins are not supported")
+                        RETURN FALSE
+                    ENDIF
+                    IF SELF:Matches(XTokenType.ID) .AND. SELF:Lt1:Text:Equals("INNER", StringComparison.OrdinalIgnoreCase)
+                        SELF:ConsumeAndGet()
+                    ENDIF
+                    IF ! SELF:Expect(XTokenType.JOIN)
+                        SELF:SetError("Expected JOIN")
+                        RETURN FALSE
+                    ENDIF
+                    joinKind := FoxSelectJoinKind.Inner
                 ENDIF
+
+                IF ! SELF:ParseTableName(OUT VAR joinedTableName)
+                    SELF:SetError("Expected table name after JOIN")
+                    RETURN FALSE
+                ENDIF
+
+                LOCAL joinedAliasName := NULL AS STRING
+                IF SELF:Expect(XTokenType.AS)
+                    IF ! SELF:Matches(XTokenType.ID)
+                        SELF:SetError("Expected table alias after AS")
+                        RETURN FALSE
+                    ENDIF
+                    joinedAliasName := SELF:ConsumeAndGetText()
+                ELSEIF SELF:Matches(XTokenType.ID) .AND. ;
+                        !(SELF:La2 == XTokenType.JOIN .AND. (SELF:Lt1:Text:Equals("INNER", StringComparison.OrdinalIgnoreCase) .OR. ;
+                          SELF:Lt1:Text:Equals("LEFT", StringComparison.OrdinalIgnoreCase) .OR. ;
+                          SELF:Lt1:Text:Equals("RIGHT", StringComparison.OrdinalIgnoreCase) .OR. ;
+                          SELF:Lt1:Text:Equals("FULL", StringComparison.OrdinalIgnoreCase) .OR. ;
+                          SELF:Lt1:Text:Equals("OUTER", StringComparison.OrdinalIgnoreCase)))
+                    joinedAliasName := SELF:ConsumeAndGetText()
+                ENDIF
+
+                stmt:TableList:Add(joinedTableName)
+                stmt:TableAliases[joinedAliasName ?? joinedTableName] := joinedTableName
+                VAR joinContext := FoxSelectJoinContext{}
+                joinContext:TableName := joinedTableName
+                joinContext:Alias := joinedAliasName ?? joinedTableName
+                joinContext:Kind := joinKind
+                IF joinKind == FoxSelectJoinKind.Inner
+                    IF ! SELF:Expect(XTokenType.ON)
+                        SELF:SetError("Expected ON clause for JOIN")
+                        RETURN FALSE
+                    ENDIF
+                    joinContext:OnClause := SELF:ParseExpressionContext()
+                    IF joinContext:OnClause == NULL
+                        SELF:SetError("Expected join condition after ON")
+                        RETURN FALSE
+                    ENDIF
+                ELSEIF SELF:Matches(XTokenType.ON)
+                    SELF:SetError("CROSS JOIN cannot have an ON clause")
+                    RETURN FALSE
+                ENDIF
+                stmt:Joins:Add(joinContext)
             ENDDO
         ENDIF
 

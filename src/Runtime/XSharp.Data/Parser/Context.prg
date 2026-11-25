@@ -140,6 +140,7 @@ CLASS FoxSelectContext
     PROPERTY TableList   AS List<STRING> AUTO
     PROPERTY TableAliases AS Dictionary<STRING,STRING> AUTO
     PROPERTY JoinList    AS List<STRING> AUTO
+    PROPERTY Joins       AS List<FoxSelectJoinContext> AUTO
     PROPERTY TargetCursor AS STRING AUTO  // Property to store the target cursor name for INTO CURSOR
     PROPERTY WhereClause AS SqlExpressionContext AUTO
     PROPERTY GroupByClause AS SqlExpressionContext AUTO
@@ -151,9 +152,22 @@ CLASS FoxSelectContext
         TableList := List<String>{}
         TableAliases := Dictionary<STRING,STRING>{StringComparer.OrdinalIgnoreCase}
         JoinList := List<String>{}
+        Joins := List<FoxSelectJoinContext>{}
         OrderByClause := List<FoxOrderByItem>{}
         RETURN
 
+END CLASS
+
+ENUM FoxSelectJoinKind
+    MEMBER Inner
+    MEMBER Cross
+END ENUM
+
+CLASS FoxSelectJoinContext
+    PROPERTY TableName AS STRING AUTO
+    PROPERTY Alias AS STRING AUTO
+    PROPERTY Kind AS FoxSelectJoinKind AUTO
+    PROPERTY OnClause AS SqlExpressionContext AUTO
 END CLASS
 
 CLASS FoxOrderByItem

@@ -343,6 +343,27 @@ FUNCTION TestSelectParsing() AS VOID
         THROW Exception{ "Failed to parse SELECT statement: " + parser:Error }
     ENDIF
 
+    VAR joinLexer := XSqlLexer{"SELECT a.Id FROM TableA a JOIN TableB b ON a.Id = b.Id INNER JOIN TableC c ON b.Id = c.Id"}
+    VAR joinParser := SqlParser{XTokenList{joinLexer:AllTokens()}}
+    LOCAL joinCtx AS FoxSelectContext
+    IF !joinParser:ParseSelectStatement(OUT joinCtx) .OR. joinCtx:Joins:Count != 2
+        THROW Exception{"Failed to parse chained INNER JOIN metadata: " + joinParser:Error}
+    ENDIF
+
+    VAR outerJoinLexer := XSqlLexer{"SELECT a.Id FROM TableA a LEFT OUTER JOIN TableB b ON a.Id = b.Id"}
+    VAR outerJoinParser := SqlParser{XTokenList{outerJoinLexer:AllTokens()}}
+    LOCAL outerJoinCtx AS FoxSelectContext
+    IF outerJoinParser:ParseSelectStatement(OUT outerJoinCtx)
+        THROW Exception{"LEFT OUTER JOIN should be rejected until outer join execution is supported"}
+    ENDIF
+
+    VAR missingOnLexer := XSqlLexer{"SELECT a.Id FROM TableA a JOIN TableB b"}
+    VAR missingOnParser := SqlParser{XTokenList{missingOnLexer:AllTokens()}}
+    LOCAL missingOnCtx AS FoxSelectContext
+    IF missingOnParser:ParseSelectStatement(OUT missingOnCtx)
+        THROW Exception{"JOIN without ON should be rejected"}
+    ENDIF
+
     RETURN
 
 FUNCTION TestInsertParsing() AS VOID
@@ -940,8 +961,9 @@ FUNCTION TestCrossJoinFunctionality() AS VOID
     // Create test tables for CROSS JOIN
     CREATE CURSOR cross_join_table_a (Id N(5), Name C(20))
     CREATE CURSOR cross_join_table_b (Id N(5), Desc C(30))
+    CREATE CURSOR cross_join_table_c (Id N(5), Label C(20))
 
-    IF !Used("cross_join_table_a") .OR. !Used("cross_join_table_b")
+    IF !Used("cross_join_table_a") .OR. !Used("cross_join_table_b") .OR. !Used("cross_join_table_c")
         THROW Exception{"Failed: Failed to create test tables for CROSS JOIN"}
     ENDIF
 
@@ -956,6 +978,8 @@ FUNCTION TestCrossJoinFunctionality() AS VOID
     INSERT INTO cross_join_table_b VALUES (1, "Description B1")
     INSERT INTO cross_join_table_b VALUES (2, "Description B2")
     INSERT INTO cross_join_table_b VALUES (3, "Description B3")
+    INSERT INTO cross_join_table_c VALUES (2, "Label C2")
+    INSERT INTO cross_join_table_c VALUES (3, "Label C3")
 
     IF Verbose
         ? "Inserted test data for CROSS JOIN"
@@ -1007,9 +1031,32 @@ FUNCTION TestCrossJoinFunctionality() AS VOID
               {"Item A1", "Description B2"}, ;
               {"Item A1", "Description B3"} } )
 
+    // Bare JOIN and INNER JOIN both apply their ON predicate.
+    SELECT a.Name, b.Desc ;
+        FROM cross_join_table_a a ;
+        JOIN cross_join_table_b b ON a.Id = b.Id
+    VerifyTable(2, "Failed: Expected matching rows from JOIN ON", TRUE, ;
+            { {"Item A1", "Description B1"}, ;
+              {"Item A2", "Description B2"} } )
+
+    SELECT a.Name, b.Desc ;
+        FROM cross_join_table_a a ;
+        INNER JOIN cross_join_table_b b ON a.Id = b.Id AND b.Id > 1 ;
+        WHERE a.Id = 2
+    VerifyTable(1, "Failed: Expected ON predicates and WHERE to both apply", TRUE, ;
+            { {"Item A2", "Description B2"} } )
+
+    SELECT a.Name, c.Label ;
+        FROM cross_join_table_a a ;
+        JOIN cross_join_table_b b ON a.Id = b.Id ;
+        INNER JOIN cross_join_table_c c ON b.Id = c.Id
+    VerifyTable(1, "Failed: Expected chained JOIN predicates to apply", TRUE, ;
+            { {"Item A2", "Label C2"} } )
+
     // Close the test tables
     USE IN cross_join_table_a
     USE IN cross_join_table_b
+    USE IN cross_join_table_c
 
     RETURN
 

@@ -259,6 +259,18 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             whereCodeBlock := MCompile(whereClause)
         ENDIF
 
+        LOCAL joinCodeBlocks := List<CODEBLOCK>{} AS List<CODEBLOCK>
+        FOREACH VAR joinContext IN selectCtx:Joins
+            IF joinContext:Kind == FoxSelectJoinKind.Inner
+                VAR joinExpression := joinContext:OnClause:ToResolvedString(selectCtx:TableAliases)
+                VAR joinCodeBlock := MCompile(joinExpression)
+                IF joinCodeBlock == NULL
+                    THROW Error{"Could not compile JOIN ON expression: " + joinExpression}
+                ENDIF
+                joinCodeBlocks:Add(joinCodeBlock)
+            ENDIF
+        NEXT
+
         // Try to optimize the WHERE clause using QueryOptimizer
         LOCAL optimizedBitmap AS RecordBitmap
         LOCAL useOptimization AS LOGIC
@@ -349,7 +361,19 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             LOCAL includeRecord AS LOGIC
             includeRecord := TRUE
 
-            IF hasWhereClause
+            // Evaluate join predicates before WHERE, matching SQL's row-combination semantics.
+            FOREACH VAR joinCodeBlock IN joinCodeBlocks
+                IF !includeRecord
+                    EXIT
+                ENDIF
+                TRY
+                    includeRecord := joinCodeBlock:Eval()
+                CATCH ex AS Exception
+                    includeRecord := FALSE
+                END TRY
+            NEXT
+
+            IF includeRecord .AND. hasWhereClause
                 // Use optimized bitmap when available, otherwise evaluate codeblock
                 IF useOptimization .AND. ALen(tableNames) == 1 .AND. recNo > 0
                     // The bitmap is indexed by raw record numbers, but we're traversing in index order

@@ -18,6 +18,7 @@
     <AssemblyName>FoxEmbeddedSql</AssemblyName>
     <Undeclared>True</Undeclared>
     <LB>True</LB>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Runtime\MacroCompiler\XSharp.MacroCompiler.csproj" />

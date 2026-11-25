@@ -148,6 +148,12 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 StatementCount = statementCount,
             };
             result.SkippedStatements.AddRange(ctx.SkippedStatements);
+            // A skipped statement is missing from Form1.Designer.prg, and so from the form on the next open
+            // (2026-11-25: ToolStrip items lost their strip because of a skipped Items.AddRange). Log each one.
+            foreach (string skipped in result.SkippedStatements)
+            {
+                Logger.Information($"DesignerChangesSync: statement not translated, missing from {Path.GetFileName(location.DesignerPrgPath)}: {skipped}");
+            }
             return result;
         }
 

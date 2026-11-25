@@ -267,6 +267,49 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                 case InvocationExpressionSyntax invocation:
                     return TranslateInvocation(invocation, ctx);
 
+                case ArrayCreationExpressionSyntax arrayCreation:
+                    {
+                        // "toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { toolStripButton1 })",
+                        // also MenuStrip/StatusStrip items, ComboBox/ListBox items, ... Without this case the whole
+                        // AddRange statement was skipped and the items lost their parent strip (2026-11-25).
+                        string elementType = TypeName(arrayCreation.Type.ElementType);
+                        if (arrayCreation.Initializer != null)
+                        {
+                            var items = arrayCreation.Initializer.Expressions.Select(e => TranslateExpression(e, ctx)).ToArray();
+                            if (items.Any(i => i == null)) return null;
+                            return new CodeArrayCreateExpression(elementType, items);
+                        }
+                        var sizes = arrayCreation.Type.RankSpecifiers.FirstOrDefault()?.Sizes;
+                        if (arrayCreation.Type.RankSpecifiers.Count == 1 && sizes?.Count == 1 && !(sizes.Value[0] is OmittedArraySizeExpressionSyntax))
+                        {
+                            var size = TranslateExpression(sizes.Value[0], ctx);
+                            return size == null ? null : new CodeArrayCreateExpression(elementType, size);
+                        }
+                        return null;
+                    }
+
+                case CastExpressionSyntax cast:
+                    {
+                        // "((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")))",
+                        // "((System.ComponentModel.ISupportInitialize)(pictureBox1)).BeginInit()"
+                        var operand = TranslateExpression(cast.Expression, ctx);
+                        return operand == null ? null : new CodeCastExpression(TypeName(cast.Type), operand);
+                    }
+
+                case TypeOfExpressionSyntax typeOf:
+                    // "new System.ComponentModel.ComponentResourceManager(typeof(Form1))"
+                    return new CodeTypeOfExpression(TypeName(typeOf.Type));
+
+                case BinaryExpressionSyntax binary when binary.IsKind(SyntaxKind.BitwiseOrExpression):
+                    {
+                        // Flags enums: "System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left"
+                        var left = TranslateExpression(binary.Left, ctx);
+                        var right = TranslateExpression(binary.Right, ctx);
+                        return left == null || right == null
+                            ? null
+                            : new CodeBinaryOperatorExpression(left, CodeBinaryOperatorType.BitwiseOr, right);
+                    }
+
                 case LiteralExpressionSyntax literal:
                     return TranslateLiteral(literal);
 
@@ -309,9 +352,19 @@ namespace XSharp.ProjectSystem.ShadowDesigner
                     return new CodePrimitiveExpression(false);
                 case SyntaxKind.NullLiteralExpression:
                     return new CodePrimitiveExpression(null);
+                case SyntaxKind.CharacterLiteralExpression:
+                    // e.g. "textBox1.PasswordChar = '*'"
+                    return new CodePrimitiveExpression(literal.Token.Value);
                 default:
                     return null;
             }
+        }
+
+        /// <summary>A type name for CodeDom: the Designer may write "global::System.Windows.Forms.ToolStripItem".</summary>
+        private static string TypeName(TypeSyntax type)
+        {
+            string name = type.ToString();
+            return name.StartsWith("global::", StringComparison.Ordinal) ? name.Substring("global::".Length) : name;
         }
 
         /// <summary>

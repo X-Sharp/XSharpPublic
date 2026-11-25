@@ -34,7 +34,7 @@ FUNCTION Start() AS INT
      "C893", "C895", "C897", "C898", "C899","C900", "C901", "C902", "C902b", "C903", "C904", ;
      "C905", "C908", "C913", "C914", "C915", "C921", "C926", "C932", "C936", "C937", "C938", "C939", ;
      "C941", "C942", "C943", /*"C946",*/ "C948", "C950", "C951", "C952", "C953", "C955", ;
-     "C958", "C960", "C961", "C962", "C963", "C964", "C965", "C969", "C970", "C973", "C976", "C977", ;
+     "C958", "C960", "C961", "C962", "C963", "C964", "C965", "C969", "C970", "C973", "C974", "C976", "C977", ;
      "C978", "C979", "C980", "C981", "C982", "C984", "C987", "C988", "C992", ;
 ;
      "D000",  "D002", ;
@@ -57,7 +57,7 @@ FUNCTION Start() AS INT
 	aTests:Add("C386")
 	aTests:Add("C541")
 	aTests:Add("C738")
-	aTests:Add("C989")
+//	aTests:Add("C989") // this is NetCore
 	aTests:Add("R705")
 	#else
 	// they use Environment.CurrentDirectory, which does not work under the automated tests. Need to find a better way
@@ -72,6 +72,7 @@ FUNCTION Start() AS INT
 	aTests:Remove("C729") // Removed C729 because it uses macrocompiler substitution which fails in the the tests
 	aTests:Add( "C548" ) // Added C548 at the end because for some reason causes several tests following it to fail
 
+//	aTests := List<STRING>{}{"C992"}
 
 	// TODO Must fail: "C135"
 

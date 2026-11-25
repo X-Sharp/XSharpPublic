@@ -8,7 +8,7 @@ FUNCTION Start() AS INT
 	LOCAL cFailed := "" AS STRING
 	aTests := List<STRING>{};
 	{;
-	"C956", "C983",;
+	"C956", "C983", "C989",;
 ;
      "D001",  "D003",  "D004" ;
 ;

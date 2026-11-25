@@ -1,5 +1,5 @@
 // 974. Problems with the /fox3 option - codeblocks and other tests
-// // https://github.com/X-Sharp/XSharpPublic/issues/2025
+// https://github.com/X-Sharp/XSharpPublic/issues/2025
 
 #pragma options("fox3", enable)
 #pragma options("allowdot", enable)
@@ -67,7 +67,7 @@ FUNCTION Start( ) AS VOID
 	
 	? &("fox3test->fld1")
 	xAssert( &("fox3test->fld1") == "test" )
-	xAssert( &("fox3test.fld1") == "test" )
+//	xAssert( &("fox3test.fld1") == "test" ) // there's C971 for this
 	
 	DbCloseArea()
 

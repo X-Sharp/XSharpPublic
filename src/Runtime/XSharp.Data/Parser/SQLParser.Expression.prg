@@ -48,6 +48,10 @@ PARTIAL CLASS SQLParser
         CASE XTokenType.UNIQUE
         CASE XTokenType.ERROR
         CASE XTokenType.FROM
+        CASE XTokenType.GROUP
+        CASE XTokenType.HAVING
+        CASE XTokenType.INTO
+        CASE XTokenType.ORDER
         CASE XTokenType.JOIN
         CASE XTokenType.WHERE
             RETURN TRUE
@@ -212,14 +216,20 @@ PARTIAL CLASS SQLParser
             CASE XTokenType.RPAREN
                 done := TRUE
             CASE XTokenType.ID
-                VAR idTokens := List<XToken>{}
-                DO WHILE SELF:La2 == XTokenType.DOT .AND. SELF:La3 == XTokenType.ID
+                LOCAL isOrderDirection := SELF:Lt1:Text:Equals("ASC", StringComparison.OrdinalIgnoreCase) .OR. ;
+                    SELF:Lt1:Text:Equals("DESC", StringComparison.OrdinalIgnoreCase) AS LOGIC
+                IF SELF:_parsingOrderBy .AND. isOrderDirection .AND. (tokens:Count > 0 .OR. terms:Count > 0)
+                    done := TRUE
+                ELSE
+                    VAR idTokens := List<XToken>{}
+                    DO WHILE SELF:La2 == XTokenType.DOT .AND. SELF:La3 == XTokenType.ID
+                        idTokens:Add(SELF:ConsumeAndGet())
+                        idTokens:Add(SELF:ConsumeAndGet())
+                    ENDDO
                     idTokens:Add(SELF:ConsumeAndGet())
-                    idTokens:Add(SELF:ConsumeAndGet())
-                ENDDO
-                idTokens:Add(SELF:ConsumeAndGet())
-                AddNameTerm(idTokens)
-                LOOP
+                    AddNameTerm(idTokens)
+                    LOOP
+                ENDIF
             CASE XTokenType.LBRKT
             CASE XTokenType.LCURLY
                 parens:Push(SELF:MatchingParen())

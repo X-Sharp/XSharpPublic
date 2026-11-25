@@ -15,13 +15,6 @@ USING XSharp.Data
 USING XSharp.Data.Query
 
 #include "foxcmd.xh"
-#command __NOFOXPROSQL__ <any> => #error This Embedded SQL command is not (yet) supported: <(any)>
-// SQL Delete, mapped to normal delete
-#command DELETE [<*clauses*>] WHERE [<*moreclauses*>] => DELETE <clauses> FOR <moreclauses>
-#command DELETE <*target*> FROM <(a)> [<*clauses*>] => DELETE <clauses> IN <target>
-#command DELETE FROM <(a)> [<*clauses*>] => DELETE <clauses> IN <a>
-#command DELETE [<*clauses*>] <s:SELECT,JOIN> <*moreclauses*> => __NOFOXPROSQL__ <(udc)>
-// Subselect is not supported
 
 // comments:
 // insert into <table> opens the table when it is not already open
@@ -320,7 +313,7 @@ FUNCTION TestSelectParsing() AS VOID
     ? "Testing SELECT parsing..."
 
     LOCAL selectSql AS STRING
-    selectSql := "SELECT DISTINCT TOP 10 CustomerID, CompanyName, ContactName FROM Customers WHERE City = 'New York' ORDER BY CompanyName"
+    selectSql := "SELECT DISTINCT TOP 10 CustomerID, CompanyName, ContactName FROM Customers WHERE City = 'New York' ORDER BY CompanyName DESC, CustomerID ASC"
 
     VAR lexer := XSqlLexer{selectSql}
     VAR tokens := lexer:AllTokens()
@@ -328,6 +321,11 @@ FUNCTION TestSelectParsing() AS VOID
     LOCAL selectCtx AS FoxSelectContext
 
     IF parser:ParseSelectStatement(OUT selectCtx)
+        IF selectCtx:OrderByClause:Count != 2 .OR. ;
+           !selectCtx:OrderByClause[0]:Descending .OR. ;
+           selectCtx:OrderByClause[1]:Descending
+            THROW Exception{"ORDER BY should preserve both keys and their directions"}
+        ENDIF
         IF Verbose
             ? "Successfully parsed SELECT statement"
             ? "Top Count:", selectCtx:TopCount
@@ -693,6 +691,40 @@ FUNCTION TestSelectFunctionality() AS VOID
     VerifyTable(2, "Failed: Expected 2 records from SELECT TOP 2", TRUE, ;
             { {1, "John Doe", 30}, ;
               {2, "Jane Smith", 25} } )
+
+    // ORDER BY supports multiple keys and applies TOP after sorting.
+    SELECT Id, Age FROM test_select_table ORDER BY Age DESC, Id ASC
+    VerifyTable(4, "Failed: Expected all records from multi-key ORDER BY", TRUE, ;
+            { {3, 35}, ;
+              {1, 30}, ;
+              {4, 30}, ;
+              {2, 25} } )
+
+    SELECT TOP 2 Id, Age FROM test_select_table ORDER BY Age DESC, Id ASC
+    VerifyTable(2, "Failed: TOP should be applied after ORDER BY", TRUE, ;
+            { {3, 35}, ;
+              {1, 30} } )
+
+    SELECT Id, Age FROM test_select_table ORDER BY Age DESC, Id ASC INTO CURSOR OrderedCursor
+    VerifyTable(4, "Failed: Ordered INTO CURSOR should preserve sorted rows", FALSE, ;
+            { {3, 35}, ;
+              {1, 30}, ;
+              {4, 30}, ;
+              {2, 25} } )
+    USE IN OrderedCursor
+
+    SELECT DISTINCT Age FROM test_select_table ORDER BY Age DESC
+    VerifyTable(3, "Failed: DISTINCT rows should be ordered", TRUE, ;
+            { {35}, ;
+              {30}, ;
+              {25} } )
+
+    SELECT Id FROM test_select_table ORDER BY Age + Id DESC
+    VerifyTable(4, "Failed: ORDER BY should accept unprojected expressions", TRUE, ;
+            { {3}, ;
+              {4}, ;
+              {1}, ;
+              {2} } )
 
     // Test cross join with multiple tables
     IF Verbose

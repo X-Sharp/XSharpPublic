@@ -16,6 +16,7 @@ BEGIN NAMESPACE XSharp.Parsers
 PARTIAL CLASS SQLParser
     PRIVATE _list as XTokenList
     PRIVATE _Error as STRING
+    PRIVATE _parsingOrderBy AS LOGIC
     PROPERTY Error as STRING GET _Error
 
     METHOD SetError(message as STRING) AS VOID
@@ -832,7 +833,24 @@ PARTIAL CLASS SQLParser
 
         // Parse optional ORDER BY clause
         IF SELF:Expect(XTokenType.ORDER) .AND. SELF:Expect(XTokenType.BY)
-            stmt:OrderByClause := SELF:ParseExpressionContext()
+            DO WHILE TRUE
+                SELF:_parsingOrderBy := TRUE
+                VAR orderExpression := SELF:ParseExpressionContext()
+                SELF:_parsingOrderBy := FALSE
+                LOCAL descending := FALSE AS LOGIC
+                IF SELF:Lt1:Text:Equals("DESC", StringComparison.OrdinalIgnoreCase)
+                    SELF:Consume()
+                    descending := TRUE
+                ELSE
+                    IF SELF:Lt1:Text:Equals("ASC", StringComparison.OrdinalIgnoreCase)
+                        SELF:Consume()
+                    ENDIF
+                ENDIF
+                stmt:OrderByClause:Add(FoxOrderByItem{orderExpression, descending})
+                IF !SELF:Expect(XTokenType.COMMA)
+                    EXIT
+                ENDIF
+            ENDDO
         ENDIF
 
         // Parse optional INTO CURSOR clause

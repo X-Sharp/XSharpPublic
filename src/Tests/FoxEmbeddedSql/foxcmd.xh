@@ -1,42 +1,36 @@
-#command INSERT [INTO] [<*any*>] => #error <(udc)> : Missing FROM or VALUES clause
+// Experimental embedded SQL commands used only by this test program.
+// Runtime-tested commands are defined in src/Common/FoxProSql.xh.
+#include "FoxProSql.xh"
 
-#command INSERT INTO <(table)> FROM MEMVAR => ;
-    __SqlInsertMemVar(<"table">)
+// INSERT ... SELECT is currently a test stub; keep it out of the common include.
+#command INSERT INTO <(table)> [( <(f1)> [, <(fn)> ] )] <s:SELECT> <*moreclauses*> => ;
+    __SqlInsertFromSQL(<"udc">, <"table">, { <"f1"> [, <"fn"> ] }, <"s">+" "+<"moreclauses"> )
 
-#command INSERT INTO <(table)> [( <(f1)> [, <(fn)> ] )]  VALUES (  <(v1)> [, <(vn)> ] )     => ;
-    __SqlInsertValues( <"table"> , { <"f1"> [, <"fn"> ] },  { <v1> [, <vn> ] } )
+// Multi-table UPDATE ... FROM is experimental and belongs to this test only.
+#command UPDATE <*tableName*> SET <*setclauses*> FROM <*fromclause*> ;
+  [JOIN <*joinclause*>] [WHERE <*whereclause*>] => __SqlUpdate(<"udc">)
 
-#command INSERT INTO <(table)> FROM ARRAY <ArrayName>   => ;
-    __SqlInsertFromArray(<"table"> , <ArrayName>)
-
-#command INSERT INTO <(table)> FROM NAME <ObjectName>   => ;
-    __SqlInsertFromObject(<"table"> , <ObjectName> )
-
-
-#command INSERT INTO <(table)> [( <(f1)> [, <(fn)> ] )] <s:Select> <*moreclauses*>   => ;
-    __SqlInsertFromSQL(<"udc">, <"table"> , { <"f1"> [, <"fn"> ] },  <"s">+" "+<"moreclauses"> )
-
-
-
-// SQL Update Commands
-
-#command UPDATE [<*tableName*>] SET <*setclauses*> ;
-  [FROM <*fromclause*>] [JOIN <*joinclause*>]  ;
-  [WHERE <*whereclause*>]                                   => __SqlUpdate(<"udc">)
-
-// SQL Select Commands
-
+// Test-only dispatch shims: the shared SQL rules are not selected for these
+// forms by the FoxPro command fallback, so route the supported SELECT subset.
 #command SELECT [<*distinct*>] [TOP <*topcount*>] <*selectlist*> ;
   FROM <*tablelist*> ;
   [WHERE <*whereclause*>] ;
-  [GROUP BY <*groupbylist*>] ;
-  [HAVING <*havingclause*>] ;
-  [ORDER BY <*orderbylist*>]                              => __SqlSelect(<"udc">)
+  [ORDER BY <*orderbylist*>] => __SqlSelect(<"udc">)
 
 #command SELECT <*selectlist*> ;
   FROM <*tablelist*> ;
   [WHERE <*whereclause*>] ;
-  [GROUP BY <*groupbylist*>] ;
-  [HAVING <*havingclause*>] ;
-  [ORDER BY <*orderbylist*>]                              => __SqlSelect(<"udc">)
+  [ORDER BY <*orderbylist*>] => __SqlSelect(<"udc">)
+
+#command SELECT [<*distinct*>] [TOP <*topcount*>] <*selectlist*> ;
+  FROM <*tablelist*> ;
+  [WHERE <*whereclause*>] ;
+  [ORDER BY <*orderbylist*>] ;
+  INTO CURSOR <(targetCursor)> => __SqlSelect(<"udc">)
+
+#command SELECT <*selectlist*> ;
+  FROM <*tablelist*> ;
+  [WHERE <*whereclause*>] ;
+  [ORDER BY <*orderbylist*>] ;
+  INTO CURSOR <(targetCursor)> => __SqlSelect(<"udc">)
 

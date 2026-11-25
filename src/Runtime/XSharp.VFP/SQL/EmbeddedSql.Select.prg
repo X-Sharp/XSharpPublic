@@ -18,6 +18,35 @@ using System.Text.RegularExpressions
 
 BEGIN NAMESPACE XSharp.VFP
 
+INTERNAL CLASS SqlSelectResultRow
+    PUBLIC PROPERTY Values AS USUAL[] AUTO
+    PUBLIC PROPERTY SortValues AS USUAL[] AUTO
+    PUBLIC PROPERTY Sequence AS LONG AUTO
+
+    INTERNAL CONSTRUCTOR(values AS USUAL[], sortValues AS USUAL[], sequence AS LONG)
+        SELF:Values := values
+        SELF:SortValues := sortValues
+        SELF:Sequence := sequence
+        RETURN
+END CLASS
+
+INTERNAL CLASS SqlSelectResultRowComparer IMPLEMENTS IComparer<SqlSelectResultRow>
+    PRIVATE _orderBy AS IList<FoxOrderByItem>
+
+    INTERNAL CONSTRUCTOR(orderBy AS IList<FoxOrderByItem>)
+        SELF:_orderBy := orderBy
+        RETURN
+
+    PUBLIC METHOD Compare(left AS SqlSelectResultRow, right AS SqlSelectResultRow) AS INT
+        FOR LOCAL i := 0 AS INT UPTO _orderBy:Count - 1
+            VAR difference := left:SortValues[i+1]:CompareTo(right:SortValues[i+1])
+            IF difference != 0
+                RETURN IIF(_orderBy[i]:Descending, -difference, difference)
+            ENDIF
+        NEXT
+        RETURN left:Sequence:CompareTo(right:Sequence)
+END CLASS
+
 PARTIAL STATIC CLASS FoxEmbeddedSQL
 
     STATIC METHOD ParseSqlSelect(sCommand as STRING) AS FoxSelectContext
@@ -273,6 +302,20 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             distinctValues := HashSet<STRING>{}
         ENDIF
 
+        LOCAL hasOrderBy := selectCtx:OrderByClause:Count > 0 AS LOGIC
+        LOCAL orderCodeBlocks := List<CODEBLOCK>{} AS List<CODEBLOCK>
+        LOCAL orderedRows := List<SqlSelectResultRow>{} AS List<SqlSelectResultRow>
+        IF hasOrderBy
+            FOREACH VAR orderItem IN selectCtx:OrderByClause
+                VAR orderExpression := orderItem:Expression:ToResolvedString(selectCtx:TableAliases)
+                VAR orderCodeBlock := MCompile(orderExpression)
+                IF orderCodeBlock == NULL
+                    THROW Error{"Could not compile ORDER BY expression: " + orderExpression}
+                ENDIF
+                orderCodeBlocks:Add(orderCodeBlock)
+            NEXT
+        ENDIF
+
         LOCAL recordCount AS DWORD
         recordCount := 0
 
@@ -354,21 +397,20 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 ENDIF
 
                 IF recordAdded
-                    // Add the record to the result table
-                    (resultTable)->DbAppend()
-
-                    FOR LOCAL i := 1 AS DWORD TO ALen(selectFieldNames)
-                        IF fieldList[i][2] == "C"
-                            (resultTable)->FieldPut(i, sourceValues[i]:ToString())
-                        ELSE
-                            (resultTable)->FieldPut(i, sourceValues[i])
-                        ENDIF
-                    NEXT
+                    IF hasOrderBy
+                        LOCAL sortValues := USUAL[]{orderCodeBlocks:Count} AS USUAL[]
+                        FOR LOCAL i := 1 AS DWORD TO orderCodeBlocks:Count
+                            sortValues[i] := orderCodeBlocks[(INT)i-1]:Eval()
+                        NEXT
+                        orderedRows:Add(SqlSelectResultRow{sourceValues, sortValues, (LONG)recordCount})
+                    ELSE
+                        AppendSelectResult(resultTable, fieldList, sourceValues)
+                    ENDIF
 
                     recordCount++
 
-                    // Check if we've reached the TOP limit
-                    IF maxRecords > 0 .AND. recordCount >= maxRecords
+                    // ORDER BY must be applied before TOP; collect all matching rows first.
+                    IF !hasOrderBy .AND. maxRecords > 0 .AND. recordCount >= maxRecords
                         continueProcessing := FALSE
                     ENDIF
                 ENDIF
@@ -418,6 +460,17 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             ENDIF
         ENDDO
 
+        IF hasOrderBy
+            orderedRows:Sort(SqlSelectResultRowComparer{selectCtx:OrderByClause})
+            LOCAL rowsToWrite := orderedRows:Count AS LONG
+            IF maxRecords > 0
+                rowsToWrite := Math.Min(rowsToWrite, maxRecords)
+            ENDIF
+            FOR LOCAL rowIndex := 0 AS LONG UPTO rowsToWrite - 1
+                AppendSelectResult(resultTable, fieldList, orderedRows[(INT)rowIndex]:Values)
+            NEXT
+        ENDIF
+
         // Close tables that weren't originally open
         FOR LOCAL i := 1 AS DWORD TO ALen(tableNames)
             IF !originalAreas[i]
@@ -428,6 +481,17 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         // Set the result table as the current work area
         DbSelectArea(resultTable)
 
+        RETURN
+
+    STATIC METHOD AppendSelectResult(resultTable AS STRING, fieldList AS ARRAY, sourceValues AS USUAL[]) AS VOID
+        (resultTable)->DbAppend()
+        FOR LOCAL i := 1 AS DWORD TO sourceValues:Length
+            IF fieldList[i][2] == "C"
+                (resultTable)->FieldPut(i, sourceValues[i]:ToString())
+            ELSE
+                (resultTable)->FieldPut(i, sourceValues[i])
+            ENDIF
+        NEXT
         RETURN
 
     STATIC METHOD SqlExpressionToFieldName(expr AS SqlExpressionContext) AS STRING

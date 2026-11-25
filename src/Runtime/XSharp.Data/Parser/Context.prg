@@ -144,16 +144,27 @@ CLASS FoxSelectContext
     PROPERTY WhereClause AS SqlExpressionContext AUTO
     PROPERTY GroupByClause AS SqlExpressionContext AUTO
     PROPERTY HavingClause AS SqlExpressionContext AUTO
-    PROPERTY OrderByClause AS SqlExpressionContext AUTO
+    PROPERTY OrderByClause AS List<FoxOrderByItem> AUTO
     CONSTRUCTOR()
         SelectList := List<SqlExpressionContext>{}
         FieldSelectionList := List<SqlFieldSelectionContext>{}  // Initialize the new property
         TableList := List<String>{}
         TableAliases := Dictionary<STRING,STRING>{StringComparer.OrdinalIgnoreCase}
         JoinList := List<String>{}
+        OrderByClause := List<FoxOrderByItem>{}
         RETURN
 
 END CLASS
+
+CLASS FoxOrderByItem
+    PROPERTY Expression AS SqlExpressionContext AUTO
+    PROPERTY Descending AS LOGIC AUTO
+    CONSTRUCTOR(expression AS SqlExpressionContext, descending AS LOGIC)
+        SELF:Expression := expression
+        SELF:Descending := descending
+        RETURN
+END CLASS
+
 CLASS FoxInsertContext
     PROPERTY TableName   AS STRING AUTO
     PROPERTY ColumnList  AS List<STRING> AUTO

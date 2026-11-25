@@ -89,19 +89,31 @@ PARTIAL CLASS SQLParser
         RETURN SELF:ParseCombineExpression()
 
     PRIVATE METHOD ParseCombineExpression() AS SqlExpressionContext
-        VAR e := SELF:ParsePrefixExpression()
-        IF SELF:CombineOp()
+        VAR e := SELF:ParseAndExpression()
+        WHILE SELF:Matches(XTokenType.OR)
             VAR o := SELF:ConsumeAndGet()
-            VAR r := SELF:ParsePrefixExpression()
+            VAR r := SELF:ParseAndExpression()
             e := SqlLogicExpressionContext{} { Left := e, Op := o, Right := r }
-        ENDIF
-        IF ! SELF:Eos() .AND. ( SELF:CompareOp() .OR. SELF:PrefixOp() )
+        ENDDO
+        IF ! SELF:Eos() .AND. ( SELF:CompareOp() .OR. SELF:PrefixOp() .OR. SELF:CombineOp() )
             THROW ArgumentException{i"Unexpected operator: {SELF:La1}","SQLParser"}
         ENDIF
         RETURN e
 
+    PRIVATE METHOD ParseAndExpression() AS SqlExpressionContext
+        VAR e := SELF:ParsePrefixExpression()
+        WHILE SELF:Matches(XTokenType.AND)
+            VAR o := SELF:ConsumeAndGet()
+            VAR r := SELF:ParsePrefixExpression()
+            e := SqlLogicExpressionContext{} { Left := e, Op := o, Right := r }
+        ENDDO
+        RETURN e
+
     PRIVATE METHOD ParsePrefixExpression() AS SqlExpressionContext
         LOCAL e := NULL AS SqlExpressionContext
+        IF SELF:Eos() .OR. SELF:La1 == XTokenType.RPAREN .OR. SELF:CombineOp()
+            THROW ArgumentException{"Expected expression","SQLParser"}
+        ENDIF
         IF SELF:PrefixOp()
             VAR o := SELF:ConsumeAndGet()
             VAR c := SELF:ParseCompareExpression()

@@ -10,6 +10,7 @@ USING SYstem.Collections.Generic
 USING SYstem.Linq
 USING SYstem.Text
 USING XSharp.Parsers
+USING XSharp.RDD.Enums
 
 #include "foxcmd.xh"
 #command __NOFOXPROSQL__ <any> => #error This Embedded SQL command is not (yet) supported: <(any)>
@@ -90,14 +91,15 @@ FUNCTION Start(args AS STRING[]) AS VOID STRICT
         ENDIF
     NEXT
 
-    RegisterTest("TestCreate", TestCreate)
-    RegisterTest("TestSqlParser", TestSqlParser)
-    RegisterTest("TestFieldResolution", TestFieldResolution)
-    RegisterTest("TestTableResolution", TestTableResolution)
-    RegisterTest("TestNewSqlFeatures", TestNewSqlFeatures)
-    RegisterTest("TestSelectFunctionality", TestSelectFunctionality)
-    RegisterTest("TestQueryOptimizer", TestQueryOptimizer)
-    RegisterTest("TestMultiTableOptimizer", TestMultiTableOptimizer)
+    RegisterTest("TestCreate", { => TestCreate() })
+    RegisterTest("TestSqlParser", { => TestSqlParser() })
+    RegisterTest("TestValueComparison", { => TestValueComparison() })
+    RegisterTest("TestFieldResolution", { => TestFieldResolution() })
+    RegisterTest("TestTableResolution", { => TestTableResolution() })
+    RegisterTest("TestNewSqlFeatures", { => TestNewSqlFeatures() })
+    RegisterTest("TestSelectFunctionality", { => TestSelectFunctionality() })
+    RegisterTest("TestQueryOptimizer", { => TestQueryOptimizer() })
+    RegisterTest("TestMultiTableOptimizer", { => TestMultiTableOptimizer() })
 
     LOCAL results := RunTests()
 
@@ -105,6 +107,8 @@ FUNCTION Start(args AS STRING[]) AS VOID STRICT
     ? "=== Test Summary ==="
     ? "Passed:", results:Item1
     ? "Failed:", results:Item2
+
+    Environment.ExitCode := IIF(results.Item2 > 0, 1, 0)
 
     IF results.Item2 > 0
         ? ""
@@ -572,8 +576,40 @@ FUNCTION ValueSame(value1 AS USUAL, value2 AS USUAL) AS LOGIC
     IF value1 == NULL .OR. value2 == NULL
         RETURN value1 == value2
     ENDIF
-    // Let's be relaxed and not check the exact type
+    IF IsNumericValue(value1) .AND. IsNumericValue(value2)
+        RETURN value1 == value2
+    ENDIF
+    // For nonnumeric values, ignore type-specific formatting and padding.
     RETURN AllTrim(value1:ToString()) == AllTrim(value2:ToString())
+
+FUNCTION IsNumericValue(value AS USUAL) AS LOGIC
+    SWITCH UsualType(value)
+    CASE __UsualType.Long
+    CASE __UsualType.Float
+    CASE __UsualType.Fixed
+    CASE __UsualType.Byte
+    CASE __UsualType.ShortInt
+    CASE __UsualType.Word
+    CASE __UsualType.DWord
+    CASE __UsualType.Real4
+    CASE __UsualType.Real8
+    CASE __UsualType.Int64
+    CASE __UsualType.UInt64
+    CASE __UsualType.Decimal
+    CASE __UsualType.Currency
+        RETURN TRUE
+    OTHERWISE
+        RETURN FALSE
+    END SWITCH
+
+FUNCTION TestValueComparison() AS VOID
+    IF !ValueSame(100.50, 100.5)
+        THROW Exception{"Equivalent numeric values should compare equal"}
+    ENDIF
+    IF ValueSame(100.50, 100.51)
+        THROW Exception{"Different numeric values should not compare equal"}
+    ENDIF
+    RETURN
 
 FUNCTION TestSelectFunctionality() AS VOID
     ? "Testing SELECT functionality..."
@@ -1184,7 +1220,79 @@ FUNCTION TestSqlParser () AS VOID
         // Parse silently when not verbose
         VAR ctx := parser:ParseExpressionContext()
     ENDIF
+
+    VAR chainedAnd := ParseSqlExpressionForTest("a = 1 AND b = 2 AND c = 3")
+    IF ! (chainedAnd IS SqlLogicExpressionContext)
+        THROW Exception{"Parser did not return a logical expression for chained AND"}
+    ENDIF
+    VAR chainedAndRoot := (SqlLogicExpressionContext)chainedAnd
+    IF chainedAndRoot:Op:Type != XTokenType.AND .OR. !(chainedAndRoot:Left IS SqlLogicExpressionContext)
+        THROW Exception{"Parser did not consume all chained AND conditions"}
+    ENDIF
+
+    VAR chainedOr := ParseSqlExpressionForTest("a = 1 OR b = 2 OR c = 3")
+    IF ! (chainedOr IS SqlLogicExpressionContext)
+        THROW Exception{"Parser did not return a logical expression for chained OR"}
+    ENDIF
+    VAR chainedOrRoot := (SqlLogicExpressionContext)chainedOr
+    IF chainedOrRoot:Op:Type != XTokenType.OR .OR. !(chainedOrRoot:Left IS SqlLogicExpressionContext)
+        THROW Exception{"Parser did not consume all chained OR conditions"}
+    ENDIF
+
+    VAR mixedLogic := ParseSqlExpressionForTest("a = 1 OR b = 2 AND c = 3")
+    IF ! (mixedLogic IS SqlLogicExpressionContext)
+        THROW Exception{"Parser did not return a logical expression for mixed AND/OR"}
+    ENDIF
+    VAR mixedRoot := (SqlLogicExpressionContext)mixedLogic
+    IF mixedRoot:Op:Type != XTokenType.OR .OR. !(mixedRoot:Right IS SqlLogicExpressionContext)
+        THROW Exception{"AND must bind more tightly than OR"}
+    ENDIF
+    VAR mixedRight := (SqlLogicExpressionContext)mixedRoot:Right
+    IF mixedRight:Op:Type != XTokenType.AND
+        THROW Exception{"Mixed AND/OR expression has incorrect precedence"}
+    ENDIF
+
+    VAR groupedLogic := ParseSqlExpressionForTest("a = 1 AND (b = 2 OR c = 3)")
+    IF ! (groupedLogic IS SqlLogicExpressionContext)
+        THROW Exception{"Parser did not return a logical expression for grouped conditions"}
+    ENDIF
+    VAR groupedRight := (SqlLogicExpressionContext)groupedLogic
+    IF !(groupedRight:Right IS SqlParenExpressionContext)
+        THROW Exception{"Parser did not preserve grouped logical conditions"}
+    ENDIF
+    VAR groupedExpr := (SqlParenExpressionContext)groupedRight:Right
+    IF !(groupedExpr:Expr IS SqlLogicExpressionContext)
+        THROW Exception{"Parser did not parse the logical expression inside parentheses"}
+    ENDIF
+    VAR groupedInner := (SqlLogicExpressionContext)groupedExpr:Expr
+    IF groupedInner:Op:Type != XTokenType.OR
+        THROW Exception{"Parentheses did not preserve the inner OR expression"}
+    ENDIF
+
+    LOCAL rejectedDanglingOperator := FALSE AS LOGIC
+    TRY
+        ParseSqlExpressionForTest("a = 1 AND")
+    CATCH e AS Exception
+        rejectedDanglingOperator := TRUE
+    END TRY
+    IF !rejectedDanglingOperator
+        THROW Exception{"Parser accepted a dangling AND operator"}
+    ENDIF
+
+    rejectedDanglingOperator := FALSE
+    TRY
+        ParseSqlExpressionForTest("a = 1 OR")
+    CATCH e AS Exception
+        rejectedDanglingOperator := TRUE
+    END TRY
+    IF !rejectedDanglingOperator
+        THROW Exception{"Parser accepted a dangling OR operator"}
+    ENDIF
 RETURN
+
+FUNCTION ParseSqlExpressionForTest(expression AS STRING) AS SqlExpressionContext
+    VAR lexer := XSqlLexer{expression}
+    RETURN SqlParser{XTokenList{lexer:AllTokens()}}:ParseExpressionContext()
 
 
 FUNCTION TestMultiTableOptimizer() AS VOID STRICT
@@ -1203,11 +1311,11 @@ FUNCTION TestMultiTableOptimizer() AS VOID STRICT
     INSERT INTO TableA VALUES (2, "Item A2")
     INSERT INTO TableA VALUES (3, "Item A3")
 
-    INSERT INTO TableB VALUES (101, 9.99)
-    INSERT INTO TableB VALUES (102, 19.99)
-    INSERT INTO TableB VALUES (103, 29.99)
-    INSERT INTO TableB VALUES (104, 39.99)
-    INSERT INTO TableB VALUES (105, 49.99)
+    INSERT INTO TableB VALUES (103, 9.99)
+    INSERT INTO TableB VALUES (105, 19.99)
+    INSERT INTO TableB VALUES (403, 29.99)
+    INSERT INTO TableB VALUES (1, 39.99)
+    INSERT INTO TableB VALUES (2, 49.99)
 
     IF Verbose
         ? "TableA:", DbSelectArea("TableA"), "records:", RecCount()
@@ -1253,7 +1361,7 @@ FUNCTION TestMultiTableOptimizer() AS VOID STRICT
 
     Title("All tests completed successfully")
 
-    USE IN ALL
+    DbCloseAll()
 RETURN
 
 FUNCTION Title(title AS STRING) AS VOID
@@ -1278,7 +1386,7 @@ FUNCTION VerifyTable(expectedRecords AS DWORD, message AS STRING, closeTable := 
     ENDIF
 
     IF closeTable
-        USE IN 0
+        DbCloseArea()
     ENDIF
 RETURN
 

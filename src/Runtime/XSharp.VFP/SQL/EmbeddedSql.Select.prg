@@ -792,8 +792,10 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         LOCAL optimizedBitmap AS RecordBitmap
         LOCAL useOptimization AS LOGIC
         LOCAL multiTableCandidates AS Dictionary<STRING,RecordBitmap>
+        LOCAL multiTableCandidateRows AS Dictionary<STRING,List<LONG>>
         useOptimization := FALSE
         multiTableCandidates := NULL
+        multiTableCandidateRows := NULL
 
         IF hasWhereClause .AND. tableNames:Count == 1
             // Get the record count for optimization (only single table queries supported)
@@ -828,6 +830,27 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             VAR candidatePlan := QueryOptimizer.OptimizeMultiTableQuery( ;
                 selectCtx:WhereClause, selectCtx:TableAliases, tableRecordCounts)
             multiTableCandidates := candidatePlan:CandidateBitmaps
+
+            // Materialize only selective candidates. Traversing with DbGoTop/DbSkip
+            // preserves the table's current RDD order while capturing physical recnos.
+            multiTableCandidateRows := Dictionary<STRING,List<LONG>>{StringComparer.OrdinalIgnoreCase}
+            FOR LOCAL tableIdx := 1 AS DWORD TO ALen(tableNames)
+                VAR candidateTable := (STRING)tableNames[tableIdx]
+                LOCAL candidateBitmap AS RecordBitmap
+                IF multiTableCandidates:TryGetValue(candidateTable, OUT candidateBitmap) .AND. ;
+                   !candidateBitmap:IsAllMatch()
+                    VAR candidateRecNos := List<LONG>{}
+                    (tableNames[tableIdx])->DbGoTop()
+                    DO WHILE !(tableNames[tableIdx])->Eof()
+                        VAR candidateRecNo := (LONG)(tableNames[tableIdx])->RecNo()
+                        IF candidateBitmap:GetMatchState(candidateRecNo) == RecordBitmap.RecordMatchState.Match
+                            candidateRecNos:Add(candidateRecNo)
+                        ENDIF
+                        (tableNames[tableIdx])->DbSkip(1)
+                    ENDDO
+                    multiTableCandidateRows[candidateTable] := candidateRecNos
+                ENDIF
+            NEXT
         ENDIF
 
         // Check if DISTINCT is specified
@@ -961,7 +984,15 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         // Initialize all positions to 1 (first record) and go to top of each table
         FOR LOCAL i := 1 AS DWORD TO ALen(tableNames)
             tablePositions[i] := 1
-            (tableNames[i])->DbGoTop()
+            LOCAL candidateRecNos AS List<LONG>
+            IF multiTableCandidateRows != NULL .AND. ;
+               multiTableCandidateRows:TryGetValue((STRING)tableNames[i], OUT candidateRecNos)
+                IF candidateRecNos:Count > 0
+                    DbGoto(candidateRecNos[0], tableNames[i])
+                ENDIF
+            ELSE
+                (tableNames[i])->DbGoTop()
+            ENDIF
         NEXT
 
         // Main loop to iterate through all combinations
@@ -970,7 +1001,14 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         LOCAL currentInnerRecNo AS LONG
         continueProcessing := TRUE
         FOR LOCAL tableIndex := 1 AS DWORD TO ALen(tableNames)
-            IF (tableNames[tableIndex])->Eof()
+            LOCAL candidateRecNos AS List<LONG>
+            IF multiTableCandidateRows != NULL .AND. ;
+               multiTableCandidateRows:TryGetValue((STRING)tableNames[tableIndex], OUT candidateRecNos)
+                IF candidateRecNos:Count == 0
+                    continueProcessing := FALSE
+                    EXIT
+                ENDIF
+            ELSEIF (tableNames[tableIndex])->Eof()
                 continueProcessing := FALSE
                 EXIT
             ENDIF
@@ -998,20 +1036,6 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             // Check WHERE clause if present
             LOCAL includeRecord AS LOGIC
             includeRecord := TRUE
-
-            // Reject combinations containing a non-candidate row before running
-            // JOIN ON and WHERE codeblocks. Keep cursor traversal unchanged so
-            // bitmap pruning cannot disturb RDD/work-area state.
-            IF multiTableCandidates != NULL
-                FOR LOCAL tableIdx := 1 AS DWORD TO ALen(tableNames)
-                    LOCAL candidateBitmap AS RecordBitmap
-                    IF multiTableCandidates:TryGetValue((STRING)tableNames[tableIdx], OUT candidateBitmap) .AND. ;
-                       candidateBitmap:GetMatchState((LONG)(tableNames[tableIdx])->RecNo()) != RecordBitmap.RecordMatchState.Match
-                        includeRecord := FALSE
-                        EXIT
-                    ENDIF
-                NEXT
-            ENDIF
 
             // Evaluate join predicates before WHERE, matching SQL's row-combination semantics.
             IF includeRecord
@@ -1145,9 +1169,21 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
 
                     // Handle carry-over when a table reaches EOF (like incrementing a multi-digit number)
                     DO WHILE positionIdx >= 1
-                        // Advance the current table
-                        (tableNames[positionIdx])->DbSkip(1)
-                        tablePositions[positionIdx]++
+                        LOCAL candidateRecNos AS List<LONG>
+                        IF multiTableCandidateRows != NULL .AND. ;
+                           multiTableCandidateRows:TryGetValue((STRING)tableNames[positionIdx], OUT candidateRecNos)
+                            tablePositions[positionIdx]++
+                            IF tablePositions[positionIdx] <= candidateRecNos:Count
+                                DbGoto(candidateRecNos[(INT)tablePositions[positionIdx]-1], tableNames[positionIdx])
+                            ELSE
+                                (tableNames[positionIdx])->DbGoBottom()
+                                (tableNames[positionIdx])->DbSkip(1)
+                            ENDIF
+                        ELSE
+                            // Advance an unconstrained table with its normal RDD traversal.
+                            (tableNames[positionIdx])->DbSkip(1)
+                            tablePositions[positionIdx]++
+                        ENDIF
 
                         // If this table hasn't reached EOF, we're done with carry-over
                         IF !(tableNames[positionIdx])->Eof()
@@ -1155,8 +1191,13 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                         ENDIF
 
                         // If this table reached EOF, reset it and continue carry-over to next table
-                        (tableNames[positionIdx])->DbGoTop()
                         tablePositions[positionIdx] := 1
+                        IF multiTableCandidateRows != NULL .AND. ;
+                           multiTableCandidateRows:TryGetValue((STRING)tableNames[positionIdx], OUT candidateRecNos)
+                            DbGoto(candidateRecNos[0], tableNames[positionIdx])
+                        ELSE
+                            (tableNames[positionIdx])->DbGoTop()
+                        ENDIF
 
                         positionIdx--
                     ENDDO

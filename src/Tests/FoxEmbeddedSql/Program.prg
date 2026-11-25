@@ -1159,6 +1159,12 @@ FUNCTION TestCrossJoinFunctionality() AS VOID
     SELECT a.Name, b.Desc ;
         FROM cross_join_table_a a ;
         CROSS JOIN cross_join_table_b b ;
+        WHERE a.Id = 99 AND b.Id = 2
+    VerifyTable(0, "Failed: Empty candidate list should produce no rows", TRUE)
+
+    SELECT a.Name, b.Desc ;
+        FROM cross_join_table_a a ;
+        CROSS JOIN cross_join_table_b b ;
         WHERE a.Id = 1 OR b.Id = 3
     VerifyTable(4, "Failed: Cross-table OR candidate fallback returned incorrect rows", TRUE, ;
             { {"Item A1", "Description B1"}, ;

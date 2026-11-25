@@ -47,7 +47,141 @@ INTERNAL CLASS SqlSelectResultRowComparer IMPLEMENTS IComparer<SqlSelectResultRo
         RETURN left:Sequence:CompareTo(right:Sequence)
 END CLASS
 
+INTERNAL CLASS SqlHashJoinCursor
+    PRIVATE _outerTable AS STRING
+    PRIVATE _outerKeyCodeBlock AS CODEBLOCK
+    PRIVATE _keyBuckets AS Dictionary<USUAL,List<LONG>>
+    PRIVATE _currentBucket AS List<LONG>
+    PRIVATE _bucketIndex AS INT
+    PRIVATE _currentOuterRecNo AS LONG
+    PRIVATE _started AS LOGIC
+
+    INTERNAL CONSTRUCTOR(outerTable AS STRING, outerKeyCodeBlock AS CODEBLOCK, ;
+        keyBuckets AS Dictionary<USUAL,List<LONG>>)
+        SELF:_outerTable := outerTable
+        SELF:_outerKeyCodeBlock := outerKeyCodeBlock
+        SELF:_keyBuckets := keyBuckets
+        SELF:_currentBucket := NULL
+        SELF:_bucketIndex := 0
+        SELF:_currentOuterRecNo := 0
+        SELF:_started := FALSE
+        RETURN
+
+    INTERNAL METHOD MoveNext(outerRecNo OUT LONG, innerRecNo OUT LONG) AS LOGIC
+        outerRecNo := 0
+        innerRecNo := 0
+        DO WHILE TRUE
+            IF SELF:_currentBucket != NULL .AND. SELF:_bucketIndex < SELF:_currentBucket:Count
+                outerRecNo := SELF:_currentOuterRecNo
+                innerRecNo := SELF:_currentBucket[SELF:_bucketIndex]
+                SELF:_bucketIndex++
+                RETURN TRUE
+            ENDIF
+
+            IF SELF:_started
+                (SELF:_outerTable)->DbSkip(1)
+            ELSE
+                (SELF:_outerTable)->DbGoTop()
+                SELF:_started := TRUE
+            ENDIF
+            IF (SELF:_outerTable)->Eof()
+                RETURN FALSE
+            ENDIF
+
+            SELF:_currentOuterRecNo := (LONG)(SELF:_outerTable)->RecNo()
+            VAR keyValue := (USUAL) SELF:_outerKeyCodeBlock:Eval()
+            SELF:_currentBucket := NULL
+            SELF:_bucketIndex := 0
+            IF !keyValue:IsNull
+                SELF:_keyBuckets:TryGetValue(keyValue, OUT SELF:_currentBucket)
+            ENDIF
+        ENDDO
+END CLASS
+
 PARTIAL STATIC CLASS FoxEmbeddedSQL
+
+    PRIVATE STATIC METHOD FindHashJoinKey(expression AS SqlExpressionContext, ;
+        tableAliases AS IDictionary<STRING,STRING>, outerTable AS STRING, innerTable AS STRING, ;
+        outerKey OUT SqlNameExpressionContext, innerKey OUT SqlNameExpressionContext) AS LOGIC
+        outerKey := NULL
+        innerKey := NULL
+
+        IF expression IS SqlParenExpressionContext VAR parenExpr
+            RETURN FindHashJoinKey(parenExpr:Expr, tableAliases, outerTable, innerTable, OUT outerKey, OUT innerKey)
+        ENDIF
+
+        IF expression IS SqlLogicExpressionContext VAR logicExpr
+            IF logicExpr:Op:Type == XTokenType.AND
+                IF FindHashJoinKey(logicExpr:Left, tableAliases, outerTable, innerTable, OUT outerKey, OUT innerKey)
+                    RETURN TRUE
+                ENDIF
+                RETURN FindHashJoinKey(logicExpr:Right, tableAliases, outerTable, innerTable, OUT outerKey, OUT innerKey)
+            ENDIF
+            RETURN FALSE
+        ENDIF
+
+        IF expression IS SqlCompareExpressionContext VAR compareExpr
+            IF compareExpr:Op:Type != XTokenType.EQ .OR. ;
+               compareExpr:Left IS NOT SqlNameExpressionContext .OR. ;
+               compareExpr:Right IS NOT SqlNameExpressionContext
+                RETURN FALSE
+            ENDIF
+
+            VAR leftName := (SqlNameExpressionContext) compareExpr:Left
+            VAR rightName := (SqlNameExpressionContext) compareExpr:Right
+            IF String.IsNullOrEmpty(leftName:Table) .OR. String.IsNullOrEmpty(rightName:Table)
+                RETURN FALSE
+            ENDIF
+
+            VAR leftDependencies := leftName:GetTableDependencies(tableAliases)
+            VAR rightDependencies := rightName:GetTableDependencies(tableAliases)
+            IF leftDependencies:Count != 1 .OR. rightDependencies:Count != 1
+                RETURN FALSE
+            ENDIF
+
+            IF leftDependencies[0]:Equals(outerTable, StringComparison.OrdinalIgnoreCase) .AND. ;
+               rightDependencies[0]:Equals(innerTable, StringComparison.OrdinalIgnoreCase)
+                outerKey := leftName
+                innerKey := rightName
+                RETURN TRUE
+            ELSEIF rightDependencies[0]:Equals(outerTable, StringComparison.OrdinalIgnoreCase) .AND. ;
+                   leftDependencies[0]:Equals(innerTable, StringComparison.OrdinalIgnoreCase)
+                outerKey := rightName
+                innerKey := leftName
+                RETURN TRUE
+            ENDIF
+        ENDIF
+
+        RETURN FALSE
+
+    PRIVATE STATIC METHOD HashJoinFieldType(tableName AS STRING, fieldName AS STRING) AS STRING
+        VAR fieldPosition := (tableName)->FieldPos(fieldName)
+        IF fieldPosition <= 0
+            RETURN NULL
+        ENDIF
+        VAR structure := (tableName)->DbStruct()
+        RETURN (STRING) structure[fieldPosition][2]
+
+    PRIVATE STATIC METHOD IsHashJoinFieldType(fieldType AS STRING) AS LOGIC
+        IF String.IsNullOrEmpty(fieldType)
+            RETURN FALSE
+        ENDIF
+        SWITCH fieldType:ToUpperInvariant()
+        CASE "N" // Numeric
+        CASE "F" // Float
+        CASE "B" // Double
+        CASE "I" // Integer
+        CASE "Y" // Currency
+        CASE "D" // Date
+        CASE "T" // DateTime
+        CASE "L" // Logical
+            RETURN TRUE
+        OTHERWISE
+            // Character equality can be directional when SET EXACT is off, and its
+            // runtime comparison rules do not share a general-purpose hash key.
+            RETURN FALSE
+        END SWITCH
+
 
     STATIC METHOD ParseSqlSelect(sCommand as STRING) AS FoxSelectContext
         VAR lexer := XSqlLexer{sCommand}
@@ -195,10 +329,12 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 ENDIF
 
                 IF ! System.String.IsNullOrEmpty(exprTable)
-                    VAR fieldPos := (exprTable)->FieldPos(exprField)
+                    LOCAL sourceTable := exprTable AS STRING
+                    selectCtx:TableAliases:TryGetValue(exprTable, OUT sourceTable)
+                    VAR fieldPos := (sourceTable)->FieldPos(exprField)
                     IF fieldPos > 0
                         fieldFound := TRUE
-                        fieldInfo := (exprTable)->DbStruct()[fieldPos]
+                        fieldInfo := (sourceTable)->DbStruct()[fieldPos]
                     ENDIF
                 ELSEIF ! System.String.IsNullOrEmpty(exprField)
                     // Loop through all tables to find the field
@@ -270,6 +406,55 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 joinCodeBlocks:Add(joinCodeBlock)
             ENDIF
         NEXT
+
+        // Build candidate pairs for the narrow two-table equijoin shape. The full ON
+        // expression remains in joinCodeBlocks and is evaluated for every candidate.
+        LOCAL useHashJoin := FALSE AS LOGIC
+        LOCAL hashJoinCursor := NULL AS SqlHashJoinCursor
+        IF tableNames:Count == 2 .AND. selectCtx:Joins:Count == 1 .AND. ;
+           selectCtx:Joins[0]:Kind == FoxSelectJoinKind.Inner .AND. ;
+           !((STRING)tableNames[1]):Equals((STRING)tableNames[2], StringComparison.OrdinalIgnoreCase)
+            VAR outerTable := (STRING)tableNames[1]
+            VAR innerTable := (STRING)tableNames[2]
+            IF FindHashJoinKey(selectCtx:Joins[0]:OnClause, selectCtx:TableAliases, ;
+                               outerTable, innerTable, OUT VAR outerKey, OUT VAR innerKey)
+                VAR outerFieldType := HashJoinFieldType(outerTable, outerKey:Name)
+                VAR innerFieldType := HashJoinFieldType(innerTable, innerKey:Name)
+                IF IsHashJoinFieldType(outerFieldType) .AND. ;
+                   outerFieldType:Equals(innerFieldType, StringComparison.OrdinalIgnoreCase)
+                    VAR outerKeyExpression := outerKey:ToResolvedString(selectCtx:TableAliases)
+                    VAR innerKeyExpression := innerKey:ToResolvedString(selectCtx:TableAliases)
+                    VAR outerKeyCodeBlock := MCompile(outerKeyExpression)
+                    VAR innerKeyCodeBlock := MCompile(innerKeyExpression)
+                    IF outerKeyCodeBlock != NULL .AND. innerKeyCodeBlock != NULL
+                        VAR keyBuckets := Dictionary<USUAL,List<LONG>>{}
+                        TRY
+                            (innerTable)->DbGoTop()
+                            DO WHILE !(innerTable)->Eof()
+                                VAR keyValue := (USUAL) innerKeyCodeBlock:Eval()
+                                IF !keyValue:IsNull
+                                    VAR innerRecNo := (LONG)(innerTable)->RecNo()
+                                    IF keyBuckets:ContainsKey(keyValue)
+                                        keyBuckets[keyValue]:Add(innerRecNo)
+                                    ELSE
+                                        VAR bucket := List<LONG>{}
+                                        bucket:Add(innerRecNo)
+                                        keyBuckets[keyValue] := bucket
+                                    ENDIF
+                                ENDIF
+                                (innerTable)->DbSkip(1)
+                            ENDDO
+
+                            hashJoinCursor := SqlHashJoinCursor{outerTable, outerKeyCodeBlock, keyBuckets}
+                            useHashJoin := TRUE
+                        CATCH ex AS Exception
+                            hashJoinCursor := NULL
+                            useHashJoin := FALSE
+                        END TRY
+                    ENDIF
+                ENDIF
+            ENDIF
+        ENDIF
 
         // Try to optimize the WHERE clause using QueryOptimizer
         LOCAL optimizedBitmap AS RecordBitmap
@@ -343,7 +528,16 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
 
         // Main loop to iterate through all combinations
         LOCAL continueProcessing AS LOGIC
+        LOCAL currentOuterRecNo AS LONG
+        LOCAL currentInnerRecNo AS LONG
         continueProcessing := TRUE
+        IF continueProcessing .AND. useHashJoin
+            continueProcessing := hashJoinCursor:MoveNext(OUT currentOuterRecNo, OUT currentInnerRecNo)
+            IF continueProcessing
+                DbGoto(currentOuterRecNo, tableNames[1])
+                DbGoto(currentInnerRecNo, tableNames[2])
+            ENDIF
+        ENDIF
 
         // For optimization: track current record number for bitmap lookup
         // Only works for single-table queries; multi-table needs different approach
@@ -443,7 +637,16 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             // Only continue if we haven't reached the TOP limit
             IF continueProcessing
                 // For single-table optimization, advance the table and check for EOF
-                IF useOptimization .AND. ALen(tableNames) == 1
+                IF useHashJoin
+                    continueProcessing := hashJoinCursor:MoveNext(OUT currentOuterRecNo, OUT currentInnerRecNo)
+                    IF continueProcessing
+                        DbGoto(currentOuterRecNo, tableNames[1])
+                        DbGoto(currentInnerRecNo, tableNames[2])
+                    ELSE
+                        (tableNames[1])->DbGoTop()
+                        (tableNames[2])->DbGoTop()
+                    ENDIF
+                ELSEIF useOptimization .AND. ALen(tableNames) == 1
                     (tableNames[1])->DbSkip(1)
                     recNo++
 

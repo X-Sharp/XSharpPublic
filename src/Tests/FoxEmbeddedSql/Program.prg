@@ -37,11 +37,8 @@ END CLASS
 FUNCTION RegisterTest(name AS STRING, testFunc AS Action) AS VOID
     AllTests:Add(TestInfo{name, testFunc})
     RETURN
-
 FUNCTION SetVerbose(v AS LOGIC) AS VOID
     Verbose := v
-    RETURN
-
 FUNCTION RunTests(tests := NULL AS List<TestInfo>) AS TUPLE(INT, INT)
     LOCAL passed := 0 AS INT
     LOCAL failed := 0 AS INT
@@ -93,6 +90,7 @@ FUNCTION Start(args AS STRING[]) AS VOID STRICT
     RegisterTest("TestTableResolution", { => TestTableResolution() })
     RegisterTest("TestNewSqlFeatures", { => TestNewSqlFeatures() })
     RegisterTest("TestSelectFunctionality", { => TestSelectFunctionality() })
+    RegisterTest("TestHashJoin", { => TestHashJoin() })
     RegisterTest("TestQueryOptimizer", { => TestQueryOptimizer() })
     RegisterTest("TestOptimizerBitmap", { => TestOptimizerBitmap() })
     RegisterTest("TestMultiTableOptimizer", { => TestMultiTableOptimizer() })
@@ -1058,6 +1056,64 @@ FUNCTION TestCrossJoinFunctionality() AS VOID
     USE IN cross_join_table_b
     USE IN cross_join_table_c
 
+    RETURN
+
+FUNCTION TestHashJoin() AS VOID
+    ? "Testing hash join functionality..."
+
+    CREATE CURSOR hash_join_left (JoinId N(8,2) NULL, LeftName C(20))
+    CREATE CURSOR hash_join_right (JoinId N(8,2) NULL, RightName C(20), Active L)
+
+    INSERT INTO hash_join_left VALUES (1, "Left A")
+    INSERT INTO hash_join_left VALUES (1, "Left B")
+    INSERT INTO hash_join_left VALUES (2, "Left C")
+    INSERT INTO hash_join_left VALUES (4, "Left D")
+    INSERT INTO hash_join_left VALUES (NULL, "Left Null")
+
+    INSERT INTO hash_join_right VALUES (1, "Right A", .T.)
+    INSERT INTO hash_join_right VALUES (1, "Right inactive", .F.)
+    INSERT INTO hash_join_right VALUES (1, "Right B", .T.)
+    INSERT INTO hash_join_right VALUES (2, "Right C", .T.)
+    INSERT INTO hash_join_right VALUES (3, "Right D", .T.)
+    INSERT INTO hash_join_right VALUES (NULL, "Right Null", .T.)
+
+    // Duplicate keys must produce every matching pair, while residual ON and WHERE
+    // predicates still run after the hash lookup.
+    SELECT lhs.LeftName, rhs.RightName ;
+        FROM hash_join_left lhs ;
+        INNER JOIN hash_join_right rhs ON lhs.JoinId = rhs.JoinId AND rhs.Active = .T. ;
+        WHERE lhs.JoinId <= 2 ;
+        ORDER BY lhs.LeftName, rhs.RightName
+    VerifyTable(5, "Failed: Hash join lost duplicate matches or residual predicates", TRUE, ;
+        { {"Left A", "Right A"}, ;
+          {"Left A", "Right B"}, ;
+          {"Left B", "Right A"}, ;
+          {"Left B", "Right B"}, ;
+          {"Left C", "Right C"} } )
+
+    SELECT DISTINCT lhs.JoinId ;
+        FROM hash_join_left lhs ;
+        JOIN hash_join_right rhs ON rhs.JoinId = lhs.JoinId AND rhs.Active = .T. ;
+        ORDER BY lhs.JoinId DESC
+    VerifyTable(2, "Failed: DISTINCT should apply after hash join matches", TRUE, ;
+        { {2}, {1} } )
+
+    SELECT TOP 2 lhs.LeftName, rhs.RightName ;
+        FROM hash_join_left lhs ;
+        JOIN hash_join_right rhs ON lhs.JoinId = rhs.JoinId AND rhs.Active = .T. ;
+        ORDER BY lhs.LeftName DESC, rhs.RightName DESC INTO CURSOR HashJoinCursor
+    VerifyTable(2, "Failed: TOP/ORDER BY/INTO CURSOR failed with hash join", FALSE, ;
+        { {"Left C", "Right C"}, {"Left B", "Right B"} } )
+    USE IN HashJoinCursor
+
+    // A non-equality ON predicate must retain the nested-loop fallback.
+    SELECT lhs.LeftName, rhs.RightName ;
+        FROM hash_join_left lhs ;
+        JOIN hash_join_right rhs ON lhs.JoinId < rhs.JoinId
+    VerifyTable(5, "Failed: Non-equality JOIN should use the nested-loop fallback", TRUE)
+
+    USE IN hash_join_left
+    USE IN hash_join_right
     RETURN
 
 FUNCTION TestQueryOptimizer() AS VOID

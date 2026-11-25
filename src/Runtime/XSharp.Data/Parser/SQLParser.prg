@@ -875,11 +875,11 @@ PARTIAL CLASS SQLParser
                 VAR orderExpression := SELF:ParseExpressionContext()
                 SELF:_parsingOrderBy := FALSE
                 LOCAL descending := FALSE AS LOGIC
-                IF SELF:Lt1:Text:Equals("DESC", StringComparison.OrdinalIgnoreCase)
+                IF SELF:Lt1 != NULL .AND. SELF:Lt1:Text:Equals("DESC", StringComparison.OrdinalIgnoreCase)
                     SELF:Consume()
                     descending := TRUE
                 ELSE
-                    IF SELF:Lt1:Text:Equals("ASC", StringComparison.OrdinalIgnoreCase)
+                    IF SELF:Lt1 != NULL .AND. SELF:Lt1:Text:Equals("ASC", StringComparison.OrdinalIgnoreCase)
                         SELF:Consume()
                     ENDIF
                 ENDIF

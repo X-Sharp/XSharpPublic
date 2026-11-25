@@ -475,6 +475,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         IF String.IsNullOrEmpty(fieldType)
             RETURN FALSE
         ENDIF
+
         SWITCH fieldType:ToUpperInvariant()
         CASE "N" // Numeric
         CASE "F" // Float
@@ -490,7 +491,6 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             // runtime comparison rules do not share a general-purpose hash key.
             RETURN FALSE
         END SWITCH
-
 
     STATIC METHOD ParseSqlSelect(sCommand as STRING) AS FoxSelectContext
         VAR lexer := XSqlLexer{sCommand}
@@ -791,7 +791,9 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         // Try to optimize the WHERE clause using QueryOptimizer
         LOCAL optimizedBitmap AS RecordBitmap
         LOCAL useOptimization AS LOGIC
+        LOCAL multiTableCandidates AS Dictionary<STRING,RecordBitmap>
         useOptimization := FALSE
+        multiTableCandidates := NULL
 
         IF hasWhereClause .AND. tableNames:Count == 1
             // Get the record count for optimization (only single table queries supported)
@@ -811,6 +813,21 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             IF optimizedBitmap != NULL .AND. !optimizedBitmap:IsAllMatch()
                 useOptimization := TRUE
             ENDIF
+        ELSEIF hasWhereClause .AND. tableNames:Count > 1 .AND. !useHashJoin
+            // Build conservative per-table candidates for the nested-loop path.
+            // The full WHERE and JOIN ON predicates are still evaluated below.
+            LOCAL tableRecordCounts := Dictionary<STRING,LONG>{StringComparer.OrdinalIgnoreCase} AS Dictionary<STRING,LONG>
+            VAR workarea := DbSelect()
+            FOR LOCAL tableIdx := 1 AS DWORD TO ALen(tableNames)
+                VAR tableName := (STRING)tableNames[tableIdx]
+                (tableName)->DbSelectArea()
+                tableRecordCounts[tableName] := (LONG)(tableName)->RecCount()
+            NEXT
+            (workarea)->DbSelectArea()
+
+            VAR candidatePlan := QueryOptimizer.OptimizeMultiTableQuery( ;
+                selectCtx:WhereClause, selectCtx:TableAliases, tableRecordCounts)
+            multiTableCandidates := candidatePlan:CandidateBitmaps
         ENDIF
 
         // Check if DISTINCT is specified
@@ -982,17 +999,33 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             LOCAL includeRecord AS LOGIC
             includeRecord := TRUE
 
+            // Reject combinations containing a non-candidate row before running
+            // JOIN ON and WHERE codeblocks. Keep cursor traversal unchanged so
+            // bitmap pruning cannot disturb RDD/work-area state.
+            IF multiTableCandidates != NULL
+                FOR LOCAL tableIdx := 1 AS DWORD TO ALen(tableNames)
+                    LOCAL candidateBitmap AS RecordBitmap
+                    IF multiTableCandidates:TryGetValue((STRING)tableNames[tableIdx], OUT candidateBitmap) .AND. ;
+                       candidateBitmap:GetMatchState((LONG)(tableNames[tableIdx])->RecNo()) != RecordBitmap.RecordMatchState.Match
+                        includeRecord := FALSE
+                        EXIT
+                    ENDIF
+                NEXT
+            ENDIF
+
             // Evaluate join predicates before WHERE, matching SQL's row-combination semantics.
-            FOREACH VAR joinCodeBlock IN joinCodeBlocks
-                IF !includeRecord
-                    EXIT
-                ENDIF
-                TRY
-                    includeRecord := joinCodeBlock:Eval()
-                CATCH ex AS Exception
-                    includeRecord := FALSE
-                END TRY
-            NEXT
+            IF includeRecord
+                FOREACH VAR joinCodeBlock IN joinCodeBlocks
+                    IF !includeRecord
+                        EXIT
+                    ENDIF
+                    TRY
+                        includeRecord := joinCodeBlock:Eval()
+                    CATCH ex AS Exception
+                        includeRecord := FALSE
+                    END TRY
+                NEXT
+            ENDIF
 
             IF includeRecord .AND. hasWhereClause
                 // Use optimized bitmap when available, otherwise evaluate codeblock

@@ -214,6 +214,7 @@ PUBLIC CLASS QueryOptimizer
         LOCAL fieldName := "" AS STRING
         LOCAL tableName := "" AS STRING
         LOCAL invariantExpr := NULL AS SqlExpressionContext
+        LOCAL fieldOnRight := FALSE AS LOGIC
 
         IF leftDeps:Count == 0 .AND. rightDeps:Count > 0
             // Right side is the field, left side is invariant value
@@ -221,6 +222,7 @@ PUBLIC CLASS QueryOptimizer
                 fieldName := compareExpr:Right:ToString()
                 tableName := rightDeps[0]
                 invariantExpr := compareExpr:Left
+                fieldOnRight := TRUE
             ENDIF
         ELSEIF rightDeps:Count == 0 .AND. leftDeps:Count > 0
             // Left side is the field, right side is invariant value
@@ -277,6 +279,28 @@ PUBLIC CLASS QueryOptimizer
             // Build filter expression by replacing field reference with actual table->field syntax
             LOCAL filterExpr := invariantExpr:ToResolvedString(tableAliases) as STRING
             LOCAL opText := compareExpr:Op:Type as XTokenType
+            // The filter is evaluated in one table's work area, so use the bare
+            // field name instead of a source alias/table qualifier.
+            LOCAL fieldExpression AS SqlExpressionContext
+            IF fieldOnRight
+                fieldExpression := compareExpr:Right
+            ELSE
+                fieldExpression := compareExpr:Left
+            ENDIF
+            IF fieldExpression IS SqlNameExpressionContext VAR fieldNameExpression
+                fieldName := fieldNameExpression:Name
+            ENDIF
+
+            // If the field is on the right, reverse directional comparisons so
+            // the generated filter remains equivalent to the original predicate.
+            IF fieldOnRight
+                SWITCH opText
+                CASE XTokenType.LT; opText := XTokenType.GT
+                CASE XTokenType.GT; opText := XTokenType.LT
+                CASE XTokenType.LTE; opText := XTokenType.GTE
+                CASE XTokenType.GTE; opText := XTokenType.LTE
+                END SWITCH
+            ENDIF
             LOCAL opSymbol := "" AS STRING
 
             SWITCH opText
@@ -294,13 +318,8 @@ PUBLIC CLASS QueryOptimizer
                 opSymbol := ">="
             END SWITCH
 
-            // Build the filter: field op invariant_value
-            LOCAL resolvedField := "" AS STRING
-            IF String.IsNullOrEmpty(compareExpr:Left:ToString())
-                resolvedField := compareExpr:Right:ToResolvedString(tableAliases)
-            ELSE
-                resolvedField := compareExpr:Left:ToResolvedString(tableAliases)
-            ENDIF
+            // Build the filter: unqualified field op invariant value.
+            LOCAL resolvedField := fieldName AS STRING
 
             // Use MCompile to evaluate the invariant expression and build filter
             LOCAL macroValue := "" AS STRING

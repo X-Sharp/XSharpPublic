@@ -91,6 +91,7 @@ FUNCTION Start(args AS STRING[]) AS VOID STRICT
     RegisterTest("TestTableResolution", { => TestTableResolution() })
     RegisterTest("TestNewSqlFeatures", { => TestNewSqlFeatures() })
     RegisterTest("TestSelectFunctionality", { => TestSelectFunctionality() })
+    RegisterTest("TestCrossJoinFunctionality", { => TestCrossJoinFunctionality() })
     RegisterTest("TestHashJoin", { => TestHashJoin() })
     RegisterTest("TestQueryOptimizer", { => TestQueryOptimizer() })
     RegisterTest("TestOptimizerBitmap", { => TestOptimizerBitmap() })
@@ -1145,6 +1146,26 @@ FUNCTION TestCrossJoinFunctionality() AS VOID
               {"Item A1", "Description B2"}, ;
               {"Item A1", "Description B3"} } )
 
+    // Multi-table candidate bitmaps must prune both sides without changing
+    // the nested-loop result set. The full WHERE expression remains authoritative.
+    SELECT a.Name, b.Desc ;
+        FROM cross_join_table_a a ;
+        CROSS JOIN cross_join_table_b b ;
+        WHERE a.Id = 2 AND b.Id >= 2
+    VerifyTable(2, "Failed: Per-table candidates changed multi-table AND results", TRUE, ;
+            { {"Item A2", "Description B2"}, ;
+              {"Item A2", "Description B3"} } )
+
+    SELECT a.Name, b.Desc ;
+        FROM cross_join_table_a a ;
+        CROSS JOIN cross_join_table_b b ;
+        WHERE a.Id = 1 OR b.Id = 3
+    VerifyTable(4, "Failed: Cross-table OR candidate fallback returned incorrect rows", TRUE, ;
+            { {"Item A1", "Description B1"}, ;
+              {"Item A1", "Description B2"}, ;
+              {"Item A1", "Description B3"}, ;
+              {"Item A2", "Description B3"} } )
+
     // Bare JOIN and INNER JOIN both apply their ON predicate.
     SELECT a.Name, b.Desc ;
         FROM cross_join_table_a a ;
@@ -1225,8 +1246,9 @@ FUNCTION TestHashJoin() AS VOID
     // A non-equality ON predicate must retain the nested-loop fallback.
     SELECT lhs.LeftName, rhs.RightName ;
         FROM hash_join_left lhs ;
-        JOIN hash_join_right rhs ON lhs.JoinId < rhs.JoinId
-    VerifyTable(5, "Failed: Non-equality JOIN should use the nested-loop fallback", TRUE)
+        JOIN hash_join_right rhs ON lhs.JoinId < rhs.JoinId ;
+        WHERE lhs.JoinId <= 2
+    VerifyTable(5, "Failed: Nested-loop JOIN candidates changed result rows", TRUE)
 
     USE IN hash_join_left
     USE IN hash_join_right

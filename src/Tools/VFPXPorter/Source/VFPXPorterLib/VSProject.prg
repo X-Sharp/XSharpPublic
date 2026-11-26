@@ -78,8 +78,8 @@ CLASS VSProject
         SELF:ProjectReferenceList := List<VSProject>{}
         SELF:IsLibrary := FALSE
         SELF:ProjectType := ProjectType.WindowsExe
-        // TODO : set the Framework version as a Setting ??
-        SELF:FrameworkVersion := "4.7.2"
+        // Default value; XPorterProject.CreateVSProject() sets it from XPorterSettings.FrameworkVersion
+        SELF:FrameworkVersion := XPorterSettings.DefaultFrameworkVersion
         RETURN
 
     /// <summary>

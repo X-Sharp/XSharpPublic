@@ -718,6 +718,8 @@ BEGIN NAMESPACE VFPXPorterLib
         /// <param name="isLibrary">TRUE for a class library project.</param>
         PRIVATE METHOD CreateVSProject( name AS STRING, isLibrary AS LOGIC ) AS VSProject
             VAR prj := VSProject{ name }
+            prj:FrameworkVersion := IIF( String.IsNullOrWhiteSpace( SELF:Settings:FrameworkVersion ), ;
+                XPorterSettings.DefaultFrameworkVersion, SELF:Settings:FrameworkVersion:Trim() )
             prj:IsLibrary := isLibrary
             prj:AddStandardReferences()
             RETURN prj
@@ -725,7 +727,7 @@ BEGIN NAMESPACE VFPXPorterLib
 
         /// <summary>
         /// Create the solution object used to write the exported solution file.
-        /// Single place that decides the solution format.
+        /// Single place that decides the solution format, based on the settings.
         /// </summary>
         PRIVATE METHOD CreateVSSolution() AS VSSolution
             RETURN VSSolution{}

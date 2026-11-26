@@ -742,6 +742,9 @@ BEGIN NAMESPACE VFPXPorterLib
         /// Single place that decides the solution format, based on the settings.
         /// </summary>
         PRIVATE METHOD CreateVSSolution() AS VSSolution
+            IF SELF:Settings:SolutionFormat == SolutionFormat.Slnx
+                RETURN VSSlnxSolution{}
+            ENDIF
             RETURN VSSolution{}
         END METHOD
 

@@ -90,7 +90,7 @@ BEGIN NAMESPACE VFPXPorterLib
         /// <summary>
         /// Try loading projects from an existing solution.
         /// </summary>
-        PUBLIC METHOD Load( solutionPath AS STRING ) AS LOGIC
+        PUBLIC VIRTUAL METHOD Load( solutionPath AS STRING ) AS LOGIC
             IF !System.IO.File.Exists( solutionPath )
                 RETURN FALSE
             ENDIF

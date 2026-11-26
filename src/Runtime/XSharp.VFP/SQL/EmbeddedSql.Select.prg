@@ -94,13 +94,39 @@ INTERNAL STATIC CLASS SqlOptimizationDiagnostics
 END CLASS
 
 INTERNAL CLASS SqlCorrelatedScalarMemo
-    INTERNAL OuterValueCodeBlock AS CODEBLOCK
-    INTERNAL Values AS Dictionary<USUAL,USUAL>
+    INTERNAL OuterValueCodeBlocks AS IList<CODEBLOCK>
+    INTERNAL Values AS Dictionary<USUAL[],USUAL>
 
-    INTERNAL CONSTRUCTOR(outerValueCodeBlock AS CODEBLOCK)
-        SELF:OuterValueCodeBlock := outerValueCodeBlock
-        SELF:Values := Dictionary<USUAL,USUAL>{}
+    INTERNAL CONSTRUCTOR(outerValueCodeBlocks AS IList<CODEBLOCK>)
+        SELF:OuterValueCodeBlocks := outerValueCodeBlocks
+        SELF:Values := Dictionary<USUAL[],USUAL>{SqlScalarMemoKeyComparer{}}
         RETURN
+END CLASS
+
+INTERNAL CLASS SqlScalarMemoKeyComparer IMPLEMENTS IEqualityComparer<USUAL[]>
+    PUBLIC METHOD Equals(left AS USUAL[], right AS USUAL[]) AS LOGIC
+        IF left == right
+            RETURN TRUE
+        ENDIF
+        IF left == NULL .OR. right == NULL .OR. left:Length != right:Length
+            RETURN FALSE
+        ENDIF
+        FOR LOCAL i := 1 AS INT TO left:Length
+            IF !EqualityComparer<USUAL>.Default:Equals(left[i], right[i])
+                RETURN FALSE
+            ENDIF
+        NEXT
+        RETURN TRUE
+
+    PUBLIC METHOD GetHashCode(values AS USUAL[]) AS INT
+        IF values == NULL
+            RETURN 0
+        ENDIF
+        LOCAL hash := 17 AS LONG
+        FOR LOCAL i := 1 AS INT TO values:Length
+            hash := (hash * 31 + EqualityComparer<USUAL>.Default:GetHashCode(values[i])) % 2147483647
+        NEXT
+        RETURN (INT)hash
 END CLASS
 
 /// Runtime switches used by the embedded SQL implementation.
@@ -311,10 +337,6 @@ END CLASS
 
 INTERNAL CLASS SqlCorrelationCounter
     INTERNAL PROPERTY Count AS INT AUTO
-END CLASS
-
-INTERNAL CLASS SqlNameExpressionReference
-    INTERNAL PROPERTY Value AS SqlNameExpressionContext AUTO
 END CLASS
 
 INTERNAL CLASS SqlHashJoinCursor
@@ -796,14 +818,22 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 RETURN
             ENDIF
             LOCAL scalarMemo := NULL AS SqlCorrelatedScalarMemo
-            LOCAL scalarMemoKey := NULL AS USUAL
+            LOCAL scalarMemoKey := USUAL[]{1} AS USUAL[]
             LOCAL useScalarMemo := FALSE AS LOGIC
             IF scalarMemos != NULL
                 useScalarMemo := scalarMemos:TryGetValue(scalarExpression, OUT scalarMemo)
             ENDIF
             IF useScalarMemo
-                scalarMemoKey := (USUAL)scalarMemo:OuterValueCodeBlock:Eval()
-                IF scalarMemoKey:IsNull
+                scalarMemoKey := USUAL[]{scalarMemo:OuterValueCodeBlocks:Count}
+                LOCAL hasNullScalarKey := FALSE AS LOGIC
+                FOR LOCAL keyIndex := 1 AS INT TO scalarMemo:OuterValueCodeBlocks:Count
+                    scalarMemoKey[keyIndex] := (USUAL)scalarMemo:OuterValueCodeBlocks[keyIndex-1]:Eval()
+                    IF scalarMemoKey[keyIndex]:IsNull
+                        hasNullScalarKey := TRUE
+                        EXIT
+                    ENDIF
+                NEXT
+                IF hasNullScalarKey
                     scalarExpression:Value := NULL
                     scalarExpression:IsPrepared := TRUE
                     System.Threading.Interlocked.Increment(REF SqlOptimizationDiagnostics.CorrelatedScalarNullKeys)
@@ -1070,40 +1100,40 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
 
         LOCAL correlation AS SqlCorrelationCounter
         correlation := SqlCorrelationCounter{}
-        LOCAL outerReference := SqlNameExpressionReference{} AS SqlNameExpressionReference
+        LOCAL outerReferences := List<SqlNameExpressionContext>{} AS List<SqlNameExpressionContext>
         VAR residualWhere := ExtractCorrelatedScalarEquality(subquery:WhereClause, ;
-            subquery:TableAliases, outerTableAliases, correlation, outerReference)
-        IF correlation:Count != 1 .OR. ;
+            subquery:TableAliases, outerTableAliases, correlation, outerReferences)
+        IF correlation:Count < 1 .OR. outerReferences:Count != correlation:Count .OR. ;
            (residualWhere != NULL .AND. ;
             (HasExternalSubqueryDependency(residualWhere, subquery:TableAliases) .OR. ;
              ContainsInSubqueryExpression(residualWhere)))
             RETURN NULL
         ENDIF
-        LOCAL outerField := outerReference:Value AS SqlNameExpressionContext
-        IF outerField == NULL
-            RETURN NULL
-        ENDIF
-        LOCAL resolvedOuterTable := outerField:Table AS STRING
-        outerTableAliases:TryGetValue(outerField:Table, OUT resolvedOuterTable)
-        IF !IsHashJoinFieldType(HashJoinFieldType(resolvedOuterTable, outerField:Name))
-            RETURN NULL
-        ENDIF
-        VAR outerValueCodeBlock := MCompile(outerField:ToResolvedString(outerTableAliases))
-        IF outerValueCodeBlock == NULL
-            RETURN NULL
-        ENDIF
-        RETURN SqlCorrelatedScalarMemo{outerValueCodeBlock}
+        LOCAL outerValueCodeBlocks := List<CODEBLOCK>{} AS List<CODEBLOCK>
+        FOREACH VAR outerField IN outerReferences
+            LOCAL resolvedOuterTable := outerField:Table AS STRING
+            outerTableAliases:TryGetValue(outerField:Table, OUT resolvedOuterTable)
+            IF !IsHashJoinFieldType(HashJoinFieldType(resolvedOuterTable, outerField:Name))
+                RETURN NULL
+            ENDIF
+            VAR outerValueCodeBlock := MCompile(outerField:ToResolvedString(outerTableAliases))
+            IF outerValueCodeBlock == NULL
+                RETURN NULL
+            ENDIF
+            outerValueCodeBlocks:Add(outerValueCodeBlock)
+        NEXT
+        RETURN SqlCorrelatedScalarMemo{outerValueCodeBlocks}
 
     PRIVATE STATIC METHOD ExtractCorrelatedScalarEquality(expression AS SqlExpressionContext, ;
         innerAliases AS Dictionary<STRING,STRING>, ;
         outerAliases AS Dictionary<STRING,STRING>, counter AS SqlCorrelationCounter, ;
-        outerField AS SqlNameExpressionReference) AS SqlExpressionContext
+        outerFields AS IList<SqlNameExpressionContext>) AS SqlExpressionContext
         IF expression == NULL
             RETURN NULL
         ENDIF
         IF expression IS SqlParenExpressionContext VAR paren .AND. paren:Expr IS SqlCompareExpressionContext
             VAR residual := ExtractCorrelatedScalarEquality(paren:Expr, innerAliases, ;
-                outerAliases, counter, outerField)
+                outerAliases, counter, outerFields)
             IF residual == NULL
                 RETURN NULL
             ENDIF
@@ -1111,9 +1141,9 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         ENDIF
         IF expression IS SqlLogicExpressionContext VAR logicNode .AND. logicNode:Op:Type == XTokenType.AND
             VAR leftResidual := ExtractCorrelatedScalarEquality(logicNode:Left, innerAliases, ;
-                outerAliases, counter, outerField)
+                outerAliases, counter, outerFields)
             VAR rightResidual := ExtractCorrelatedScalarEquality(logicNode:Right, innerAliases, ;
-                outerAliases, counter, outerField)
+                outerAliases, counter, outerFields)
             IF leftResidual == NULL
                 RETURN rightResidual
             ELSEIF rightResidual == NULL
@@ -1138,7 +1168,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             ENDIF
             IF inner != NULL .AND. outer != NULL
                 counter:Count++
-                outerField:Value := outer
+                outerFields:Add(outer)
                 RETURN NULL
             ENDIF
         ENDIF

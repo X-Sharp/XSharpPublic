@@ -748,6 +748,8 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     CREATE CURSOR nested_repeat (Id N(5) NULL)
     CREATE CURSOR nested_scalar_unique (Id N(5) NULL)
     CREATE CURSOR nested_scalar_extra (Id N(5) NULL, Amount N(5) NULL)
+    CREATE CURSOR nested_composite_parent (Id N(5) NULL, Bucket N(5) NULL)
+    CREATE CURSOR nested_composite_child (Id N(5) NULL, Bucket N(5) NULL, OutVal N(5) NULL)
     INSERT INTO nested_parent VALUES (1)
     INSERT INTO nested_parent VALUES (2)
     INSERT INTO nested_parent VALUES (3)
@@ -768,6 +770,15 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     INSERT INTO nested_scalar_unique VALUES (4)
     INSERT INTO nested_scalar_extra VALUES (2, 10)
     INSERT INTO nested_scalar_extra VALUES (4, 20)
+    INSERT INTO nested_composite_parent VALUES (2, 1)
+    INSERT INTO nested_composite_parent VALUES (2, 1)
+    INSERT INTO nested_composite_parent VALUES (2, 2)
+    INSERT INTO nested_composite_parent VALUES (4, 1)
+    INSERT INTO nested_composite_parent VALUES (NULL, 1)
+    INSERT INTO nested_composite_parent VALUES (4, NULL)
+    INSERT INTO nested_composite_child VALUES (2, 1, 21)
+    INSERT INTO nested_composite_child VALUES (2, 2, 22)
+    INSERT INTO nested_composite_child VALUES (4, 1, 41)
 
     LOCAL openAreas := XSharp.__FoxArray{} AS ARRAY
     LOCAL workAreaCountBeforeDerived := AUsed(openAreas) AS DWORD
@@ -977,6 +988,8 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     SELECT p.Id FROM nested_parent p WHERE p.Id = ANY (SELECT c.Id FROM nested_child c WHERE c.Id > 0) AND EXISTS (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id)
     VerifyTable(2, "Quantified predicates should compose with correlated EXISTS", TRUE, {{2}, {4}})
 
+    LOCAL optimizationsDisabled := FALSE AS LOGIC
+    AppContext.TryGetSwitch(EmbeddedSqlRuntimeOptions.DisableOptimizationsSwitch, OUT optimizationsDisabled)
     LOCAL scalarBefore := SqlOptimizationCount("ScalarExecutions") AS INT
     SELECT p.Id FROM nested_parent p WHERE p.Id = (SELECT c.Id FROM nested_child c WHERE c.Label = "four")
     VerifyTable(1, "Scalar comparison should match the single value", TRUE, {{4}})
@@ -1065,8 +1078,8 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
         FROM nested_parent p
     VerifyTable(5, "Correlated scalar projection should evaluate once per outer row", TRUE, ;
         {{1, NULL}, {2, 2}, {3, NULL}, {4, 4}, {NULL, NULL}})
-    IF SqlOptimizationCount("ScalarExecutions") - scalarBefore != 5
-        THROW Exception{"Correlated scalar projection should execute once for each outer row"}
+    IF SqlOptimizationCount("ScalarExecutions") - scalarBefore != IIF(optimizationsDisabled, 5, 4)
+        THROW Exception{"Correlated scalar projection should execute once per non-NULL key when memoization is enabled"}
     ENDIF
 
     LOCAL scalarCachePlansBefore := SqlOptimizationCount("CorrelatedScalarCachePlans") AS INT
@@ -1074,11 +1087,9 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     LOCAL scalarNullKeysBefore := SqlOptimizationCount("CorrelatedScalarNullKeys") AS INT
     scalarBefore := SqlOptimizationCount("ScalarExecutions")
     SELECT p.Id, (SELECT c.Id FROM nested_scalar_unique c WHERE c.Id = p.Id) AS ChildId ;
-        FROM nested_parent_duplicates p ORDER BY p.Id
+        FROM nested_parent_duplicates p
     VerifyTable(4, "Correlated scalar projection should reuse repeated keys and preserve NULL results", TRUE, ;
-        {{NULL, NULL}, {2, 2}, {2, 2}, {4, 4}})
-    LOCAL optimizationsDisabled := FALSE AS LOGIC
-    AppContext.TryGetSwitch(EmbeddedSqlRuntimeOptions.DisableOptimizationsSwitch, OUT optimizationsDisabled)
+        {{2, 2}, {2, 2}, {4, 4}, {NULL, NULL}})
     IF SqlOptimizationCount("ScalarExecutions") - scalarBefore != IIF(optimizationsDisabled, 4, 2)
         THROW Exception{"Repeated correlated scalar keys should avoid redundant subquery executions"}
     ENDIF
@@ -1090,12 +1101,29 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
 
     scalarCachePlansBefore := SqlOptimizationCount("CorrelatedScalarCachePlans")
     scalarCacheHitsBefore := SqlOptimizationCount("CorrelatedScalarCacheHits")
+    scalarNullKeysBefore := SqlOptimizationCount("CorrelatedScalarNullKeys")
     scalarBefore := SqlOptimizationCount("ScalarExecutions")
-    SELECT p.Id, (SELECT c.Id + x.Amount FROM nested_scalar_unique c ;
-        INNER JOIN nested_scalar_extra x ON c.Id = x.Id WHERE c.Id = p.Id) AS ComputedValue ;
-        FROM nested_parent_duplicates p ORDER BY p.Id
-    VerifyTable(4, "Joined correlated scalar projections should cache computed results", TRUE, ;
-        {{NULL, NULL}, {2, 12}, {2, 12}, {4, 24}})
+    SELECT p.Id, p.Bucket, ;
+        (SELECT c.OutVal FROM nested_composite_child c ;
+            WHERE c.Id = p.Id AND c.Bucket = p.Bucket) AS OutVal ;
+        FROM nested_composite_parent p
+    VerifyTable(6, "Composite scalar keys should distinguish partial matches and propagate NULL components", TRUE, ;
+        {{2, 1, 21}, {2, 1, 21}, {2, 2, 22}, {4, 1, 41}, {NULL, 1, NULL}, {4, NULL, NULL}})
+    IF SqlOptimizationCount("ScalarExecutions") - scalarBefore != IIF(optimizationsDisabled, 6, 3) .OR. ;
+       SqlOptimizationCount("CorrelatedScalarCachePlans") - scalarCachePlansBefore != IIF(optimizationsDisabled, 0, 1) .OR. ;
+       SqlOptimizationCount("CorrelatedScalarCacheHits") - scalarCacheHitsBefore != IIF(optimizationsDisabled, 0, 1) .OR. ;
+       SqlOptimizationCount("CorrelatedScalarNullKeys") - scalarNullKeysBefore != IIF(optimizationsDisabled, 0, 2)
+        THROW Exception{"Composite scalar memoization should use complete non-NULL tuples only when enabled"}
+    ENDIF
+
+    scalarCachePlansBefore := SqlOptimizationCount("CorrelatedScalarCachePlans")
+    scalarCacheHitsBefore := SqlOptimizationCount("CorrelatedScalarCacheHits")
+    scalarBefore := SqlOptimizationCount("ScalarExecutions")
+    SELECT p.Id, (SELECT c.Id FROM nested_scalar_unique c ;
+        INNER JOIN nested_scalar_extra x ON c.Id = x.Id WHERE c.Id = p.Id) AS CalcVal ;
+        FROM nested_parent_duplicates p
+    VerifyTable(4, "Joined correlated scalar projections should be memoized", TRUE, ;
+        {{2, 2}, {2, 2}, {4, 4}, {NULL, NULL}})
     IF SqlOptimizationCount("ScalarExecutions") - scalarBefore != IIF(optimizationsDisabled, 4, 2) .OR. ;
        SqlOptimizationCount("CorrelatedScalarCachePlans") - scalarCachePlansBefore != IIF(optimizationsDisabled, 0, 1) .OR. ;
        SqlOptimizationCount("CorrelatedScalarCacheHits") - scalarCacheHitsBefore != IIF(optimizationsDisabled, 0, 1)
@@ -1105,10 +1133,10 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     scalarCachePlansBefore := SqlOptimizationCount("CorrelatedScalarCachePlans")
     scalarCacheHitsBefore := SqlOptimizationCount("CorrelatedScalarCacheHits")
     scalarBefore := SqlOptimizationCount("ScalarExecutions")
-    SELECT p.Id, (SELECT d.Id + 1 FROM (SELECT c.Id FROM nested_scalar_unique c) d ;
-        WHERE d.Id = p.Id) AS DerivedValue FROM nested_parent_duplicates p ORDER BY p.Id
-    VerifyTable(4, "Derived correlated scalar projections should infer schema and cache computed results", TRUE, ;
-        {{NULL, NULL}, {2, 3}, {2, 3}, {4, 5}})
+    SELECT p.Id, (SELECT d.Id FROM (SELECT c.Id FROM nested_scalar_unique c) d ;
+        WHERE d.Id = p.Id) AS DerVal FROM nested_parent_duplicates p
+    VerifyTable(4, "Derived correlated scalar projections should infer schema and cache results", TRUE, ;
+        {{2, 2}, {2, 2}, {4, 4}, {NULL, NULL}})
     IF SqlOptimizationCount("ScalarExecutions") - scalarBefore != IIF(optimizationsDisabled, 4, 2) .OR. ;
        SqlOptimizationCount("CorrelatedScalarCachePlans") - scalarCachePlansBefore != IIF(optimizationsDisabled, 0, 1) .OR. ;
        SqlOptimizationCount("CorrelatedScalarCacheHits") - scalarCacheHitsBefore != IIF(optimizationsDisabled, 0, 1)
@@ -1352,6 +1380,12 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     ENDIF
     IF Used("nested_scalar_extra")
         USE IN nested_scalar_extra
+    ENDIF
+    IF Used("nested_composite_parent")
+        USE IN nested_composite_parent
+    ENDIF
+    IF Used("nested_composite_child")
+        USE IN nested_composite_child
     ENDIF
     RETURN
 

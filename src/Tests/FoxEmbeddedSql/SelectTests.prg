@@ -752,6 +752,8 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     CREATE CURSOR nested_composite_child (Id N(5) NULL, Bucket N(5) NULL, OutVal N(5) NULL)
     CREATE CURSOR nested_char_parent (Id N(5) NULL, Code C(5) NULL)
     CREATE CURSOR nested_char_child (Code C(5) NULL, OutVal N(5) NULL)
+    CREATE CURSOR nested_currency_parent (Id I, Amount Y NULL)
+    CREATE CURSOR nested_currency_child (Amount Y NULL, OutVal I)
     INSERT INTO nested_parent VALUES (1)
     INSERT INTO nested_parent VALUES (2)
     INSERT INTO nested_parent VALUES (3)
@@ -787,6 +789,12 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     INSERT INTO nested_char_parent VALUES (4, "xyz")
     INSERT INTO nested_char_child VALUES ("abc", 11)
     INSERT INTO nested_char_child VALUES ("ABC", 12)
+    INSERT INTO nested_currency_parent VALUES (1, 2.5)
+    INSERT INTO nested_currency_parent VALUES (2, 2.5)
+    INSERT INTO nested_currency_parent VALUES (3, 4.125)
+    INSERT INTO nested_currency_parent VALUES (4, NULL)
+    INSERT INTO nested_currency_child VALUES (2.5, 25)
+    INSERT INTO nested_currency_child VALUES (4.125, 41)
 
     LOCAL openAreas := XSharp.__FoxArray{} AS ARRAY
     LOCAL workAreaCountBeforeDerived := AUsed(openAreas) AS DWORD
@@ -1124,6 +1132,21 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     scalarCacheHitsBefore := SqlOptimizationCount("CorrelatedScalarCacheHits")
     scalarNullKeysBefore := SqlOptimizationCount("CorrelatedScalarNullKeys")
     scalarBefore := SqlOptimizationCount("ScalarExecutions")
+    SELECT p.Id, (SELECT c.OutVal FROM nested_currency_child c WHERE c.Amount = p.Amount) AS ChildVal ;
+        FROM nested_currency_parent p
+    VerifyTable(4, "Currency scalar keys should match exact values, reuse duplicates, and propagate NULL", TRUE, ;
+        {{1, 25}, {2, 25}, {3, 41}, {4, NULL}})
+    IF SqlOptimizationCount("ScalarExecutions") - scalarBefore != IIF(optimizationsDisabled, 4, 2) .OR. ;
+       SqlOptimizationCount("CorrelatedScalarCachePlans") - scalarCachePlansBefore != IIF(optimizationsDisabled, 0, 1) .OR. ;
+       SqlOptimizationCount("CorrelatedScalarCacheHits") - scalarCacheHitsBefore != IIF(optimizationsDisabled, 0, 1) .OR. ;
+       SqlOptimizationCount("CorrelatedScalarNullKeys") - scalarNullKeysBefore != IIF(optimizationsDisabled, 0, 1)
+        THROW Exception{"Currency scalar memoization should reuse exact fixed-point keys and skip NULL keys only when enabled"}
+    ENDIF
+
+    scalarCachePlansBefore := SqlOptimizationCount("CorrelatedScalarCachePlans")
+    scalarCacheHitsBefore := SqlOptimizationCount("CorrelatedScalarCacheHits")
+    scalarNullKeysBefore := SqlOptimizationCount("CorrelatedScalarNullKeys")
+    scalarBefore := SqlOptimizationCount("ScalarExecutions")
     SELECT p.Id, p.Bucket, ;
         (SELECT c.OutVal FROM nested_composite_child c ;
             WHERE c.Id = p.Id AND c.Bucket = p.Bucket) AS OutVal ;
@@ -1413,6 +1436,12 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     ENDIF
     IF Used("nested_char_child")
         USE IN nested_char_child
+    ENDIF
+    IF Used("nested_currency_parent")
+        USE IN nested_currency_parent
+    ENDIF
+    IF Used("nested_currency_child")
+        USE IN nested_currency_child
     ENDIF
     RETURN
 

@@ -785,6 +785,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         SWITCH fieldType:ToUpperInvariant()
         CASE "N" // Numeric
         CASE "I" // Integer
+        CASE "Y" // Currency
         CASE "C" // Fixed-width character; memo keys use exact ordinal identity.
             RETURN TRUE
         OTHERWISE

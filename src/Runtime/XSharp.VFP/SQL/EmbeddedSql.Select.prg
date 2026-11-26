@@ -85,6 +85,126 @@ INTERNAL STATIC CLASS SqlOptimizationDiagnostics
     INTERNAL STATIC ScalarExecutions AS INT
 END CLASS
 
+// -1 is UNKNOWN, 0 is FALSE and 1 is TRUE.
+INTERNAL CLASS SqlThreeValuePredicate
+    INTERNAL Kind AS STRING
+    INTERNAL Op AS XTokenType
+    INTERNAL Left AS SqlThreeValuePredicate
+    INTERNAL Right AS SqlThreeValuePredicate
+    INTERNAL ValueBlock AS CODEBLOCK
+    INTERNAL Scalar AS SqlScalarSubqueryExpressionContext
+    INTERNAL InQuery AS SqlInSubqueryExpressionContext
+    INTERNAL ExistsQuery AS SqlExistsSubqueryExpressionContext
+    INTERNAL Items AS List<SqlThreeValuePredicate>
+    INTERNAL Negated AS LOGIC
+
+    INTERNAL METHOD Value() AS USUAL
+        IF SELF:Scalar != NULL
+            RETURN SELF:Scalar:Value
+        ENDIF
+        RETURN SELF:ValueBlock:Eval()
+
+    INTERNAL STATIC METHOD IsUnknown(value AS USUAL) AS LOGIC
+        RETURN IsNil(value) .OR. value:IsNull
+
+    INTERNAL METHOD Evaluate() AS INT
+        SWITCH SELF:Kind
+        CASE "NOT"
+            VAR state := SELF:Left:Evaluate()
+            RETURN IIF(state < 0, -1, 1 - state)
+        CASE "AND"
+            VAR leftState := SELF:Left:Evaluate()
+            IF leftState == 0
+                RETURN 0
+            ENDIF
+            VAR rightState := SELF:Right:Evaluate()
+            IF rightState == 0
+                RETURN 0
+            ENDIF
+            RETURN IIF(leftState < 0 .OR. rightState < 0, -1, 1)
+        CASE "OR"
+            VAR leftOrState := SELF:Left:Evaluate()
+            IF leftOrState == 1
+                RETURN 1
+            ENDIF
+            VAR rightOrState := SELF:Right:Evaluate()
+            IF rightOrState == 1
+                RETURN 1
+            ENDIF
+            RETURN IIF(leftOrState < 0 .OR. rightOrState < 0, -1, 0)
+        CASE "EXISTS"
+            RETURN IIF(SELF:ExistsQuery:HasRows, 1, 0)
+        CASE "COMPARE"
+            VAR leftValue := SELF:Left:Value()
+            VAR rightValue := SELF:Right:Value()
+            IF IsUnknown(leftValue) .OR. IsUnknown(rightValue)
+                RETURN -1
+            ENDIF
+            LOCAL matches := FALSE AS LOGIC
+            SWITCH SELF:Op
+            CASE XTokenType.EQ
+                matches := leftValue = rightValue
+            CASE XTokenType.EEQ
+                matches := leftValue == rightValue
+            CASE XTokenType.NEQ
+                matches := leftValue != rightValue
+            CASE XTokenType.LT
+                matches := leftValue < rightValue
+            CASE XTokenType.LTE
+                matches := leftValue <= rightValue
+            CASE XTokenType.GT
+                matches := leftValue > rightValue
+            CASE XTokenType.GTE
+                matches := leftValue >= rightValue
+            END SWITCH
+            RETURN IIF(matches, 1, 0)
+        CASE "IN"
+            VAR candidate := SELF:Left:Value()
+            LOCAL hasNull := FALSE AS LOGIC
+            LOCAL found := FALSE AS LOGIC
+            LOCAL itemCount AS INT
+            IF SELF:InQuery != NULL
+                itemCount := SELF:InQuery:Values:Count
+            ELSE
+                itemCount := SELF:Items:Count
+            ENDIF
+            IF itemCount == 0
+                RETURN IIF(SELF:Negated, 1, 0)
+            ENDIF
+            IF IsUnknown(candidate)
+                RETURN -1
+            ENDIF
+            FOR LOCAL i := 0 AS INT TO itemCount - 1
+                LOCAL value AS USUAL
+                IF SELF:InQuery != NULL
+                    value := SELF:InQuery:Values[i]
+                ELSE
+                    value := SELF:Items[i]:Value()
+                ENDIF
+                IF IsUnknown(value)
+                    hasNull := TRUE
+                ELSEIF candidate = value
+                    found := TRUE
+                    EXIT
+                ENDIF
+            NEXT
+            IF found
+                RETURN IIF(SELF:Negated, 0, 1)
+            ENDIF
+            IF hasNull
+                RETURN -1
+            ENDIF
+            RETURN IIF(SELF:Negated, 1, 0)
+        CASE "BOOL"
+            VAR boolValue := SELF:Value()
+            IF IsUnknown(boolValue)
+                RETURN -1
+            ENDIF
+            RETURN IIF((LOGIC)boolValue, 1, 0)
+        END SWITCH
+        THROW Error{"Unsupported SQL predicate"}
+END CLASS
+
 INTERNAL CLASS SqlCorrelatedInPlan
     PRIVATE _outerValueCodeBlock AS CODEBLOCK
     PRIVATE _innerValues AS Dictionary<USUAL,BYTE>
@@ -678,6 +798,9 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         IF expression IS SqlInSubqueryExpressionContext VAR inExpression
             VAR subquery := inExpression:Subquery
             LOCAL isCorrelated := HasExternalSubqueryReference(subquery) AS LOGIC
+            IF refreshCorrelated .AND. !isCorrelated .AND. inExpression:Values != NULL
+                RETURN
+            ENDIF
             IF isCorrelated
                 IF outerTableAliases == NULL .OR. HasUnsupportedSubqueryCorrelation(subquery, outerTableAliases)
                     THROW Error{"Only references to the immediate outer query in an IN subquery WHERE clause are supported"}
@@ -874,6 +997,69 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         ENDIF
         RETURN FALSE
 
+    PRIVATE STATIC METHOD BuildThreeValueOperand(expression AS SqlExpressionContext, ;
+        aliases AS Dictionary<STRING,STRING>) AS SqlThreeValuePredicate
+        VAR operand := SqlThreeValuePredicate{}
+        IF expression IS SqlScalarSubqueryExpressionContext VAR scalar
+            operand:Scalar := scalar
+        ELSE
+            IF ContainsScalarSubquery(expression) .OR. ContainsInSubqueryExpression(expression)
+                THROW Error{"Unsupported subquery inside a SQL value expression"}
+            ENDIF
+            operand:ValueBlock := MCompile(expression:ToResolvedString(aliases))
+            IF operand:ValueBlock == NULL
+                THROW Error{"Could not compile SQL predicate operand"}
+            ENDIF
+        ENDIF
+        RETURN operand
+
+    PRIVATE STATIC METHOD BuildThreeValuePredicate(expression AS SqlExpressionContext, ;
+        aliases AS Dictionary<STRING,STRING>) AS SqlThreeValuePredicate
+        VAR node := SqlThreeValuePredicate{}
+        IF expression IS SqlParenExpressionContext VAR paren
+            RETURN BuildThreeValuePredicate(paren:Expr, aliases)
+        ELSEIF expression IS SqlPrefixExpressionContext VAR prefix .AND. prefix:Op:Type == XTokenType.NOT
+            node:Kind := "NOT"
+            node:Left := BuildThreeValuePredicate(prefix:Expr, aliases)
+        ELSEIF expression IS SqlLogicExpressionContext VAR logicExpression
+            IF logicExpression:Op:Type == XTokenType.AND
+                node:Kind := "AND"
+            ELSEIF logicExpression:Op:Type == XTokenType.OR
+                node:Kind := "OR"
+            ELSE
+                THROW Error{"Unsupported logical operator in scalar subquery predicate"}
+            ENDIF
+            node:Left := BuildThreeValuePredicate(logicExpression:Left, aliases)
+            node:Right := BuildThreeValuePredicate(logicExpression:Right, aliases)
+        ELSEIF expression IS SqlCompareExpressionContext VAR comparison
+            node:Kind := "COMPARE"
+            node:Op := comparison:Op:Type
+            node:Left := BuildThreeValueOperand(comparison:Left, aliases)
+            node:Right := BuildThreeValueOperand(comparison:Right, aliases)
+        ELSEIF expression IS SqlExistsSubqueryExpressionContext VAR existsExpression
+            node:Kind := "EXISTS"
+            node:ExistsQuery := existsExpression
+        ELSEIF expression IS SqlInSubqueryExpressionContext VAR inExpression
+            node:Kind := "IN"
+            node:InQuery := inExpression
+            node:Negated := inExpression:IsNegated
+            node:Left := BuildThreeValueOperand(inExpression:ValueExpression, aliases)
+        ELSEIF expression IS SqlInListExpressionContext VAR inList
+            node:Kind := "IN"
+            node:Negated := inList:IsNegated
+            node:Left := BuildThreeValueOperand(inList:ValueExpression, aliases)
+            node:Items := List<SqlThreeValuePredicate>{}
+            FOREACH VAR item IN inList:Items
+                node:Items:Add(BuildThreeValueOperand(item, aliases))
+            NEXT
+        ELSEIF expression IS SqlNameExpressionContext .OR. expression IS SqlSimpleExpressionContext
+            node := BuildThreeValueOperand(expression, aliases)
+            node:Kind := "BOOL"
+        ELSE
+            THROW Error{"Unsupported predicate in WHERE containing a scalar subquery"}
+        ENDIF
+        RETURN node
+
     PRIVATE STATIC METHOD ValidateNestedSubqueries(expression AS SqlExpressionContext, ;
         parentAliases AS Dictionary<STRING,STRING>) AS VOID
         IF expression == NULL
@@ -890,16 +1076,6 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         ELSEIF expression IS SqlParenExpressionContext VAR paren
             ValidateNestedSubqueries(paren:Expr, parentAliases)
         ELSEIF expression IS SqlPrefixExpressionContext VAR prefix
-            IF prefix:Op:Type == XTokenType.NOT .AND. ContainsScalarSubquery(prefix:Expr)
-                LOCAL inner := prefix:Expr AS SqlExpressionContext
-                DO WHILE inner IS SqlParenExpressionContext VAR parenInner
-                    inner := parenInner:Expr
-                ENDDO
-                IF !(inner IS SqlCompareExpressionContext VAR comparison) .OR. ;
-                   !(comparison:Right IS SqlScalarSubqueryExpressionContext)
-                    THROW Error{"NOT of a compound scalar subquery predicate is not supported"}
-                ENDIF
-            ENDIF
             ValidateNestedSubqueries(prefix:Expr, parentAliases)
         ELSEIF expression IS SqlBinaryExpressionContext VAR binary
             ValidateNestedSubqueries(binary:Left, parentAliases)
@@ -1433,6 +1609,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         LOCAL whereCodeBlock AS CODEBLOCK
         LOCAL hasWhereClause AS LOGIC
         LOCAL hasCorrelatedWhere := FALSE AS LOGIC
+        LOCAL threeValueWhere := NULL AS SqlThreeValuePredicate
         LOCAL correlatedInPlan AS SqlCorrelatedInPlan
         correlatedInPlan := NULL
         hasWhereClause := FALSE
@@ -1445,8 +1622,12 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             IF correlatedInPlan == NULL
                 hasCorrelatedWhere := HasCorrelatedInSubquery(selectCtx:WhereClause, selectCtx:TableAliases)
                 PrepareSubqueryExpression(selectCtx:WhereClause, selectCtx:TableAliases, hasCorrelatedWhere)
-                whereClause := selectCtx:WhereClause:ToResolvedString(selectCtx:TableAliases)
-                whereCodeBlock := MCompile(whereClause)
+                IF ContainsScalarSubquery(selectCtx:WhereClause)
+                    threeValueWhere := BuildThreeValuePredicate(selectCtx:WhereClause, selectCtx:TableAliases)
+                ELSE
+                    whereClause := selectCtx:WhereClause:ToResolvedString(selectCtx:TableAliases)
+                    whereCodeBlock := MCompile(whereClause)
+                ENDIF
             ELSE
                 // The semi-join plan evaluates the root predicate directly and
                 // does not need a generated INLIST expression.
@@ -1526,7 +1707,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         multiTableCandidates := NULL
         multiTableCandidateRows := NULL
 
-        IF SqlOptimizationsEnabled() .AND. hasWhereClause .AND. !hasCorrelatedWhere .AND. correlatedInPlan == NULL .AND. ;
+        IF SqlOptimizationsEnabled() .AND. hasWhereClause .AND. !hasCorrelatedWhere .AND. threeValueWhere == NULL .AND. correlatedInPlan == NULL .AND. ;
            tableNames:Count == 1
             // Get the record count for optimization (only single table queries supported)
             LOCAL tableName AS STRING
@@ -1545,7 +1726,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             IF optimizedBitmap != NULL .AND. !optimizedBitmap:IsAllMatch()
                 useOptimization := TRUE
             ENDIF
-        ELSEIF SqlOptimizationsEnabled() .AND. hasWhereClause .AND. !hasCorrelatedWhere .AND. tableNames:Count > 1 .AND. ;
+        ELSEIF SqlOptimizationsEnabled() .AND. hasWhereClause .AND. !hasCorrelatedWhere .AND. threeValueWhere == NULL .AND. tableNames:Count > 1 .AND. ;
                !useHashJoin .AND. !hasLeftOuterJoin
             // Build conservative per-table candidates for the nested-loop path.
             // The full WHERE and JOIN ON predicates are still evaluated below.
@@ -1798,10 +1979,12 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 // A correlated subquery depends on the current outer row. Rebuild its
                 // value set and the WHERE codeblock for each row combination.
                 PrepareSubqueryExpression(selectCtx:WhereClause, selectCtx:TableAliases, FALSE, TRUE)
-                whereClause := selectCtx:WhereClause:ToResolvedString(selectCtx:TableAliases)
-                whereCodeBlock := MCompile(whereClause)
-                IF whereCodeBlock == NULL
-                    THROW Error{"Could not compile correlated WHERE expression: " + whereClause}
+                IF threeValueWhere == NULL
+                    whereClause := selectCtx:WhereClause:ToResolvedString(selectCtx:TableAliases)
+                    whereCodeBlock := MCompile(whereClause)
+                    IF whereCodeBlock == NULL
+                        THROW Error{"Could not compile correlated WHERE expression: " + whereClause}
+                    ENDIF
                 ENDIF
             ENDIF
 
@@ -1809,6 +1992,8 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 // Use optimized bitmap when available, otherwise evaluate codeblock
                 IF correlatedInPlan != NULL
                     includeRecord := correlatedInPlan:Matches()
+                ELSEIF threeValueWhere != NULL
+                    includeRecord := threeValueWhere:Evaluate() == 1
                 ELSEIF useOptimization .AND. ALen(tableNames) == 1 .AND. recNo > 0
                     // The bitmap is indexed by raw record numbers, but we're traversing in index order
                     // We need to seek to the physical record number from the bitmap

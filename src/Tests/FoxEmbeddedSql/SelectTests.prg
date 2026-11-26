@@ -832,15 +832,29 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     IF !scalarDeepRejected
         THROW Exception{"Scalar subqueries should reject grandparent correlation"}
     ENDIF
-    LOCAL compoundNegationRejected := FALSE AS LOGIC
-    TRY
-        SELECT p.Id FROM nested_parent p WHERE NOT (p.Id = 1 OR p.Id = (SELECT Id FROM nested_empty))
-    CATCH ex AS Exception
-        compoundNegationRejected := ex:Message:Contains("compound scalar")
-    END TRY
-    IF !compoundNegationRejected
-        THROW Exception{"Compound NOT with a scalar subquery should be rejected until NULL propagation is supported"}
-    ENDIF
+    // Reference: VFP 9 keeps UNKNOWN through NOT, AND and OR.
+    SELECT p.Id FROM nested_parent p WHERE NOT (p.Id = 1 OR p.Id = (SELECT Id FROM nested_empty))
+    VerifyTable(0, "NOT (true OR unknown) and NOT (false OR unknown) should not match", TRUE)
+    SELECT p.Id FROM nested_parent p WHERE NOT (p.Id = 1 AND p.Id = (SELECT Id FROM nested_empty))
+    VerifyTable(3, "NOT (false AND unknown) should match", TRUE, {{2}, {3}, {4}})
+    SELECT p.Id FROM nested_parent p WHERE NOT (p.Id = (SELECT Id FROM nested_empty) AND p.Id = 1)
+    VerifyTable(3, "Unknown AND false should be false in either operand order", TRUE, {{2}, {3}, {4}})
+    SELECT p.Id FROM nested_parent p WHERE NOT (p.Id = (SELECT Id FROM nested_empty) OR p.Id IN (SELECT Id FROM nested_child))
+    VerifyTable(0, "Unknown OR IN containing NULL should not match under NOT", TRUE)
+    SELECT p.Id FROM nested_parent p WHERE NOT (p.Id = (SELECT Id FROM nested_empty) AND p.Id IN (SELECT Id FROM nested_child))
+    VerifyTable(0, "Unknown AND IN containing NULL should not match under NOT", TRUE)
+    SELECT p.Id FROM nested_parent p WHERE NOT (p.Id = (SELECT Id FROM nested_empty) AND p.Id NOT IN (SELECT Id FROM nested_child))
+    VerifyTable(2, "Unknown AND NOT IN should distinguish matches from unknown", TRUE, {{2}, {4}})
+    SELECT p.Id FROM nested_parent p WHERE NOT (p.Id = (SELECT Id FROM nested_empty) AND p.Id NOT IN (2, NULL))
+    VerifyTable(1, "NOT IN list should distinguish matches from unknown", TRUE, {{2}})
+    SELECT p.Id FROM nested_parent p WHERE NOT (p.Id = (SELECT Id FROM nested_empty) AND EXISTS (SELECT Id FROM nested_empty))
+    VerifyTable(5, "Unknown AND false EXISTS should be false", TRUE)
+    SELECT p.Id FROM nested_parent p WHERE NOT (p.Id = (SELECT c.Id FROM nested_child c WHERE c.Label = "four") AND p.Id NOT IN (2, NULL))
+    VerifyTable(3, "NOT IN with NULL should preserve unknown in a compound predicate", TRUE, {{1}, {2}, {3}})
+    SELECT p.Id FROM nested_parent p WHERE NOT (p.Id = (SELECT c.Id FROM nested_child c WHERE c.Label = "four") AND p.Id IN (SELECT Id FROM nested_empty))
+    VerifyTable(5, "IN an empty set should be false even for NULL outer values", TRUE)
+    SELECT p.Id FROM nested_parent p WHERE NOT (p.Id = (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id AND c.Label = "four") OR EXISTS (SELECT Id FROM nested_empty))
+    VerifyTable(0, "Correlated scalar NULL results should remain unknown under NOT", TRUE)
 
     SELECT p.Id FROM nested_parent p WHERE EXISTS (SELECT c.Id, c.Label FROM nested_child c WHERE c.Id = p.Id)
     VerifyTable(2, "Correlated EXISTS should find matching outer rows", TRUE, {{2}, {4}})

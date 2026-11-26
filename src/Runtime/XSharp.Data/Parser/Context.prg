@@ -149,6 +149,8 @@ CLASS FoxSelectContext
     PROPERTY GroupByItems AS List<SqlExpressionContext> AUTO
     PROPERTY HavingClause AS SqlExpressionContext AUTO
     PROPERTY OrderByClause AS List<FoxOrderByItem> AUTO
+    PROPERTY UnionBranches AS List<FoxSelectContext> AUTO
+    PROPERTY UnionAll AS List<LOGIC> AUTO
     CONSTRUCTOR()
         SelectList := List<SqlExpressionContext>{}
         FieldSelectionList := List<SqlFieldSelectionContext>{}  // Initialize the new property
@@ -157,6 +159,8 @@ CLASS FoxSelectContext
         JoinList := List<String>{}
         Joins := List<FoxSelectJoinContext>{}
         OrderByClause := List<FoxOrderByItem>{}
+        UnionBranches := List<FoxSelectContext>{}
+        UnionAll := List<LOGIC>{}
         GroupByItems := List<SqlExpressionContext>{}
         RETURN
 

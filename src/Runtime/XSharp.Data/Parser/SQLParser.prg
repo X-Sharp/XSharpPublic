@@ -657,6 +657,64 @@ PARTIAL CLASS SQLParser
             return true
 
     METHOD ParseSelectStatement(stmt out FoxSelectContext) AS LOGIC
+        stmt := FoxSelectContext{}
+        IF !SELF:ParseSelectBranch(OUT stmt)
+            RETURN FALSE
+        ENDIF
+
+        DO WHILE SELF:Expect(XTokenType.UNION)
+            LOCAL unionAll := FALSE AS LOGIC
+            IF SELF:Lt1 != NULL .AND. SELF:Lt1:Text:Equals("ALL", StringComparison.OrdinalIgnoreCase)
+                SELF:Consume()
+                unionAll := TRUE
+            ENDIF
+            IF !SELF:Matches(XTokenType.SELECT)
+                SELF:SetError("Expected SELECT after UNION")
+                RETURN FALSE
+            ENDIF
+
+            LOCAL branch AS FoxSelectContext
+            IF !SELF:ParseSelectBranch(OUT branch)
+                RETURN FALSE
+            ENDIF
+            stmt:UnionAll:Add(unionAll)
+            stmt:UnionBranches:Add(branch)
+        ENDDO
+
+        // VFP places one ORDER BY and INTO clause after the UNION chain.
+        IF SELF:Expect(XTokenType.ORDER) .AND. SELF:Expect(XTokenType.BY)
+            DO WHILE TRUE
+                SELF:_parsingOrderBy := TRUE
+                VAR orderExpression := SELF:ParseExpressionContext()
+                SELF:_parsingOrderBy := FALSE
+                LOCAL descending := FALSE AS LOGIC
+                IF SELF:Lt1 != NULL .AND. SELF:Lt1:Text:Equals("DESC", StringComparison.OrdinalIgnoreCase)
+                    SELF:Consume()
+                    descending := TRUE
+                ELSEIF SELF:Lt1 != NULL .AND. SELF:Lt1:Text:Equals("ASC", StringComparison.OrdinalIgnoreCase)
+                    SELF:Consume()
+                ENDIF
+                stmt:OrderByClause:Add(FoxOrderByItem{orderExpression, descending})
+                IF !SELF:Expect(XTokenType.COMMA)
+                    EXIT
+                ENDIF
+            ENDDO
+        ENDIF
+
+        IF SELF:Expect(XTokenType.INTO)
+            IF !SELF:Expect(XTokenType.CURSOR) .OR. !SELF:Matches(XTokenType.ID)
+                SELF:SetError("Expected cursor name after INTO CURSOR")
+                RETURN FALSE
+            ENDIF
+            stmt:TargetCursor := SELF:ConsumeAndGetText()
+        ENDIF
+        IF !SELF:Eos()
+            SELF:SetError("Unexpected token after SELECT statement")
+            RETURN FALSE
+        ENDIF
+        RETURN TRUE
+
+    PRIVATE METHOD ParseSelectBranch(stmt out FoxSelectContext) AS LOGIC
         /*
         SELECT [DISTINCT] [TOP n] select_list
            FROM table_list [WITH (NOLOCK)]
@@ -875,43 +933,6 @@ PARTIAL CLASS SQLParser
         // Parse optional HAVING clause
         IF SELF:Expect(XTokenType.HAVING)
             stmt:HavingClause := SELF:ParseExpressionContext()
-        ENDIF
-
-        // Parse optional ORDER BY clause
-        IF SELF:Expect(XTokenType.ORDER) .AND. SELF:Expect(XTokenType.BY)
-            DO WHILE TRUE
-                SELF:_parsingOrderBy := TRUE
-                VAR orderExpression := SELF:ParseExpressionContext()
-                SELF:_parsingOrderBy := FALSE
-                LOCAL descending := FALSE AS LOGIC
-                IF SELF:Lt1 != NULL .AND. SELF:Lt1:Text:Equals("DESC", StringComparison.OrdinalIgnoreCase)
-                    SELF:Consume()
-                    descending := TRUE
-                ELSE
-                    IF SELF:Lt1 != NULL .AND. SELF:Lt1:Text:Equals("ASC", StringComparison.OrdinalIgnoreCase)
-                        SELF:Consume()
-                    ENDIF
-                ENDIF
-                stmt:OrderByClause:Add(FoxOrderByItem{orderExpression, descending})
-                IF !SELF:Expect(XTokenType.COMMA)
-                    EXIT
-                ENDIF
-            ENDDO
-        ENDIF
-
-        // Parse optional INTO CURSOR clause
-        IF SELF:Expect(XTokenType.INTO)
-            IF SELF:Expect(XTokenType.CURSOR)
-                IF SELF:Matches(XTokenType.ID)
-                    stmt:TargetCursor := SELF:ConsumeAndGetText()
-                ELSE
-                    SELF:SetError("Expected cursor name after INTO CURSOR")
-                    RETURN FALSE
-                ENDIF
-            ELSE
-                SELF:SetError("Expected CURSOR after INTO")
-                RETURN FALSE
-            ENDIF
         ENDIF
 
         return TRUE

@@ -104,6 +104,8 @@ FUNCTION Start(args AS STRING[]) AS VOID STRICT
     RegisterTest("TestSelectFunctionality [baseline]", { => TestSelectFunctionality() }, TRUE)
     RegisterTest("TestCrossJoinFunctionality [optimized]", { => TestCrossJoinFunctionality() })
     RegisterTest("TestCrossJoinFunctionality [baseline]", { => TestCrossJoinFunctionality() }, TRUE)
+    RegisterTest("TestUnionFunctionality [optimized]", { => TestUnionFunctionality() })
+    RegisterTest("TestUnionFunctionality [baseline]", { => TestUnionFunctionality() }, TRUE)
     RegisterTest("TestDeletedCandidateRows [optimized]", { => TestDeletedCandidateRows() })
     RegisterTest("TestDeletedCandidateRows [baseline]", { => TestDeletedCandidateRows() }, TRUE)
     RegisterTest("TestHashJoin [optimized]", { => TestHashJoin() })
@@ -395,6 +397,32 @@ FUNCTION TestSelectParsing() AS VOID
         THROW Exception{"JOIN without ON should be rejected"}
     ENDIF
 
+    VAR unionLexer := XSqlLexer{"SELECT Id FROM FirstTable UNION ALL SELECT Id FROM SecondTable UNION SELECT Id FROM ThirdTable ORDER BY Id DESC INTO CURSOR UnionResult"}
+    VAR unionParser := SQLParser{XTokenList{unionLexer:AllTokens()}}
+    LOCAL unionCtx AS FoxSelectContext
+    IF !unionParser:ParseSelectStatement(OUT unionCtx)
+        THROW Exception{"Failed to parse UNION chain: " + unionParser:Error}
+    ENDIF
+    IF unionCtx:UnionBranches:Count != 2 .OR. unionCtx:UnionAll:Count != 2 .OR. ;
+       !unionCtx:UnionAll[0] .OR. unionCtx:UnionAll[1] .OR. ;
+       unionCtx:OrderByClause:Count != 1 .OR. unionCtx:TargetCursor != "UnionResult"
+        THROW Exception{"UNION should preserve operators and final ORDER BY/INTO clauses"}
+    ENDIF
+
+    VAR incompleteUnionLexer := XSqlLexer{"SELECT Id FROM FirstTable UNION"}
+    VAR incompleteUnionParser := SQLParser{XTokenList{incompleteUnionLexer:AllTokens()}}
+    LOCAL incompleteUnionCtx AS FoxSelectContext
+    IF incompleteUnionParser:ParseSelectStatement(OUT incompleteUnionCtx)
+        THROW Exception{"UNION without a following SELECT should be rejected"}
+    ENDIF
+
+    VAR misplacedUnionLexer := XSqlLexer{"SELECT Id FROM FirstTable ORDER BY Id UNION ALL SELECT Id FROM SecondTable"}
+    VAR misplacedUnionParser := SQLParser{XTokenList{misplacedUnionLexer:AllTokens()}}
+    LOCAL misplacedUnionCtx AS FoxSelectContext
+    IF misplacedUnionParser:ParseSelectStatement(OUT misplacedUnionCtx)
+        THROW Exception{"ORDER BY before the UNION chain should be rejected"}
+    ENDIF
+
     RETURN
 
 FUNCTION TestInsertParsing() AS VOID
@@ -621,7 +649,15 @@ FUNCTION VerifyTable(expectedRecords AS DWORD, message AS STRING, closeTable := 
                     IF closeTable
                         DbCloseArea()
                     ENDIF
-                    THROW Exception{message + " (Row " + row:ToString() + ", Field " + col:ToString() + ": Expected '" + expectedValue:ToString() + "', Got '" + actualValue:ToString() + "')"}
+                    LOCAL expectedText := "<NULL>" AS STRING
+                    LOCAL actualText := "<NULL>" AS STRING
+                    IF expectedValue != NULL
+                        expectedText := expectedValue:ToString()
+                    ENDIF
+                    IF actualValue != NULL
+                        actualText := actualValue:ToString()
+                    ENDIF
+                    THROW Exception{message + " (Row " + row:ToString() + ", Field " + col:ToString() + ": Expected '" + expectedText + "', Got '" + actualText + "')"}
                 ENDIF
             NEXT
             SKIP
@@ -639,8 +675,8 @@ FUNCTION VerifyTable(expectedRecords AS DWORD, message AS STRING, closeTable := 
     RETURN
 
 FUNCTION ValueSame(value1 AS USUAL, value2 AS USUAL) AS LOGIC
-    IF value1 == NULL .OR. value2 == NULL
-        RETURN value1 == value2
+    IF IsNull(value1) .OR. IsNull(value2)
+        RETURN IsNull(value1) .AND. IsNull(value2)
     ENDIF
     IF IsNumericValue(value1) .AND. IsNumericValue(value2)
         RETURN value1 == value2
@@ -1308,6 +1344,87 @@ FUNCTION TestDeletedCandidateRows() AS VOID
             USE IN deleted_candidate_right
         ENDIF
     END TRY
+    RETURN
+
+FUNCTION TestUnionFunctionality() AS VOID
+    CREATE CURSOR union_left (Id N(5) NULL, Label C(20) NULL)
+    CREATE CURSOR union_middle (Id N(5) NULL, Label C(20) NULL)
+    CREATE CURSOR union_right (Id N(5) NULL, Label C(20) NULL)
+    CREATE CURSOR union_empty (Id N(5) NULL, Label C(20) NULL)
+    CREATE CURSOR union_integer (Id I NULL, Label C(20) NULL)
+    CREATE CURSOR union_null_left (Id N(5))
+    CREATE CURSOR union_null_right (Id N(5))
+
+    INSERT INTO union_left VALUES (1, "one")
+    INSERT INTO union_left VALUES (2, "shared")
+    INSERT INTO union_left VALUES (2, "duplicate value")
+    INSERT INTO union_middle VALUES (2, "shared")
+    INSERT INTO union_middle VALUES (3, "three")
+    INSERT INTO union_right VALUES (1, "one")
+    INSERT INTO union_right VALUES (4, "four")
+    INSERT INTO union_integer VALUES (5, "five")
+
+    SELECT Id, Label FROM union_left UNION ALL SELECT Id, Label FROM union_middle INTO CURSOR UnionAllResult
+    VerifyTable(5, "UNION ALL should preserve duplicates and branch order", TRUE, ;
+        { {1, "one"}, {2, "shared"}, {2, "duplicate value"}, {2, "shared"}, {3, "three"} } )
+
+    SELECT Id, Label FROM union_left UNION SELECT Id, Label FROM union_middle INTO CURSOR UnionDistinctResult
+    VerifyTable(4, "UNION should remove duplicates across branches", TRUE, ;
+        { {1, "one"}, {2, "shared"}, {2, "duplicate value"}, {3, "three"} } )
+
+    SELECT Id, Label FROM union_left UNION ALL SELECT Id, Label FROM union_middle UNION SELECT Id, Label FROM union_right
+    VerifyTable(5, "Mixed UNION operators should apply left to right", TRUE)
+
+    SELECT Id, Label FROM union_left UNION ALL SELECT Id, Label FROM union_empty
+    VerifyTable(3, "An empty UNION ALL branch should add no rows", TRUE)
+
+    SELECT Id, Label FROM union_left UNION ALL SELECT Id, Label FROM union_integer
+    VerifyTable(4, "Compatible numeric branch types should combine", TRUE)
+
+    SELECT TOP 1 Id, Label FROM union_left UNION ALL SELECT TOP 1 Id, Label FROM union_middle
+    VerifyTable(2, "TOP should apply independently to each UNION branch", TRUE)
+
+    SELECT Id, Label FROM union_left UNION ALL SELECT Id, Label FROM union_middle ORDER BY Id DESC INTO CURSOR UnionOrderedResult
+    VerifyTable(5, "Final ORDER BY should sort the combined UNION result", TRUE, ;
+        { {3, "three"}, {2, "shared"}, {2, "duplicate value"}, {2, "shared"}, {1, "one"} } )
+
+    SELECT SUM(Id) AS Total FROM union_null_left UNION ALL SELECT SUM(Id) AS Total FROM union_null_right
+    VerifyTable(2, "UNION ALL should preserve NULL values", TRUE, { {NULL}, {NULL} } )
+
+    SELECT SUM(Id) AS Total FROM union_null_left UNION SELECT SUM(Id) AS Total FROM union_null_right
+    VerifyTable(1, "UNION should treat NULL result rows as duplicates", TRUE, { {NULL} } )
+
+    LOCAL incompatibleSchemaError := FALSE AS LOGIC
+    TRY
+        __SqlSelect("SELECT Label FROM union_left UNION ALL SELECT Id FROM union_integer")
+    CATCH ex AS Exception
+        incompatibleSchemaError := ex:Message:Contains("incompatible types")
+    END TRY
+    IF !incompatibleSchemaError
+        THROW Exception{"UNION should reject incompatible column types"}
+    ENDIF
+
+    IF Used("union_left")
+        USE IN union_left
+    ENDIF
+    IF Used("union_middle")
+        USE IN union_middle
+    ENDIF
+    IF Used("union_right")
+        USE IN union_right
+    ENDIF
+    IF Used("union_empty")
+        USE IN union_empty
+    ENDIF
+    IF Used("union_integer")
+        USE IN union_integer
+    ENDIF
+    IF Used("union_null_left")
+        USE IN union_null_left
+    ENDIF
+    IF Used("union_null_right")
+        USE IN union_null_right
+    ENDIF
     RETURN
 
 FUNCTION TestHashJoin() AS VOID

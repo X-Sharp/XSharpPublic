@@ -511,6 +511,11 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         // Implementation of SELECT execution
         // This will handle opening tables, selecting records, and returning results
 
+        IF selectCtx:UnionBranches != NULL .AND. selectCtx:UnionBranches:Count > 0
+            ExecuteUnionSelect(selectCtx)
+            RETURN
+        ENDIF
+
         // Validate that we have tables to query
         IF selectCtx:TableList:Count == 0
             THROW Error{"No tables specified in SELECT statement"}
@@ -1275,6 +1280,193 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         DbSelectArea(resultTable)
 
         RETURN
+
+    PRIVATE STATIC METHOD ExecuteUnionSelect(selectCtx AS FoxSelectContext) AS VOID
+        LOCAL branchContexts := List<FoxSelectContext>{} AS List<FoxSelectContext>
+        branchContexts:Add(selectCtx)
+        branchContexts:AddRange(selectCtx:UnionBranches)
+
+        LOCAL branchAliases := List<STRING>{} AS List<STRING>
+        LOCAL unionRows AS List<USUAL[]>
+        LOCAL firstStruct AS ARRAY
+        LOCAL resultAlias := "QUERYRESULT" AS STRING
+        IF !String.IsNullOrEmpty(AllTrim(selectCtx:TargetCursor))
+            resultAlias := AllTrim(selectCtx:TargetCursor)
+        ENDIF
+
+        TRY
+            FOR LOCAL branchIndex := 0 AS INT TO branchContexts:Count - 1
+                VAR branchAlias := "UNION" + (branchIndex + 1):ToString()
+                WHILE Used(branchAlias) .OR. branchAliases:Contains(branchAlias)
+                    branchAlias += "X"
+                END WHILE
+                branchAliases:Add(branchAlias)
+
+                VAR branch := CopySelectBranch(branchContexts[branchIndex], branchAlias)
+                ExecuteSelect(branch)
+
+                IF branchIndex == 0
+                    firstStruct := (branchAlias)->DbStruct()
+                    unionRows := ReadUnionRows(branchAlias, firstStruct)
+                ELSE
+                    VAR branchStruct := (branchAlias)->DbStruct()
+                    ValidateUnionSchema(firstStruct, branchStruct)
+                    VAR branchRows := ReadUnionRows(branchAlias, branchStruct)
+                    IF selectCtx:UnionAll[branchIndex - 1]
+                        unionRows:AddRange(branchRows)
+                    ELSE
+                        VAR uniqueRows := List<USUAL[]>{}
+                        FOREACH VAR row IN unionRows
+                            AddUnionRowIfUnique(uniqueRows, row)
+                        NEXT
+                        FOREACH VAR row IN branchRows
+                            AddUnionRowIfUnique(uniqueRows, row)
+                        NEXT
+                        unionRows := uniqueRows
+                    ENDIF
+                ENDIF
+            NEXT
+
+            IF Used(resultAlias)
+                (resultAlias)->DbCloseArea()
+            ENDIF
+
+            LOCAL tempPath := System.IO.Path.GetTempFileName() AS STRING
+            tempPath := System.IO.Path.ChangeExtension(tempPath, ".dbf")
+            IF !DbCreate(tempPath, firstStruct, "DBFVFP", TRUE, resultAlias)
+                THROW Error{"Could not create UNION result table: " + resultAlias}
+            ENDIF
+
+            IF selectCtx:OrderByClause:Count > 0
+                VAR orderedRows := List<SqlSelectResultRow>{}
+                FOR LOCAL rowIndex := 0 AS INT TO unionRows:Count - 1
+                    LOCAL sortValues := USUAL[]{selectCtx:OrderByClause:Count} AS USUAL[]
+                    FOR LOCAL orderIndex := 0 AS INT TO selectCtx:OrderByClause:Count - 1
+                        VAR fieldIndex := ResolveUnionOrderField(selectCtx:OrderByClause[orderIndex]:Expression, firstStruct)
+                        sortValues[orderIndex + 1] := unionRows[rowIndex][fieldIndex]
+                    NEXT
+                    orderedRows:Add(SqlSelectResultRow{unionRows[rowIndex], sortValues, rowIndex})
+                NEXT
+                orderedRows:Sort(SqlSelectResultRowComparer{selectCtx:OrderByClause})
+                FOREACH VAR orderedRow IN orderedRows
+                    AppendSelectResult(resultAlias, firstStruct, orderedRow:Values)
+                NEXT
+            ELSE
+                FOREACH VAR row IN unionRows
+                    AppendSelectResult(resultAlias, firstStruct, row)
+                NEXT
+            ENDIF
+
+            DbSelectArea(resultAlias)
+        FINALLY
+            FOREACH VAR branchAlias IN branchAliases
+                IF Used(branchAlias)
+                    (branchAlias)->DbCloseArea()
+                ENDIF
+            NEXT
+        END TRY
+        RETURN
+
+    PRIVATE STATIC METHOD CopySelectBranch(source AS FoxSelectContext, targetCursor AS STRING) AS FoxSelectContext
+        LOCAL branch := FoxSelectContext{} AS FoxSelectContext
+        branch:TopCount := source:TopCount
+        branch:IsDistinct := source:IsDistinct
+        branch:SelectList := source:SelectList
+        branch:FieldSelectionList := source:FieldSelectionList
+        branch:TableList := source:TableList
+        branch:TableAliases := source:TableAliases
+        branch:JoinList := source:JoinList
+        branch:Joins := source:Joins
+        branch:TargetCursor := targetCursor
+        branch:WhereClause := source:WhereClause
+        branch:GroupByClause := source:GroupByClause
+        branch:GroupByItems := source:GroupByItems
+        branch:HavingClause := source:HavingClause
+        RETURN branch
+
+    PRIVATE STATIC METHOD ReadUnionRows(alias AS STRING, schema AS ARRAY) AS List<USUAL[]>
+        LOCAL rows := List<USUAL[]>{} AS List<USUAL[]>
+        DbSelectArea(alias)
+        DbGoTop()
+        DO WHILE !Eof()
+            LOCAL values := USUAL[]{ALen(schema)} AS USUAL[]
+            FOR LOCAL fieldIndex := 1 AS INT TO ALen(schema)
+                VAR fieldValue := FieldGet(fieldIndex)
+                IF IsNull(fieldValue)
+                    values[fieldIndex] := NULL
+                ELSE
+                    values[fieldIndex] := fieldValue
+                ENDIF
+            NEXT
+            rows:Add(values)
+            DbSkip(1)
+        ENDDO
+        RETURN rows
+
+    PRIVATE STATIC METHOD ValidateUnionSchema(firstSchema AS ARRAY, nextSchema AS ARRAY) AS VOID
+        IF ALen(firstSchema) != ALen(nextSchema)
+            THROW Error{"UNION branches must return the same number of columns"}
+        ENDIF
+        FOR LOCAL fieldIndex := 1 AS INT TO ALen(firstSchema)
+            LOCAL firstType := ((STRING)firstSchema[fieldIndex][2]):ToUpper() AS STRING
+            LOCAL nextType := ((STRING)nextSchema[fieldIndex][2]):ToUpper() AS STRING
+            IF firstType == nextType
+                LOOP
+            ENDIF
+            LOCAL firstCode := firstType:Substring(0, 1) AS STRING
+            LOCAL nextCode := nextType:Substring(0, 1) AS STRING
+            LOCAL firstNumeric := "NIYFB":Contains(firstCode) AS LOGIC
+            LOCAL nextNumeric := "NIYFB":Contains(nextCode) AS LOGIC
+            LOCAL firstCharacter := firstCode == "C" .OR. firstCode == "V" AS LOGIC
+            LOCAL nextCharacter := nextCode == "C" .OR. nextCode == "V" AS LOGIC
+            IF !(firstNumeric .AND. nextNumeric) .AND. !(firstCharacter .AND. nextCharacter)
+                THROW Error{"UNION column " + fieldIndex:ToString() + " has incompatible types " + firstType + " and " + nextType}
+            ENDIF
+        NEXT
+        RETURN
+
+    PRIVATE STATIC METHOD AddUnionRowIfUnique(rows AS List<USUAL[]>, candidate AS USUAL[]) AS VOID
+        FOREACH VAR existing IN rows
+            IF UnionRowsEqual(existing, candidate)
+                RETURN
+            ENDIF
+        NEXT
+        rows:Add(candidate)
+        RETURN
+
+    PRIVATE STATIC METHOD UnionRowsEqual(left AS USUAL[], right AS USUAL[]) AS LOGIC
+        IF left:Length != right:Length
+            RETURN FALSE
+        ENDIF
+        FOR LOCAL fieldIndex := 1 AS INT TO left:Length
+            IF left[fieldIndex]:IsNull .OR. right[fieldIndex]:IsNull
+                IF left[fieldIndex]:IsNull != right[fieldIndex]:IsNull
+                    RETURN FALSE
+                ENDIF
+            ELSEIF left[fieldIndex]:CompareTo(right[fieldIndex]) != 0
+                RETURN FALSE
+            ENDIF
+        NEXT
+        RETURN TRUE
+
+    PRIVATE STATIC METHOD ResolveUnionOrderField(expression AS SqlExpressionContext, schema AS ARRAY) AS INT
+        LOCAL requestedName := AllTrim(expression:ToString()) AS STRING
+        LOCAL ordinal AS INT
+        IF Int32.TryParse(requestedName, OUT ordinal)
+            IF ordinal >= 1 .AND. ordinal <= ALen(schema)
+                RETURN ordinal
+            ENDIF
+            THROW Error{"UNION ORDER BY ordinal is outside the result column range"}
+        ENDIF
+        IF expression IS SqlNameExpressionContext VAR nameExpression
+            requestedName := nameExpression:Name
+        ENDIF
+        FOR LOCAL fieldIndex := 1 AS INT TO ALen(schema)
+            IF String.Equals((STRING)schema[fieldIndex][1], requestedName, StringComparison.OrdinalIgnoreCase)
+                RETURN fieldIndex
+            ENDIF
+        NEXT
+        THROW Error{"UNION ORDER BY must refer to a result column or ordinal: " + requestedName}
 
     STATIC METHOD AppendSelectResult(resultTable AS STRING, fieldList AS ARRAY, sourceValues AS USUAL[]) AS VOID
         (resultTable)->DbAppend()

@@ -104,5 +104,8 @@
   [ORDER BY <*orderbylist*>] ;
   INTO CURSOR <(targetCursor)> => __SqlSelect(<"udc">)
 
+// UNION branches and final clauses are parsed by the SQL runtime.
+#command SELECT <*selectbeforeunion*> UNION <*selectafterunion*> => __SqlSelect(<"udc">)
+
    #endif
 // EOF

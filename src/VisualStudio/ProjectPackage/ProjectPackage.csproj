@@ -69,9 +69,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Windows.Design.Host">
-      <HintPath>$(DevEnvDir)\PrivateAssemblies\Microsoft.Windows.Design.Host.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -840,8 +837,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-<ItemGroup>
-    <Reference Remove="Microsoft.Diagnostics.Tracing.EventSource"/>
+  <ItemGroup>
+    <Reference Remove="Microsoft.Diagnostics.Tracing.EventSource" />
   </ItemGroup>
-  
 </Project>

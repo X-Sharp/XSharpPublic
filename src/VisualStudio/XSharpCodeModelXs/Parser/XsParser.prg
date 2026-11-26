@@ -2219,6 +2219,9 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         VAR classVar := SELF:ParseClassVar(Kind.VOGlobal)
         classVar:SourceCode := classVar:ModVis+" GLOBAL "+ classVar:SourceCode
         classVars:Add(classVar)
+        if lConst
+            classVar:Attributes |= Modifiers.Const
+        endif
         DO WHILE SELF:Expect(XSharpLexer.COMMA)
             classVar := SELF:ParseClassVar(Kind.VOGlobal)
             classVar:SourceCode := classVar:ModVis+" GLOBAL "+ classVar:SourceCode
@@ -2280,7 +2283,7 @@ CLASS XsParser IMPLEMENTS VsParser.IErrorListener
         SELF:ReadLine()
         VAR xType := XSourceTypeSymbol{id, Kind.VOStruct, _attributes, range, interval,_file, _modifiers}
         xType:SourceCode := source
-        IF String.IsNullOrEmpty(sAlign)
+        IF !String.IsNullOrEmpty(sAlign)
             xType:AddInterface(sAlign)
         ENDIF
         SELF:AddAsChild(xType)

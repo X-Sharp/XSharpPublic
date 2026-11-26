@@ -380,7 +380,7 @@
           <ButtonText>Convert to Windows Form</ButtonText>
         </Strings>
       </Button>
-      <Button guid="guidProjectPackage" id="idSyncEventHandlers" priority="0x0410" type="Button">
+      <!--<Button guid="guidProjectPackage" id="idSyncEventHandlers" priority="0x0410" type="Button">
         <Icon guid="ImageCatalogGuid" id="WindowsForm" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -388,8 +388,8 @@
         <Strings>
           <ButtonText>Sync Event Handlers From Shadow Designer</ButtonText>
         </Strings>
-      </Button>
-      <Button guid="guidProjectPackage" id="idSyncDesignerChanges" priority="0x0420" type="Button">
+      </Button>-->
+      <!--<Button guid="guidProjectPackage" id="idSyncDesignerChanges" priority="0x0420" type="Button">
         <Icon guid="ImageCatalogGuid" id="WindowsForm" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -397,7 +397,7 @@
         <Strings>
           <ButtonText>Sync Designer Changes From Shadow Designer</ButtonText>
         </Strings>
-      </Button>
+      </Button>-->
     </Buttons>
     <Bitmaps>
       <Bitmap guid="guidImages" href="Resources\XSharpProjectImageList.bmp" />
@@ -431,12 +431,12 @@
     <CommandPlacement guid="guidProjectPackage" id="idGenerateWinForm" priority="0x0100">
       <Parent guid="guidProjectPackage" id="idFileContextMenuGroup"/>
     </CommandPlacement>
-    <CommandPlacement guid="guidProjectPackage" id="idSyncEventHandlers" priority="0x0101">
+    <!--<CommandPlacement guid="guidProjectPackage" id="idSyncEventHandlers" priority="0x0101">
       <Parent guid="guidProjectPackage" id="idFileContextMenuGroup"/>
     </CommandPlacement>
     <CommandPlacement guid="guidProjectPackage" id="idSyncDesignerChanges" priority="0x0102">
       <Parent guid="guidProjectPackage" id="idFileContextMenuGroup"/>
-    </CommandPlacement>
+    </CommandPlacement>-->
 
     <CommandPlacement guid="guidProjectPackage" id="idConvertSDKProject" priority="0x0100">
       <Parent guid="guidProjectPackage" id="idProjectContextMenuGroup"/>
@@ -530,8 +530,8 @@
       <IDSymbol name="idEditProjectFile" value="0x010F" />
       <IDSymbol name="idHelpOffLineChinese" value="0x0110" />
       <IDSymbol name="idGenerateWinForm" value="0x0120" />
-      <IDSymbol name="idSyncEventHandlers" value="0x0123" />
-      <IDSymbol name="idSyncDesignerChanges" value="0x0124" />
+      <!--<IDSymbol name="idSyncEventHandlers" value="0x0123" />
+      <IDSymbol name="idSyncDesignerChanges" value="0x0124" />-->
       <IDSymbol name="idExporterSubMenu" value="0x01030" />
       <IDSymbol name="idExporterGroup" value="0x01040" />
       <IDSymbol name="idDebuggerSubMenu" value="0x01050" />

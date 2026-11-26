@@ -1,4 +1,10 @@
-﻿// The following lines ensure that the right versions of the various DLLs are loaded.
+﻿//
+// Copyright (c) XSharp B.V.  All Rights Reserved.
+// Licensed under the Apache License, Version 2.0.
+// See License.txt in the project root for license information.
+//
+
+// The following lines ensure that the right versions of the various DLLs are loaded.
 // They will be included in the generated PkgDef folder for the project system
 using Microsoft.VisualStudio.Shell;
 

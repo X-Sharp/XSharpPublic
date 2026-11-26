@@ -1143,6 +1143,20 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
         THROW Exception{"Grouped correlated scalar projection should execute once per group"}
     ENDIF
 
+    scalarCachePlansBefore := SqlOptimizationCount("CorrelatedScalarCachePlans")
+    scalarCacheHitsBefore := SqlOptimizationCount("CorrelatedScalarCacheHits")
+    scalarBefore := SqlOptimizationCount("ScalarExecutions")
+    SELECT p.Id, p.Bucket, COUNT(*) AS ParentCount, ;
+        (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id AND c.Label != "duplicate") AS ChildId ;
+        FROM nested_group_parent p GROUP BY p.Id, p.Bucket ORDER BY p.Id, p.Bucket
+    VerifyTable(3, "Grouped scalar projection should reuse a key across distinct groups", TRUE, ;
+        {{2, 1, 1, 2}, {2, 2, 1, 2}, {4, 1, 1, 4}})
+    IF SqlOptimizationCount("ScalarExecutions") - scalarBefore != IIF(optimizationsDisabled, 3, 2) .OR. ;
+       SqlOptimizationCount("CorrelatedScalarCachePlans") - scalarCachePlansBefore != IIF(optimizationsDisabled, 0, 1) .OR. ;
+       SqlOptimizationCount("CorrelatedScalarCacheHits") - scalarCacheHitsBefore != IIF(optimizationsDisabled, 0, 1)
+        THROW Exception{"Grouped scalar memoization should reuse repeated group keys only when enabled"}
+    ENDIF
+
     LOCAL ungroupedProjectionCorrelationRejected := FALSE AS LOGIC
     TRY
         SELECT p.Bucket, (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id) AS ChildId ;

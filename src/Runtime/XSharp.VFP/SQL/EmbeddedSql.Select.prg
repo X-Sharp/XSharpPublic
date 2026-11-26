@@ -3096,7 +3096,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                     IF HasCorrelatedProjectionSubquery(selectCtx:SelectList[selectIndex])
                         PositionAggregateGroupSources(selectCtx, group)
                         PrepareSubqueryExpression(selectCtx:SelectList[selectIndex], ;
-                            selectCtx:TableAliases, FALSE, TRUE)
+                            selectCtx:TableAliases, FALSE, TRUE, scalarMemos)
                     ENDIF
                     resultValues[selectIndex+1] := EvaluateGroupedExpression( ;
                         selectCtx:SelectList[selectIndex], selectCtx, group, aggregates, groupExpressions)

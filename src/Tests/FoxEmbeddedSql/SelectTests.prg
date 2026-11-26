@@ -1,0 +1,787 @@
+﻿// SelectTests.prg
+USING System
+USING System.Diagnostics
+USING System.Collections.Generic
+USING System.Linq
+USING System.Text
+USING XSharp.Parsers
+USING XSharp.RDD.Enums
+USING XSharp.Data
+USING XSharp.Data.Query
+USING XSharp.VFP
+
+#include "foxcmd.xh"
+
+FUNCTION TestSelectFunctionality() AS VOID
+    ? "Testing SELECT functionality..."
+
+    // Create a test table
+    CREATE CURSOR test_select_table ;
+        (ID N(5), Name C(20), Age N(3))
+
+    IF !Used()
+        THROW Exception{"Failed: Failed to create test table for SELECT testing"}
+    ENDIF
+
+    IF Verbose
+        ? "Created test table for SELECT testing"
+    ENDIF
+
+    // Insert some test data
+    INSERT INTO test_select_table VALUES (1, "John Doe", 30)
+    INSERT INTO test_select_table VALUES (2, "Jane Smith", 25)
+    INSERT INTO test_select_table VALUES (3, "Bob Johnson", 35)
+    INSERT INTO test_select_table VALUES (4, "Alice Brown", 30)  // Duplicate age for DISTINCT test
+
+    IF Verbose
+        ? "Inserted test data"
+    ENDIF
+
+// Test basic SELECT
+    IF Verbose
+        ? "Attempting basic SELECT..."
+    ENDIF
+
+    SELECT * FROM test_select_table
+    VerifyTable(4, "Failed: Expected 4 records from SELECT *", TRUE, ;
+        { {1, "John Doe", 30}, ;
+          {2, "Jane Smith", 25}, ;
+          {3, "Bob Johnson", 35}, ;
+          {4, "Alice Brown", 30} } )
+
+// Test SELECT with WHERE
+    IF Verbose
+        ? "Attempting SELECT with WHERE..."
+    ENDIF
+
+    SELECT * FROM test_select_table WHERE Age > 25
+    VerifyTable(3, "Failed: Expected 3 records from SELECT with WHERE", TRUE, ;
+            { {1, "John Doe", 30}, ;
+              {3, "Bob Johnson", 35}, ;
+              {4, "Alice Brown", 30} } )
+
+// Test SELECT with specific columns
+    IF Verbose
+        ? "Attempting SELECT with specific columns..."
+    ENDIF
+
+    SELECT Name, Age FROM test_select_table WHERE Age > 25
+    VerifyTable(3, "Failed: Expected 3 records from SELECT specific columns", TRUE, ;
+            { {"John Doe", 30}, ;
+              {"Bob Johnson", 35}, ;
+              {"Alice Brown", 30} } )
+
+// Test SELECT with DISTINCT
+    IF Verbose
+        ? "Attempting SELECT with DISTINCT..."
+    ENDIF
+
+    SELECT DISTINCT Age FROM test_select_table
+    VerifyTable(3, "Failed: Expected 3 distinct ages", TRUE, ;
+            { {30}, ;
+              {25}, ;
+              {35} } )
+
+// Test SELECT with TOP
+    IF Verbose
+        ? "Attempting SELECT with TOP..."
+    ENDIF
+
+    SELECT TOP 2 * FROM test_select_table
+    VerifyTable(2, "Failed: Expected 2 records from SELECT TOP 2", TRUE, ;
+            { {1, "John Doe", 30}, ;
+              {2, "Jane Smith", 25} } )
+
+    // ORDER BY supports multiple keys and applies TOP after sorting.
+    SELECT Id, Age FROM test_select_table ORDER BY Age DESC, Id ASC
+    VerifyTable(4, "Failed: Expected all records from multi-key ORDER BY", TRUE, ;
+            { {3, 35}, ;
+              {1, 30}, ;
+              {4, 30}, ;
+              {2, 25} } )
+
+    SELECT TOP 2 Id, Age FROM test_select_table ORDER BY Age DESC, Id ASC
+    VerifyTable(2, "Failed: TOP should be applied after ORDER BY", TRUE, ;
+            { {3, 35}, ;
+              {1, 30} } )
+
+    SELECT Id, Age FROM test_select_table ORDER BY Age DESC, Id ASC INTO CURSOR OrderedCursor
+    VerifyTable(4, "Failed: Ordered INTO CURSOR should preserve sorted rows", FALSE, ;
+            { {3, 35}, ;
+              {1, 30}, ;
+              {4, 30}, ;
+              {2, 25} } )
+    USE IN OrderedCursor
+
+    SELECT DISTINCT Age FROM test_select_table ORDER BY Age DESC
+    VerifyTable(3, "Failed: DISTINCT rows should be ordered", TRUE, ;
+            { {35}, ;
+              {30}, ;
+              {25} } )
+
+    SELECT Id FROM test_select_table ORDER BY Age + Id DESC
+    VerifyTable(4, "Failed: ORDER BY should accept unprojected expressions", TRUE, ;
+            { {3}, ;
+              {4}, ;
+              {1}, ;
+              {2} } )
+
+    // GROUP BY, aggregate execution, HAVING aliases, and aggregate schema.
+    SELECT Age, COUNT(*) AS OrderCount, SUM(Id) AS TotalId ;
+        FROM test_select_table GROUP BY Age HAVING OrderCount >= 2 ORDER BY TotalId DESC
+    VerifyTable(1, "Failed: GROUP BY/HAVING should return the matching age group", FALSE, ;
+        { {30, 2, 5} } )
+    VAR groupedStruct := DbStruct()
+    IF FCount() != 3 .OR. groupedStruct[2][1]:ToString():Trim():ToUpperInvariant() != "ORDERCOUNT" .OR. ;
+       groupedStruct[3][1]:ToString():Trim():ToUpperInvariant() != "TOTALID" .OR. ;
+       groupedStruct[2][2]:ToString():Trim():ToUpperInvariant() != "N" .OR. ;
+       groupedStruct[3][2]:ToString():Trim():ToUpperInvariant() != "N"
+        THROW Exception{"Aggregate aliases and numeric DBF field types should be preserved"}
+    ENDIF
+    USE IN QUERYRESULT
+
+    SELECT Age, SUM(Id) / COUNT(*) + Age AS Adjusted ;
+        FROM test_select_table GROUP BY Age HAVING COUNT(*) > 1 ORDER BY Adjusted
+    VerifyTable(1, "Failed: composed aggregate expressions should use grouped values", TRUE, ;
+        { {30, 32.5} } )
+
+    SELECT AVG(Id), MIN(Name), MAX(Name), CNT(Name) FROM test_select_table
+    VerifyTable(1, "Failed: AVG/MIN/MAX/CNT should calculate over the global group", FALSE, ;
+        { {2.5, "Alice Brown", "John Doe", 4} } )
+    VAR aggregateStruct := DbStruct()
+    IF FCount() != 4 .OR. aggregateStruct[1][2] != "N" .OR. ;
+       aggregateStruct[2][2] != "C" .OR. aggregateStruct[3][2] != "C" .OR. aggregateStruct[4][2] != "N"
+        THROW Exception{"Implicit aggregate columns should retain aggregate result types"}
+    ENDIF
+    USE IN QUERYRESULT
+
+    LOCAL rejectedAggregateQuery := FALSE AS LOGIC
+    TRY
+        __SqlSelect("SELECT SUM(COUNT(Id)) FROM test_select_table")
+    CATCH aggregateError AS Exception
+        rejectedAggregateQuery := TRUE
+    END TRY
+    IF !rejectedAggregateQuery
+        THROW Exception{"Nested aggregate functions should be rejected"}
+    ENDIF
+
+    rejectedAggregateQuery := FALSE
+    TRY
+        __SqlSelect("SELECT Name, COUNT(*) FROM test_select_table GROUP BY Age")
+    CATCH groupingError AS Exception
+        rejectedAggregateQuery := TRUE
+    END TRY
+    IF !rejectedAggregateQuery
+        THROW Exception{"Ungrouped projected fields should be rejected"}
+    ENDIF
+
+    SELECT Age AS GroupAge, COUNT(*) AS RowCount FROM test_select_table GROUP BY GroupAge ORDER BY GroupAge
+    VerifyTable(3, "Failed: GROUP BY should resolve a SELECT-list alias", TRUE, ;
+        { {25, 1}, {30, 2}, {35, 1} } )
+
+    SELECT Age, COUNT(*) AS RowCount FROM test_select_table GROUP BY 1 ORDER BY Age
+    VerifyTable(3, "Failed: GROUP BY should resolve a SELECT-list ordinal", TRUE, ;
+        { {25, 1}, {30, 2}, {35, 1} } )
+
+    SELECT Name FROM test_select_table HAVING Id > 2 ORDER BY Id
+    VerifyTable(2, "Failed: HAVING without grouping should filter source rows", TRUE, ;
+        { {"Bob Johnson"}, {"Alice Brown"} } )
+
+    SELECT Age, Name, COUNT(*) AS RowCount FROM test_select_table GROUP BY Age, Name ORDER BY Age, Name
+    VerifyTable(4, "Failed: multiple GROUP BY keys should form distinct groups", TRUE, ;
+        { {25, "Jane Smith", 1}, ;
+          {30, "Alice Brown", 1}, ;
+          {30, "John Doe", 1}, ;
+          {35, "Bob Johnson", 1} } )
+
+    SELECT COUNT(*), SUM(Id) FROM test_select_table
+    VerifyTable(1, "Failed: global aggregate should return one row", TRUE, { {4, 10} } )
+
+    CREATE CURSOR empty_aggregate_source (Id N(5))
+    SELECT COUNT(*), SUM(Id) FROM empty_aggregate_source
+    IF RecCount() != 1
+        THROW Exception{"Failed: empty global aggregate should return one result row"}
+    ENDIF
+    GO TOP
+    IF !IsNull(FieldGet(1)) .OR. !IsNull(FieldGet(2))
+        THROW Exception{"Failed: empty global aggregate fields should be NULL"}
+    ENDIF
+    DbCloseArea()
+    USE IN empty_aggregate_source
+
+    // Test cross join with multiple tables
+    IF Verbose
+        ? "Creating additional tables for cross join test..."
+    ENDIF
+
+    CREATE CURSOR test_table_a (Id N(5), Name C(20))
+    CREATE CURSOR test_table_b (Id N(5), Desc C(30))
+
+    IF !Used("test_table_a") .OR. !Used("test_table_b")
+        THROW Exception{"Failed: Failed to create additional test tables"}
+    ENDIF
+
+    IF Verbose
+        ? "Created additional test tables"
+    ENDIF
+
+    // Insert test data for cross join
+    INSERT INTO test_table_a VALUES (1, "Item A1")
+    INSERT INTO test_table_a VALUES (2, "Item A2")
+
+    INSERT INTO test_table_b VALUES (1, "Description B1")
+    INSERT INTO test_table_b VALUES (2, "Description B2")
+    INSERT INTO test_table_b VALUES (3, "Description B3")
+
+    IF Verbose
+        ? "Inserted test data for cross join"
+    ENDIF
+
+    SELECT a.Id, COUNT(*) AS MatchCount FROM test_table_a a ;
+        INNER JOIN test_table_b b ON a.Id = b.Id GROUP BY 1 ORDER BY a.Id
+    VerifyTable(2, "Failed: aggregate execution should consume joined rows", TRUE, ;
+        { {1, 1}, {2, 1} } )
+
+// Test cross join (Cartesian product)
+    IF Verbose
+        ? "Attempting cross join (SELECT from multiple tables)..."
+    ENDIF
+
+    SELECT test_table_a.Name, test_table_b.Desc FROM test_table_a, test_table_b
+    VerifyTable(6, "Failed: Expected 6 records from cross join", TRUE, ;
+            { {"Item A1", "Description B1"}, ;
+              {"Item A1", "Description B2"}, ;
+              {"Item A1", "Description B3"}, ;
+              {"Item A2", "Description B1"}, ;
+              {"Item A2", "Description B2"}, ;
+              {"Item A2", "Description B3"} } )
+
+    // Close the additional test tables
+    USE IN test_table_a
+    USE IN test_table_b
+
+    // Test field name resolution and aliasing
+    IF Verbose
+        ? "Creating table for field name resolution test..."
+    ENDIF
+
+    CREATE CURSOR test_field_resolution (Id N(5), Name C(20), Value N(10,2))
+
+    IF !Used("test_field_resolution")
+        THROW Exception{"Failed: Failed to create test table for field name resolution"}
+    ENDIF
+
+    IF Verbose
+        ? "Created test table for field name resolution"
+    ENDIF
+
+    // Insert test data
+    INSERT INTO test_field_resolution VALUES (1, "Test Item", 100.50)
+    INSERT INTO test_field_resolution VALUES (2, "Another Item", 200.75)
+
+    IF Verbose
+        ? "Inserted test data for field name resolution"
+    ENDIF
+
+// Test field aliasing with AS
+    IF Verbose
+        ? "Testing field aliasing with AS..."
+    ENDIF
+
+    SELECT Id AS Identifier, Name AS ItemName, Value AS Amount FROM test_field_resolution
+    VerifyTable(2, "Failed: Expected 2 records from field aliasing", TRUE, ;
+            { {1, "Test Item", 100.50}, ;
+              {2, "Another Item", 200.75} } )
+
+    // Test expression aliasing with AS
+    IF Verbose
+        ? "Testing expression aliasing with AS..."
+    ENDIF
+
+    SELECT Id, Name, Value, Value * 1.1 AS TaxedValue FROM test_field_resolution
+    VerifyTable(2, "Failed: Expected 2 records from expression aliasing", TRUE)
+
+// Test field name conflict resolution
+    IF Verbose
+        ? "Creating additional table for conflict resolution test..."
+    ENDIF
+
+    CREATE CURSOR test_conflict (Id N(5), Name C(20), Desc C(30))
+
+    IF !Used("test_conflict")
+        THROW Exception{"Failed: Failed to create test table for conflict resolution"}
+    ENDIF
+
+    INSERT INTO test_conflict VALUES (1, "Conflict Name", "Description 1")
+    INSERT INTO test_conflict VALUES (2, "Another Name", "Description 2")
+
+    IF Verbose
+        ? "Testing field name conflict resolution..."
+    ENDIF
+
+    SELECT test_field_resolution.Name, test_conflict.Name ;
+        FROM test_field_resolution, test_conflict ;
+        WHERE test_field_resolution.Id = 1 AND test_conflict.Id = 1
+    VerifyTable(1, "Failed: Expected 1 record from conflict resolution", TRUE, { {"Test Item", "Conflict Name"} } )
+
+    USE IN test_conflict
+
+    // Close the test table
+    USE IN test_field_resolution
+
+    // Test INTO CURSOR functionality
+    IF Verbose
+        ? "Testing INTO CURSOR functionality..."
+    ENDIF
+
+    CREATE CURSOR test_cursor_target (Id N(5), Name C(20), Value N(10,2))
+
+    IF !Used("test_cursor_target")
+        THROW Exception{"Failed: Failed to create test table for INTO CURSOR test"}
+    ENDIF
+
+    IF Verbose
+        ? "Created test table for INTO CURSOR test"
+    ENDIF
+
+    // Insert test data
+    INSERT INTO test_cursor_target VALUES (1, "Test Item 1", 100.50)
+    INSERT INTO test_cursor_target VALUES (2, "Test Item 2", 200.75)
+    INSERT INTO test_cursor_target VALUES (3, "Test Item 3", 300.25)
+
+    IF Verbose
+        ? "Inserted test data for INTO CURSOR test"
+    ENDIF
+
+// Test SELECT INTO CURSOR
+    IF Verbose
+        ? "Testing SELECT INTO CURSOR..."
+    ENDIF
+
+    SELECT * FROM test_cursor_target INTO CURSOR MyTestCursor
+    VerifyTable(3, "Failed: Expected 3 records in MyTestCursor", FALSE, ;
+            { {1, "Test Item 1", 100.50}, ;
+              {2, "Test Item 2", 200.75}, ;
+              {3, "Test Item 3", 300.25} } )
+
+    // Verify the cursor exists and has the correct data
+    IF !Used("MyTestCursor")
+        THROW Exception{"Failed: MyTestCursor was not created!"}
+    ENDIF
+
+    SELECT MyTestCursor
+    GO TOP
+    LOCAL verifiedCount AS DWORD
+    verifiedCount := 0
+    DO WHILE !EOF()
+        verifiedCount++
+        SKIP
+    ENDDO
+
+    VerifyTable(verifiedCount, "Failed: Verified record count mismatch in MyTestCursor", TRUE)
+
+// Test SELECT with field aliasing INTO CURSOR
+    IF Verbose
+        ? "Testing SELECT with field aliasing INTO CURSOR..."
+    ENDIF
+
+    SELECT Id AS ItemId, Name AS ItemName, Value AS ItemValue FROM test_cursor_target INTO CURSOR AliasedCursor
+    VerifyTable(3, "Failed: Expected 3 records in AliasedCursor", FALSE, ;
+            { {1, "Test Item 1", 100.50}, ;
+              {2, "Test Item 2", 200.75}, ;
+              {3, "Test Item 3", 300.25} } )
+
+    // Verify the aliased cursor exists and has the correct data
+    IF !Used("AliasedCursor")
+        THROW Exception{"Failed: AliasedCursor was not created!"}
+    ENDIF
+
+    SELECT AliasedCursor
+    GO TOP
+
+    LOCAL aliasCount AS DWORD
+    aliasCount := 0
+    LOCAL fieldCount AS DWORD
+    fieldCount := FCount()
+
+    DO WHILE !EOF()
+        aliasCount++
+        SKIP
+    ENDDO
+
+    VerifyTable(aliasCount, "Failed: Verified record count mismatch in AliasedCursor", TRUE)
+
+    // Close the test table
+    USE IN test_cursor_target
+
+    // Close the test table
+    USE IN test_select_table
+
+    RETURN
+
+FUNCTION TestCrossJoinFunctionality() AS VOID
+    ? "Testing CROSS JOIN functionality..."
+
+    // Create test tables for CROSS JOIN
+    CREATE CURSOR cross_join_table_a (Id N(5), Name C(20))
+    CREATE CURSOR cross_join_table_b (Id N(5), Desc C(30))
+    CREATE CURSOR cross_join_table_c (Id N(5), Label C(20))
+
+    IF !Used("cross_join_table_a") .OR. !Used("cross_join_table_b") .OR. !Used("cross_join_table_c")
+        THROW Exception{"Failed: Failed to create test tables for CROSS JOIN"}
+    ENDIF
+
+    IF Verbose
+        ? "Created test tables for CROSS JOIN"
+    ENDIF
+
+    // Insert test data
+    INSERT INTO cross_join_table_a VALUES (1, "Item A1")
+    INSERT INTO cross_join_table_a VALUES (2, "Item A2")
+
+    INSERT INTO cross_join_table_b VALUES (1, "Description B1")
+    INSERT INTO cross_join_table_b VALUES (2, "Description B2")
+    INSERT INTO cross_join_table_b VALUES (3, "Description B3")
+    INSERT INTO cross_join_table_c VALUES (2, "Label C2")
+    INSERT INTO cross_join_table_c VALUES (3, "Label C3")
+
+    IF Verbose
+        ? "Inserted test data for CROSS JOIN"
+    ENDIF
+
+// Test explicit CROSS JOIN syntax
+    IF Verbose
+        ? "Testing explicit CROSS JOIN syntax..."
+    ENDIF
+
+    SELECT cross_join_table_a.Name, cross_join_table_b.Desc ;
+        FROM cross_join_table_a ;
+        CROSS JOIN cross_join_table_b
+    VerifyTable(6, "Failed: Expected 6 records from explicit CROSS JOIN", TRUE, ;
+            { {"Item A1", "Description B1"}, ;
+              {"Item A1", "Description B2"}, ;
+              {"Item A1", "Description B3"}, ;
+              {"Item A2", "Description B1"}, ;
+              {"Item A2", "Description B2"}, ;
+              {"Item A2", "Description B3"} } )
+
+// Test CROSS JOIN with aliases
+    IF Verbose
+        ? "Testing CROSS JOIN with aliases..."
+    ENDIF
+
+    SELECT a.Name, b.Desc ;
+        FROM cross_join_table_a a ;
+        CROSS JOIN cross_join_table_b b
+    VerifyTable(6, "Failed: Expected 6 records from CROSS JOIN with aliases", TRUE, ;
+            { {"Item A1", "Description B1"}, ;
+              {"Item A1", "Description B2"}, ;
+              {"Item A1", "Description B3"}, ;
+              {"Item A2", "Description B1"}, ;
+              {"Item A2", "Description B2"}, ;
+              {"Item A2", "Description B3"} } )
+
+// Test CROSS JOIN with WHERE clause
+    IF Verbose
+        ? "Testing CROSS JOIN with WHERE clause..."
+    ENDIF
+
+    SELECT a.Name, b.Desc ;
+        FROM cross_join_table_a a ;
+        CROSS JOIN cross_join_table_b b ;
+        WHERE a.Id = 1
+    VerifyTable(3, "Failed: Expected 3 records from CROSS JOIN with WHERE", TRUE, ;
+            { {"Item A1", "Description B1"}, ;
+              {"Item A1", "Description B2"}, ;
+              {"Item A1", "Description B3"} } )
+
+    SELECT a.Name, b.Desc ;
+        FROM cross_join_table_a a ;
+        CROSS JOIN cross_join_table_b b ;
+        WHERE b.Id >= 2
+    VerifyTable(4, "Failed: Inner-table-only candidates changed cross-join results", TRUE)
+
+    // Multi-table candidate bitmaps must prune both sides without changing
+    // the nested-loop result set. The full WHERE expression remains authoritative.
+    SELECT a.Name, b.Desc ;
+        FROM cross_join_table_a a ;
+        CROSS JOIN cross_join_table_b b ;
+        WHERE a.Id = 2 AND b.Id >= 2
+    VerifyTable(2, "Failed: Per-table candidates changed multi-table AND results", TRUE, ;
+            { {"Item A2", "Description B2"}, ;
+              {"Item A2", "Description B3"} } )
+
+    SELECT a.Name, b.Desc, c.Label ;
+        FROM cross_join_table_a a ;
+        CROSS JOIN cross_join_table_b b ;
+        CROSS JOIN cross_join_table_c c ;
+        WHERE a.Id = 2 AND b.Id >= 2 AND c.Id >= 2
+    VerifyTable(4, "Failed: Three-table candidate carry/reset changed rows", TRUE)
+
+    SELECT a.Name, b.Desc ;
+        FROM cross_join_table_a a ;
+        CROSS JOIN cross_join_table_b b ;
+        WHERE a.Id = 99 AND b.Id = 2
+    VerifyTable(0, "Failed: Empty candidate list should produce no rows", TRUE)
+
+    SELECT a.Name, b.Desc ;
+        FROM cross_join_table_a a ;
+        CROSS JOIN cross_join_table_b b ;
+        WHERE a.Id = 2 AND b.Id = 99
+    VerifyTable(0, "Failed: Empty inner candidate list should produce no rows", TRUE)
+
+    SELECT a.Name, b.Desc ;
+        FROM cross_join_table_a a ;
+        CROSS JOIN cross_join_table_b b ;
+        WHERE a.Id = 1 OR b.Id = 3
+    VerifyTable(4, "Failed: Cross-table OR candidate fallback returned incorrect rows", TRUE, ;
+            { {"Item A1", "Description B1"}, ;
+              {"Item A1", "Description B2"}, ;
+              {"Item A1", "Description B3"}, ;
+              {"Item A2", "Description B3"} } )
+
+    // Bare JOIN and INNER JOIN both apply their ON predicate.
+    SELECT a.Name, b.Desc ;
+        FROM cross_join_table_a a ;
+        JOIN cross_join_table_b b ON a.Id = b.Id
+    VerifyTable(2, "Failed: Expected matching rows from JOIN ON", TRUE, ;
+            { {"Item A1", "Description B1"}, ;
+              {"Item A2", "Description B2"} } )
+
+    SELECT a.Name, b.Desc ;
+        FROM cross_join_table_a a ;
+        INNER JOIN cross_join_table_b b ON a.Id = b.Id AND b.Id > 1 ;
+        WHERE a.Id = 2
+    VerifyTable(1, "Failed: Expected ON predicates and WHERE to both apply", TRUE, ;
+            { {"Item A2", "Description B2"} } )
+
+    SELECT a.Name, c.Label ;
+        FROM cross_join_table_a a ;
+        JOIN cross_join_table_b b ON a.Id = b.Id ;
+        INNER JOIN cross_join_table_c c ON b.Id = c.Id
+    VerifyTable(1, "Failed: Expected chained JOIN predicates to apply", TRUE, ;
+            { {"Item A2", "Label C2"} } )
+
+    // Duplicate source rows must remain distinct result combinations.
+    INSERT INTO cross_join_table_b VALUES (2, "Description B2 duplicate")
+    SELECT a.Name, b.Desc ;
+        FROM cross_join_table_a a ;
+        CROSS JOIN cross_join_table_b b ;
+        WHERE a.Id = 1 AND b.Id = 2
+    VerifyTable(2, "Failed: Duplicate candidate rows were collapsed", TRUE)
+
+    // Existing RDD filters must remain in effect through candidate generation.
+    DbSelectArea("cross_join_table_b")
+    DbSetFilter("Id = 2")
+    SELECT a.Name, b.Desc ;
+        FROM cross_join_table_a a ;
+        CROSS JOIN cross_join_table_b b ;
+        WHERE b.Id >= 2
+    VerifyTable(4, "Failed: SELECT ignored an active source-table filter", TRUE)
+    DbSelectArea("cross_join_table_b")
+    IF String.IsNullOrWhiteSpace((STRING)DbInfo(DBI_DBFILTER))
+        THROW Exception{"SELECT cleared the source-table filter"}
+    ENDIF
+    DbSetFilter(NULL)
+
+    // Candidate record lists must preserve the source's active RDD order.
+    INSERT INTO cross_join_table_b VALUES (4, "Description B4")
+    INSERT INTO cross_join_table_b VALUES (0, "Description B0")
+    DbSelectArea("cross_join_table_b")
+    IF !DbCreateOrder("IdOrder",, "Id")
+        THROW Exception{"Could not create order for candidate traversal test"}
+    ENDIF
+    OrdSetFocus("IdOrder")
+    SELECT a.Name, b.Id ;
+        FROM cross_join_table_a a ;
+        CROSS JOIN cross_join_table_b b ;
+        WHERE a.Id = 1 AND b.Id >= 0
+    VerifyTable(6, "Failed: Candidate lists changed active-index traversal order", TRUE, ;
+        { {"Item A1", 0}, ;
+          {"Item A1", 1}, ;
+          {"Item A1", 2}, ;
+          {"Item A1", 2}, ;
+          {"Item A1", 3}, ;
+          {"Item A1", 4} } )
+    DbSelectArea("cross_join_table_b")
+    OrdSetFocus(0)
+
+    // Close the test tables
+    USE IN cross_join_table_a
+    USE IN cross_join_table_b
+    USE IN cross_join_table_c
+
+    RETURN
+
+FUNCTION TestDeletedCandidateRows() AS VOID
+    CREATE CURSOR deleted_candidate_left (Id N(5))
+    CREATE CURSOR deleted_candidate_right (Id N(5))
+    INSERT INTO deleted_candidate_left VALUES (1)
+    INSERT INTO deleted_candidate_left VALUES (2)
+    INSERT INTO deleted_candidate_right VALUES (1)
+    INSERT INTO deleted_candidate_right VALUES (2)
+    DbSelectArea("deleted_candidate_right")
+    GO 2
+    __DbDelete()
+    INSERT INTO deleted_candidate_right VALUES (3)
+
+    LOCAL oldDeleted := SetDeleted() AS LOGIC
+    TRY
+        SetDeleted(TRUE)
+
+        SELECT a.Id, b.Id ;
+            FROM deleted_candidate_left a ;
+            CROSS JOIN deleted_candidate_right b ;
+            WHERE b.Id >= 1
+        VerifyTable(4, "Failed: Candidate scan included a deleted source row", TRUE)
+    FINALLY
+        SetDeleted(oldDeleted)
+        IF Used("deleted_candidate_left")
+            USE IN deleted_candidate_left
+        ENDIF
+        IF Used("deleted_candidate_right")
+            USE IN deleted_candidate_right
+        ENDIF
+    END TRY
+    RETURN
+
+FUNCTION TestUnionFunctionality() AS VOID
+    CREATE CURSOR union_left (Id N(5) NULL, Label C(20) NULL)
+    CREATE CURSOR union_middle (Id N(5) NULL, Label C(20) NULL)
+    CREATE CURSOR union_right (Id N(5) NULL, Label C(20) NULL)
+    CREATE CURSOR union_empty (Id N(5) NULL, Label C(20) NULL)
+    CREATE CURSOR union_integer (Id I NULL, Label C(20) NULL)
+    CREATE CURSOR union_null_left (Id N(5))
+    CREATE CURSOR union_null_right (Id N(5))
+
+    INSERT INTO union_left VALUES (1, "one")
+    INSERT INTO union_left VALUES (2, "shared")
+    INSERT INTO union_left VALUES (2, "duplicate value")
+    INSERT INTO union_middle VALUES (2, "shared")
+    INSERT INTO union_middle VALUES (3, "three")
+    INSERT INTO union_right VALUES (1, "one")
+    INSERT INTO union_right VALUES (4, "four")
+    INSERT INTO union_integer VALUES (5, "five")
+
+    SELECT Id, Label FROM union_left UNION ALL SELECT Id, Label FROM union_middle INTO CURSOR UnionAllResult
+    VerifyTable(5, "UNION ALL should preserve duplicates and branch order", TRUE, ;
+        { {1, "one"}, {2, "shared"}, {2, "duplicate value"}, {2, "shared"}, {3, "three"} } )
+
+    SELECT Id, Label FROM union_left UNION SELECT Id, Label FROM union_middle INTO CURSOR UnionDistinctResult
+    VerifyTable(4, "UNION should remove duplicates across branches", TRUE, ;
+        { {1, "one"}, {2, "shared"}, {2, "duplicate value"}, {3, "three"} } )
+
+    SELECT Id, Label FROM union_left UNION ALL SELECT Id, Label FROM union_middle UNION SELECT Id, Label FROM union_right
+    VerifyTable(5, "Mixed UNION operators should apply left to right", TRUE)
+
+    SELECT Id, Label FROM union_left UNION ALL SELECT Id, Label FROM union_empty
+    VerifyTable(3, "An empty UNION ALL branch should add no rows", TRUE)
+
+    SELECT Id, Label FROM union_left UNION ALL SELECT Id, Label FROM union_integer
+    VerifyTable(4, "Compatible numeric branch types should combine", TRUE)
+
+    SELECT TOP 1 Id, Label FROM union_left UNION ALL SELECT TOP 1 Id, Label FROM union_middle
+    VerifyTable(2, "TOP should apply independently to each UNION branch", TRUE)
+
+    SELECT Id, Label FROM union_left UNION ALL SELECT Id, Label FROM union_middle ORDER BY Id DESC INTO CURSOR UnionOrderedResult
+    VerifyTable(5, "Final ORDER BY should sort the combined UNION result", TRUE, ;
+        { {3, "three"}, {2, "shared"}, {2, "duplicate value"}, {2, "shared"}, {1, "one"} } )
+
+    SELECT SUM(Id) AS Total FROM union_null_left UNION ALL SELECT SUM(Id) AS Total FROM union_null_right
+    VerifyTable(2, "UNION ALL should preserve NULL values", TRUE, { {NULL}, {NULL} } )
+
+    SELECT SUM(Id) AS Total FROM union_null_left UNION SELECT SUM(Id) AS Total FROM union_null_right
+    VerifyTable(1, "UNION should treat NULL result rows as duplicates", TRUE, { {NULL} } )
+
+    LOCAL incompatibleSchemaError := FALSE AS LOGIC
+    TRY
+        __SqlSelect("SELECT Label FROM union_left UNION ALL SELECT Id FROM union_integer")
+    CATCH ex AS Exception
+        incompatibleSchemaError := ex:Message:Contains("incompatible types")
+    END TRY
+    IF !incompatibleSchemaError
+        THROW Exception{"UNION should reject incompatible column types"}
+    ENDIF
+
+    IF Used("union_left")
+        USE IN union_left
+    ENDIF
+    IF Used("union_middle")
+        USE IN union_middle
+    ENDIF
+    IF Used("union_right")
+        USE IN union_right
+    ENDIF
+    IF Used("union_empty")
+        USE IN union_empty
+    ENDIF
+    IF Used("union_integer")
+        USE IN union_integer
+    ENDIF
+    IF Used("union_null_left")
+        USE IN union_null_left
+    ENDIF
+    IF Used("union_null_right")
+        USE IN union_null_right
+    ENDIF
+    RETURN
+
+FUNCTION TestHashJoin() AS VOID
+    ? "Testing hash join functionality..."
+
+    CREATE CURSOR hash_join_left (JoinId N(8,2) NULL, LeftName C(20))
+    CREATE CURSOR hash_join_right (JoinId N(8,2) NULL, RightName C(20), Active L)
+
+    INSERT INTO hash_join_left VALUES (1, "Left A")
+    INSERT INTO hash_join_left VALUES (1, "Left B")
+    INSERT INTO hash_join_left VALUES (2, "Left C")
+    INSERT INTO hash_join_left VALUES (4, "Left D")
+    INSERT INTO hash_join_left VALUES (NULL, "Left Null")
+
+    INSERT INTO hash_join_right VALUES (1, "Right A", .T.)
+    INSERT INTO hash_join_right VALUES (1, "Right inactive", .F.)
+    INSERT INTO hash_join_right VALUES (1, "Right B", .T.)
+    INSERT INTO hash_join_right VALUES (2, "Right C", .T.)
+    INSERT INTO hash_join_right VALUES (3, "Right D", .T.)
+    INSERT INTO hash_join_right VALUES (NULL, "Right Null", .T.)
+
+    // Duplicate keys must produce every matching pair, while residual ON and WHERE
+    // predicates still run after the hash lookup.
+    SELECT lhs.LeftName, rhs.RightName ;
+        FROM hash_join_left lhs ;
+        INNER JOIN hash_join_right rhs ON lhs.JoinId = rhs.JoinId AND rhs.Active = .T. ;
+        WHERE lhs.JoinId <= 2 ;
+        ORDER BY lhs.LeftName, rhs.RightName
+    VerifyTable(5, "Failed: Hash join lost duplicate matches or residual predicates", TRUE, ;
+        { {"Left A", "Right A"}, ;
+          {"Left A", "Right B"}, ;
+          {"Left B", "Right A"}, ;
+          {"Left B", "Right B"}, ;
+          {"Left C", "Right C"} } )
+
+    SELECT DISTINCT lhs.JoinId ;
+        FROM hash_join_left lhs ;
+        JOIN hash_join_right rhs ON rhs.JoinId = lhs.JoinId AND rhs.Active = .T. ;
+        ORDER BY lhs.JoinId DESC
+    VerifyTable(2, "Failed: DISTINCT should apply after hash join matches", TRUE, ;
+        { {2}, {1} } )
+
+    SELECT TOP 2 lhs.LeftName, rhs.RightName ;
+        FROM hash_join_left lhs ;
+        JOIN hash_join_right rhs ON lhs.JoinId = rhs.JoinId AND rhs.Active = .T. ;
+        ORDER BY lhs.LeftName DESC, rhs.RightName DESC INTO CURSOR HashJoinCursor
+    VerifyTable(2, "Failed: TOP/ORDER BY/INTO CURSOR failed with hash join", FALSE, ;
+        { {"Left C", "Right C"}, {"Left B", "Right B"} } )
+    USE IN HashJoinCursor
+
+    // A non-equality ON predicate must retain the nested-loop fallback.
+    SELECT lhs.LeftName, rhs.RightName ;
+        FROM hash_join_left lhs ;
+        JOIN hash_join_right rhs ON lhs.JoinId < rhs.JoinId ;
+        WHERE lhs.JoinId <= 2
+    VerifyTable(5, "Failed: Nested-loop JOIN candidates changed result rows", TRUE)
+
+    USE IN hash_join_left
+    USE IN hash_join_right
+    RETURN
+

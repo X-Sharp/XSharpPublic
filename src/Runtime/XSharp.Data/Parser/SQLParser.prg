@@ -930,6 +930,7 @@ PARTIAL CLASS SQLParser
                 joinContext:TableName := joinedTableName
                 joinContext:Alias := joinedAliasName ?? joinedTableName
                 joinContext:Kind := joinKind
+                joinContext:IsCommaSource := commaSource
                 IF !commaSource .AND. (joinKind == FoxSelectJoinKind.Inner .OR. joinKind == FoxSelectJoinKind.Left)
                     IF ! SELF:Expect(XTokenType.ON)
                         SELF:SetError("Expected ON clause for JOIN")

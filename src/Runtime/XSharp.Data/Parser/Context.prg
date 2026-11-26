@@ -154,6 +154,8 @@ CLASS FoxSelectContext
     PROPERTY UnionAll AS List<LOGIC> AUTO
     // Runtime materialization used when LEFT JOIN requires NULL-extended rows.
     PROPERTY OuterJoinRows AS List<LONG[]> AUTO
+    // Source record positions captured before LEFT JOIN execution changes work areas.
+    PROPERTY WorkAreaRecordSnapshot AS Dictionary<STRING,LONG> AUTO
     CONSTRUCTOR()
         SelectList := List<SqlExpressionContext>{}
         FieldSelectionList := List<SqlFieldSelectionContext>{}  // Initialize the new property
@@ -166,6 +168,7 @@ CLASS FoxSelectContext
         UnionBranches := List<FoxSelectContext>{}
         UnionAll := List<LOGIC>{}
         OuterJoinRows := NULL
+        WorkAreaRecordSnapshot := NULL
         GroupByItems := List<SqlExpressionContext>{}
         RETURN
 
@@ -184,6 +187,8 @@ CLASS FoxSelectJoinContext
     PROPERTY OnClause AS SqlExpressionContext AUTO
     // Set only on the execution copy used for NULL extension.
     PROPERTY NullRecordNumber AS LONG AUTO
+    // True when this source was introduced by a comma, starting a new join group.
+    PROPERTY IsCommaSource AS LOGIC AUTO
 END CLASS
 
 CLASS FoxOrderByItem

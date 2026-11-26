@@ -1932,6 +1932,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         NEXT
 
         IF hasLeftOuterJoin .AND. selectCtx:OuterJoinRows == NULL
+            selectCtx:WorkAreaRecordSnapshot := CaptureWorkAreaRecordNumbers(selectCtx)
             ExecuteLeftOuterJoinSelect(selectCtx)
             RETURN
         ENDIF
@@ -2852,6 +2853,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
 
         VAR execution := CopySelectBranch(source, source:TargetCursor)
         execution:OuterJoinRows := NULL
+        execution:WorkAreaRecordSnapshot := source:WorkAreaRecordSnapshot
         execution:TableList := List<STRING>{}
         execution:TableAliases := Dictionary<STRING,STRING>{StringComparer.OrdinalIgnoreCase}
         FOREACH VAR tableName IN source:TableList
@@ -2870,6 +2872,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             executionJoin:Kind := sourceJoin:Kind
             executionJoin:OnClause := sourceJoin:OnClause
             executionJoin:NullRecordNumber := 0
+            executionJoin:IsCommaSource := sourceJoin:IsCommaSource
 
             IF sourceJoin:Kind == FoxSelectJoinKind.Left
                 LOCAL nullRecordNumber AS LONG
@@ -2978,6 +2981,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             LOCAL row := LONG[]{ALen(tableNames)} AS LONG[]
             row[1] := (LONG)(firstTable)->RecNo()
             AppendLeftJoinRows(selectCtx, tableNames, joinCodeBlocks, 2, row, rows)
+            (firstTable)->DbGoto(row[1])
             (firstTable)->DbSkip(1)
         ENDDO
         RETURN rows
@@ -3014,6 +3018,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             LOCAL matches := joinContext:Kind == FoxSelectJoinKind.Cross AS LOGIC
             IF !matches
                 TRY
+                    RestoreOutOfScopeJoinSources(selectCtx, tableIndex - 2)
                     matches := (LOGIC)joinCodeBlocks[tableIndex - 2]:Eval()
                 CATCH ex AS Exception
                     matches := FALSE
@@ -3023,6 +3028,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 foundMatch := TRUE
                 AppendLeftJoinRows(selectCtx, tableNames, joinCodeBlocks, tableIndex + 1, row, rows)
             ENDIF
+            (tableName)->DbGoto(candidateRecordNumber)
             (tableName)->DbSkip(1)
         ENDDO
 
@@ -3030,6 +3036,53 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             row[tableIndex] := joinContext:NullRecordNumber
             AppendLeftJoinRows(selectCtx, tableNames, joinCodeBlocks, tableIndex + 1, row, rows)
         ENDIF
+        RETURN
+
+    PRIVATE STATIC METHOD CaptureWorkAreaRecordNumbers(selectCtx AS FoxSelectContext) AS Dictionary<STRING,LONG>
+        VAR result := Dictionary<STRING,LONG>{StringComparer.OrdinalIgnoreCase}
+        VAR previousArea := DbSelect()
+        FOREACH VAR sourceName IN selectCtx:TableList
+            IF Used(sourceName) .AND. !result:ContainsKey(sourceName)
+                result[sourceName] := (LONG)(sourceName)->RecNo()
+            ENDIF
+        NEXT
+        IF previousArea > 0
+            DbSelectArea(previousArea)
+        ENDIF
+        RETURN result
+
+    PRIVATE STATIC METHOD RestoreOutOfScopeJoinSources(selectCtx AS FoxSelectContext, joinIndex AS INT) AS VOID
+        IF selectCtx:WorkAreaRecordSnapshot == NULL .OR. joinIndex < 0 .OR. joinIndex >= selectCtx:Joins:Count
+            RETURN
+        ENDIF
+        // A comma starts a new table expression. Earlier comma groups are outside
+        // the operands of joins in the current group and VFP reads their current row.
+        LOCAL scopeStart := 0 AS INT
+        FOR LOCAL previousJoin := joinIndex - 1 AS INT DOWNTO 0
+            IF selectCtx:Joins[previousJoin]:IsCommaSource
+                scopeStart := previousJoin + 1
+                EXIT
+            ENDIF
+        NEXT
+        IF scopeStart == 0
+            RETURN
+        ENDIF
+        VAR dependencies := selectCtx:Joins[joinIndex]:OnClause:GetTableDependencies(selectCtx:TableAliases)
+        FOREACH VAR dependency IN dependencies
+            LOCAL sourceIndex := -1 AS INT
+            FOR LOCAL candidateIndex := 0 AS INT TO selectCtx:TableList:Count - 1
+                IF String.Equals((STRING)selectCtx:TableList[candidateIndex], dependency, StringComparison.OrdinalIgnoreCase)
+                    sourceIndex := candidateIndex
+                    EXIT
+                ENDIF
+            NEXT
+            IF sourceIndex >= 0 .AND. sourceIndex < scopeStart
+                LOCAL recordNumber AS LONG
+                IF selectCtx:WorkAreaRecordSnapshot:TryGetValue(dependency, OUT recordNumber) .AND. recordNumber > 0
+                    DbGoto(recordNumber, dependency)
+                ENDIF
+            ENDIF
+        NEXT
         RETURN
 
     PRIVATE STATIC METHOD ExecuteUnionSelect(selectCtx AS FoxSelectContext) AS VOID

@@ -1404,6 +1404,24 @@ FUNCTION TestLeftOuterJoin() AS VOID
           {1, "right one b", "inner one"}, ;
           {3, NULL, "inner three"} } )
 
+    // VFP9 reads a work-area's entry record when a LEFT JOIN ON expression
+    // references an alias from an earlier comma group.
+    outer_left->DbGoto(3)
+    SELECT a.Id, c.Id ;
+        FROM outer_left a, outer_right b ;
+        LEFT JOIN outer_inner c ON a.Id = c.Id ;
+        ORDER BY a.Id, b.Id
+    VerifyTable(9, "Out-of-group LEFT JOIN references should use the source work-area entry record", TRUE, ;
+        { {1, 3}, {1, 3}, {1, 3}, {2, 3}, {2, 3}, {2, 3}, {3, 3}, {3, 3}, {3, 3} } )
+
+    outer_left->DbGoto(1)
+    SELECT a.Id, c.Id ;
+        FROM outer_left a, outer_right b ;
+        LEFT JOIN outer_inner c ON a.Id = c.Id ;
+        ORDER BY a.Id, b.Id
+    VerifyTable(9, "Out-of-group LEFT JOIN references should follow a changed source work-area record", TRUE, ;
+        { {1, 1}, {1, 1}, {1, 1}, {2, 1}, {2, 1}, {2, 1}, {3, 1}, {3, 1}, {3, 1} } )
+
     USE IN outer_left
     USE IN outer_right
     USE IN outer_empty

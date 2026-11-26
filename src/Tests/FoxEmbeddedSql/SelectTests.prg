@@ -797,6 +797,31 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
         THROW Exception{"Empty joined derived table cursor should close after execution"}
     ENDIF
 
+    LOCAL twoDerivedHashBefore := SqlOptimizationCount("HashJoins") AS INT
+    LOCAL twoDerivedExecutionsBefore := SqlOptimizationCount("DerivedTableExecutions") AS INT
+    SELECT a.Id, b.Label FROM (SELECT c.Id FROM nested_child c WHERE c.Id > 1) a ;
+        INNER JOIN (SELECT x.Id, x.Label FROM nested_child x WHERE x.Id > 1) b ON a.Id = b.Id ;
+        ORDER BY a.Id, b.Label
+    VerifyTable(5, "Two derived inputs should preserve duplicate INNER JOIN matches", TRUE, ;
+        {{2, "duplicate"}, {2, "duplicate"}, {2, "first"}, {2, "first"}, {4, "four"}})
+    VerifySqlOptimization("HashJoins", twoDerivedHashBefore)
+    IF SqlOptimizationCount("DerivedTableExecutions") - twoDerivedExecutionsBefore != 2 .OR. ;
+       AUsed(openAreas) != workAreaCountBeforeDerived
+        THROW Exception{"Each derived source should materialize once and close after the joined SELECT"}
+    ENDIF
+
+    LOCAL chainDerivedExecutionsBefore := SqlOptimizationCount("DerivedTableExecutions") AS INT
+    SELECT p.Id, a.Id, b.Label FROM nested_parent p ;
+        INNER JOIN (SELECT c.Id FROM nested_child c WHERE c.Id > 1) a ON p.Id = a.Id ;
+        INNER JOIN (SELECT x.Id, x.Label FROM nested_child x WHERE x.Id > 1) b ON a.Id = b.Id ;
+        ORDER BY p.Id, b.Label
+    VerifyTable(5, "Multiple derived sources should work in a three-source INNER JOIN chain", TRUE, ;
+        {{2, 2, "duplicate"}, {2, 2, "duplicate"}, {2, 2, "first"}, {2, 2, "first"}, {4, 4, "four"}})
+    IF SqlOptimizationCount("DerivedTableExecutions") - chainDerivedExecutionsBefore != 2 .OR. ;
+       AUsed(openAreas) != workAreaCountBeforeDerived
+        THROW Exception{"Derived sources in a longer join chain should execute once and close"}
+    ENDIF
+
     LOCAL failedDerivedExecutionRejected := FALSE AS LOGIC
     LOCAL derivedFailureCallerArea := VoDbGetSelect() AS DWORD
     TRY
@@ -808,6 +833,22 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     IF !failedDerivedExecutionRejected .OR. AUsed(openAreas) != workAreaCountBeforeDerived .OR. ;
        VoDbGetSelect() != derivedFailureCallerArea
         THROW Exception{"Failing outer SELECT should close the derived cursor and restore workarea"}
+    ENDIF
+
+    LOCAL secondDerivedFailureRejected := FALSE AS LOGIC
+    LOCAL secondDerivedFailureCallerArea := VoDbGetSelect() AS DWORD
+    LOCAL secondDerivedExecutionsBefore := SqlOptimizationCount("DerivedTableExecutions") AS INT
+    TRY
+        SELECT a.Id FROM (SELECT c.Id FROM nested_child c) a ;
+            INNER JOIN (SELECT x.Id FROM nested_child x WHERE x.Id = ;
+                (SELECT y.Id FROM nested_child y WHERE y.Id = 2)) b ON a.Id = b.Id
+    CATCH ex AS Exception
+        secondDerivedFailureRejected := ex:Message:Contains("more than one record")
+    END TRY
+    IF !secondDerivedFailureRejected .OR. ;
+       SqlOptimizationCount("DerivedTableExecutions") - secondDerivedExecutionsBefore != 2 .OR. ;
+       AUsed(openAreas) != workAreaCountBeforeDerived .OR. VoDbGetSelect() != secondDerivedFailureCallerArea
+        THROW Exception{"Failure while materializing a later derived source should clean prior cursors and restore workarea"}
     ENDIF
 
     LOCAL correlatedDerivedRejected := FALSE AS LOGIC

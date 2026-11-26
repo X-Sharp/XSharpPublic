@@ -86,6 +86,16 @@ INTERNAL STATIC CLASS SqlOptimizationDiagnostics
     INTERNAL STATIC MembershipBitmaps AS INT
     INTERNAL STATIC MembershipCandidates AS INT
     INTERNAL STATIC MembershipScanned AS INT
+    INTERNAL STATIC DerivedTableExecutions AS INT
+END CLASS
+
+INTERNAL CLASS SqlDerivedTableExecution
+    INTERNAL SourceIndex AS INT
+    INTERNAL Alias AS STRING
+    INTERNAL CursorName AS STRING
+    INTERNAL OriginalTableName AS STRING
+    INTERNAL OriginalAliasTarget AS STRING
+    INTERNAL OriginalJoinTableName AS STRING
 END CLASS
 
 // -1 is UNKNOWN, 0 is FALSE and 1 is TRUE.
@@ -1834,59 +1844,53 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         LOCAL savedArea := VoDbGetSelect() AS DWORD
         LOCAL target := IIF(String.IsNullOrEmpty(selectCtx:TargetCursor), "QUERYRESULT", AllTrim(selectCtx:TargetCursor)) AS STRING
         LOCAL targetAlreadyOpen := Used(target) AS LOGIC
-        LOCAL derivedCursor := NULL AS STRING
-        LOCAL derivedAlias := NULL AS STRING
-        LOCAL originalTableName := NULL AS STRING
-        LOCAL originalAliasTarget := NULL AS STRING
-        LOCAL originalJoinTableName := NULL AS STRING
-        LOCAL derivedTableIndex := -1 AS INT
-        LOCAL derivedSourceInstalled := FALSE AS LOGIC
+        LOCAL derivedExecutions := List<SqlDerivedTableExecution>{} AS List<SqlDerivedTableExecution>
         TRY
+            ValidateSelectSubqueries(selectCtx)
             IF selectCtx:DerivedTables:Count > 0
-                LOCAL supportedDerivedShape := selectCtx:TableList:Count == 1 .AND. ;
-                    selectCtx:Joins:Count == 0 AS LOGIC
-                IF selectCtx:TableList:Count == 2 .AND. selectCtx:Joins:Count == 1
-                    supportedDerivedShape := selectCtx:Joins[0]:Kind == FoxSelectJoinKind.Inner
+                IF selectCtx:TableList:Count != selectCtx:Joins:Count + 1
+                    THROW Error{"Derived tables require an explicit INNER JOIN chain"}
                 ENDIF
-                IF selectCtx:DerivedTables:Count != 1 .OR. !supportedDerivedShape
-                    THROW Error{"Only one derived table with at most one INNER JOIN is supported yet"}
-                ENDIF
-                VAR derivedEntry := selectCtx:DerivedTables:First()
-                derivedAlias := derivedEntry:Key
-                IF HasExternalSubqueryReference(derivedEntry:Value)
-                    THROW Error{"Derived table subqueries cannot be correlated"}
-                ENDIF
-                FOR LOCAL tableIndex := 0 AS INT TO selectCtx:TableList:Count - 1
-                    IF ((STRING)selectCtx:TableList[tableIndex]):Equals(derivedAlias, StringComparison.OrdinalIgnoreCase)
-                        derivedTableIndex := tableIndex
-                        EXIT
+                FOREACH VAR joinContext IN selectCtx:Joins
+                    IF joinContext:Kind != FoxSelectJoinKind.Inner
+                        THROW Error{"Derived tables are currently supported only in INNER JOIN chains"}
                     ENDIF
                 NEXT
-                IF derivedTableIndex < 0
-                    THROW Error{"Derived table alias was not found in the FROM source list"}
+                FOR LOCAL tableIndex := 0 AS INT TO selectCtx:TableList:Count - 1
+                    VAR sourceAlias := (STRING)selectCtx:TableList[tableIndex]
+                    IF selectCtx:DerivedTables:TryGetValue(sourceAlias, OUT VAR derivedQuery)
+                        VAR execution := SqlDerivedTableExecution{}
+                        execution:SourceIndex := tableIndex
+                        execution:Alias := sourceAlias
+                        execution:CursorName := "DT" + Guid.NewGuid():ToString("N"):Substring(0, 8)
+                        execution:OriginalTableName := sourceAlias
+                        execution:OriginalAliasTarget := selectCtx:TableAliases[sourceAlias]
+                        IF tableIndex > 0
+                            execution:OriginalJoinTableName := selectCtx:Joins[tableIndex - 1]:TableName
+                        ENDIF
+                        derivedExecutions:Add(execution)
+
+                        VAR previousDerivedTarget := derivedQuery:TargetCursor
+                        TRY
+                            derivedQuery:TargetCursor := execution:CursorName
+                            System.Threading.Interlocked.Increment(REF SqlOptimizationDiagnostics.DerivedTableExecutions)
+                            ExecuteSelect(derivedQuery)
+                        FINALLY
+                            derivedQuery:TargetCursor := previousDerivedTarget
+                        END TRY
+                        IF !Used(execution:CursorName)
+                            THROW Error{"Derived table subquery did not produce a result cursor"}
+                        ENDIF
+                        selectCtx:TableList[tableIndex] := execution:CursorName
+                        selectCtx:TableAliases[sourceAlias] := execution:CursorName
+                        IF tableIndex > 0
+                            selectCtx:Joins[tableIndex - 1]:TableName := execution:CursorName
+                        ENDIF
+                    ENDIF
+                NEXT
+                IF derivedExecutions:Count != selectCtx:DerivedTables:Count
+                    THROW Error{"A derived table alias was not found in the FROM source list"}
                 ENDIF
-                originalTableName := selectCtx:TableList[derivedTableIndex]
-                originalAliasTarget := selectCtx:TableAliases[derivedAlias]
-                IF derivedTableIndex == 1
-                    originalJoinTableName := selectCtx:Joins[0]:TableName
-                ENDIF
-                derivedCursor := "DT" + Guid.NewGuid():ToString("N"):Substring(0, 8)
-                VAR previousDerivedTarget := derivedEntry:Value:TargetCursor
-                TRY
-                    derivedEntry:Value:TargetCursor := derivedCursor
-                    ExecuteSelect(derivedEntry:Value)
-                FINALLY
-                    derivedEntry:Value:TargetCursor := previousDerivedTarget
-                END TRY
-                IF !Used(derivedCursor)
-                    THROW Error{"Derived table subquery did not produce a result cursor"}
-                ENDIF
-                selectCtx:TableList[derivedTableIndex] := derivedCursor
-                selectCtx:TableAliases[derivedAlias] := derivedCursor
-                IF derivedTableIndex == 1
-                    selectCtx:Joins[0]:TableName := derivedCursor
-                ENDIF
-                derivedSourceInstalled := TRUE
             ENDIF
             ValidateSelectSubqueries(selectCtx)
             ExecuteSelectCore(selectCtx)
@@ -1899,16 +1903,17 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             ENDIF
             THROW
         FINALLY
-            IF derivedSourceInstalled
-                selectCtx:TableList[derivedTableIndex] := originalTableName
-                selectCtx:TableAliases[derivedAlias] := originalAliasTarget
-                IF derivedTableIndex == 1
-                    selectCtx:Joins[0]:TableName := originalJoinTableName
+            FOR LOCAL executionIndex := derivedExecutions:Count - 1 AS INT DOWNTO 0
+                VAR execution := derivedExecutions[executionIndex]
+                selectCtx:TableList[execution:SourceIndex] := execution:OriginalTableName
+                selectCtx:TableAliases[execution:Alias] := execution:OriginalAliasTarget
+                IF execution:SourceIndex > 0
+                    selectCtx:Joins[execution:SourceIndex - 1]:TableName := execution:OriginalJoinTableName
                 ENDIF
-            ENDIF
-            IF derivedCursor != NULL .AND. Used(derivedCursor)
-                (derivedCursor)->DbCloseArea()
-            ENDIF
+                IF Used(execution:CursorName)
+                    (execution:CursorName)->DbCloseArea()
+                ENDIF
+            NEXT
         END TRY
         RETURN
 

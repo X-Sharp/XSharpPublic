@@ -866,10 +866,6 @@ PARTIAL CLASS SQLParser
                      SELF:Lt1:Text:Equals("RIGHT", StringComparison.OrdinalIgnoreCase) .OR. ;
                      SELF:Lt1:Text:Equals("FULL", StringComparison.OrdinalIgnoreCase) .OR. ;
                      SELF:Lt1:Text:Equals("OUTER", StringComparison.OrdinalIgnoreCase)))
-                IF stmt:DerivedTables:Count > 0 .AND. stmt:Joins:Count > 0
-                    SELF:SetError("Only one derived table with one INNER JOIN is supported yet")
-                    RETURN FALSE
-                ENDIF
                 LOCAL joinKind AS FoxSelectJoinKind
                 IF SELF:Matches(XTokenType.CROSS)
                     SELF:ConsumeAndGet()
@@ -914,11 +910,8 @@ PARTIAL CLASS SQLParser
                 ENDIF
                 LOCAL joinedTableName AS STRING
                 LOCAL joinedAliasName := NULL AS STRING
+                LOCAL joinedIsDerived := FALSE AS LOGIC
                 IF SELF:Matches(XTokenType.LPAREN) .AND. SELF:La2 == XTokenType.SELECT
-                    IF stmt:DerivedTables:Count > 0
-                        SELF:SetError("Only one derived table is supported per joined query")
-                        RETURN FALSE
-                    ENDIF
                     SELF:Consume()
                     LOCAL joinedDerivedQuery AS FoxSelectContext
                     IF !SELF:ParseSelectBranch(OUT joinedDerivedQuery)
@@ -942,6 +935,7 @@ PARTIAL CLASS SQLParser
                     ENDIF
                     joinedTableName := joinedAliasName
                     stmt:DerivedTables[joinedAliasName] := joinedDerivedQuery
+                    joinedIsDerived := TRUE
                 ELSE
                     IF ! SELF:ParseTableName(OUT joinedTableName)
                         SELF:SetError("Expected table name after JOIN")
@@ -964,6 +958,10 @@ PARTIAL CLASS SQLParser
                     ENDIF
                 ENDIF
 
+                IF joinedIsDerived .AND. joinKind != FoxSelectJoinKind.Inner
+                    SELF:SetError("Derived tables are currently supported only with INNER JOIN")
+                    RETURN FALSE
+                ENDIF
                 IF joinedAliasName != NULL .AND. stmt:TableAliases:ContainsKey(joinedAliasName)
                     SELF:SetError("Duplicate table alias: " + joinedAliasName)
                     RETURN FALSE
@@ -991,6 +989,15 @@ PARTIAL CLASS SQLParser
                 ENDIF
                 stmt:Joins:Add(joinContext)
             ENDDO
+        ENDIF
+
+        IF stmt:DerivedTables:Count > 0
+            FOREACH VAR joinContext IN stmt:Joins
+                IF joinContext:Kind != FoxSelectJoinKind.Inner
+                    SELF:SetError("Derived tables are currently supported only in INNER JOIN chains")
+                    RETURN FALSE
+                ENDIF
+            NEXT
         ENDIF
 
         // Check for optional WITH clause (for locking hints)

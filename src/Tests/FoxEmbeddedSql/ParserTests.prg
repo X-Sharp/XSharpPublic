@@ -162,13 +162,26 @@ FUNCTION TestSelectParsing() AS VOID
             THROW Exception{"INNER JOIN should accept one derived source in either position: " + derivedJoinParser:Error}
         ENDIF
     NEXT
+    VAR multipleDerivedSql := "SELECT a.Id, b.Id, p.Id FROM (SELECT c.Id FROM Child c) a " + ;
+        "INNER JOIN (SELECT x.Id FROM Other x) b ON a.Id = b.Id " + ;
+        "INNER JOIN Parent p ON b.Id = p.Id"
+    VAR multipleDerivedParser := SQLParser{XTokenList{XSqlLexer{multipleDerivedSql}:AllTokens()}}
+    LOCAL multipleDerivedCtx AS FoxSelectContext
+    IF !multipleDerivedParser:ParseSelectStatement(OUT multipleDerivedCtx) .OR. ;
+       multipleDerivedCtx:DerivedTables:Count != 2 .OR. multipleDerivedCtx:TableList:Count != 3 .OR. ;
+       multipleDerivedCtx:Joins:Count != 2 .OR. multipleDerivedCtx:Joins[0]:Kind != FoxSelectJoinKind.Inner .OR. ;
+       multipleDerivedCtx:Joins[1]:Kind != FoxSelectJoinKind.Inner
+        THROW Exception{"Multiple derived sources should parse in an explicit INNER JOIN chain: " + multipleDerivedParser:Error}
+    ENDIF
     FOREACH VAR invalidDerivedSql IN <STRING>{ ;
         "SELECT d.Id FROM (SELECT c.Id FROM Child c)", ;
         "SELECT d.Id FROM (SELECT c.Id FROM Child c", ;
         "SELECT d.Id FROM (SELECT c.Id FROM Child c) d CROSS JOIN Other o", ;
         "SELECT d.Id FROM (SELECT c.Id FROM Child c) d LEFT JOIN Other o ON d.Id = o.Id", ;
+        "SELECT a.Id FROM (SELECT c.Id FROM Child c) a INNER JOIN (SELECT x.Id FROM Other x) a ON a.Id = a.Id", ;
         "SELECT d.Id FROM Parent p INNER JOIN (SELECT c.Id FROM Child c)", ;
         "SELECT d.Id FROM Parent p INNER JOIN (SELECT c.Id FROM Child c) d LEFT JOIN Other o ON d.Id = o.Id", ;
+        "SELECT a.Id FROM Parent p INNER JOIN (SELECT c.Id FROM Child c) a LEFT JOIN (SELECT x.Id FROM Other x) b ON a.Id = b.Id", ;
         "SELECT d.Id FROM Child c, (SELECT x.Id FROM Other x) d" }
         VAR invalidDerivedParser := SQLParser{XTokenList{XSqlLexer{invalidDerivedSql}:AllTokens()}}
         LOCAL invalidDerivedCtx AS FoxSelectContext

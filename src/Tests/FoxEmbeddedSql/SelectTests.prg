@@ -747,6 +747,7 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     CREATE CURSOR nested_empty (Id N(5) NULL)
     CREATE CURSOR nested_repeat (Id N(5) NULL)
     CREATE CURSOR nested_scalar_unique (Id N(5) NULL)
+    CREATE CURSOR nested_scalar_extra (Id N(5) NULL, Amount N(5) NULL)
     INSERT INTO nested_parent VALUES (1)
     INSERT INTO nested_parent VALUES (2)
     INSERT INTO nested_parent VALUES (3)
@@ -765,6 +766,8 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     INSERT INTO nested_child VALUES (NULL, "null")
     INSERT INTO nested_scalar_unique VALUES (2)
     INSERT INTO nested_scalar_unique VALUES (4)
+    INSERT INTO nested_scalar_extra VALUES (2, 10)
+    INSERT INTO nested_scalar_extra VALUES (4, 20)
 
     LOCAL openAreas := XSharp.__FoxArray{} AS ARRAY
     LOCAL workAreaCountBeforeDerived := AUsed(openAreas) AS DWORD
@@ -1085,6 +1088,40 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
         THROW Exception{"Correlated scalar memoization diagnostics should reflect optimized cache use"}
     ENDIF
 
+    scalarCachePlansBefore := SqlOptimizationCount("CorrelatedScalarCachePlans")
+    scalarCacheHitsBefore := SqlOptimizationCount("CorrelatedScalarCacheHits")
+    scalarBefore := SqlOptimizationCount("ScalarExecutions")
+    SELECT p.Id, (SELECT c.Id + x.Amount FROM nested_scalar_unique c ;
+        INNER JOIN nested_scalar_extra x ON c.Id = x.Id WHERE c.Id = p.Id) AS ComputedValue ;
+        FROM nested_parent_duplicates p ORDER BY p.Id
+    VerifyTable(4, "Joined correlated scalar projections should cache computed results", TRUE, ;
+        {{NULL, NULL}, {2, 12}, {2, 12}, {4, 24}})
+    IF SqlOptimizationCount("ScalarExecutions") - scalarBefore != IIF(optimizationsDisabled, 4, 2) .OR. ;
+       SqlOptimizationCount("CorrelatedScalarCachePlans") - scalarCachePlansBefore != IIF(optimizationsDisabled, 0, 1) .OR. ;
+       SqlOptimizationCount("CorrelatedScalarCacheHits") - scalarCacheHitsBefore != IIF(optimizationsDisabled, 0, 1)
+        THROW Exception{"Joined scalar memoization should reduce repeated-key executions only when enabled"}
+    ENDIF
+
+    scalarCachePlansBefore := SqlOptimizationCount("CorrelatedScalarCachePlans")
+    scalarCacheHitsBefore := SqlOptimizationCount("CorrelatedScalarCacheHits")
+    scalarBefore := SqlOptimizationCount("ScalarExecutions")
+    SELECT p.Id, (SELECT d.Id + 1 FROM (SELECT c.Id FROM nested_scalar_unique c) d ;
+        WHERE d.Id = p.Id) AS DerivedValue FROM nested_parent_duplicates p ORDER BY p.Id
+    VerifyTable(4, "Derived correlated scalar projections should infer schema and cache computed results", TRUE, ;
+        {{NULL, NULL}, {2, 3}, {2, 3}, {4, 5}})
+    IF SqlOptimizationCount("ScalarExecutions") - scalarBefore != IIF(optimizationsDisabled, 4, 2) .OR. ;
+       SqlOptimizationCount("CorrelatedScalarCachePlans") - scalarCachePlansBefore != IIF(optimizationsDisabled, 0, 1) .OR. ;
+       SqlOptimizationCount("CorrelatedScalarCacheHits") - scalarCacheHitsBefore != IIF(optimizationsDisabled, 0, 1)
+        THROW Exception{"Derived scalar memoization should reduce repeated-key executions only when enabled"}
+    ENDIF
+
+    scalarCachePlansBefore := SqlOptimizationCount("CorrelatedScalarCachePlans")
+    SELECT p.Id, (SELECT c.Id FROM nested_scalar_unique c WHERE c.Id = p.Id OR p.Id = 999) AS ChildId ;
+        FROM nested_parent_duplicates p
+    IF SqlOptimizationCount("CorrelatedScalarCachePlans") != scalarCachePlansBefore
+        THROW Exception{"OR-correlated scalar subqueries should remain on the safe uncached path"}
+    ENDIF
+
     LOCAL correlatedProjectionRowsRejected := FALSE AS LOGIC
     TRY
         SELECT p.Id, (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id) AS ChildId ;
@@ -1298,6 +1335,9 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     ENDIF
     IF Used("nested_scalar_unique")
         USE IN nested_scalar_unique
+    ENDIF
+    IF Used("nested_scalar_extra")
+        USE IN nested_scalar_extra
     ENDIF
     RETURN
 

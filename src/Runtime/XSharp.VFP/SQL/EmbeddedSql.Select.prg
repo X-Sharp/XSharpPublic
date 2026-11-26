@@ -1060,26 +1060,19 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
 
     PRIVATE STATIC METHOD TryCreateCorrelatedScalarMemo(subquery AS FoxSelectContext, ;
         outerTableAliases AS Dictionary<STRING,STRING>) AS SqlCorrelatedScalarMemo
-        IF subquery:SelectList:Count != 1 .OR. subquery:TableList:Count != 1 .OR. ;
-           subquery:Joins:Count != 0 .OR. subquery:GroupByItems:Count != 0 .OR. ;
+        IF subquery:SelectList:Count != 1 .OR. subquery:TableList:Count == 0 .OR. ;
+           subquery:GroupByItems:Count != 0 .OR. ;
            subquery:HavingClause != NULL .OR. subquery:OrderByClause:Count != 0 .OR. ;
            subquery:UnionBranches:Count != 0 .OR. subquery:IsDistinct .OR. ;
-           !String.IsNullOrEmpty(subquery:TopCount) .OR. ;
-           !(subquery:SelectList[0] IS SqlNameExpressionContext VAR innerField) .OR. ;
-           String.IsNullOrEmpty(innerField:Table)
-            RETURN NULL
-        ENDIF
-        LOCAL innerTable := innerField:Table AS STRING
-        subquery:TableAliases:TryGetValue(innerField:Table, OUT innerTable)
-        IF !innerTable:Equals((STRING)subquery:TableList[0], StringComparison.OrdinalIgnoreCase)
+           !String.IsNullOrEmpty(subquery:TopCount)
             RETURN NULL
         ENDIF
 
         LOCAL correlation AS SqlCorrelationCounter
         correlation := SqlCorrelationCounter{}
         LOCAL outerReference := SqlNameExpressionReference{} AS SqlNameExpressionReference
-        VAR residualWhere := RemoveCorrelatedScalarEquality(subquery:WhereClause, innerTable, ;
-            innerField:Name, subquery:TableAliases, outerTableAliases, correlation, outerReference)
+        VAR residualWhere := ExtractCorrelatedScalarEquality(subquery:WhereClause, ;
+            subquery:TableAliases, outerTableAliases, correlation, outerReference)
         IF correlation:Count != 1 .OR. ;
            (residualWhere != NULL .AND. ;
             (HasExternalSubqueryDependency(residualWhere, subquery:TableAliases) .OR. ;
@@ -1092,9 +1085,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         ENDIF
         LOCAL resolvedOuterTable := outerField:Table AS STRING
         outerTableAliases:TryGetValue(outerField:Table, OUT resolvedOuterTable)
-        IF !IsHashJoinFieldType(HashJoinFieldType(resolvedOuterTable, outerField:Name)) .OR. ;
-           !String.Equals(HashJoinFieldType(resolvedOuterTable, outerField:Name), ;
-               HashJoinFieldType(innerTable, innerField:Name), StringComparison.OrdinalIgnoreCase)
+        IF !IsHashJoinFieldType(HashJoinFieldType(resolvedOuterTable, outerField:Name))
             RETURN NULL
         ENDIF
         VAR outerValueCodeBlock := MCompile(outerField:ToResolvedString(outerTableAliases))
@@ -1103,21 +1094,25 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         ENDIF
         RETURN SqlCorrelatedScalarMemo{outerValueCodeBlock}
 
-    PRIVATE STATIC METHOD RemoveCorrelatedScalarEquality(expression AS SqlExpressionContext, ;
-        innerTable AS STRING, innerFieldName AS STRING, innerAliases AS Dictionary<STRING,STRING>, ;
+    PRIVATE STATIC METHOD ExtractCorrelatedScalarEquality(expression AS SqlExpressionContext, ;
+        innerAliases AS Dictionary<STRING,STRING>, ;
         outerAliases AS Dictionary<STRING,STRING>, counter AS SqlCorrelationCounter, ;
         outerField AS SqlNameExpressionReference) AS SqlExpressionContext
         IF expression == NULL
             RETURN NULL
         ENDIF
         IF expression IS SqlParenExpressionContext VAR paren .AND. paren:Expr IS SqlCompareExpressionContext
-            RETURN RemoveCorrelatedScalarEquality(paren:Expr, innerTable, innerFieldName, innerAliases, ;
+            VAR residual := ExtractCorrelatedScalarEquality(paren:Expr, innerAliases, ;
                 outerAliases, counter, outerField)
+            IF residual == NULL
+                RETURN NULL
+            ENDIF
+            RETURN SqlParenExpressionContext{} { Open := paren:Open, Expr := residual, Close := paren:Close }
         ENDIF
         IF expression IS SqlLogicExpressionContext VAR logicNode .AND. logicNode:Op:Type == XTokenType.AND
-            VAR leftResidual := RemoveCorrelatedScalarEquality(logicNode:Left, innerTable, innerFieldName, innerAliases, ;
+            VAR leftResidual := ExtractCorrelatedScalarEquality(logicNode:Left, innerAliases, ;
                 outerAliases, counter, outerField)
-            VAR rightResidual := RemoveCorrelatedScalarEquality(logicNode:Right, innerTable, innerFieldName, innerAliases, ;
+            VAR rightResidual := ExtractCorrelatedScalarEquality(logicNode:Right, innerAliases, ;
                 outerAliases, counter, outerField)
             IF leftResidual == NULL
                 RETURN rightResidual
@@ -1127,26 +1122,21 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             RETURN SqlLogicExpressionContext{} { Left := leftResidual, Op := logicNode:Op, Right := rightResidual }
         ENDIF
         IF expression IS SqlCompareExpressionContext VAR compare .AND. compare:Op:Type == XTokenType.EQ
+            LOCAL inner := NULL AS SqlNameExpressionContext
             LOCAL outer := NULL AS SqlNameExpressionContext
             IF compare:Left IS SqlNameExpressionContext VAR leftName .AND. ;
                compare:Right IS SqlNameExpressionContext VAR rightName
-                IF leftName:Name:Equals(innerFieldName, StringComparison.OrdinalIgnoreCase)
-                    LOCAL table := leftName:Table AS STRING
-                    innerAliases:TryGetValue(leftName:Table, OUT table)
-                    IF table:Equals(innerTable, StringComparison.OrdinalIgnoreCase)
+                IF !String.IsNullOrEmpty(leftName:Table) .AND. !String.IsNullOrEmpty(rightName:Table)
+                    IF innerAliases:ContainsKey(leftName:Table) .AND. outerAliases:ContainsKey(rightName:Table)
+                        inner := leftName
                         outer := rightName
-                    ENDIF
-                ENDIF
-                IF outer == NULL .AND. rightName:Name:Equals(innerFieldName, StringComparison.OrdinalIgnoreCase)
-                    LOCAL table := rightName:Table AS STRING
-                    innerAliases:TryGetValue(rightName:Table, OUT table)
-                    IF table:Equals(innerTable, StringComparison.OrdinalIgnoreCase)
+                    ELSEIF innerAliases:ContainsKey(rightName:Table) .AND. outerAliases:ContainsKey(leftName:Table)
+                        inner := rightName
                         outer := leftName
                     ENDIF
                 ENDIF
             ENDIF
-            IF outer != NULL .AND. !String.IsNullOrEmpty(outer:Table) .AND. ;
-               outerAliases:ContainsKey(outer:Table)
+            IF inner != NULL .AND. outer != NULL
                 counter:Count++
                 outerField:Value := outer
                 RETURN NULL
@@ -1991,12 +1981,18 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         RETURN FALSE
 
     PRIVATE STATIC METHOD InferScalarProjectionFieldDefinition(expression AS SqlExpressionContext, ;
-        aliases AS Dictionary<STRING,STRING>) AS ARRAY
+        aliases AS Dictionary<STRING,STRING>, ;
+        derivedTables := NULL AS Dictionary<STRING,FoxSelectContext>) AS ARRAY
         IF expression IS SqlScalarSubqueryExpressionContext VAR scalarExpression
             RETURN scalarExpression:ResultFieldDefinition
         ELSEIF expression IS SqlParenExpressionContext VAR parenExpression
-            RETURN InferScalarProjectionFieldDefinition(parenExpression:Expr, aliases)
+            RETURN InferScalarProjectionFieldDefinition(parenExpression:Expr, aliases, derivedTables)
         ELSEIF expression IS SqlNameExpressionContext VAR nameExpression
+            LOCAL derivedQuery AS FoxSelectContext
+            IF derivedTables != NULL .AND. !String.IsNullOrEmpty(nameExpression:Table) .AND. ;
+               derivedTables:TryGetValue(nameExpression:Table, OUT derivedQuery)
+                RETURN InferDerivedTableFieldDefinition(derivedQuery, nameExpression:Name)
+            ENDIF
             LOCAL sourceTable := nameExpression:Table AS STRING
             IF String.IsNullOrEmpty(sourceTable)
                 FOREACH VAR tableAlias IN aliases
@@ -2041,7 +2037,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 RETURN {NULL, "N", 10, 0, NULL, (LONG)DBFFieldFlags.Nullable}
             ELSEIF aggregateExpression:FunctionName == "MIN" .OR. aggregateExpression:FunctionName == "MAX"
                 IF aggregateExpression:Argument IS SqlNameExpressionContext
-                    RETURN InferScalarProjectionFieldDefinition(aggregateExpression:Argument, aliases)
+                    RETURN InferScalarProjectionFieldDefinition(aggregateExpression:Argument, aliases, derivedTables)
                 ENDIF
             ELSE
                 RETURN {NULL, "N", 20, 4, NULL, (LONG)DBFFieldFlags.Nullable}
@@ -2053,7 +2049,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             IF prefixExpression:Op:Type == XTokenType.NOT
                 RETURN {NULL, "L", 1, 0, NULL, (LONG)DBFFieldFlags.Nullable}
             ENDIF
-            RETURN InferScalarProjectionFieldDefinition(prefixExpression:Expr, aliases)
+            RETURN InferScalarProjectionFieldDefinition(prefixExpression:Expr, aliases, derivedTables)
         ELSEIF expression IS SqlCompositeExpressionContext VAR compositeExpression
             LOCAL numericOnly := TRUE AS LOGIC
             LOCAL characterOnly := TRUE AS LOGIC
@@ -2069,7 +2065,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                         LOOP
                     ENDIF
                 ENDIF
-                VAR operandDefinition := InferScalarProjectionFieldDefinition(item, aliases)
+                VAR operandDefinition := InferScalarProjectionFieldDefinition(item, aliases, derivedTables)
                 IF operandDefinition == NULL
                     RETURN NULL
                 ENDIF
@@ -2098,6 +2094,30 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         ENDIF
         RETURN NULL
 
+    PRIVATE STATIC METHOD InferDerivedTableFieldDefinition(query AS FoxSelectContext, fieldName AS STRING) AS ARRAY
+        IF query == NULL .OR. query:SelectList == NULL .OR. query:SelectList:Count == 0 .OR. ;
+           (query:SelectList:Count == 1 .AND. query:SelectList[0] IS SqlSimpleExpressionContext VAR star .AND. ;
+            star:Tokens != NULL .AND. star:Tokens:Count == 1 .AND. star:Tokens[0]:Type == XTokenType.MULT)
+            RETURN NULL
+        ENDIF
+        LOCAL existingNames := List<STRING>{} AS List<STRING>
+        FOR LOCAL i := 0 AS INT TO query:SelectList:Count - 1
+            LOCAL outputName := NULL AS STRING
+            IF query:FieldSelectionList != NULL .AND. i < query:FieldSelectionList:Count .AND. ;
+               !String.IsNullOrWhiteSpace(query:FieldSelectionList[i]:Alias)
+                outputName := query:FieldSelectionList[i]:Alias
+            ELSE
+                outputName := SqlExpressionToFieldName(query:SelectList[i])
+            ENDIF
+            outputName := ResolveConflictingFieldName(outputName, existingNames)
+            existingNames:Add(outputName:ToUpperInvariant())
+            IF outputName:Equals(fieldName, StringComparison.OrdinalIgnoreCase)
+                RETURN InferScalarProjectionFieldDefinition(query:SelectList[i], ;
+                    query:TableAliases, query:DerivedTables)
+            ENDIF
+        NEXT
+        RETURN NULL
+
     PRIVATE STATIC METHOD InferCorrelatedScalarResultFieldDefinition(query AS FoxSelectContext) AS ARRAY
         IF query:SelectList:Count != 1
             RETURN NULL
@@ -2107,7 +2127,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         TRY
             FOREACH VAR tableName IN query:TableList
                 IF query:DerivedTables:ContainsKey(tableName)
-                    RETURN NULL
+                    LOOP
                 ENDIF
                 IF !Used(tableName)
                     IF !FoxEmbeddedSQL.OpenArea(tableName)
@@ -2116,7 +2136,8 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                     openedTables:Add(tableName)
                 ENDIF
             NEXT
-            RETURN InferScalarProjectionFieldDefinition(query:SelectList[0], query:TableAliases)
+            RETURN InferScalarProjectionFieldDefinition(query:SelectList[0], ;
+                query:TableAliases, query:DerivedTables)
         FINALLY
             FOREACH VAR tableName IN openedTables
                 IF Used(tableName)

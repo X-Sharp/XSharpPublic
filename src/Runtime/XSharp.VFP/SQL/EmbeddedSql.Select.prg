@@ -516,6 +516,19 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             RETURN
         ENDIF
 
+        LOCAL hasLeftOuterJoin := FALSE AS LOGIC
+        FOREACH VAR joinContext IN selectCtx:Joins
+            IF joinContext:Kind == FoxSelectJoinKind.Left
+                hasLeftOuterJoin := TRUE
+                EXIT
+            ENDIF
+        NEXT
+
+        IF hasLeftOuterJoin .AND. selectCtx:OuterJoinRows == NULL
+            ExecuteLeftOuterJoinSelect(selectCtx)
+            RETURN
+        ENDIF
+
         // Validate that we have tables to query
         IF selectCtx:TableList:Count == 0
             THROW Error{"No tables specified in SELECT statement"}
@@ -595,7 +608,11 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                     AAdd(selectExpressions, currentTable + "->" + fieldName)  // Expression
 
                     // Create field definition for result table
-                    AAdd(fieldList, {fieldName, fieldInfo[2], fieldInfo[3], fieldInfo[4], fieldName, fieldInfo[6]})
+                    LOCAL outputFlags := (LONG)fieldInfo[6] AS LONG
+                    IF hasLeftOuterJoin
+                        outputFlags := outputFlags | (LONG)DBFFieldFlags.Nullable
+                    ENDIF
+                    AAdd(fieldList, {fieldName, fieldInfo[2], fieldInfo[3], fieldInfo[4], fieldName, outputFlags})
                 NEXT
             NEXT
         ELSE
@@ -685,7 +702,11 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                         AAdd(fieldList, {exprStr, fieldInfo[2], fieldInfo[3], fieldInfo[4], exprStr, ;
                             ((LONG)fieldInfo[6]) | (LONG)DBFFieldFlags.Nullable})
                     ELSE
-                        AAdd(fieldList, {exprStr, fieldInfo[2], fieldInfo[3], fieldInfo[4], exprStr, fieldInfo[6]})
+                        LOCAL outputFlags := (LONG)fieldInfo[6] AS LONG
+                        IF hasLeftOuterJoin
+                            outputFlags := outputFlags | (LONG)DBFFieldFlags.Nullable
+                        ENDIF
+                        AAdd(fieldList, {exprStr, fieldInfo[2], fieldInfo[3], fieldInfo[4], exprStr, outputFlags})
                     ENDIF
                 ELSE
                     LOCAL expressionAggregates := List<SqlAggregateExpressionContext>{} AS List<SqlAggregateExpressionContext>
@@ -699,7 +720,8 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                         ENDIF
                     ELSE
                         // If field doesn't exist in source, assume it's an expression.
-                        AAdd(fieldList, {exprStr, "C", 50, 0, exprStr, 0})
+                        AAdd(fieldList, {exprStr, "C", 50, 0, exprStr, ;
+                            IIF(hasLeftOuterJoin, (LONG)DBFFieldFlags.Nullable, 0)})
                     ENDIF
                 ENDIF
             NEXT
@@ -739,7 +761,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
 
         LOCAL joinCodeBlocks := List<CODEBLOCK>{} AS List<CODEBLOCK>
         FOREACH VAR joinContext IN selectCtx:Joins
-            IF joinContext:Kind == FoxSelectJoinKind.Inner
+            IF joinContext:Kind == FoxSelectJoinKind.Inner .OR. joinContext:Kind == FoxSelectJoinKind.Left
                 VAR joinExpression := joinContext:OnClause:ToResolvedString(selectCtx:TableAliases)
                 VAR joinCodeBlock := MCompile(joinExpression)
                 IF joinCodeBlock == NULL
@@ -825,7 +847,8 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             IF optimizedBitmap != NULL .AND. !optimizedBitmap:IsAllMatch()
                 useOptimization := TRUE
             ENDIF
-        ELSEIF SqlOptimizationsEnabled() .AND. hasWhereClause .AND. tableNames:Count > 1 .AND. !useHashJoin
+        ELSEIF SqlOptimizationsEnabled() .AND. hasWhereClause .AND. tableNames:Count > 1 .AND. ;
+               !useHashJoin .AND. !hasLeftOuterJoin
             // Build conservative per-table candidates for the nested-loop path.
             // The full WHERE and JOIN ON predicates are still evaluated below.
             LOCAL tableRecordCounts := Dictionary<STRING,LONG>{StringComparer.OrdinalIgnoreCase} AS Dictionary<STRING,LONG>
@@ -987,42 +1010,54 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             aggregateGroupList:Add(emptyGroup)
         ENDIF
 
-        // Perform cross join by iterating through all possible combinations
+        // Position the precomputed LEFT JOIN tuples or initialize the regular traversal.
         LOCAL tablePositions AS ARRAY
         tablePositions := ArrayNew(ALen(tableNames))
 
-        // Initialize all positions to 1 (first record) and go to top of each table
-        FOR LOCAL i := 1 AS DWORD TO ALen(tableNames)
-            tablePositions[i] := 1
-            LOCAL candidateRecNos AS List<LONG>
-            IF multiTableCandidateRows != NULL .AND. ;
-               multiTableCandidateRows:TryGetValue((STRING)tableNames[i], OUT candidateRecNos)
-                IF candidateRecNos:Count > 0
-                    DbGoto(candidateRecNos[0], tableNames[i])
+        IF selectCtx:OuterJoinRows != NULL
+            FOR LOCAL i := 1 AS DWORD TO ALen(tableNames)
+                tablePositions[i] := 1
+                IF selectCtx:OuterJoinRows:Count > 0
+                    DbGoto(selectCtx:OuterJoinRows[0][i], tableNames[i])
                 ENDIF
-            ELSE
-                (tableNames[i])->DbGoTop()
-            ENDIF
-        NEXT
+            NEXT
+        ELSE
+            FOR LOCAL i := 1 AS DWORD TO ALen(tableNames)
+                tablePositions[i] := 1
+                LOCAL candidateRecNos AS List<LONG>
+                IF multiTableCandidateRows != NULL .AND. ;
+                   multiTableCandidateRows:TryGetValue((STRING)tableNames[i], OUT candidateRecNos)
+                    IF candidateRecNos:Count > 0
+                        DbGoto(candidateRecNos[0], tableNames[i])
+                    ENDIF
+                ELSE
+                    (tableNames[i])->DbGoTop()
+                ENDIF
+            NEXT
+        ENDIF
 
         // Main loop to iterate through all combinations
         LOCAL continueProcessing AS LOGIC
         LOCAL currentOuterRecNo AS LONG
         LOCAL currentInnerRecNo AS LONG
-        continueProcessing := TRUE
-        FOR LOCAL tableIndex := 1 AS DWORD TO ALen(tableNames)
-            LOCAL candidateRecNos AS List<LONG>
-            IF multiTableCandidateRows != NULL .AND. ;
-               multiTableCandidateRows:TryGetValue((STRING)tableNames[tableIndex], OUT candidateRecNos)
-                IF candidateRecNos:Count == 0
+        IF selectCtx:OuterJoinRows != NULL
+            continueProcessing := selectCtx:OuterJoinRows:Count > 0
+        ELSE
+            continueProcessing := TRUE
+            FOR LOCAL tableIndex := 1 AS DWORD TO ALen(tableNames)
+                LOCAL candidateRecNos AS List<LONG>
+                IF multiTableCandidateRows != NULL .AND. ;
+                   multiTableCandidateRows:TryGetValue((STRING)tableNames[tableIndex], OUT candidateRecNos)
+                    IF candidateRecNos:Count == 0
+                        continueProcessing := FALSE
+                        EXIT
+                    ENDIF
+                ELSEIF (tableNames[tableIndex])->Eof()
                     continueProcessing := FALSE
                     EXIT
                 ENDIF
-            ELSEIF (tableNames[tableIndex])->Eof()
-                continueProcessing := FALSE
-                EXIT
-            ENDIF
-        NEXT
+            NEXT
+        ENDIF
         IF continueProcessing .AND. useHashJoin
             continueProcessing := hashJoinCursor:MoveNext(OUT currentOuterRecNo, OUT currentInnerRecNo)
             IF continueProcessing
@@ -1048,7 +1083,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             includeRecord := TRUE
 
             // Evaluate join predicates before WHERE, matching SQL's row-combination semantics.
-            IF includeRecord
+            IF includeRecord .AND. selectCtx:OuterJoinRows == NULL
                 FOREACH VAR joinCodeBlock IN joinCodeBlocks
                     IF !includeRecord
                         EXIT
@@ -1154,7 +1189,17 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             // Only continue if we haven't reached the TOP limit
             IF continueProcessing
                 // For single-table optimization, advance the table and check for EOF
-                IF useHashJoin
+                IF selectCtx:OuterJoinRows != NULL
+                    LOCAL nextOuterRow := tablePositions[1] AS LONG
+                    IF nextOuterRow < selectCtx:OuterJoinRows:Count
+                        FOR LOCAL i := 1 AS DWORD TO ALen(tableNames)
+                            DbGoto(selectCtx:OuterJoinRows[(INT)nextOuterRow][i], tableNames[i])
+                            tablePositions[i] := nextOuterRow + 1
+                        NEXT
+                    ELSE
+                        continueProcessing := FALSE
+                    ENDIF
+                ELSEIF useHashJoin
                     continueProcessing := hashJoinCursor:MoveNext(OUT currentOuterRecNo, OUT currentInnerRecNo)
                     IF continueProcessing
                         DbGoto(currentOuterRecNo, tableNames[1])
@@ -1279,6 +1324,223 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         // Set the result table as the current work area
         DbSelectArea(resultTable)
 
+        RETURN
+
+    PRIVATE STATIC METHOD ExecuteLeftOuterJoinSelect(source AS FoxSelectContext) AS VOID
+        LOCAL temporaryAliases := List<STRING>{} AS List<STRING>
+        LOCAL temporaryPaths := List<STRING>{} AS List<STRING>
+        LOCAL execution AS FoxSelectContext
+        TRY
+            execution := CreateLeftJoinExecutionContext(source, OUT temporaryAliases, OUT temporaryPaths)
+            execution:OuterJoinRows := BuildLeftJoinRows(execution)
+            ExecuteSelect(execution)
+        FINALLY
+            FOREACH VAR temporaryAlias IN temporaryAliases
+                IF Used(temporaryAlias)
+                    (temporaryAlias)->DbCloseArea()
+                ENDIF
+            NEXT
+            FOREACH VAR temporaryPath IN temporaryPaths
+                IF System.IO.File.Exists(temporaryPath)
+                    System.IO.File.Delete(temporaryPath)
+                ENDIF
+                VAR memoPath := System.IO.Path.ChangeExtension(temporaryPath, ".fpt")
+                IF System.IO.File.Exists(memoPath)
+                    System.IO.File.Delete(memoPath)
+                ENDIF
+            NEXT
+        END TRY
+        RETURN
+
+    PRIVATE STATIC METHOD CreateLeftJoinExecutionContext(source AS FoxSelectContext, ;
+                                                          temporaryAliases OUT List<STRING>, ;
+                                                          temporaryPaths OUT List<STRING>) AS FoxSelectContext
+        temporaryAliases := List<STRING>{}
+        temporaryPaths := List<STRING>{}
+        IF source:Joins:Count != source:TableList:Count - 1
+            THROW Error{"LEFT JOIN requires an explicit join chain without comma-separated tables"}
+        ENDIF
+
+        VAR execution := CopySelectBranch(source, source:TargetCursor)
+        execution:OuterJoinRows := NULL
+        execution:TableList := List<STRING>{}
+        execution:TableAliases := Dictionary<STRING,STRING>{StringComparer.OrdinalIgnoreCase}
+        FOREACH VAR tableName IN source:TableList
+            execution:TableList:Add(tableName)
+        NEXT
+        FOREACH VAR aliasEntry IN source:TableAliases
+            execution:TableAliases[aliasEntry:Key] := aliasEntry:Value
+        NEXT
+
+        execution:Joins := List<FoxSelectJoinContext>{}
+        FOR LOCAL joinIndex := 0 AS INT TO source:Joins:Count - 1
+            VAR sourceJoin := source:Joins[joinIndex]
+            VAR executionJoin := FoxSelectJoinContext{}
+            executionJoin:TableName := sourceJoin:TableName
+            executionJoin:Alias := sourceJoin:Alias
+            executionJoin:Kind := sourceJoin:Kind
+            executionJoin:OnClause := sourceJoin:OnClause
+            executionJoin:NullRecordNumber := 0
+
+            IF sourceJoin:Kind == FoxSelectJoinKind.Left
+                LOCAL nullRecordNumber AS LONG
+                LOCAL temporaryPath AS STRING
+                VAR temporaryAlias := CreateNullableOuterJoinCopy(sourceJoin:TableName, OUT nullRecordNumber, OUT temporaryPath)
+                temporaryAliases:Add(temporaryAlias)
+                temporaryPaths:Add(temporaryPath)
+                execution:TableList[joinIndex + 1] := temporaryAlias
+                execution:TableAliases[sourceJoin:Alias] := temporaryAlias
+                executionJoin:TableName := temporaryAlias
+                executionJoin:NullRecordNumber := nullRecordNumber
+            ENDIF
+            execution:Joins:Add(executionJoin)
+        NEXT
+        RETURN execution
+
+    PRIVATE STATIC METHOD CreateNullableOuterJoinCopy(sourceAlias AS STRING, nullRecordNumber OUT LONG, ;
+                                                        temporaryPath OUT STRING) AS STRING
+        LOCAL previousArea := DbSelect() AS DWORD
+        LOCAL sourceWasOpen := DbSelectArea(sourceAlias) AS LOGIC
+        IF !sourceWasOpen .AND. !FoxEmbeddedSQL.OpenArea(sourceAlias)
+            THROW Error{"Could not open LEFT JOIN source table: " + sourceAlias}
+        ENDIF
+
+        VAR temporaryAlias := "FOXOUTER" + Guid.NewGuid():ToString("N"):Substring(0, 8):ToUpper()
+        temporaryPath := System.IO.Path.Combine(System.IO.Path.GetTempPath(), ;
+            "foxouter_" + Guid.NewGuid():ToString("N") + ".dbf")
+        LOCAL temporaryCreated := FALSE AS LOGIC
+        nullRecordNumber := 0
+        TRY
+            VAR sourceSchema := (sourceAlias)->DbStruct()
+            LOCAL nullableSchema := ArrayNew(ALen(sourceSchema)) AS ARRAY
+            FOR LOCAL fieldIndex := 1 AS INT TO ALen(sourceSchema)
+                nullableSchema[fieldIndex] := AClone(sourceSchema[fieldIndex])
+                nullableSchema[fieldIndex][6] := (LONG)nullableSchema[fieldIndex][6] | (LONG)DBFFieldFlags.Nullable
+            NEXT
+            IF !DbCreate(temporaryPath, nullableSchema, "DBFVFP", TRUE, temporaryAlias)
+                THROW Error{"Could not create LEFT JOIN work table: " + temporaryAlias}
+            ENDIF
+            temporaryCreated := TRUE
+
+            (sourceAlias)->DbGoTop()
+            DO WHILE !(sourceAlias)->Eof()
+                (temporaryAlias)->DbAppend()
+                FOR LOCAL fieldIndex := 1 AS INT TO ALen(sourceSchema)
+                    VAR sourceValue := (USUAL)(sourceAlias)->FieldGet(fieldIndex)
+                    IF IsNull(sourceValue)
+                        (temporaryAlias)->FieldPut(fieldIndex, NULL)
+                    ELSE
+                        (temporaryAlias)->FieldPut(fieldIndex, sourceValue)
+                    ENDIF
+                NEXT
+                (sourceAlias)->DbSkip(1)
+            ENDDO
+
+            // An all-NULL record is the explicit row used for an unmatched LEFT JOIN.
+            (temporaryAlias)->DbAppend()
+            FOR LOCAL fieldIndex := 1 AS INT TO ALen(sourceSchema)
+                (temporaryAlias)->FieldPut(fieldIndex, NULL)
+            NEXT
+            nullRecordNumber := (LONG)(temporaryAlias)->RecNo()
+            RETURN temporaryAlias
+        CATCH
+            IF temporaryCreated .AND. Used(temporaryAlias)
+                (temporaryAlias)->DbCloseArea()
+            ENDIF
+            THROW
+        FINALLY
+            IF !sourceWasOpen .AND. Used(sourceAlias)
+                (sourceAlias)->DbCloseArea()
+            ENDIF
+            IF previousArea > 0
+                DbSelectArea(previousArea)
+            ENDIF
+        END TRY
+
+    PRIVATE STATIC METHOD BuildLeftJoinRows(selectCtx AS FoxSelectContext) AS List<LONG[]>
+        LOCAL rows := List<LONG[]>{} AS List<LONG[]>
+        IF selectCtx:TableList:Count == 0
+            RETURN rows
+        ENDIF
+
+        LOCAL tableNames AS ARRAY
+        tableNames := {}
+        FOREACH VAR sourceTable IN selectCtx:TableList
+            AAdd(tableNames, sourceTable)
+        NEXT
+        LOCAL joinCodeBlocks := List<CODEBLOCK>{} AS List<CODEBLOCK>
+        FOR LOCAL joinIndex := 0 AS INT TO selectCtx:Joins:Count - 1
+            VAR joinContext := selectCtx:Joins[joinIndex]
+            IF joinContext:Kind != FoxSelectJoinKind.Cross
+                VAR joinExpression := joinContext:OnClause:ToResolvedString(selectCtx:TableAliases)
+                VAR joinCodeBlock := MCompile(joinExpression)
+                IF joinCodeBlock == NULL
+                    THROW Error{"Could not compile JOIN ON expression: " + joinExpression}
+                ENDIF
+                joinCodeBlocks:Add(joinCodeBlock)
+            ELSE
+                joinCodeBlocks:Add(NULL)
+            ENDIF
+        NEXT
+
+        LOCAL firstTable := (STRING)tableNames[1] AS STRING
+        (firstTable)->DbGoTop()
+        DO WHILE !(firstTable)->Eof()
+            LOCAL row := LONG[]{ALen(tableNames)} AS LONG[]
+            row[1] := (LONG)(firstTable)->RecNo()
+            AppendLeftJoinRows(selectCtx, tableNames, joinCodeBlocks, 2, row, rows)
+            (firstTable)->DbSkip(1)
+        ENDDO
+        RETURN rows
+
+    PRIVATE STATIC METHOD AppendLeftJoinRows(selectCtx AS FoxSelectContext, tableNames AS ARRAY, ;
+                                               joinCodeBlocks AS List<CODEBLOCK>, tableIndex AS INT, ;
+                                               row AS LONG[], rows AS List<LONG[]>) AS VOID
+        IF tableIndex > ALen(tableNames)
+            LOCAL completedRow AS LONG[]
+            completedRow := LONG[]{row:Length}
+            FOR LOCAL i := 1 AS INT TO row:Length
+                completedRow[i] := row[i]
+            NEXT
+            rows:Add(completedRow)
+            RETURN
+        ENDIF
+
+        VAR joinContext := selectCtx:Joins[tableIndex - 2]
+        VAR tableName := (STRING)tableNames[tableIndex]
+        LOCAL foundMatch := FALSE AS LOGIC
+        (tableName)->DbGoTop()
+        DO WHILE !(tableName)->Eof()
+            VAR candidateRecordNumber := (LONG)(tableName)->RecNo()
+            IF joinContext:Kind == FoxSelectJoinKind.Left .AND. ;
+               candidateRecordNumber == joinContext:NullRecordNumber
+                (tableName)->DbSkip(1)
+                LOOP
+            ENDIF
+            row[tableIndex] := candidateRecordNumber
+            FOR LOCAL previousTable := 1 AS INT TO tableIndex - 1
+                DbGoto(row[previousTable], tableNames[previousTable])
+            NEXT
+
+            LOCAL matches := joinContext:Kind == FoxSelectJoinKind.Cross AS LOGIC
+            IF !matches
+                TRY
+                    matches := (LOGIC)joinCodeBlocks[tableIndex - 2]:Eval()
+                CATCH ex AS Exception
+                    matches := FALSE
+                END TRY
+            ENDIF
+            IF matches
+                foundMatch := TRUE
+                AppendLeftJoinRows(selectCtx, tableNames, joinCodeBlocks, tableIndex + 1, row, rows)
+            ENDIF
+            (tableName)->DbSkip(1)
+        ENDDO
+
+        IF !foundMatch .AND. joinContext:Kind == FoxSelectJoinKind.Left
+            row[tableIndex] := joinContext:NullRecordNumber
+            AppendLeftJoinRows(selectCtx, tableNames, joinCodeBlocks, tableIndex + 1, row, rows)
+        ENDIF
         RETURN
 
     PRIVATE STATIC METHOD ExecuteUnionSelect(selectCtx AS FoxSelectContext) AS VOID
@@ -1471,10 +1733,9 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
     STATIC METHOD AppendSelectResult(resultTable AS STRING, fieldList AS ARRAY, sourceValues AS USUAL[]) AS VOID
         (resultTable)->DbAppend()
         FOR LOCAL i := 1 AS DWORD TO sourceValues:Length
-            // Nullable DBF fields start with their null bit set after append.
-            // Leave that value intact instead of coercing NIL to the field type.
+            // Explicitly set the null bit; append defaults vary by field type and RDD.
             IF sourceValues[i]:IsNull
-                LOOP
+                (resultTable)->FieldPut(i, NULL)
             ELSEIF fieldList[i][2] == "C"
                 (resultTable)->FieldPut(i, sourceValues[i]:ToString())
             ELSE

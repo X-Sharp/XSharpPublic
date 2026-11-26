@@ -110,6 +110,8 @@ FUNCTION Start(args AS STRING[]) AS VOID STRICT
     RegisterTest("TestDeletedCandidateRows [baseline]", { => TestDeletedCandidateRows() }, TRUE)
     RegisterTest("TestHashJoin [optimized]", { => TestHashJoin() })
     RegisterTest("TestHashJoin [baseline]", { => TestHashJoin() }, TRUE)
+    RegisterTest("TestLeftOuterJoin [optimized]", { => TestLeftOuterJoin() })
+    RegisterTest("TestLeftOuterJoin [baseline]", { => TestLeftOuterJoin() }, TRUE)
     RegisterTest("TestQueryOptimizer", { => TestQueryOptimizer() })
     RegisterTest("TestOptimizerBitmap", { => TestOptimizerBitmap() })
     RegisterTest("TestMultiTableOptimizer [optimized]", { => TestMultiTableOptimizer() })

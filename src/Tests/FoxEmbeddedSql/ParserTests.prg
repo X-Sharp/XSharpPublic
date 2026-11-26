@@ -101,8 +101,19 @@ FUNCTION TestSelectParsing() AS VOID
     VAR outerJoinLexer := XSqlLexer{"SELECT a.Id FROM TableA a LEFT OUTER JOIN TableB b ON a.Id = b.Id"}
     VAR outerJoinParser := SqlParser{XTokenList{outerJoinLexer:AllTokens()}}
     LOCAL outerJoinCtx AS FoxSelectContext
-    IF outerJoinParser:ParseSelectStatement(OUT outerJoinCtx)
-        THROW Exception{"LEFT OUTER JOIN should be rejected until outer join execution is supported"}
+    IF !outerJoinParser:ParseSelectStatement(OUT outerJoinCtx) .OR. ;
+       outerJoinCtx:Joins:Count != 1 .OR. outerJoinCtx:Joins[0]:Kind != FoxSelectJoinKind.Left
+        THROW Exception{"LEFT OUTER JOIN should parse as a left join: " + outerJoinParser:Error}
+    ENDIF
+
+    VAR chainedOuterLexer := XSqlLexer{"SELECT a.Id FROM TableA a LEFT JOIN TableB b ON a.Id = b.Id LEFT OUTER JOIN TableC c ON b.Id = c.Id"}
+    VAR chainedOuterParser := SqlParser{XTokenList{chainedOuterLexer:AllTokens()}}
+    LOCAL chainedOuterCtx AS FoxSelectContext
+    IF !chainedOuterParser:ParseSelectStatement(OUT chainedOuterCtx) .OR. ;
+       chainedOuterCtx:Joins:Count != 2 .OR. ;
+       chainedOuterCtx:Joins[0]:Kind != FoxSelectJoinKind.Left .OR. ;
+       chainedOuterCtx:Joins[1]:Kind != FoxSelectJoinKind.Left
+        THROW Exception{"Chained LEFT JOIN forms should parse with left-join metadata: " + chainedOuterParser:Error}
     ENDIF
 
     VAR missingOnLexer := XSqlLexer{"SELECT a.Id FROM TableA a JOIN TableB b"}
@@ -110,6 +121,13 @@ FUNCTION TestSelectParsing() AS VOID
     LOCAL missingOnCtx AS FoxSelectContext
     IF missingOnParser:ParseSelectStatement(OUT missingOnCtx)
         THROW Exception{"JOIN without ON should be rejected"}
+    ENDIF
+
+    VAR missingOuterOnLexer := XSqlLexer{"SELECT a.Id FROM TableA a LEFT JOIN TableB b"}
+    VAR missingOuterOnParser := SqlParser{XTokenList{missingOuterOnLexer:AllTokens()}}
+    LOCAL missingOuterOnCtx AS FoxSelectContext
+    IF missingOuterOnParser:ParseSelectStatement(OUT missingOuterOnCtx)
+        THROW Exception{"LEFT JOIN without ON should be rejected"}
     ENDIF
 
     VAR unionLexer := XSqlLexer{"SELECT Id FROM FirstTable UNION ALL SELECT Id FROM SecondTable UNION SELECT Id FROM ThirdTable ORDER BY Id DESC INTO CURSOR UnionResult"}

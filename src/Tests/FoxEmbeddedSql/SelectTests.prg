@@ -785,3 +785,95 @@ FUNCTION TestHashJoin() AS VOID
     USE IN hash_join_right
     RETURN
 
+FUNCTION TestLeftOuterJoin() AS VOID
+    CREATE CURSOR outer_left (Id I, LeftName C(20))
+    CREATE CURSOR outer_right (Id I, RightName C(20), Active L)
+    CREATE CURSOR outer_empty (Id I, RightName C(20))
+    CREATE CURSOR outer_no_left (Id I, LeftName C(20))
+    CREATE CURSOR outer_detail (Id I, DetailName C(20))
+    CREATE CURSOR outer_inner (Id I, InnerName C(20))
+
+    INSERT INTO outer_left VALUES (1, "left one")
+    INSERT INTO outer_left VALUES (2, "left two")
+    INSERT INTO outer_left VALUES (3, "left three")
+    INSERT INTO outer_right VALUES (1, "right one a", .T.)
+    INSERT INTO outer_right VALUES (1, "right one b", .T.)
+    INSERT INTO outer_right VALUES (2, "right two inactive", .F.)
+    INSERT INTO outer_detail VALUES (1, "detail one")
+    INSERT INTO outer_detail VALUES (2, "detail two")
+    INSERT INTO outer_inner VALUES (1, "inner one")
+    INSERT INTO outer_inner VALUES (3, "inner three")
+
+    // ON filtering must not discard preserved left rows. Matching right duplicates remain distinct.
+    SELECT l.Id, r.RightName ;
+        FROM outer_left l ;
+        LEFT OUTER JOIN outer_right r ON l.Id = r.Id AND r.Active = .T. ;
+        ORDER BY l.Id, r.RightName
+    VerifyTable(4, "LEFT JOIN should preserve unmatched rows and matching duplicates", TRUE, ;
+        { {1, "right one a"}, {1, "right one b"}, {2, NULL}, {3, NULL} } )
+
+    // A WHERE predicate on the nullable side applies after NULL extension.
+    SELECT l.Id, r.RightName ;
+        FROM outer_left l ;
+        LEFT JOIN outer_right r ON l.Id = r.Id ;
+        WHERE r.Active = .T. ;
+        ORDER BY l.Id, r.RightName
+    VerifyTable(2, "WHERE on the nullable side should filter unmatched rows", TRUE, ;
+        { {1, "right one a"}, {1, "right one b"} } )
+
+    // The internal NULL-extension row is not a real ON candidate when ON is true for every input pair.
+    SELECT l.Id, r.RightName ;
+        FROM outer_left l ;
+        LEFT JOIN outer_right r ON l.Id > 0
+    VerifyTable(9, "LEFT JOIN should not expose its synthetic row when real matches exist", TRUE)
+
+    // An empty right input still yields one NULL-extended row per left row.
+    SELECT l.Id, e.RightName ;
+        FROM outer_left l ;
+        LEFT JOIN outer_empty e ON l.Id = e.Id ;
+        ORDER BY l.Id
+    VerifyTable(3, "LEFT JOIN to an empty table should preserve every left row", TRUE, ;
+        { {1, NULL}, {2, NULL}, {3, NULL} } )
+
+    SELECT l.Id, e.RightName ;
+        FROM outer_no_left l ;
+        LEFT JOIN outer_empty e ON l.Id = e.Id
+    VerifyTable(0, "LEFT JOIN with an empty preserved side should return no rows", TRUE)
+
+    // Chained outer joins retain the accumulated left side at each stage.
+    SELECT l.Id, r.RightName, d.DetailName ;
+        FROM outer_left l ;
+        LEFT JOIN outer_right r ON l.Id = r.Id AND r.Active = .T. ;
+        LEFT OUTER JOIN outer_detail d ON l.Id = d.Id ;
+        ORDER BY l.Id, r.RightName
+    VerifyTable(4, "Chained LEFT JOIN should preserve NULL-extended combinations", TRUE, ;
+        { {1, "right one a", "detail one"}, ;
+          {1, "right one b", "detail one"}, ;
+          {2, NULL, "detail two"}, ;
+          {3, NULL, NULL} } )
+
+    SELECT l.Id, r.RightName, d.DetailName ;
+        FROM outer_left l ;
+        LEFT JOIN outer_right r ON l.Id = r.Id AND r.Active = .T. ;
+        CROSS JOIN outer_detail d
+    VerifyTable(8, "CROSS JOIN after LEFT JOIN should retain all produced combinations", TRUE)
+
+    // An INNER JOIN after LEFT JOIN filters rows only at its own stage.
+    SELECT l.Id, r.RightName, i.InnerName ;
+        FROM outer_left l ;
+        LEFT JOIN outer_right r ON l.Id = r.Id AND r.Active = .T. ;
+        INNER JOIN outer_inner i ON l.Id = i.Id ;
+        ORDER BY l.Id, r.RightName
+    VerifyTable(3, "LEFT JOIN followed by INNER JOIN should preserve join order semantics", TRUE, ;
+        { {1, "right one a", "inner one"}, ;
+          {1, "right one b", "inner one"}, ;
+          {3, NULL, "inner three"} } )
+
+    USE IN outer_left
+    USE IN outer_right
+    USE IN outer_empty
+    USE IN outer_no_left
+    USE IN outer_detail
+    USE IN outer_inner
+    RETURN
+

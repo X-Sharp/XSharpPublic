@@ -839,22 +839,33 @@ PARTIAL CLASS SQLParser
                     ENDIF
                     joinKind := FoxSelectJoinKind.Cross
                 ELSE
-                    IF SELF:Matches(XTokenType.ID) .AND. ;
-                            (SELF:Lt1:Text:Equals("LEFT", StringComparison.OrdinalIgnoreCase) .OR. ;
-                             SELF:Lt1:Text:Equals("RIGHT", StringComparison.OrdinalIgnoreCase) .OR. ;
-                             SELF:Lt1:Text:Equals("FULL", StringComparison.OrdinalIgnoreCase) .OR. ;
-                             SELF:Lt1:Text:Equals("OUTER", StringComparison.OrdinalIgnoreCase))
-                        SELF:SetError("Outer joins are not supported")
-                        RETURN FALSE
-                    ENDIF
-                    IF SELF:Matches(XTokenType.ID) .AND. SELF:Lt1:Text:Equals("INNER", StringComparison.OrdinalIgnoreCase)
+                    IF SELF:Matches(XTokenType.ID) .AND. SELF:Lt1:Text:Equals("LEFT", StringComparison.OrdinalIgnoreCase)
                         SELF:ConsumeAndGet()
+                        IF SELF:Matches(XTokenType.ID) .AND. SELF:Lt1:Text:Equals("OUTER", StringComparison.OrdinalIgnoreCase)
+                            SELF:ConsumeAndGet()
+                        ENDIF
+                        IF !SELF:Expect(XTokenType.JOIN)
+                            SELF:SetError("Expected JOIN after LEFT [OUTER]")
+                            RETURN FALSE
+                        ENDIF
+                        joinKind := FoxSelectJoinKind.Left
+                    ELSE
+                        IF SELF:Matches(XTokenType.ID) .AND. ;
+                                (SELF:Lt1:Text:Equals("RIGHT", StringComparison.OrdinalIgnoreCase) .OR. ;
+                                 SELF:Lt1:Text:Equals("FULL", StringComparison.OrdinalIgnoreCase) .OR. ;
+                                 SELF:Lt1:Text:Equals("OUTER", StringComparison.OrdinalIgnoreCase))
+                            SELF:SetError("Only LEFT OUTER JOIN is currently supported")
+                            RETURN FALSE
+                        ENDIF
+                        IF SELF:Matches(XTokenType.ID) .AND. SELF:Lt1:Text:Equals("INNER", StringComparison.OrdinalIgnoreCase)
+                            SELF:ConsumeAndGet()
+                        ENDIF
+                        IF ! SELF:Expect(XTokenType.JOIN)
+                            SELF:SetError("Expected JOIN")
+                            RETURN FALSE
+                        ENDIF
+                        joinKind := FoxSelectJoinKind.Inner
                     ENDIF
-                    IF ! SELF:Expect(XTokenType.JOIN)
-                        SELF:SetError("Expected JOIN")
-                        RETURN FALSE
-                    ENDIF
-                    joinKind := FoxSelectJoinKind.Inner
                 ENDIF
 
                 IF ! SELF:ParseTableName(OUT VAR joinedTableName)
@@ -884,7 +895,7 @@ PARTIAL CLASS SQLParser
                 joinContext:TableName := joinedTableName
                 joinContext:Alias := joinedAliasName ?? joinedTableName
                 joinContext:Kind := joinKind
-                IF joinKind == FoxSelectJoinKind.Inner
+                IF joinKind == FoxSelectJoinKind.Inner .OR. joinKind == FoxSelectJoinKind.Left
                     IF ! SELF:Expect(XTokenType.ON)
                         SELF:SetError("Expected ON clause for JOIN")
                         RETURN FALSE

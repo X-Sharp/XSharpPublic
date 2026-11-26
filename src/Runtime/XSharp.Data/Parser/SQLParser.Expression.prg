@@ -196,6 +196,10 @@ PARTIAL CLASS SQLParser
         END FUNCTION
 
         DO WHILE ! SELF:Eos() .AND. ! done
+            IF SELF:La1 == XTokenType.CROSS .AND. SELF:La2 == XTokenType.JOIN
+                done := TRUE
+                LOOP
+            ENDIF
             SWITCH SELF:La1
             CASE XTokenType.LPAREN
                 AddPartialTerm()
@@ -217,9 +221,13 @@ PARTIAL CLASS SQLParser
             CASE XTokenType.RPAREN
                 done := TRUE
             CASE XTokenType.ID
-                IF SELF:La2 == XTokenType.JOIN .AND. ;
+                IF (SELF:La2 == XTokenType.JOIN .OR. ;
+                    (SELF:Lt1:Text:Equals("LEFT", StringComparison.OrdinalIgnoreCase) .AND. ;
+                     SELF:Lt2:Text:Equals("OUTER", StringComparison.OrdinalIgnoreCase) .AND. ;
+                     SELF:La3 == XTokenType.JOIN)) .AND. ;
                         (SELF:Lt1:Text:Equals("INNER", StringComparison.OrdinalIgnoreCase) .OR. ;
                          SELF:Lt1:Text:Equals("LEFT", StringComparison.OrdinalIgnoreCase) .OR. ;
+                         SELF:Lt1:Text:Equals("CROSS", StringComparison.OrdinalIgnoreCase) .OR. ;
                          SELF:Lt1:Text:Equals("RIGHT", StringComparison.OrdinalIgnoreCase) .OR. ;
                          SELF:Lt1:Text:Equals("FULL", StringComparison.OrdinalIgnoreCase) .OR. ;
                          SELF:Lt1:Text:Equals("OUTER", StringComparison.OrdinalIgnoreCase))

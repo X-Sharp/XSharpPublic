@@ -151,6 +151,8 @@ CLASS FoxSelectContext
     PROPERTY OrderByClause AS List<FoxOrderByItem> AUTO
     PROPERTY UnionBranches AS List<FoxSelectContext> AUTO
     PROPERTY UnionAll AS List<LOGIC> AUTO
+    // Runtime materialization used when LEFT JOIN requires NULL-extended rows.
+    PROPERTY OuterJoinRows AS List<LONG[]> AUTO
     CONSTRUCTOR()
         SelectList := List<SqlExpressionContext>{}
         FieldSelectionList := List<SqlFieldSelectionContext>{}  // Initialize the new property
@@ -161,6 +163,7 @@ CLASS FoxSelectContext
         OrderByClause := List<FoxOrderByItem>{}
         UnionBranches := List<FoxSelectContext>{}
         UnionAll := List<LOGIC>{}
+        OuterJoinRows := NULL
         GroupByItems := List<SqlExpressionContext>{}
         RETURN
 
@@ -169,6 +172,7 @@ END CLASS
 ENUM FoxSelectJoinKind
     MEMBER Inner
     MEMBER Cross
+    MEMBER Left
 END ENUM
 
 CLASS FoxSelectJoinContext
@@ -176,6 +180,8 @@ CLASS FoxSelectJoinContext
     PROPERTY Alias AS STRING AUTO
     PROPERTY Kind AS FoxSelectJoinKind AUTO
     PROPERTY OnClause AS SqlExpressionContext AUTO
+    // Set only on the execution copy used for NULL extension.
+    PROPERTY NullRecordNumber AS LONG AUTO
 END CLASS
 
 CLASS FoxOrderByItem

@@ -777,9 +777,6 @@ PARTIAL CLASS SQLParser
         ENDIF
 
         // Parse table list - support both comma-separated tables and explicit JOIN syntax
-        LOCAL firstTableProcessed := FALSE AS LOGIC
-        LOCAL hasCommaSeparatedTables := FALSE AS LOGIC
-        LOCAL firstIsDerivedTable := FALSE AS LOGIC
         LOCAL firstTableName AS STRING
         LOCAL firstAliasName := NULL AS STRING
 
@@ -807,7 +804,6 @@ PARTIAL CLASS SQLParser
                 RETURN FALSE
             ENDIF
             firstTableName := firstAliasName
-            firstIsDerivedTable := TRUE
             stmt:DerivedTables[firstAliasName] := derivedQuery
         ELSE
             VAR nameFound := SELF:ParseTableName(OUT firstTableName)
@@ -826,48 +822,19 @@ PARTIAL CLASS SQLParser
 
         stmt:TableList:Add(firstTableName)
         stmt:TableAliases[firstAliasName ?? firstTableName] := firstTableName
-        firstTableProcessed := TRUE
-
-        // Check if we have comma-separated tables
-        IF SELF:Expect(XTokenType.COMMA)
-            IF firstIsDerivedTable
-                SELF:SetError("Joins involving derived tables are not supported yet")
-                RETURN FALSE
-            ENDIF
-            hasCommaSeparatedTables := TRUE
-            // Continue processing comma-separated tables
-            DO WHILE TRUE
-                IF SELF:Matches(XTokenType.LPAREN) .AND. SELF:La2 == XTokenType.SELECT
-                    SELF:SetError("Joins involving derived tables are not supported yet")
-                    RETURN FALSE
-                ENDIF
-                VAR found := SELF:ParseTableName(OUT VAR tableName)
-
-                // Check for optional alias (AS alias or just alias)
-                LOCAL aliasName := NULL AS STRING
-                IF SELF:Expect(XTokenType.AS) .AND. SELF:Matches(XTokenType.ID)
-                    aliasName := SELF:ConsumeAndGetText()
-                ELSEIF SELF:Matches(XTokenType.ID)
-                    aliasName := SELF:ConsumeAndGetText()
-                ENDIF
-
-                stmt:TableList:Add(tableName)
-                stmt:TableAliases[aliasName ?? tableName] := tableName
-
-                IF ! SELF:Expect(XTokenType.COMMA)
-                    EXIT  // End of comma-separated table list
-                ENDIF
-            ENDDO
-        ELSE
-            // Check for explicit JOIN syntax
-            DO WHILE SELF:Matches(XTokenType.JOIN) .OR. SELF:Matches(XTokenType.CROSS) .OR. ;
+        // Each comma is represented as a CROSS join step so mixed comma and
+        // explicit JOIN sources keep their original order in the executor.
+        DO WHILE SELF:Matches(XTokenType.COMMA) .OR. SELF:Matches(XTokenType.JOIN) .OR. SELF:Matches(XTokenType.CROSS) .OR. ;
                     (SELF:Matches(XTokenType.ID) .AND. (SELF:Lt1:Text:Equals("INNER", StringComparison.OrdinalIgnoreCase) .OR. ;
                      SELF:Lt1:Text:Equals("LEFT", StringComparison.OrdinalIgnoreCase) .OR. ;
                      SELF:Lt1:Text:Equals("RIGHT", StringComparison.OrdinalIgnoreCase) .OR. ;
                      SELF:Lt1:Text:Equals("FULL", StringComparison.OrdinalIgnoreCase) .OR. ;
                      SELF:Lt1:Text:Equals("OUTER", StringComparison.OrdinalIgnoreCase)))
                 LOCAL joinKind AS FoxSelectJoinKind
-                IF SELF:Matches(XTokenType.CROSS)
+                LOCAL commaSource := SELF:Expect(XTokenType.COMMA) AS LOGIC
+                IF commaSource
+                    joinKind := FoxSelectJoinKind.Cross
+                ELSEIF SELF:Matches(XTokenType.CROSS)
                     SELF:ConsumeAndGet()
                     IF ! SELF:Expect(XTokenType.JOIN)
                         SELF:SetError("Expected JOIN after CROSS")
@@ -904,13 +871,8 @@ PARTIAL CLASS SQLParser
                     ENDIF
                 ENDIF
 
-                IF stmt:DerivedTables:Count > 0 .AND. joinKind != FoxSelectJoinKind.Inner
-                    SELF:SetError("Derived tables are currently supported only with INNER JOIN")
-                    RETURN FALSE
-                ENDIF
                 LOCAL joinedTableName AS STRING
                 LOCAL joinedAliasName := NULL AS STRING
-                LOCAL joinedIsDerived := FALSE AS LOGIC
                 IF SELF:Matches(XTokenType.LPAREN) .AND. SELF:La2 == XTokenType.SELECT
                     SELF:Consume()
                     LOCAL joinedDerivedQuery AS FoxSelectContext
@@ -935,7 +897,6 @@ PARTIAL CLASS SQLParser
                     ENDIF
                     joinedTableName := joinedAliasName
                     stmt:DerivedTables[joinedAliasName] := joinedDerivedQuery
-                    joinedIsDerived := TRUE
                 ELSE
                     IF ! SELF:ParseTableName(OUT joinedTableName)
                         SELF:SetError("Expected table name after JOIN")
@@ -958,10 +919,6 @@ PARTIAL CLASS SQLParser
                     ENDIF
                 ENDIF
 
-                IF joinedIsDerived .AND. joinKind != FoxSelectJoinKind.Inner
-                    SELF:SetError("Derived tables are currently supported only with INNER JOIN")
-                    RETURN FALSE
-                ENDIF
                 IF joinedAliasName != NULL .AND. stmt:TableAliases:ContainsKey(joinedAliasName)
                     SELF:SetError("Duplicate table alias: " + joinedAliasName)
                     RETURN FALSE
@@ -973,7 +930,7 @@ PARTIAL CLASS SQLParser
                 joinContext:TableName := joinedTableName
                 joinContext:Alias := joinedAliasName ?? joinedTableName
                 joinContext:Kind := joinKind
-                IF joinKind == FoxSelectJoinKind.Inner .OR. joinKind == FoxSelectJoinKind.Left
+                IF !commaSource .AND. (joinKind == FoxSelectJoinKind.Inner .OR. joinKind == FoxSelectJoinKind.Left)
                     IF ! SELF:Expect(XTokenType.ON)
                         SELF:SetError("Expected ON clause for JOIN")
                         RETURN FALSE
@@ -988,17 +945,7 @@ PARTIAL CLASS SQLParser
                     RETURN FALSE
                 ENDIF
                 stmt:Joins:Add(joinContext)
-            ENDDO
-        ENDIF
-
-        IF stmt:DerivedTables:Count > 0
-            FOREACH VAR joinContext IN stmt:Joins
-                IF joinContext:Kind != FoxSelectJoinKind.Inner
-                    SELF:SetError("Derived tables are currently supported only in INNER JOIN chains")
-                    RETURN FALSE
-                ENDIF
-            NEXT
-        ENDIF
+        ENDDO
 
         // Check for optional WITH clause (for locking hints)
         IF SELF:Expect(XTokenType.WITH)

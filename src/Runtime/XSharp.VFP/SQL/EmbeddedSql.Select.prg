@@ -1849,13 +1849,8 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             ValidateSelectSubqueries(selectCtx)
             IF selectCtx:DerivedTables:Count > 0
                 IF selectCtx:TableList:Count != selectCtx:Joins:Count + 1
-                    THROW Error{"Derived tables require an explicit INNER JOIN chain"}
+                    THROW Error{"Derived tables require a valid ordered FROM source list"}
                 ENDIF
-                FOREACH VAR joinContext IN selectCtx:Joins
-                    IF joinContext:Kind != FoxSelectJoinKind.Inner
-                        THROW Error{"Derived tables are currently supported only in INNER JOIN chains"}
-                    ENDIF
-                NEXT
                 FOR LOCAL tableIndex := 0 AS INT TO selectCtx:TableList:Count - 1
                     VAR sourceAlias := (STRING)selectCtx:TableList[tableIndex]
                     IF selectCtx:DerivedTables:TryGetValue(sourceAlias, OUT VAR derivedQuery)
@@ -2852,7 +2847,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         temporaryAliases := List<STRING>{}
         temporaryPaths := List<STRING>{}
         IF source:Joins:Count != source:TableList:Count - 1
-            THROW Error{"LEFT JOIN requires an explicit join chain without comma-separated tables"}
+            THROW Error{"LEFT JOIN requires an ordered FROM source list"}
         ENDIF
 
         VAR execution := CopySelectBranch(source, source:TargetCursor)

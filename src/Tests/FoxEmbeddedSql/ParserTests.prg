@@ -173,16 +173,28 @@ FUNCTION TestSelectParsing() AS VOID
        multipleDerivedCtx:Joins[1]:Kind != FoxSelectJoinKind.Inner
         THROW Exception{"Multiple derived sources should parse in an explicit INNER JOIN chain: " + multipleDerivedParser:Error}
     ENDIF
+    FOREACH VAR derivedJoinSql IN <STRING>{ ;
+        "SELECT d.Id FROM (SELECT c.Id FROM Child c) d, Other o", ;
+        "SELECT d.Id FROM (SELECT c.Id FROM Child c) d CROSS JOIN Other o", ;
+        "SELECT d.Id FROM Other o CROSS JOIN (SELECT c.Id FROM Child c) d", ;
+        "SELECT d.Id, o.Id FROM (SELECT c.Id FROM Child c) d LEFT JOIN Other o ON d.Id = o.Id", ;
+        "SELECT d.Id, o.Id FROM Other o LEFT JOIN (SELECT c.Id FROM Child c) d ON o.Id = d.Id", ;
+        "SELECT d.Id, o.Id FROM Other o, (SELECT c.Id FROM Child c) d LEFT JOIN Third t ON d.Id = t.Id" }
+        VAR mixedDerivedParser := SQLParser{XTokenList{XSqlLexer{derivedJoinSql}:AllTokens()}}
+        LOCAL mixedDerivedCtx AS FoxSelectContext
+        IF !mixedDerivedParser:ParseSelectStatement(OUT mixedDerivedCtx) .OR. ;
+           mixedDerivedCtx:TableList:Count != mixedDerivedCtx:Joins:Count + 1 .OR. ;
+           mixedDerivedCtx:DerivedTables:Count != 1
+            THROW Exception{"Derived tables should parse in comma, CROSS, LEFT, and mixed source lists: " + mixedDerivedParser:Error}
+        ENDIF
+    NEXT
     FOREACH VAR invalidDerivedSql IN <STRING>{ ;
         "SELECT d.Id FROM (SELECT c.Id FROM Child c)", ;
         "SELECT d.Id FROM (SELECT c.Id FROM Child c", ;
-        "SELECT d.Id FROM (SELECT c.Id FROM Child c) d CROSS JOIN Other o", ;
-        "SELECT d.Id FROM (SELECT c.Id FROM Child c) d LEFT JOIN Other o ON d.Id = o.Id", ;
         "SELECT a.Id FROM (SELECT c.Id FROM Child c) a INNER JOIN (SELECT x.Id FROM Other x) a ON a.Id = a.Id", ;
         "SELECT d.Id FROM Parent p INNER JOIN (SELECT c.Id FROM Child c)", ;
         "SELECT d.Id FROM Parent p INNER JOIN (SELECT c.Id FROM Child c) d LEFT JOIN Other o ON d.Id = o.Id", ;
-        "SELECT a.Id FROM Parent p INNER JOIN (SELECT c.Id FROM Child c) a LEFT JOIN (SELECT x.Id FROM Other x) b ON a.Id = b.Id", ;
-        "SELECT d.Id FROM Child c, (SELECT x.Id FROM Other x) d" }
+        "SELECT a.Id FROM Parent p INNER JOIN (SELECT c.Id FROM Child c) a LEFT JOIN (SELECT x.Id FROM Other x) b ON a.Id = b.Id" }
         VAR invalidDerivedParser := SQLParser{XTokenList{XSqlLexer{invalidDerivedSql}:AllTokens()}}
         LOCAL invalidDerivedCtx AS FoxSelectContext
         IF invalidDerivedParser:ParseSelectStatement(OUT invalidDerivedCtx)

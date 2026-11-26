@@ -791,6 +791,40 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
         INNER JOIN nested_parent p ON d.Id = p.Id ORDER BY d.Id
     VerifyTable(3, "INNER JOIN should resolve a derived left source", TRUE, {{2, 2}, {2, 2}, {4, 4}})
 
+    SELECT d.Id, p.Id FROM (SELECT c.Id FROM nested_child c WHERE c.Id > 1) d, nested_parent p ;
+        WHERE d.Id = 2 AND p.Id = 2
+    VerifyTable(2, "A comma source list should materialize a derived table and preserve duplicates", TRUE, ;
+        {{2, 2}, {2, 2}})
+
+    SELECT d.Id, p.Id FROM nested_parent p CROSS JOIN ;
+        (SELECT c.Id FROM nested_child c WHERE c.Id > 1) d ;
+        WHERE p.Id = 2 AND d.Id = 2
+    VerifyTable(2, "CROSS JOIN should accept a derived right source", TRUE, {{2, 2}, {2, 2}})
+
+    SELECT d.Id, p.Id FROM (SELECT c.Id FROM nested_child c WHERE c.Id = 2) d ;
+        CROSS JOIN nested_parent p WHERE p.Id = 2
+    VerifyTable(2, "CROSS JOIN should accept a derived left source", TRUE, {{2, 2}, {2, 2}})
+
+    SELECT d.Id, p.Id FROM (SELECT c.Id FROM nested_child c WHERE c.Id > 1) d ;
+        LEFT JOIN nested_empty p ON d.Id = p.Id ORDER BY d.Id
+    VerifyTable(3, "LEFT JOIN should preserve derived left rows and NULL-extend unmatched physical rows", TRUE, ;
+        {{2, NULL}, {2, NULL}, {4, NULL}})
+
+    SELECT p.Id, d.Id FROM nested_parent p LEFT JOIN ;
+        (SELECT c.Id FROM nested_empty c) d ON p.Id = d.Id ORDER BY p.Id
+    VerifyTable(5, "LEFT JOIN should NULL-extend an empty derived right source", TRUE, ;
+        {{1, NULL}, {2, NULL}, {3, NULL}, {4, NULL}, {NULL, NULL}})
+
+    SELECT p.Id, d.Id FROM nested_parent p, ;
+        (SELECT c.Id FROM nested_child c WHERE c.Id > 1) d ;
+        LEFT JOIN nested_empty e ON d.Id = e.Id ;
+        WHERE p.Id = 2
+    VerifyTable(3, "Mixed comma and LEFT JOIN sources should preserve written source order", TRUE, ;
+        {{2, 2}, {2, 2}, {2, 4}})
+    IF AUsed(openAreas) != workAreaCountBeforeDerived
+        THROW Exception{"Derived sources in comma and outer-join queries should close after execution"}
+    ENDIF
+
     SELECT p.Id FROM nested_parent p INNER JOIN (SELECT c.Id FROM nested_empty c) d ON p.Id = d.Id
     VerifyTable(0, "An empty derived source should produce no INNER JOIN matches", TRUE)
     IF AUsed(openAreas) != workAreaCountBeforeDerived

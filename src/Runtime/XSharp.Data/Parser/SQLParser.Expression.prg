@@ -68,6 +68,7 @@ PARTIAL CLASS SQLParser
         CASE XTokenType.LTE
         CASE XTokenType.GTE
         CASE XTokenType.EQ
+        CASE XTokenType.EEQ
         CASE XTokenType.NEQ
             RETURN TRUE
         OTHERWISE
@@ -205,7 +206,13 @@ PARTIAL CLASS SQLParser
         ENDIF
         IF SELF:CompareOp()
             VAR o := SELF:ConsumeAndGet()
-            VAR r := SELF:ParseExpressionTerm()
+            LOCAL r AS SqlExpressionContext
+            IF SELF:Matches(XTokenType.LPAREN) .AND. SELF:La2 == XTokenType.SELECT
+                SELF:Consume()
+                r := SqlScalarSubqueryExpressionContext{} { Subquery := SELF:ParseSubquery("scalar") }
+            ELSE
+                r := SELF:ParseExpressionTerm()
+            ENDIF
             IF SELF:CompareOp()
                 // At this point we are lost, keep parsing the whole thing as a composite expression
                 VAR terms := List<SqlExpressionContext>{} { e, SqlSimpleExpressionContext{} { Tokens := List<XToken>{}{o} }, r}

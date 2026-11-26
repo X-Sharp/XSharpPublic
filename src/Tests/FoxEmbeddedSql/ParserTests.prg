@@ -143,6 +143,14 @@ FUNCTION TestSelectParsing() AS VOID
     ENDIF
 
     VAR inLexer := XSqlLexer{"SELECT a.Id FROM Parent a WHERE a.Id IN (SELECT b.Id FROM Child b WHERE b.Active = .T.)"}
+    VAR scalarLexer := XSqlLexer{"SELECT a.Id FROM Parent a WHERE a.Id >= (SELECT b.Id FROM Child b WHERE b.Active = .T.)"}
+    VAR scalarParser := SQLParser{XTokenList{scalarLexer:AllTokens()}}
+    LOCAL scalarCtx AS FoxSelectContext
+    IF !scalarParser:ParseSelectStatement(OUT scalarCtx) .OR. ;
+       !(scalarCtx:WhereClause IS SqlCompareExpressionContext VAR scalarComparison) .OR. ;
+       !(scalarComparison:Right IS SqlScalarSubqueryExpressionContext)
+        THROW Exception{"Scalar comparison should parse into a dedicated subquery expression"}
+    ENDIF
     VAR existsLexer := XSqlLexer{"SELECT a.Id FROM Parent a WHERE NOT EXISTS (SELECT b.Id FROM Child b WHERE b.Id = a.Id)"}
     VAR existsParser := SQLParser{XTokenList{existsLexer:AllTokens()}}
     LOCAL existsCtx AS FoxSelectContext
@@ -167,7 +175,9 @@ FUNCTION TestSelectParsing() AS VOID
         "SELECT Id FROM Parent WHERE EXISTS ()", ;
         "SELECT Id FROM Parent WHERE EXISTS SELECT Id FROM Child", ;
         "SELECT Id FROM Parent WHERE EXISTS (SELECT Id FROM Child INTO CURSOR c WHERE Id = 1)", ;
-        "SELECT Id FROM Parent WHERE Id IN (SELECT Id FROM Child INTO CURSOR c WHERE Id = 1)" }
+        "SELECT Id FROM Parent WHERE Id IN (SELECT Id FROM Child INTO CURSOR c WHERE Id = 1)", ;
+        "SELECT Id FROM Parent WHERE Id = (SELECT Id FROM Child", ;
+        "SELECT Id FROM Parent WHERE Id = (SELECT Id FROM Child INTO CURSOR c WHERE Id = 1)" }
         LOCAL rejected := FALSE AS LOGIC
         TRY
             VAR malformedParser := SQLParser{XTokenList{XSqlLexer{malformed}:AllTokens()}}

@@ -82,6 +82,7 @@ INTERNAL STATIC CLASS SqlOptimizationDiagnostics
     INTERNAL STATIC CorrelatedInPlans AS INT
     INTERNAL STATIC HashJoins AS INT
     INTERNAL STATIC ExistsExecutions AS INT
+    INTERNAL STATIC ScalarExecutions AS INT
 END CLASS
 
 INTERNAL CLASS SqlCorrelatedInPlan
@@ -553,6 +554,68 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         IF expression == NULL
             RETURN
         ENDIF
+        IF expression IS SqlScalarSubqueryExpressionContext VAR scalarExpression
+            VAR scalarQuery := scalarExpression:Subquery
+            LOCAL scalarCorrelated := HasExternalSubqueryReference(scalarQuery) AS LOGIC
+            IF refreshCorrelated .AND. !scalarCorrelated .AND. scalarExpression:IsPrepared
+                RETURN
+            ENDIF
+            IF scalarCorrelated .AND. (outerTableAliases == NULL .OR. ;
+               HasUnsupportedSubqueryCorrelation(scalarQuery, outerTableAliases))
+                THROW Error{"Only references to the immediate outer query in a scalar subquery WHERE clause are supported"}
+            ENDIF
+            IF scalarQuery:SelectList:Count != 1
+                THROW Error{"Scalar subquery must return exactly one column"}
+            ENDIF
+            IF scalarCorrelated .AND. deferCorrelated
+                scalarExpression:Value := NULL
+                scalarExpression:IsPrepared := TRUE
+                RETURN
+            ENDIF
+            LOCAL scalarAlias := "SQ" + Guid.NewGuid():ToString("N"):Substring(0, 8) AS STRING
+            LOCAL savedScalarArea := VoDbGetSelect() AS DWORD
+            LOCAL previousScalarTarget := scalarQuery:TargetCursor AS STRING
+            LOCAL addedScalarAliases := List<STRING>{} AS List<STRING>
+            scalarExpression:IsPrepared := FALSE
+            TRY
+                scalarQuery:TargetCursor := scalarAlias
+                IF scalarCorrelated
+                    FOREACH VAR outerAlias IN outerTableAliases
+                        IF !scalarQuery:TableAliases:ContainsKey(outerAlias:Key)
+                            scalarQuery:TableAliases[outerAlias:Key] := outerAlias:Value
+                            addedScalarAliases:Add(outerAlias:Key)
+                        ENDIF
+                    NEXT
+                ENDIF
+                System.Threading.Interlocked.Increment(REF SqlOptimizationDiagnostics.ScalarExecutions)
+                ExecuteSelect(scalarQuery)
+                IF !Used(scalarAlias) .OR. (scalarAlias)->FCount() != 1
+                    THROW Error{"Scalar subquery must return exactly one column"}
+                ENDIF
+                (scalarAlias)->DbGoTop()
+                scalarExpression:Value := NULL
+                IF !(scalarAlias)->Eof()
+                    scalarExpression:Value := (USUAL)(scalarAlias)->FieldGet(1)
+                    (scalarAlias)->DbSkip(1)
+                    IF !(scalarAlias)->Eof()
+                        THROW Error{"Scalar subquery returned more than one record"}
+                    ENDIF
+                ENDIF
+                scalarExpression:IsPrepared := TRUE
+            FINALLY
+                scalarQuery:TargetCursor := previousScalarTarget
+                FOREACH VAR outerAlias IN addedScalarAliases
+                    scalarQuery:TableAliases:Remove(outerAlias)
+                NEXT
+                IF Used(scalarAlias)
+                    (scalarAlias)->DbCloseArea()
+                ENDIF
+                IF savedScalarArea > 0
+                    DbSelectArea(savedScalarArea)
+                ENDIF
+            END TRY
+            RETURN
+        ENDIF
         IF expression IS SqlExistsSubqueryExpressionContext VAR existsExpression
             VAR existsQuery := existsExpression:Subquery
             VAR existsAggregates := List<SqlAggregateExpressionContext>{}
@@ -691,6 +754,15 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         IF expression == NULL
             RETURN FALSE
         ENDIF
+        IF expression IS SqlScalarSubqueryExpressionContext VAR scalarExpression
+            IF HasExternalSubqueryReference(scalarExpression:Subquery)
+                IF HasUnsupportedSubqueryCorrelation(scalarExpression:Subquery, tableAliases)
+                    THROW Error{"Only references to the immediate outer query in a scalar subquery WHERE clause are supported"}
+                ENDIF
+                RETURN TRUE
+            ENDIF
+            RETURN FALSE
+        ENDIF
         IF expression IS SqlExistsSubqueryExpressionContext VAR existsExpression
             IF HasExternalSubqueryReference(existsExpression:Subquery)
                 IF HasUnsupportedSubqueryCorrelation(existsExpression:Subquery, tableAliases)
@@ -784,13 +856,33 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
 
     // Validate lexical scopes before correlation aliases are temporarily added
     // to a subquery. Otherwise a grandparent can appear to be its parent.
+    PRIVATE STATIC METHOD ContainsScalarSubquery(expression AS SqlExpressionContext) AS LOGIC
+        IF expression IS SqlScalarSubqueryExpressionContext
+            RETURN TRUE
+        ELSEIF expression IS SqlParenExpressionContext VAR paren
+            RETURN ContainsScalarSubquery(paren:Expr)
+        ELSEIF expression IS SqlPrefixExpressionContext VAR prefix
+            RETURN ContainsScalarSubquery(prefix:Expr)
+        ELSEIF expression IS SqlBinaryExpressionContext VAR binary
+            RETURN ContainsScalarSubquery(binary:Left) .OR. ContainsScalarSubquery(binary:Right)
+        ELSEIF expression IS SqlCompositeExpressionContext VAR composite
+            FOREACH VAR item IN composite:Exprs
+                IF ContainsScalarSubquery(item)
+                    RETURN TRUE
+                ENDIF
+            NEXT
+        ENDIF
+        RETURN FALSE
+
     PRIVATE STATIC METHOD ValidateNestedSubqueries(expression AS SqlExpressionContext, ;
         parentAliases AS Dictionary<STRING,STRING>) AS VOID
         IF expression == NULL
             RETURN
         ENDIF
         LOCAL child := NULL AS FoxSelectContext
-        IF expression IS SqlExistsSubqueryExpressionContext VAR existsExpression
+        IF expression IS SqlScalarSubqueryExpressionContext VAR scalarExpression
+            child := scalarExpression:Subquery
+        ELSEIF expression IS SqlExistsSubqueryExpressionContext VAR existsExpression
             child := existsExpression:Subquery
         ELSEIF expression IS SqlInSubqueryExpressionContext VAR inExpression
             ValidateNestedSubqueries(inExpression:ValueExpression, parentAliases)
@@ -798,6 +890,16 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         ELSEIF expression IS SqlParenExpressionContext VAR paren
             ValidateNestedSubqueries(paren:Expr, parentAliases)
         ELSEIF expression IS SqlPrefixExpressionContext VAR prefix
+            IF prefix:Op:Type == XTokenType.NOT .AND. ContainsScalarSubquery(prefix:Expr)
+                LOCAL inner := prefix:Expr AS SqlExpressionContext
+                DO WHILE inner IS SqlParenExpressionContext VAR parenInner
+                    inner := parenInner:Expr
+                ENDDO
+                IF !(inner IS SqlCompareExpressionContext VAR comparison) .OR. ;
+                   !(comparison:Right IS SqlScalarSubqueryExpressionContext)
+                    THROW Error{"NOT of a compound scalar subquery predicate is not supported"}
+                ENDIF
+            ENDIF
             ValidateNestedSubqueries(prefix:Expr, parentAliases)
         ELSEIF expression IS SqlBinaryExpressionContext VAR binary
             ValidateNestedSubqueries(binary:Left, parentAliases)
@@ -971,7 +1073,8 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         IF expression == NULL
             RETURN FALSE
         ENDIF
-        IF expression IS SqlInSubqueryExpressionContext .OR. expression IS SqlExistsSubqueryExpressionContext
+        IF expression IS SqlInSubqueryExpressionContext .OR. expression IS SqlExistsSubqueryExpressionContext .OR. ;
+           expression IS SqlScalarSubqueryExpressionContext
             RETURN TRUE
         ELSEIF expression IS SqlParenExpressionContext VAR parenExpression
             RETURN ContainsInSubqueryExpression(parenExpression:Expr)
@@ -1423,7 +1526,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         multiTableCandidates := NULL
         multiTableCandidateRows := NULL
 
-        IF SqlOptimizationsEnabled() .AND. hasWhereClause .AND. correlatedInPlan == NULL .AND. ;
+        IF SqlOptimizationsEnabled() .AND. hasWhereClause .AND. !hasCorrelatedWhere .AND. correlatedInPlan == NULL .AND. ;
            tableNames:Count == 1
             // Get the record count for optimization (only single table queries supported)
             LOCAL tableName AS STRING
@@ -1442,7 +1545,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             IF optimizedBitmap != NULL .AND. !optimizedBitmap:IsAllMatch()
                 useOptimization := TRUE
             ENDIF
-        ELSEIF SqlOptimizationsEnabled() .AND. hasWhereClause .AND. tableNames:Count > 1 .AND. ;
+        ELSEIF SqlOptimizationsEnabled() .AND. hasWhereClause .AND. !hasCorrelatedWhere .AND. tableNames:Count > 1 .AND. ;
                !useHashJoin .AND. !hasLeftOuterJoin
             // Build conservative per-table candidates for the nested-loop path.
             // The full WHERE and JOIN ON predicates are still evaluated below.

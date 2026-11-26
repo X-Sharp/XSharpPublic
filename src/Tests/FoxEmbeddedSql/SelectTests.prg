@@ -759,6 +759,89 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     INSERT INTO nested_child VALUES (4, "four")
     INSERT INTO nested_child VALUES (NULL, "null")
 
+    LOCAL scalarBefore := SqlOptimizationCount("ScalarExecutions") AS INT
+    SELECT p.Id FROM nested_parent p WHERE p.Id = (SELECT c.Id FROM nested_child c WHERE c.Label = "four")
+    VerifyTable(1, "Scalar comparison should match the single value", TRUE, {{4}})
+    IF SqlOptimizationCount("ScalarExecutions") - scalarBefore != 1
+        THROW Exception{"Uncorrelated scalar subquery should execute once"}
+    ENDIF
+    SELECT p.Id FROM nested_parent p WHERE p.Id < (SELECT c.Id FROM nested_child c WHERE c.Label = "four")
+    VerifyTable(3, "Scalar less-than comparison should match", TRUE, {{1}, {2}, {3}})
+    SELECT p.Id FROM nested_parent p WHERE p.Id <= (SELECT c.Id FROM nested_child c WHERE c.Label = "four")
+    VerifyTable(4, "Scalar less-than-or-equal comparison should match", TRUE, {{1}, {2}, {3}, {4}})
+    SELECT p.Id FROM nested_parent p WHERE p.Id > (SELECT c.Id FROM nested_child c WHERE c.Label = "four")
+    VerifyTable(0, "Scalar greater-than comparison should match", TRUE)
+    SELECT p.Id FROM nested_parent p WHERE p.Id >= (SELECT c.Id FROM nested_child c WHERE c.Label = "four")
+    VerifyTable(1, "Scalar greater-than-or-equal comparison should match", TRUE, {{4}})
+    SELECT p.Id FROM nested_parent p WHERE p.Id == (SELECT c.Id FROM nested_child c WHERE c.Label = "four")
+    VerifyTable(1, "Scalar exact equality should match", TRUE, {{4}})
+    SELECT p.Id FROM nested_parent p WHERE p.Id != (SELECT c.Id FROM nested_child c WHERE c.Label = "four")
+    VerifyTable(3, "Scalar inequality should exclude NULL", TRUE, {{1}, {2}, {3}})
+    SELECT p.Id FROM nested_parent p WHERE NOT (p.Id = (SELECT c.Id FROM nested_child c WHERE c.Label = "four"))
+    VerifyTable(3, "Negated scalar equality should exclude NULL", TRUE, {{1}, {2}, {3}})
+    SELECT p.Id FROM nested_parent p WHERE p.Id = (SELECT c.Id FROM nested_empty c)
+    VerifyTable(0, "Empty scalar subquery should compare as NULL", TRUE)
+    SELECT p.Id FROM nested_parent p WHERE p.Id != (SELECT c.Id FROM nested_empty c)
+    VerifyTable(0, "Empty scalar inequality should compare as NULL", TRUE)
+    SELECT p.Id FROM nested_parent p WHERE NOT (p.Id = (SELECT c.Id FROM nested_empty c))
+    VerifyTable(0, "Negated NULL scalar comparison should not match", TRUE)
+    SELECT p.Id FROM nested_parent p WHERE p.Id = (SELECT c.Id FROM nested_child c WHERE c.Label = "null")
+    VerifyTable(0, "NULL scalar value should not match", TRUE)
+    SELECT p.Id FROM nested_parent p WHERE p.Id = (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id AND c.Label = "four")
+    VerifyTable(1, "Correlated scalar subquery should use the current outer row", TRUE, {{4}})
+    scalarBefore := SqlOptimizationCount("ScalarExecutions")
+    SELECT p.Id FROM nested_parent p WHERE p.Id = (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id AND c.Label = "four") AND p.Id <= (SELECT c.Id FROM nested_child c WHERE c.Label = "four")
+    VerifyTable(1, "Mixed scalar subqueries should retain correlation", TRUE, {{4}})
+    IF SqlOptimizationCount("ScalarExecutions") - scalarBefore != 6
+        THROW Exception{"Uncorrelated scalar subqueries should execute once during correlated refresh"}
+    ENDIF
+    SELECT p.Id FROM nested_parent p WHERE p.Id < (SELECT COUNT(*) FROM nested_child)
+    VerifyTable(3, "Scalar subquery should allow aggregate values", TRUE, {{1}, {2}, {3}})
+    SELECT p.Id FROM nested_parent p WHERE (p.Id = (SELECT c.Id FROM nested_child c WHERE c.Label = "four") OR p.Id = 1) AND EXISTS (SELECT Id FROM nested_child)
+    VerifyTable(2, "Scalar comparisons should preserve logical precedence", TRUE, {{1}, {4}})
+    SELECT p.Id FROM nested_parent p WHERE p.Id = (SELECT c.Id FROM nested_child c WHERE c.Id IN (SELECT e.Id FROM nested_empty e))
+    VerifyTable(0, "Scalar subqueries should support nested IN", TRUE)
+    SELECT c.Id FROM nested_child c WHERE c.Label = (SELECT p.Label FROM nested_child p WHERE p.Label = "four")
+    VerifyTable(1, "Scalar comparisons should preserve character values", TRUE, {{4}})
+    SELECT nested_parent
+    LOCAL scalarCallerArea := VoDbGetSelect() AS DWORD
+    LOCAL scalarRowsRejected := FALSE AS LOGIC
+    TRY
+        SELECT p.Id FROM nested_parent p WHERE p.Id = (SELECT c.Id FROM nested_child c WHERE c.Id = 2)
+    CATCH ex AS Exception
+        scalarRowsRejected := ex:Message:Contains("more than one record")
+    END TRY
+    IF !scalarRowsRejected .OR. VoDbGetSelect() != scalarCallerArea .OR. Used("QUERYRESULT")
+        THROW Exception{"Scalar subquery should reject duplicate rows and restore workarea and result state"}
+    ENDIF
+    LOCAL scalarColumnsRejected := FALSE AS LOGIC
+    TRY
+        SELECT p.Id FROM nested_parent p WHERE p.Id = (SELECT c.Id, c.Label FROM nested_child c WHERE c.Id = 4)
+    CATCH ex AS Exception
+        scalarColumnsRejected := ex:Message:Contains("one column")
+    END TRY
+    IF !scalarColumnsRejected
+        THROW Exception{"Scalar subquery should reject multiple columns"}
+    ENDIF
+    LOCAL scalarDeepRejected := FALSE AS LOGIC
+    TRY
+        SELECT p.Id FROM nested_parent p WHERE EXISTS (SELECT c.Id FROM nested_child c WHERE c.Id = (SELECT e.Id FROM nested_empty e WHERE e.Id = p.Id))
+    CATCH ex AS Exception
+        scalarDeepRejected := ex:Message:Contains("immediate outer query")
+    END TRY
+    IF !scalarDeepRejected
+        THROW Exception{"Scalar subqueries should reject grandparent correlation"}
+    ENDIF
+    LOCAL compoundNegationRejected := FALSE AS LOGIC
+    TRY
+        SELECT p.Id FROM nested_parent p WHERE NOT (p.Id = 1 OR p.Id = (SELECT Id FROM nested_empty))
+    CATCH ex AS Exception
+        compoundNegationRejected := ex:Message:Contains("compound scalar")
+    END TRY
+    IF !compoundNegationRejected
+        THROW Exception{"Compound NOT with a scalar subquery should be rejected until NULL propagation is supported"}
+    ENDIF
+
     SELECT p.Id FROM nested_parent p WHERE EXISTS (SELECT c.Id, c.Label FROM nested_child c WHERE c.Id = p.Id)
     VerifyTable(2, "Correlated EXISTS should find matching outer rows", TRUE, {{2}, {4}})
     SELECT p.Id FROM nested_parent p WHERE NOT EXISTS (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id)
@@ -797,9 +880,13 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     VerifyTable(2, "Mixed IN and EXISTS predicates should match", TRUE, {{2}, {4}})
     SELECT Id FROM nested_parent WHERE EXISTS (SELECT Id FROM nested_repeat)
     VerifyTable(0, "Empty EXISTS should be false before insertion", TRUE)
-    INSERT INTO nested_repeat VALUES (7)
+    SELECT p.Id FROM nested_parent p WHERE p.Id = (SELECT Id FROM nested_repeat)
+    VerifyTable(0, "Empty scalar subquery should not match before insertion", TRUE)
+    INSERT INTO nested_repeat VALUES (4)
     SELECT Id FROM nested_parent WHERE EXISTS (SELECT Id FROM nested_repeat)
     VerifyTable(5, "EXISTS should be reevaluated after data changes", TRUE)
+    SELECT p.Id FROM nested_parent p WHERE p.Id = (SELECT Id FROM nested_repeat)
+    VerifyTable(1, "Scalar subquery should be reevaluated after data changes", TRUE, {{4}})
 
     LOCAL deepCorrelationRejected := FALSE AS LOGIC
     TRY

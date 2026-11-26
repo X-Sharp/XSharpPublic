@@ -262,7 +262,39 @@ CLASS SqlPrefixExpressionContext INHERIT SqlExpressionContext
     PROPERTY Expr AS SqlExpressionContext AUTO
     CONSTRUCTOR()
         RETURN
+    PRIVATE METHOD BuildNegatedScalarComparison(sb AS StringBuilder, tableAliases AS IDictionary<STRING,STRING>) AS LOGIC
+        IF Op:Type != XTokenType.NOT
+            RETURN FALSE
+        ENDIF
+        LOCAL inner := Expr AS SqlExpressionContext
+        DO WHILE inner IS SqlParenExpressionContext VAR paren
+            inner := paren:Expr
+        ENDDO
+        IF !(inner IS SqlCompareExpressionContext VAR comparison) .OR. ;
+           !(comparison:Right IS SqlScalarSubqueryExpressionContext)
+            RETURN FALSE
+        ENDIF
+        sb:Append("IIF(ISNULL(")
+        IF tableAliases == NULL
+            comparison:Left:BuildString(sb)
+        ELSE
+            comparison:Left:BuildStringWithFieldResolution(sb, tableAliases)
+        ENDIF
+        sb:Append(") .OR. ISNULL(")
+        comparison:Right:BuildString(sb)
+        sb:Append("), .F., !( ")
+        IF tableAliases == NULL
+            comparison:BuildString(sb)
+        ELSE
+            comparison:BuildStringWithFieldResolution(sb, tableAliases)
+        ENDIF
+        sb:Append("))")
+        RETURN TRUE
+
     OVERRIDE METHOD BuildString(sb AS StringBuilder) AS VOID
+        IF SELF:BuildNegatedScalarComparison(sb, NULL)
+            RETURN
+        ENDIF
         IF Op:Type == XTokenType.NOT .AND. Expr IS SqlInSubqueryExpressionContext VAR inSubquery
             inSubquery:BuildWithNegation(sb, NULL, TRUE)
             RETURN
@@ -283,6 +315,9 @@ CLASS SqlPrefixExpressionContext INHERIT SqlExpressionContext
         Expr:BuildString(sb)
 
     OVERRIDE METHOD BuildStringWithFieldResolution(sb AS StringBuilder, tableAliases AS IDictionary<STRING,STRING>) AS VOID
+        IF SELF:BuildNegatedScalarComparison(sb, tableAliases)
+            RETURN
+        ENDIF
         IF Op:Type == XTokenType.NOT .AND. Expr IS SqlInSubqueryExpressionContext VAR inSubquery
             inSubquery:BuildWithNegation(sb, tableAliases, TRUE)
             RETURN
@@ -326,6 +361,22 @@ CLASS SqlExistsSubqueryExpressionContext INHERIT SqlExpressionContext
             THROW System.InvalidOperationException{"EXISTS subquery has not been prepared for execution"}
         ENDIF
         sb:Append(IIF(HasRows, ".T.", ".F."))
+END CLASS
+
+CLASS SqlScalarSubqueryExpressionContext INHERIT SqlExpressionContext
+    PROPERTY Subquery AS FoxSelectContext AUTO
+    PROPERTY Value AS USUAL AUTO
+    PROPERTY IsPrepared AS LOGIC AUTO
+
+    OVERRIDE METHOD BuildString(sb AS StringBuilder) AS VOID
+        IF !IsPrepared
+            THROW System.InvalidOperationException{"Scalar subquery has not been prepared for execution"}
+        ENDIF
+        IF IsNil(Value) .OR. Value:IsNull
+            sb:Append(".NULL.")
+        ELSE
+            SqlInSubqueryExpressionContext.AppendValue(sb, Value)
+        ENDIF
 END CLASS
 
 /// An uncorrelated SELECT used as the value set of an IN predicate.
@@ -423,7 +474,7 @@ CLASS SqlInSubqueryExpressionContext INHERIT SqlExpressionContext
         NEXT
         RETURN
 
-    PRIVATE STATIC METHOD AppendValue(sb AS StringBuilder, value AS USUAL) AS VOID
+    STATIC METHOD AppendValue(sb AS StringBuilder, value AS USUAL) AS VOID
         IF value:IsNull
             sb:Append(".NULL.")
             RETURN

@@ -180,7 +180,7 @@ PUBLIC CLASS QueryOptimizer
 
             // For other cases, evaluate using codeblock fallback
             result:Fill()
-        CATCH ex AS Exception
+        CATCH AS Exception
             result:Fill()  // On error, include all records (safe fallback)
         END TRY
 
@@ -262,7 +262,7 @@ PUBLIC CLASS QueryOptimizer
         ENDIF
 
         LOCAL savedFilterActive := FALSE AS LOGIC
-        LOCAL savedFilterBlock AS ICodeblock
+        LOCAL savedFilterBlock := NULL AS ICodeblock
         LOCAL savedFilterText := "" AS STRING
         VAR rddObject := DbInfo(DBI_RDD_OBJECT)
         IF rddObject IS Workarea VAR workarea
@@ -284,7 +284,7 @@ PUBLIC CLASS QueryOptimizer
                     IF bitmap != NULL
                         RETURN bitmap
                     ENDIF
-                CATCH ex AS Exception
+                CATCH AS Exception
                     // If index-based evaluation fails, fall back to filter approach
                     NOP
                 END TRY
@@ -346,7 +346,7 @@ PUBLIC CLASS QueryOptimizer
                             "\"" + AllTrim((STRING)val) + \""", val:ToString())
                     ENDIF
                 ENDIF
-            CATCH ex AS Exception
+            CATCH AS Exception
                 // If macro evaluation fails, use the resolved string
                 macroValue := invariantExpr:ToResolvedString(tableAliases)
             END TRY
@@ -439,7 +439,7 @@ PRIVATE STATIC METHOD EvaluatePrefixExpression(prefixExpr AS SqlPrefixExpression
                     IF cb != NULL
                         invariantValue := (OBJECT)cb:Eval(NULL)
                     ENDIF
-                CATCH ex AS Exception
+                CATCH AS Exception
                     RETURN NULL  // Fall back to filter approach
                 END TRY
             ELSE
@@ -454,7 +454,7 @@ PRIVATE STATIC METHOD EvaluatePrefixExpression(prefixExpr AS SqlPrefixExpression
                     IF cb != NULL
                         invariantValue := (OBJECT)cb:Eval(NULL)
                     ENDIF
-                CATCH ex AS Exception
+                CATCH AS Exception
                     RETURN NULL  // Fall back to filter approach
                 END TRY
             ELSE

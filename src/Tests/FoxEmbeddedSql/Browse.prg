@@ -34,8 +34,8 @@ CLASS MyBrowseForm INHERIT Form
        // oGrid:RowsDefaultCellStyle:BackColor := Color.LightGray
        // oGrid:AlternatingRowsDefaultCellStyle:BackColor := Color.White
 
-        oGrid:KeyDown   += MyOnKeyDown
-        oGrid:DataError += MyDataError
+        oGrid:KeyDown   += SELF:MyOnKeyDown
+        oGrid:DataError += SELF:MyDataError
         SELF:Size := System.Drawing.Size{SystemInformation.PrimaryMonitorSize:Width/2, SystemInformation.PrimaryMonitorSize:Height/2}
         RETURN
     METHOD MyOnKeyDown(sender AS OBJECT, e AS KeyEventArgs) AS VOID

@@ -171,7 +171,7 @@ FUNCTION TestSelectFunctionality() AS VOID
     LOCAL rejectedAggregateQuery := FALSE AS LOGIC
     TRY
         SELECT SUM(COUNT(Id)) FROM test_select_table
-    CATCH aggregateError AS Exception
+    CATCH AS Exception
         rejectedAggregateQuery := TRUE
     END TRY
     IF !rejectedAggregateQuery
@@ -181,7 +181,7 @@ FUNCTION TestSelectFunctionality() AS VOID
     rejectedAggregateQuery := FALSE
     TRY
         SELECT Name, COUNT(*) FROM test_select_table GROUP BY Age
-    CATCH groupingError AS Exception
+    CATCH AS Exception
         rejectedAggregateQuery := TRUE
     END TRY
     IF !rejectedAggregateQuery
@@ -414,9 +414,6 @@ FUNCTION TestSelectFunctionality() AS VOID
 
     LOCAL aliasCount AS DWORD
     aliasCount := 0
-    LOCAL fieldCount AS DWORD
-    fieldCount := FCount()
-
     DO WHILE !EOF()
         aliasCount++
         SKIP
@@ -1370,7 +1367,7 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     LOCAL existsAggregateRejected := FALSE AS LOGIC
     TRY
         SELECT Id FROM nested_parent WHERE EXISTS (SELECT COUNT(*) FROM nested_empty)
-    CATCH ex AS Exception
+    CATCH AS Exception
         existsAggregateRejected := TRUE
     END TRY
     IF !existsAggregateRejected
@@ -1414,7 +1411,7 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     LOCAL failureRejected := FALSE AS LOGIC
     TRY
         SELECT p.Id FROM nested_parent p WHERE EXISTS (SELECT c.Id FROM nested_child c WHERE c.Id IN (SELECT Id, Label FROM nested_child))
-    CATCH ex AS Exception
+    CATCH AS Exception
         failureRejected := TRUE
     END TRY
     IF !failureRejected .OR. VoDbGetSelect() != callerArea .OR. Used("QUERYRESULT")

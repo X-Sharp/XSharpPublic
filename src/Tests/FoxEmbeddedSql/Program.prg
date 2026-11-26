@@ -93,8 +93,8 @@ FUNCTION TestRunner(test AS TestInfo) AS VOID
 FUNCTION Start(args AS STRING[]) AS VOID STRICT
     // Check for /verbose option
     FOREACH VAR arg IN args
-        arg = Upper(arg):Replace(c'-', c'/')
-        IF arg == "/VERBOSE" .OR. arg == "/V"
+        LOCAL normalizedArg := Upper(arg):Replace(c'-', c'/') AS STRING
+        IF normalizedArg == "/VERBOSE" .OR. normalizedArg == "/V"
             SetVerbose(TRUE)
         ENDIF
     NEXT
@@ -151,8 +151,6 @@ FUNCTION Start(args AS STRING[]) AS VOID STRICT
     RETURN
 
 FUNCTION TestCreate() AS VOID
-    local a,b,c as int
-    a := b := c := 42
     CREATE TABLE Salesman ;
         (SalesID c(6) PRIMARY KEY, ;
         SaleName Character(20) )
@@ -179,7 +177,6 @@ FUNCTION TestCreate() AS VOID
 
     IF Used()
         INSERT INTO Employee(EmpId, Name) VALUES (1, "Nikos")
-        Local Address as usual
         m.Address = "Zuukerweg"
         m.EmpId = 10
         m.Name  = "Robert"
@@ -309,3 +306,4 @@ FUNCTION TestCreateTables()
 
 //         CREATE SQL VIEW MyView AS SELECT * FROM Northwind!Customers;
 //             WHERE Country="Mexico
+    RETURN

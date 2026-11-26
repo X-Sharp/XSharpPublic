@@ -742,7 +742,7 @@ PARTIAL CLASS SQLParser
         // Parse select list (columns)
         DO WHILE SELF:Matches(XTokenType.ID) .OR. SELF:Matches(XTokenType.MULT) .OR. SELF:Matches(XTokenType.LPAREN)
             LOCAL expr AS SqlExpressionContext
-            LOCAL aliasName AS STRING
+            LOCAL aliasName := NULL AS STRING
 
             IF SELF:Matches(XTokenType.MULT)
                 var multToken := SELF:ConsumeAndGet()
@@ -806,7 +806,10 @@ PARTIAL CLASS SQLParser
             firstTableName := firstAliasName
             stmt:DerivedTables[firstAliasName] := derivedQuery
         ELSE
-            VAR nameFound := SELF:ParseTableName(OUT firstTableName)
+            IF !SELF:ParseTableName(OUT firstTableName)
+                SELF:SetError("Expected table name after FROM")
+                RETURN FALSE
+            ENDIF
             // Check for optional alias (AS alias or just alias)
             IF SELF:Expect(XTokenType.AS) .AND. SELF:Matches(XTokenType.ID)
                 firstAliasName := SELF:ConsumeAndGetText()
@@ -951,9 +954,11 @@ PARTIAL CLASS SQLParser
         // Check for optional WITH clause (for locking hints)
         IF SELF:Expect(XTokenType.WITH)
             IF SELF:Expect(XTokenType.LPAREN)
-                var lockHint := SELF:ParseExpressionContext():ToString()
-                SELF:Expect(XTokenType.RPAREN)
-                // Store lock hint info if needed
+                SELF:ParseExpressionContext()
+                IF !SELF:Expect(XTokenType.RPAREN)
+                    SELF:SetError("Expected ')' after WITH hint")
+                    RETURN FALSE
+                ENDIF
             ENDIF
         ENDIF
 
@@ -1006,7 +1011,10 @@ PARTIAL CLASS SQLParser
 
         // Parse table name
         IF SELF:Matches(XTokenType.ID)
-            VAR found := SELF:ParseTableName(OUT VAR name)
+            IF !SELF:ParseTableName(OUT VAR name)
+                SELF:SetError("Expected table name after INTO")
+                RETURN FALSE
+            ENDIF
             stmt:TableName := name
         ELSE
             SELF:SetError("Expected table name after INTO")

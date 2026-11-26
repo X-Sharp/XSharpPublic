@@ -1548,7 +1548,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             System.Threading.Interlocked.Increment(REF SqlOptimizationDiagnostics.MembershipBitmaps)
             System.Threading.Interlocked.Add(REF SqlOptimizationDiagnostics.MembershipCandidates, candidates:Count)
             System.Threading.Interlocked.Add(REF SqlOptimizationDiagnostics.MembershipScanned, visited:Count)
-        CATCH ex AS Exception
+        CATCH AS Exception
             candidates := NULL
         FINALLY
             IF wasBof .AND. !wasEof
@@ -2528,7 +2528,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 // Find the field in the source tables to get its type
                 LOCAL fieldFound AS LOGIC
                 fieldFound := FALSE
-                LOCAL fieldInfo AS ARRAY
+                LOCAL fieldInfo := NULL AS ARRAY
 
                 LOCAL exprTable := NULL AS STRING
                 LOCAL exprField := NULL AS STRING
@@ -2635,7 +2635,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
 
         // Resolve WHERE clause
         LOCAL whereClause AS STRING
-        LOCAL whereCodeBlock AS CODEBLOCK
+        LOCAL whereCodeBlock := NULL AS CODEBLOCK
         LOCAL hasWhereClause AS LOGIC
         LOCAL hasCorrelatedWhere := FALSE AS LOGIC
         LOCAL threeValueWhere := NULL AS SqlThreeValuePredicate
@@ -2737,7 +2737,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                             hashJoinCursor := SqlHashJoinCursor{outerTable, outerKeyCodeBlocks, keyBuckets}
                             useHashJoin := TRUE
                             System.Threading.Interlocked.Increment(REF SqlOptimizationDiagnostics.HashJoins)
-                        CATCH ex AS Exception
+                        CATCH AS Exception
                             hashJoinCursor := NULL
                             useHashJoin := FALSE
                         END TRY
@@ -2746,7 +2746,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         ENDIF
 
         // Try to optimize the WHERE clause using QueryOptimizer
-        LOCAL optimizedBitmap AS RecordBitmap
+        LOCAL optimizedBitmap := NULL AS RecordBitmap
         LOCAL useOptimization AS LOGIC
         LOCAL multiTableCandidates AS Dictionary<STRING,RecordBitmap>
         LOCAL multiTableCandidateRows AS Dictionary<STRING,List<LONG>>
@@ -2842,7 +2842,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             ENDIF
         ENDIF
 
-        LOCAL distinctValues AS HashSet<STRING>
+        LOCAL distinctValues := NULL AS HashSet<STRING>
         IF isDistinct
             distinctValues := HashSet<STRING>{}
         ENDIF
@@ -2860,7 +2860,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         LOCAL groupExpressions := List<SqlExpressionContext>{} AS List<SqlExpressionContext>
         LOCAL groupCodeBlocks := List<CODEBLOCK>{} AS List<CODEBLOCK>
         LOCAL aggregateCodeBlocks := Dictionary<SqlAggregateExpressionContext,CODEBLOCK>{} AS Dictionary<SqlAggregateExpressionContext,CODEBLOCK>
-        LOCAL havingCodeBlock AS CODEBLOCK
+        LOCAL havingCodeBlock := NULL AS CODEBLOCK
         LOCAL hasRowHaving := selectCtx:HavingClause != NULL .AND. !aggregateMode AS LOGIC
         IF aggregateMode
             IF hasStarSelection
@@ -3035,7 +3035,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                     ENDIF
                     TRY
                         includeRecord := joinCodeBlock:Eval()
-                    CATCH ex AS Exception
+                    CATCH AS Exception
                         includeRecord := FALSE
                     END TRY
                 NEXT
@@ -3072,7 +3072,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 ELSEIF hasWhereClause
                     TRY
                         includeRecord := whereCodeBlock:Eval()
-                    CATCH ex AS Exception
+                    CATCH AS Exception
                         includeRecord := FALSE
                     END TRY
                 ENDIF
@@ -3081,7 +3081,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             IF includeRecord .AND. hasRowHaving
                 TRY
                     includeRecord := havingCodeBlock:Eval()
-                CATCH ex AS Exception
+                CATCH AS Exception
                     includeRecord := FALSE
                 END TRY
             ENDIF
@@ -3513,7 +3513,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 TRY
                     RestoreOutOfScopeJoinSources(selectCtx, tableIndex - 2)
                     matches := (LOGIC)joinCodeBlocks[tableIndex - 2]:Eval()
-                CATCH ex AS Exception
+                CATCH AS Exception
                     matches := FALSE
                 END TRY
             ENDIF
@@ -3585,8 +3585,8 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         branchContexts:AddRange(selectCtx:UnionBranches)
 
         LOCAL branchAliases := List<STRING>{} AS List<STRING>
-        LOCAL unionRows AS List<USUAL[]>
-        LOCAL firstStruct AS ARRAY
+        LOCAL unionRows := NULL AS List<USUAL[]>
+        LOCAL firstStruct := NULL AS ARRAY
         LOCAL resultAlias := "QUERYRESULT" AS STRING
         IF !String.IsNullOrEmpty(AllTrim(selectCtx:TargetCursor))
             resultAlias := AllTrim(selectCtx:TargetCursor)
@@ -3624,6 +3624,10 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                     ENDIF
                 ENDIF
             NEXT
+
+            IF firstStruct == NULL .OR. unionRows == NULL
+                THROW Error{"UNION query did not produce a result schema"}
+            ENDIF
 
             IF Used(resultAlias)
                 (resultAlias)->DbCloseArea()

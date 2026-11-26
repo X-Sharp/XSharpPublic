@@ -27,8 +27,6 @@ FUNCTION TestNewSqlFeatures() AS VOID
     RETURN
 
 FUNCTION TestSelectUDC() AS VOID
-    LOCAL result := "Passed" AS STRING
-
     ? "Testing SELECT UDC functionality..."
 
     // This would test the actual UDC functionality if the table existed
@@ -118,15 +116,13 @@ FUNCTION TestSelectParsing() AS VOID
 
     VAR missingOnLexer := XSqlLexer{"SELECT a.Id FROM TableA a JOIN TableB b"}
     VAR missingOnParser := SqlParser{XTokenList{missingOnLexer:AllTokens()}}
-    LOCAL missingOnCtx AS FoxSelectContext
-    IF missingOnParser:ParseSelectStatement(OUT missingOnCtx)
+    IF missingOnParser:ParseSelectStatement(OUT VAR _)
         THROW Exception{"JOIN without ON should be rejected"}
     ENDIF
 
     VAR missingOuterOnLexer := XSqlLexer{"SELECT a.Id FROM TableA a LEFT JOIN TableB b"}
     VAR missingOuterOnParser := SqlParser{XTokenList{missingOuterOnLexer:AllTokens()}}
-    LOCAL missingOuterOnCtx AS FoxSelectContext
-    IF missingOuterOnParser:ParseSelectStatement(OUT missingOuterOnCtx)
+    IF missingOuterOnParser:ParseSelectStatement(OUT VAR _)
         THROW Exception{"LEFT JOIN without ON should be rejected"}
     ENDIF
 
@@ -196,8 +192,7 @@ FUNCTION TestSelectParsing() AS VOID
         "SELECT d.Id FROM Parent p INNER JOIN (SELECT c.Id FROM Child c) d LEFT JOIN Other o ON d.Id = o.Id", ;
         "SELECT a.Id FROM Parent p INNER JOIN (SELECT c.Id FROM Child c) a LEFT JOIN (SELECT x.Id FROM Other x) b ON a.Id = b.Id" }
         VAR invalidDerivedParser := SQLParser{XTokenList{XSqlLexer{invalidDerivedSql}:AllTokens()}}
-        LOCAL invalidDerivedCtx AS FoxSelectContext
-        IF invalidDerivedParser:ParseSelectStatement(OUT invalidDerivedCtx)
+        IF invalidDerivedParser:ParseSelectStatement(OUT VAR _)
             THROW Exception{"Invalid or unsupported derived table form should be rejected: " + invalidDerivedSql}
         ENDIF
     NEXT
@@ -257,11 +252,10 @@ FUNCTION TestSelectParsing() AS VOID
     ENDIF
     VAR badExistsLexer := XSqlLexer{"SELECT Id FROM Parent WHERE EXISTS (SELECT Id FROM Child"}
     VAR badExistsParser := SQLParser{XTokenList{badExistsLexer:AllTokens()}}
-    LOCAL badExistsCtx AS FoxSelectContext
     LOCAL badExistsRejected := FALSE AS LOGIC
     TRY
-        badExistsRejected := !badExistsParser:ParseSelectStatement(OUT badExistsCtx)
-    CATCH ex AS ArgumentException
+        badExistsRejected := !badExistsParser:ParseSelectStatement(OUT VAR _)
+    CATCH AS ArgumentException
         badExistsRejected := TRUE
     END TRY
     IF !badExistsRejected
@@ -279,9 +273,8 @@ FUNCTION TestSelectParsing() AS VOID
         LOCAL rejected := FALSE AS LOGIC
         TRY
             VAR malformedParser := SQLParser{XTokenList{XSqlLexer{malformed}:AllTokens()}}
-            LOCAL malformedCtx AS FoxSelectContext
-            rejected := !malformedParser:ParseSelectStatement(OUT malformedCtx)
-        CATCH ex AS Exception
+            rejected := !malformedParser:ParseSelectStatement(OUT VAR _)
+        CATCH AS Exception
             rejected := TRUE
         END TRY
         IF !rejected
@@ -319,15 +312,13 @@ FUNCTION TestSelectParsing() AS VOID
 
     VAR incompleteUnionLexer := XSqlLexer{"SELECT Id FROM FirstTable UNION"}
     VAR incompleteUnionParser := SQLParser{XTokenList{incompleteUnionLexer:AllTokens()}}
-    LOCAL incompleteUnionCtx AS FoxSelectContext
-    IF incompleteUnionParser:ParseSelectStatement(OUT incompleteUnionCtx)
+    IF incompleteUnionParser:ParseSelectStatement(OUT VAR _)
         THROW Exception{"UNION without a following SELECT should be rejected"}
     ENDIF
 
     VAR misplacedUnionLexer := XSqlLexer{"SELECT Id FROM FirstTable ORDER BY Id UNION ALL SELECT Id FROM SecondTable"}
     VAR misplacedUnionParser := SQLParser{XTokenList{misplacedUnionLexer:AllTokens()}}
-    LOCAL misplacedUnionCtx AS FoxSelectContext
-    IF misplacedUnionParser:ParseSelectStatement(OUT misplacedUnionCtx)
+    IF misplacedUnionParser:ParseSelectStatement(OUT VAR _)
         THROW Exception{"ORDER BY before the UNION chain should be rejected"}
     ENDIF
 
@@ -537,12 +528,12 @@ FUNCTION TestSqlParser () AS VOID
 
     IF Verbose
         ? sCommand
-        VAR ctx := parser:ParseExpressionContext()
+    ENDIF
+
+    VAR ctx := parser:ParseExpressionContext()
+    IF Verbose
         ? ctx:ToString()
         PrintContext(ctx)
-    ELSE
-        // Parse silently when not verbose
-        VAR ctx := parser:ParseExpressionContext()
     ENDIF
 
     VAR chainedAnd := ParseSqlExpressionForTest("a = 1 AND b = 2 AND c = 3")
@@ -596,7 +587,7 @@ FUNCTION TestSqlParser () AS VOID
     LOCAL rejectedDanglingOperator := FALSE AS LOGIC
     TRY
         ParseSqlExpressionForTest("a = 1 AND")
-    CATCH e AS Exception
+    CATCH AS Exception
         rejectedDanglingOperator := TRUE
     END TRY
     IF !rejectedDanglingOperator
@@ -606,7 +597,7 @@ FUNCTION TestSqlParser () AS VOID
     rejectedDanglingOperator := FALSE
     TRY
         ParseSqlExpressionForTest("a = 1 OR")
-    CATCH e AS Exception
+    CATCH AS Exception
         rejectedDanglingOperator := TRUE
     END TRY
     IF !rejectedDanglingOperator

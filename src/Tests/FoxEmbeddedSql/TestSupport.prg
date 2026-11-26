@@ -119,9 +119,6 @@ FUNCTION VerifyTable(expectedRecords AS DWORD, message AS STRING, closeTable := 
         DbCloseArea()
     ENDIF
 RETURN
-
-
-    RETURN
 FUNCTION ValueSame(value1 AS USUAL, value2 AS USUAL) AS LOGIC
     IF IsNull(value1) .OR. IsNull(value2)
         RETURN IsNull(value1) .AND. IsNull(value2)

@@ -758,6 +758,29 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     INSERT INTO nested_child VALUES (4, "four")
     INSERT INTO nested_child VALUES (NULL, "null")
 
+    SELECT p.Id FROM nested_parent p WHERE EXISTS (SELECT c.Id, c.Label FROM nested_child c WHERE c.Id = p.Id)
+    VerifyTable(2, "Correlated EXISTS should find matching outer rows", TRUE, {{2}, {4}})
+    SELECT p.Id FROM nested_parent p WHERE NOT EXISTS (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id)
+    VerifyTable(3, "Correlated NOT EXISTS should include unmatched and NULL outer rows", TRUE, {{1}, {3}, {NULL}})
+    SELECT Id FROM nested_parent WHERE EXISTS (SELECT Id FROM nested_empty)
+    VerifyTable(0, "EXISTS with an empty result should be false", TRUE)
+    SELECT Id FROM nested_parent WHERE NOT EXISTS (SELECT Id FROM nested_empty)
+    VerifyTable(5, "NOT EXISTS with an empty result should be true", TRUE)
+    SELECT p.Id FROM nested_parent p WHERE p.Id > 1 AND EXISTS (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id)
+    VerifyTable(2, "EXISTS should work within a logical expression", TRUE, {{2}, {4}})
+    SELECT p.Id FROM nested_parent p WHERE EXISTS (SELECT c.Id FROM nested_child c WHERE c.Id > p.Id)
+    VerifyTable(3, "Correlated EXISTS should support inequalities", TRUE, {{1}, {2}, {3}})
+    SELECT p.Id FROM nested_parent p WHERE EXISTS (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id AND EXISTS (SELECT e.Id FROM nested_empty e))
+    VerifyTable(0, "Nested EXISTS should respect an empty inner result", TRUE)
+    SELECT Id FROM nested_parent WHERE EXISTS (SELECT COUNT(*) FROM nested_empty)
+    VerifyTable(5, "EXISTS should see the aggregate result row for an empty input", TRUE)
+    LOCAL existsBefore := SqlOptimizationCount("ExistsExecutions") AS INT
+    SELECT p.Id FROM nested_parent p WHERE EXISTS (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id) AND EXISTS (SELECT Id FROM nested_child)
+    VerifyTable(2, "Mixed correlated and uncorrelated EXISTS predicates should match", TRUE, {{2}, {4}})
+    IF SqlOptimizationCount("ExistsExecutions") - existsBefore != 6
+        THROW Exception{"Uncorrelated EXISTS should execute once per outer query"}
+    ENDIF
+
     SELECT Id FROM nested_parent WHERE Id IN (SELECT Id FROM nested_child)
     VerifyTable(2, "IN subquery should return matching outer values once", TRUE, {{2}, {4}})
 

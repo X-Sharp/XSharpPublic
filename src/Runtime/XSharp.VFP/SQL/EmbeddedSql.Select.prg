@@ -81,6 +81,7 @@ END CLASS
 INTERNAL STATIC CLASS SqlOptimizationDiagnostics
     INTERNAL STATIC CorrelatedInPlans AS INT
     INTERNAL STATIC HashJoins AS INT
+    INTERNAL STATIC ExistsExecutions AS INT
 END CLASS
 
 INTERNAL CLASS SqlCorrelatedInPlan
@@ -547,8 +548,60 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         RETURN selectCtx
 
     PRIVATE STATIC METHOD PrepareSubqueryExpression(expression AS SqlExpressionContext, ;
-        outerTableAliases := NULL AS Dictionary<STRING,STRING>, deferCorrelated := FALSE AS LOGIC) AS VOID
+        outerTableAliases := NULL AS Dictionary<STRING,STRING>, deferCorrelated := FALSE AS LOGIC, ;
+        refreshCorrelated := FALSE AS LOGIC) AS VOID
         IF expression == NULL
+            RETURN
+        ENDIF
+        IF expression IS SqlExistsSubqueryExpressionContext VAR existsExpression
+            VAR existsQuery := existsExpression:Subquery
+            LOCAL existsCorrelated := HasExternalSubqueryReference(existsQuery) AS LOGIC
+            IF refreshCorrelated .AND. !existsCorrelated .AND. existsExpression:IsPrepared
+                RETURN
+            ENDIF
+            IF existsCorrelated .AND. (outerTableAliases == NULL .OR. ;
+               HasUnsupportedSubqueryCorrelation(existsQuery, outerTableAliases))
+                THROW Error{"Only references to the immediate outer query in an EXISTS subquery WHERE clause are supported"}
+            ENDIF
+            IF existsCorrelated .AND. deferCorrelated
+                existsExpression:HasRows := FALSE
+                existsExpression:IsPrepared := TRUE
+                RETURN
+            ENDIF
+            LOCAL existsAlias := "SQ" + Guid.NewGuid():ToString("N"):Substring(0, 8) AS STRING
+            LOCAL savedExistsArea := DbSelect() AS DWORD
+            LOCAL addedExistsAliases := List<STRING>{} AS List<STRING>
+            LOCAL previousTarget := existsQuery:TargetCursor AS STRING
+            TRY
+                existsQuery:TargetCursor := existsAlias
+                IF existsCorrelated
+                    FOREACH VAR outerAlias IN outerTableAliases
+                        IF !existsQuery:TableAliases:ContainsKey(outerAlias:Key)
+                            existsQuery:TableAliases[outerAlias:Key] := outerAlias:Value
+                            addedExistsAliases:Add(outerAlias:Key)
+                        ENDIF
+                    NEXT
+                ENDIF
+                System.Threading.Interlocked.Increment(REF SqlOptimizationDiagnostics.ExistsExecutions)
+                ExecuteSelect(existsQuery)
+                IF !Used(existsAlias)
+                    THROW Error{"EXISTS subquery did not produce a result cursor"}
+                ENDIF
+                (existsAlias)->DbGoTop()
+                existsExpression:HasRows := !(existsAlias)->Eof()
+                existsExpression:IsPrepared := TRUE
+            FINALLY
+                existsQuery:TargetCursor := previousTarget
+                FOREACH VAR outerAlias IN addedExistsAliases
+                    existsQuery:TableAliases:Remove(outerAlias)
+                NEXT
+                IF Used(existsAlias)
+                    (existsAlias)->DbCloseArea()
+                ENDIF
+                IF savedExistsArea > 0
+                    DbSelectArea(savedExistsArea)
+                ENDIF
+            END TRY
             RETURN
         ENDIF
         IF expression IS SqlInSubqueryExpressionContext VAR inExpression
@@ -610,15 +663,15 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             RETURN
         ENDIF
         IF expression IS SqlParenExpressionContext VAR parenExpression
-            PrepareSubqueryExpression(parenExpression:Expr, outerTableAliases, deferCorrelated)
+            PrepareSubqueryExpression(parenExpression:Expr, outerTableAliases, deferCorrelated, refreshCorrelated)
         ELSEIF expression IS SqlPrefixExpressionContext VAR prefixExpression
-            PrepareSubqueryExpression(prefixExpression:Expr, outerTableAliases, deferCorrelated)
+            PrepareSubqueryExpression(prefixExpression:Expr, outerTableAliases, deferCorrelated, refreshCorrelated)
         ELSEIF expression IS SqlBinaryExpressionContext VAR binaryExpression
-            PrepareSubqueryExpression(binaryExpression:Left, outerTableAliases, deferCorrelated)
-            PrepareSubqueryExpression(binaryExpression:Right, outerTableAliases, deferCorrelated)
+            PrepareSubqueryExpression(binaryExpression:Left, outerTableAliases, deferCorrelated, refreshCorrelated)
+            PrepareSubqueryExpression(binaryExpression:Right, outerTableAliases, deferCorrelated, refreshCorrelated)
         ELSEIF expression IS SqlCompositeExpressionContext VAR compositeExpression
             FOREACH VAR child IN compositeExpression:Exprs
-                PrepareSubqueryExpression(child, outerTableAliases, deferCorrelated)
+                PrepareSubqueryExpression(child, outerTableAliases, deferCorrelated, refreshCorrelated)
             NEXT
         ENDIF
         RETURN
@@ -626,6 +679,15 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
     PRIVATE STATIC METHOD HasCorrelatedInSubquery(expression AS SqlExpressionContext, ;
         tableAliases AS Dictionary<STRING,STRING>) AS LOGIC
         IF expression == NULL
+            RETURN FALSE
+        ENDIF
+        IF expression IS SqlExistsSubqueryExpressionContext VAR existsExpression
+            IF HasExternalSubqueryReference(existsExpression:Subquery)
+                IF HasUnsupportedSubqueryCorrelation(existsExpression:Subquery, tableAliases)
+                    THROW Error{"Only references to the immediate outer query in an EXISTS subquery WHERE clause are supported"}
+                ENDIF
+                RETURN TRUE
+            ENDIF
             RETURN FALSE
         ENDIF
         IF expression IS SqlInSubqueryExpressionContext VAR inExpression
@@ -854,7 +916,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         IF expression == NULL
             RETURN FALSE
         ENDIF
-        IF expression IS SqlInSubqueryExpressionContext
+        IF expression IS SqlInSubqueryExpressionContext .OR. expression IS SqlExistsSubqueryExpressionContext
             RETURN TRUE
         ELSEIF expression IS SqlParenExpressionContext VAR parenExpression
             RETURN ContainsInSubqueryExpression(parenExpression:Expr)
@@ -1558,7 +1620,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             IF includeRecord .AND. hasWhereClause .AND. hasCorrelatedWhere .AND. correlatedInPlan == NULL
                 // A correlated subquery depends on the current outer row. Rebuild its
                 // value set and the WHERE codeblock for each row combination.
-                PrepareSubqueryExpression(selectCtx:WhereClause, selectCtx:TableAliases, FALSE)
+                PrepareSubqueryExpression(selectCtx:WhereClause, selectCtx:TableAliases, FALSE, TRUE)
                 whereClause := selectCtx:WhereClause:ToResolvedString(selectCtx:TableAliases)
                 whereCodeBlock := MCompile(whereClause)
                 IF whereCodeBlock == NULL

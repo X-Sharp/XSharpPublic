@@ -316,6 +316,18 @@ CLASS SqlCompareExpressionContext INHERIT SqlBinaryExpressionContext
         RETURN
 END CLASS
 
+CLASS SqlExistsSubqueryExpressionContext INHERIT SqlExpressionContext
+    PROPERTY Subquery AS FoxSelectContext AUTO
+    PROPERTY HasRows AS LOGIC AUTO
+    PROPERTY IsPrepared AS LOGIC AUTO
+
+    OVERRIDE METHOD BuildString(sb AS StringBuilder) AS VOID
+        IF !IsPrepared
+            THROW System.InvalidOperationException{"EXISTS subquery has not been prepared for execution"}
+        ENDIF
+        sb:Append(IIF(HasRows, ".T.", ".F."))
+END CLASS
+
 /// An uncorrelated SELECT used as the value set of an IN predicate.
 CLASS SqlInSubqueryExpressionContext INHERIT SqlExpressionContext
     PROPERTY ValueExpression AS SqlExpressionContext AUTO

@@ -143,6 +143,26 @@ FUNCTION TestSelectParsing() AS VOID
     ENDIF
 
     VAR inLexer := XSqlLexer{"SELECT a.Id FROM Parent a WHERE a.Id IN (SELECT b.Id FROM Child b WHERE b.Active = .T.)"}
+    VAR existsLexer := XSqlLexer{"SELECT a.Id FROM Parent a WHERE NOT EXISTS (SELECT b.Id FROM Child b WHERE b.Id = a.Id)"}
+    VAR existsParser := SQLParser{XTokenList{existsLexer:AllTokens()}}
+    LOCAL existsCtx AS FoxSelectContext
+    IF !existsParser:ParseSelectStatement(OUT existsCtx) .OR. ;
+       !(existsCtx:WhereClause IS SqlPrefixExpressionContext VAR existsPrefix) .OR. ;
+       !(existsPrefix:Expr IS SqlExistsSubqueryExpressionContext)
+        THROW Exception{"NOT EXISTS should parse as a negated subquery predicate"}
+    ENDIF
+    VAR badExistsLexer := XSqlLexer{"SELECT Id FROM Parent WHERE EXISTS (SELECT Id FROM Child"}
+    VAR badExistsParser := SQLParser{XTokenList{badExistsLexer:AllTokens()}}
+    LOCAL badExistsCtx AS FoxSelectContext
+    LOCAL badExistsRejected := FALSE AS LOGIC
+    TRY
+        badExistsRejected := !badExistsParser:ParseSelectStatement(OUT badExistsCtx)
+    CATCH ex AS ArgumentException
+        badExistsRejected := TRUE
+    END TRY
+    IF !badExistsRejected
+        THROW Exception{"Unclosed EXISTS subquery should be rejected"}
+    ENDIF
     VAR inParser := SQLParser{XTokenList{inLexer:AllTokens()}}
     LOCAL inCtx AS FoxSelectContext
     IF !inParser:ParseSelectStatement(OUT inCtx) .OR. ;

@@ -576,6 +576,8 @@ FUNCTION TestSelectIntoTable() AS VOID
     RETURN
 
 FUNCTION TestSelectCursorOptions() AS VOID
+    LOCAL previousErrorBlock := ErrorBlock() AS USUAL
+    LOCAL readOnlyErrorCaught := FALSE AS LOGIC
     CREATE CURSOR sql_cursor_options_source (Id I)
     INSERT INTO sql_cursor_options_source VALUES (1)
 
@@ -583,6 +585,35 @@ FUNCTION TestSelectCursorOptions() AS VOID
     DbSelectArea("SqlCursorDefault")
     IF !(LOGIC)DbInfo(DBI_READONLY) .OR. FieldGet(1) != 1
         THROW Exception{"Default INTO CURSOR output should be read-only and leave its source unchanged"}
+    ENDIF
+    // A custom ErrorBlock keeps the expected read-only error catchable in the
+    // test runner instead of invoking the default interactive error dialog.
+    ErrorBlock({|oError| ThrowEmbeddedSqlTestError(oError)})
+    TRY
+        REPLACE Id WITH 9 IN SqlCursorDefault
+    CATCH e AS Exception
+        IF e IS XSharp.Error VAR xError
+            IF xError:Gencode != XSharp.Gencode.EG_READONLY
+                THROW Exception{"Updating a read-only SELECT cursor reported the wrong error: " + e:ToString()}
+            ENDIF
+        ELSE
+            THROW Exception{"Updating a read-only SELECT cursor did not report an X# runtime error: " + e:ToString()}
+        ENDIF
+        readOnlyErrorCaught := TRUE
+    FINALLY
+        ErrorBlock(previousErrorBlock)
+    END TRY
+    IF !readOnlyErrorCaught .OR. FieldGet(1) != 1
+        THROW Exception{"REPLACE on a read-only SELECT cursor should fail without changing its value"}
+    ENDIF
+    ErrorBlock({|oError| IgnoreEmbeddedSqlTestError(oError)})
+    TRY
+        REPLACE Id WITH 10 IN SqlCursorDefault
+    FINALLY
+        ErrorBlock(previousErrorBlock)
+    END TRY
+    IF FieldGet(1) != 1
+        THROW Exception{"A returning error handler must not allow REPLACE to change a read-only cursor"}
     ENDIF
     DbSelectArea("sql_cursor_options_source")
     IF FieldGet(1) != 1
@@ -633,6 +664,15 @@ FUNCTION TestSelectCursorOptions() AS VOID
     ENDIF
     USE IN sql_cursor_options_source
     RETURN
+
+FUNCTION ThrowEmbeddedSqlTestError(oError AS OBJECT) AS USUAL
+    IF oError IS Exception VAR ex
+        THROW ex
+    ENDIF
+    THROW Exception{"Unexpected error object from the read-only cursor"}
+
+FUNCTION IgnoreEmbeddedSqlTestError(oError AS OBJECT) AS USUAL
+    RETURN NIL
 
 FUNCTION TestCrossJoinFunctionality() AS VOID
     ? "Testing CROSS JOIN functionality..."

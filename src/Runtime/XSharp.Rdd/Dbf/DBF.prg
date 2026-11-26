@@ -1672,6 +1672,8 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
         LOCAL ret := FALSE AS LOGIC
         IF SELF:_ReadOnly
             SELF:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY )
+            // Error handlers may return. Do not continue to modify the record buffer.
+            RETURN FALSE
         ENDIF
         IF SELF:EoF
             RETURN TRUE
@@ -1711,6 +1713,8 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
     OVERRIDE METHOD PutValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
         IF SELF:_ReadOnly
             SELF:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY )
+            // Error handlers may return. Do not continue to modify the record buffer.
+            RETURN FALSE
         ENDIF
         IF SELF:EoF
             RETURN FALSE

@@ -155,6 +155,7 @@ FUNCTION Start(args AS STRING[]) AS VOID STRICT
     RETURN
 
 FUNCTION TestCreate() AS VOID
+    TRY
     CREATE TABLE Salesman ;
         (SalesID c(6) PRIMARY KEY, ;
         SaleName Character(20) )
@@ -208,6 +209,30 @@ FUNCTION TestCreate() AS VOID
         THROW Exception{"Failed: Table not open"}
     ENDIF
 
+    FINALLY
+        CleanupSalesmanTable()
+    END TRY
+
+    RETURN
+
+FUNCTION CleanupSalesmanTable() AS VOID
+    IF Used("SALESMAN")
+        DbCloseArea("SALESMAN")
+    ENDIF
+
+    LOCAL tablePath := "Salesman.DBF" AS STRING
+    LOCAL defaultPath := SetDefault() AS STRING
+    IF !String.IsNullOrEmpty(defaultPath)
+        tablePath := System.IO.Path.Combine(defaultPath, tablePath)
+    ENDIF
+    tablePath := System.IO.Path.GetFullPath(tablePath)
+
+    FOREACH VAR extension IN <STRING>{".DBF", ".FPT", ".CDX"}
+        VAR filePath := System.IO.Path.ChangeExtension(tablePath, extension)
+        IF System.IO.File.Exists(filePath)
+            System.IO.File.Delete(filePath)
+        ENDIF
+    NEXT
     RETURN
 
 FUNCTION TestDelete() AS VOID

@@ -146,6 +146,45 @@ BEGIN NAMESPACE FabVFPXPorterCmd
 				settings:ExpandWithEndWith := TRUE
 			ELSEIF String.Compare(arg, "-noExpandWithEndWith", TRUE) == 0
 				settings:ExpandWithEndWith := FALSE
+			// ── Project file format ───────────────────────────────────────
+			ELSEIF arg:StartsWith("-projectFormat:", StringComparison.InvariantCultureIgnoreCase)
+				VAR value := StripQuotes(arg:Substring(15))
+				IF Enum.TryParse<ProjectFormat>(value, TRUE, OUT VAR pf) .AND. Enum.IsDefined(TYPEOF(ProjectFormat), pf)
+					settings:ProjectFormat := pf
+				ELSE
+					WarnBadValue("-projectFormat", value, "Classic | Sdk", settings:ProjectFormat:ToString())
+				ENDIF
+			ELSEIF arg:StartsWith("-targetFramework:", StringComparison.InvariantCultureIgnoreCase)
+				VAR value := StripQuotes(arg:Substring(17)):Trim()
+				IF value:Length > 0
+					settings:TargetFramework := value
+				ELSE
+					WarnBadValue("-targetFramework", value, "a target framework, e.g. net472 or net8.0-windows", settings:TargetFramework)
+				ENDIF
+			ELSEIF arg:StartsWith("-frameworkVersion:", StringComparison.InvariantCultureIgnoreCase)
+				VAR value := StripQuotes(arg:Substring(18)):Trim()
+				IF value:Length > 0
+					settings:FrameworkVersion := value
+				ELSE
+					WarnBadValue("-frameworkVersion", value, "a .NET Framework version, e.g. 4.7.2", settings:FrameworkVersion)
+				ENDIF
+			ELSEIF arg:StartsWith("-xsharpReferences:", StringComparison.InvariantCultureIgnoreCase)
+				VAR value := StripQuotes(arg:Substring(18))
+				IF Enum.TryParse<XSharpReferenceMode>(value, TRUE, OUT VAR xr) .AND. Enum.IsDefined(TYPEOF(XSharpReferenceMode), xr)
+					settings:XSharpReferences := xr
+				ELSE
+					WarnBadValue("-xsharpReferences", value, "NuGet | InstalledAssemblies", settings:XSharpReferences:ToString())
+				ENDIF
+			ELSEIF arg:StartsWith("-xsharpVersion:", StringComparison.InvariantCultureIgnoreCase)
+				// Empty value = version of the X# installation (the default)
+				settings:XSharpPackageVersion := StripQuotes(arg:Substring(15)):Trim()
+			ELSEIF arg:StartsWith("-solutionFormat:", StringComparison.InvariantCultureIgnoreCase)
+				VAR value := StripQuotes(arg:Substring(16))
+				IF Enum.TryParse<SolutionFormat>(value, TRUE, OUT VAR sf) .AND. Enum.IsDefined(TYPEOF(SolutionFormat), sf)
+					settings:SolutionFormat := sf
+				ELSE
+					WarnBadValue("-solutionFormat", value, "Sln | Slnx", settings:SolutionFormat:ToString())
+				ENDIF
 			ELSE
 				Console.ForegroundColor := ConsoleColor.Yellow
 				Console.WriteLine("Warning: unknown argument '" + arg + "'")
@@ -232,6 +271,13 @@ BEGIN NAMESPACE FabVFPXPorterCmd
 	// Handles the case where the shell passes quotes through to the argument string.
 	FUNCTION StripQuotes( value AS STRING ) AS STRING
 		RETURN value:Trim():Trim( <CHAR>{ '"' } ):Trim()
+
+	// Warn about an invalid switch value; the setting keeps its current (default) value.
+	FUNCTION WarnBadValue( switchName AS STRING, value AS STRING, expected AS STRING, kept AS STRING ) AS VOID
+		Console.ForegroundColor := ConsoleColor.Yellow
+		Console.WriteLine("Warning: invalid " + switchName + " value '" + value + "' (expected " + expected + ") — using " + kept + ".")
+		Console.ResetColor()
+		RETURN
 
 END NAMESPACE
 

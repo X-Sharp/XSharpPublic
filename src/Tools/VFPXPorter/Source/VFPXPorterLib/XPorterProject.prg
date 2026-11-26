@@ -582,7 +582,7 @@ BEGIN NAMESPACE VFPXPorterLib
                                 SELF:GeneratedFiles:Add( GeneratedFile{destFile})
                             ENDIF
                             // Export the informations in an Visual Studio xsproj file
-                            SELF:GenerateSolution( stdDef, vfpxporterPath )
+                            SELF:GenerateSolution( vfpxporterPath )
                         ENDIF
                     ENDIF
                 ENDIF
@@ -710,23 +710,25 @@ BEGIN NAMESPACE VFPXPorterLib
                 XPorterLogger.Instance:Warning("CopyDbcOwnedTables: cannot read '" + dbcPath + "': " + e:Message)
             END TRY
 
-        PRIVATE METHOD AddStandardReferences( xsprj AS VSProject ) AS VOID
-            xsprj:AddReference( "mscorlib" )
-            xsprj:AddReference("System" )
-            xsprj:AddReference("System.Core" )
-            xsprj:AddReference("System.Data" )
-            xsprj:AddReference("System.Data.DataSetExtensions" )
-            xsprj:AddReference("System.Xml" )
-            xsprj:AddReference("System.Xml.Linq" )
-            xsprj:AddReference("System.Drawing" )
-            xsprj:AddReference("System.Windows.Forms" )
-            xsprj:AddReference("XSharp.Core",TRUE)
-            xsprj:AddReference("XSharp.RT",TRUE)
-            xsprj:AddReference("XSharp.RDD",TRUE)
-            xsprj:AddReference("XSharp.Data",TRUE)
-            xsprj:AddReference("XSharp.VFP",TRUE)
-            // After removing the XSharp.VFP.UI from Data/Templates/Tools, we MUST add it here
-            xsprj:AddReference("XSharp.VFP.UI",TRUE)
+        /// <summary>
+        /// Create the project object used to write one exported .xsproj, with its standard references.
+        /// Single place that decides the project format.
+        /// </summary>
+        /// <param name="name">Project name.</param>
+        /// <param name="isLibrary">TRUE for a class library project.</param>
+        PRIVATE METHOD CreateVSProject( name AS STRING, isLibrary AS LOGIC ) AS VSProject
+            VAR prj := VSProject{ name }
+            prj:IsLibrary := isLibrary
+            prj:AddStandardReferences()
+            RETURN prj
+        END METHOD
+
+        /// <summary>
+        /// Create the solution object used to write the exported solution file.
+        /// Single place that decides the solution format.
+        /// </summary>
+        PRIVATE METHOD CreateVSSolution() AS VSSolution
+            RETURN VSSolution{}
         END METHOD
 
         // Returns VCX paths in dependency-first order (a library comes before every library that depends on it).
@@ -789,7 +791,9 @@ BEGIN NAMESPACE VFPXPorterLib
         END METHOD
 
         // Generate a MSBuild file
-        PRIVATE METHOD GenerateSolution( stdDef AS STRING, vfpxporterPath AS STRING ) AS VOID
+        // vfpxporterPath : full path of the copied VFPXPorter.xh header (empty if none); each project
+        //                  makes its own StandardDefs value relative to its folder.
+        PRIVATE METHOD GenerateSolution( vfpxporterPath AS STRING ) AS VOID
             LOCAL xsLibs := NULL AS VSProject
             VAR vcxProjects := Dictionary<STRING, VSProject>{ StringComparer.OrdinalIgnoreCase }
 
@@ -821,9 +825,7 @@ BEGIN NAMESPACE VFPXPorterLib
                             LOOP  // no generated files for this VCX (export failed)
                         ENDIF
                         VAR libName := Path.GetFileNameWithoutExtension( libPath ):Replace(" ", "_")
-                        VAR xsLib := VSProject{ libName }
-                        xsLib:IsLibrary := TRUE
-                        SELF:AddStandardReferences( xsLib )
+                        VAR xsLib := SELF:CreateVSProject( libName, TRUE )
 
                         // Compute library output folder early — needed for all path rebasing below
                         VAR libFolder := SELF:ComputeLibOutputFolder( libPath )
@@ -863,24 +865,15 @@ BEGIN NAMESPACE VFPXPorterLib
                             NEXT
                         ENDIF
 
-                        // Compute per-library stdDef so VFPXPorter.xh resolves correctly from this subfolder
-                        LOCAL libStdDef AS STRING
-                        IF !String.IsNullOrEmpty( vfpxporterPath ) .AND. File.Exists( vfpxporterPath )
-                            libStdDef := "$(projectdir)" + GetRelativePath( libFolder, vfpxporterPath )
-                        ELSE
-                            libStdDef := stdDef
-                        ENDIF
-
+                        // StandardDefs relative to this library's subfolder so VFPXPorter.xh resolves
                         VAR libProjPath := Path.Combine( libFolder, libName + ".xsproj" )
-                        xsLib:Save( libProjPath, libStdDef )
+                        xsLib:Save( libProjPath, xsLib:FormatStandardDefs( vfpxporterPath, libFolder ) )
                         xsLib:RelativePath := GetRelativePath( solutionBasePath, libProjPath )
                         vcxProjects:Add( libPath, xsLib )
                     NEXT
                 ELSE
                     // ── Monolithic ClassLibraries (existing behaviour) ───────────
-                    xsLibs := VSProject{ "ClassLibraries" }
-                    xsLibs:IsLibrary := TRUE
-                    SELF:AddStandardReferences( xsLibs )
+                    xsLibs := SELF:CreateVSProject( "ClassLibraries", TRUE )
                     FOREACH refFile AS Reference IN SELF:ReferenceLibFiles
                         xsLibs:AddReference( refFile )
                     NEXT
@@ -896,7 +889,7 @@ BEGIN NAMESPACE VFPXPorterLib
                         ENDIF
                     NEXT
                     VAR libProjPath := Path.Combine( SELF:outputPath, "ClassLibraries.xsproj" )
-                    xsLibs:Save( libProjPath, stdDef )
+                    xsLibs:Save( libProjPath, xsLibs:FormatStandardDefs( vfpxporterPath, SELF:outputPath ) )
                     xsLibs:RelativePath := GetRelativePath( solutionBasePath, libProjPath )
                 ENDIF
             ENDIF
@@ -904,9 +897,8 @@ BEGIN NAMESPACE VFPXPorterLib
             // ── Main project ─────────────────────────────────────────────────
             VAR projectName := Path.GetFileNameWithoutExtension( SELF:pjxFilePath )
             VAR projectPath := Path.Combine( SELF:outputPath, projectName + ".xsproj" )
-            VAR xsProj := VSProject{ projectName }
+            VAR xsProj := SELF:CreateVSProject( projectName, FALSE )
             xsProj:ProjectType := SELF:Settings:OutputType
-            SELF:AddStandardReferences( xsProj )
             FOREACH refFile AS Reference IN SELF:ReferenceFiles
                 xsProj:AddReference( refFile )
             NEXT
@@ -928,10 +920,10 @@ BEGIN NAMESPACE VFPXPorterLib
             FOREACH prj AS VSProject IN vcxProjects:Values
                 xsProj:ProjectReferenceList:Add( prj )
             NEXT
-            xsProj:Save( projectPath, stdDef )
+            xsProj:Save( projectPath, xsProj:FormatStandardDefs( vfpxporterPath, SELF:outputPath ) )
 
             // ── Solution ──────────────────────────────────────────────────────
-            VAR xsSolution := VSSolution{}
+            VAR xsSolution := SELF:CreateVSSolution()
 
             LOCAL solutionName AS STRING
             IF !String.IsNullOrWhiteSpace( SELF:Settings:SolutionName )
@@ -940,7 +932,7 @@ BEGIN NAMESPACE VFPXPorterLib
                 solutionName := projectName
             ENDIF
 
-            VAR solutionFile := Path.Combine( solutionBasePath, solutionName + ".sln" )
+            VAR solutionFile := Path.Combine( solutionBasePath, solutionName + xsSolution:FileExtension )
 
             IF SELF:Settings:AppendToSolution .AND. File.Exists( solutionFile )
                 xsSolution:Load( solutionFile )

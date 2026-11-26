@@ -130,11 +130,47 @@ CLASS VSProject
         SELF:ReferenceList:Add( refer )
 
     /// <summary>
+    /// Add the references every exported project needs: the .NET Framework assemblies used by the
+    /// generated code, and the X# runtime (including XSharp.VFP.UI).
+    /// </summary>
+    /// <remarks>Overridden by project formats that reference these differently (e.g. NuGet packages).</remarks>
+    PUBLIC VIRTUAL METHOD AddStandardReferences() AS VOID
+        SELF:AddReference( "mscorlib" )
+        SELF:AddReference( "System" )
+        SELF:AddReference( "System.Core" )
+        SELF:AddReference( "System.Data" )
+        SELF:AddReference( "System.Data.DataSetExtensions" )
+        SELF:AddReference( "System.Xml" )
+        SELF:AddReference( "System.Xml.Linq" )
+        SELF:AddReference( "System.Drawing" )
+        SELF:AddReference( "System.Windows.Forms" )
+        SELF:AddReference( "XSharp.Core", TRUE )
+        SELF:AddReference( "XSharp.RT", TRUE )
+        SELF:AddReference( "XSharp.RDD", TRUE )
+        SELF:AddReference( "XSharp.Data", TRUE )
+        SELF:AddReference( "XSharp.VFP", TRUE )
+        // XSharp.VFP.UI is no longer copied from Data/Templates/Tools, so it MUST be referenced here
+        SELF:AddReference( "XSharp.VFP.UI", TRUE )
+        RETURN
+
+    /// <summary>
+    /// Build the value of the StandardDefs property, pointing to the VFPXPorter header file.
+    /// </summary>
+    /// <param name="headerFullPath">Full path of the VFPXPorter.xh header (empty if none).</param>
+    /// <param name="projectFolder">Folder of the project file; the header path is made relative to it.</param>
+    /// <returns>The StandardDefs value, or an empty string when there is no header.</returns>
+    PUBLIC VIRTUAL METHOD FormatStandardDefs( headerFullPath AS STRING, projectFolder AS STRING ) AS STRING
+        IF String.IsNullOrEmpty( headerFullPath )
+            RETURN ""
+        ENDIF
+        RETURN "$(projectdir)" + GetRelativePath( projectFolder, headerFullPath )
+
+    /// <summary>
     /// Save the XML document to the given path, using the project name and the standard definitions
     /// </summary>
     /// <param name="projectFileNameFullPath">The full path to the project file.</param>
     /// <param name="stdDef">The standard definitions to use.</param>
-    PUBLIC METHOD Save( projectFileNameFullPath AS STRING, stdDef AS STRING ) AS VOID
+    PUBLIC VIRTUAL METHOD Save( projectFileNameFullPath AS STRING, stdDef AS STRING ) AS VOID
         XmlDoc := XmlDocument{}
         //
         VAR xsProj := SELF:CreateElement(XmlDoc,"Project")
@@ -206,7 +242,7 @@ CLASS VSProject
         RETURN
 
 
-    PRIVATE METHOD AddConfigCommon(parent AS XmlElement) AS VOID
+    PROTECTED METHOD AddConfigCommon(parent AS XmlElement) AS VOID
         SELF:CreateElement( parent, "PlatformTarget","AnyCPU")
         SELF:CreateElement( parent, "ErrorReport", "prompt")
         SELF:CreateElement( parent, "WarningLevel", "4")
@@ -214,7 +250,7 @@ CLASS VSProject
         SELF:CreateElement(parent, "OutputPath", "bin\$(Configuration)\")
 
 
-    PRIVATE METHOD AddConfigRelease(parent AS XmlElement ) AS VOID
+    PROTECTED METHOD AddConfigRelease(parent AS XmlElement ) AS VOID
         LOCAL configAttr AS XmlAttribute
         configAttr := XmlDoc:CreateAttribute( "Condition" )
         configAttr:Value := "'$(Configuration)|$(Platform)' == 'Release|AnyCPU'"
@@ -227,7 +263,7 @@ CLASS VSProject
         SELF:AddConfigCommon(parent)
 
 
-    PRIVATE METHOD AddConfigDebug(parent AS XmlElement ) AS VOID
+    PROTECTED METHOD AddConfigDebug(parent AS XmlElement ) AS VOID
         LOCAL configAttr AS XmlAttribute
         configAttr := XmlDoc:CreateAttribute( "Condition" )
         configAttr:Value := "'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'"
@@ -239,7 +275,7 @@ CLASS VSProject
         SELF:CreateElement(parent, "DefineConstants","VFP2XS;DEBUG;TRACE")
         SELF:AddConfigCommon(parent)
 
-    PRIVATE METHOD CreateElement(parent AS XmlNode, name as STRING, strValue := NULL as STRING) AS XmlElement
+    PROTECTED METHOD CreateElement(parent AS XmlNode, name as STRING, strValue := NULL as STRING) AS XmlElement
         LOCAL node AS XmlElement
         node := SELF:XmlDoc:CreateElement(name)
         if ! String.IsNullOrEmpty(strValue)
@@ -247,7 +283,7 @@ CLASS VSProject
         endif
         parent:AppendChild( node )
         RETURN node
-    PRIVATE METHOD AddCompileSettings(parent AS XmlElement, name AS STRING, stdDef AS STRING ) AS VOID
+    PROTECTED METHOD AddCompileSettings(parent AS XmlElement, name AS STRING, stdDef AS STRING ) AS VOID
         //dummy := xmlDoc:CreateElement("XSharpProjectExtensionsPath")
         //dummy:InnerText := "$(MSBuildExtensionsPath)\XSharp\"
         //parent:AppendChild( dummy )
@@ -285,20 +321,36 @@ CLASS VSProject
         SELF:CreateElement(parent, "TargetFrameworkVersion", SELF:FrameworkVersion)
         SELF:CreateElement(parent, "NoLogo", "true")
         SELF:CreateElement(parent, "GenerateFullPaths", "true")
-        SELF:CreateElement(parent, "Dialect", "FoxPro")
-        SELF:CreateElement(parent, "AllowOldStyleAssignments", "True")
-        SELF:CreateElement(parent, "LB", "true")
-        SELF:CreateElement(parent, "OutputName", name)
-        SELF:CreateElement(parent, "Undeclared", "true")
-        SELF:CreateElement(parent, "MemVar", "true")
-        SELF:CreateElement(parent, "AllowOldStyleAssignments", "true")
-        SELF:CreateElement(parent, "Allowdot", "true")
-        SELF:CreateElement(parent, "Vo9", "true")
-        SELF:CreateElement(parent, "Vo15", "true")
-        SELF:CreateElement(parent, "Ins", "true")
+        FOREACH VAR switch IN SELF:GetCompilerSwitches( name )
+            SELF:CreateElement(parent, switch:Key, switch:Value)
+        NEXT
         IF !String.IsNullOrEmpty( stdDef )
             SELF:CreateElement( parent, "StandardDefs", stdDef)
         ENDIF
+
+    /// <summary>
+    /// The X# compiler settings of an exported project (dialect and compatibility switches), in the
+    /// order they are written. Shared by every project format.
+    /// </summary>
+    /// <param name="name">Project name (used for OutputName).</param>
+    /// <remarks>
+    /// The classic format writes AllowOldStyleAssignments twice; it is kept so existing exports stay
+    /// byte-identical. Writers that must not repeat a property should skip keys already written.
+    /// </remarks>
+    PROTECTED VIRTUAL METHOD GetCompilerSwitches( name AS STRING ) AS List<KeyValuePair<STRING, STRING>>
+        VAR switches := List<KeyValuePair<STRING, STRING>>{}
+        switches:Add( KeyValuePair<STRING, STRING>{ "Dialect", "FoxPro" } )
+        switches:Add( KeyValuePair<STRING, STRING>{ "AllowOldStyleAssignments", "True" } )
+        switches:Add( KeyValuePair<STRING, STRING>{ "LB", "true" } )
+        switches:Add( KeyValuePair<STRING, STRING>{ "OutputName", name } )
+        switches:Add( KeyValuePair<STRING, STRING>{ "Undeclared", "true" } )
+        switches:Add( KeyValuePair<STRING, STRING>{ "MemVar", "true" } )
+        switches:Add( KeyValuePair<STRING, STRING>{ "AllowOldStyleAssignments", "true" } )
+        switches:Add( KeyValuePair<STRING, STRING>{ "Allowdot", "true" } )
+        switches:Add( KeyValuePair<STRING, STRING>{ "Vo9", "true" } )
+        switches:Add( KeyValuePair<STRING, STRING>{ "Vo15", "true" } )
+        switches:Add( KeyValuePair<STRING, STRING>{ "Ins", "true" } )
+        RETURN switches
 
 END CLASS
 

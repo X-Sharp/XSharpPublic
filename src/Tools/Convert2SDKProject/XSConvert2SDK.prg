@@ -166,7 +166,8 @@ METHOD DoConvert( prjFile AS STRING ) AS VOID
         newPropertyGroup:Add( XElement{"AssemblyName", assemblyName})
     ENDIF
 
-    if strFileContents:ToLower():Contains("windows.forms.dll")
+    // Classic projects reference it as Include="System.Windows.Forms" (no .dll); XSharp.VFP.UI also needs WinForms
+    if strFileContents:ToLower():Contains("system.windows.forms") .OR. strFileContents:ToLower():Contains("xsharp.vfp.ui")
         newPropertyGroup:Add( XElement{"UseWindowsForms", "true"})
     endif
 
@@ -307,7 +308,8 @@ PRIVATE METHOD LoadNugetMapping() AS VOID
     moveToNuget:Add( "XSharp.Core", List<STRING>{ <STRING>{ "XSharp.Core" } })
     moveToNuget:Add( "XSharp.RT", List<STRING>{ <STRING>{ "XSharp.Data", "XSharp.MacroCompiler", "XSharp.RDD", "XSharp.RT.Debugger", "XSharp.RT"} } )
     moveToNuget:Add( "XSharp.Harbour", List<STRING>{ <STRING>{"XSharp.Harbour" } } )
-    moveToNuget:Add( "XSharp.VFP", List<STRING>{ <STRING>{"XSharp.VFP" } } )
+    // XSharp.VFP.UI ships inside the XSharp.VFP package
+    moveToNuget:Add( "XSharp.VFP", List<STRING>{ <STRING>{"XSharp.VFP", "XSharp.VFP.UI" } } )
     moveToNuget:Add( "XSharp.VO", List<STRING>{ <STRING>{"XSharp.VO" } } )
     moveToNuget:Add( "XSharp.VOSDK", List<STRING>{ <STRING>{"VOConsoleClasses", "VOGUIClasses", "VOInternetClasses", "VORDDClasses", "VOReportClasses", "VOSQLClasses", "VOSystemClasses", "VOWin32APILibrary" } } )
     moveToNuget:Add( "XSharp.VOSDKTyped", List<STRING>{ <STRING>{"VOConsoleClasses", "VOGUIClasses", "VORDDClasses", "VOSQLClasses", "VOSystemClasses"} } )

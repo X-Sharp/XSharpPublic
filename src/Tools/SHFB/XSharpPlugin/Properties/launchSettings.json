@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "EHFW-Debug": {
+      "commandName": "Executable",
+      "executablePath": "e:\\XSharp\\SHFB\\SHFB\\Deploy\\Tools\\SandcastleBuilderGUI.exe "
+    }
+  }
+}

@@ -1,0 +1,84 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\SHFB.targets" />
+	<!-- See the help topic https://ewsoftware.github.io/SHFB/html/d7b0528c-c75a-477b-9445-db6d2c55dbcb.htm
+			 for information on why conditional target frameworks are used. -->
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<!-- Use the full framework for debugging -->
+		<TargetFramework>net48</TargetFramework>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<!-- Use .NET Standard for release builds -->
+		<TargetFramework>netstandard2.0</TargetFramework>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<!-- Only use an unconditional target framework if you have a UI project within the solution that can be
+				 used to start debugging.
+		<TargetFramework>netstandard2.0</TargetFramework> -->
+		<GenerateAssemblyVersionAttribute>False</GenerateAssemblyVersionAttribute>
+		<GenerateAssemblyFileVersionAttribute>False</GenerateAssemblyFileVersionAttribute>
+		<GenerateAssemblyInformationalVersionAttribute>False</GenerateAssemblyInformationalVersionAttribute>
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
+		<RootNamespace>PresentationStyleMods</RootNamespace>
+		<AssemblyName>XSharpDocChanger</AssemblyName>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Product>PresentationStyleModsPlugIn</Product>
+		<Title>PresentationStyleModsPlugIn Plug-In</Title>
+		<Description>A Sandcastle Help File Builder plug-in</Description>
+		<Version>1.0.0.0</Version>
+		<Authors>Eric Woodruff</Authors>
+		<Company>EWSoftware</Company>
+		<PackageIconUrl></PackageIconUrl>
+		<PackageIcon></PackageIcon>
+		<RepositoryUrl></RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>PresentationStyleModsPlugIn SHFB sandcastle plug-in</PackageTags>
+		<PackageProjectUrl>https://github.com/EWSoftware/PresentationStyleModsPlugIn</PackageProjectUrl>
+		<PackageLicenseExpression>MS-PL</PackageLicenseExpression>
+		<PackageReleaseNotes></PackageReleaseNotes>
+		<PackageReadmeFile>ReadMe.md</PackageReadmeFile>
+		<IsTool>true</IsTool>
+		<NoWarn>$(NoWarn);NU5128</NoWarn>
+		<ContentTargetFolders>tools\</ContentTargetFolders>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<LangVersion>13.0</LangVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="Resources\PresentationStyleMods-en-US.xml" />
+		<None Remove="Resources\PresentationStyleMods.css" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Include="..\..\..\Common\Constants.cs" Link="Constants.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Resources\PresentationStyleMods-en-US.xml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Resources\PresentationStyleMods.css">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="build\PresentationStyleModsPlugIn.props">
+			<Pack>true</Pack>
+			<PackagePath>build\</PackagePath>
+		</None>
+		<None Include="ReadMe.md" Pack="True" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.ComponentModel.Composition" Version="10.0.1" />
+		<PackageReference Include="EWSoftware.Sandcastle.Core" Version="2025.12.18" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	  <Exec Command="XCopy /y $(OutputPath)\XSharp*.* &quot;c:\ProgramData\EWSoftware\Sandcastle Help File Builder\Components and Plug-Ins\&quot;" />
+	</Target>
+
+</Project>

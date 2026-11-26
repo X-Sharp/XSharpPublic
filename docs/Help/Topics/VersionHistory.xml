@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2026-11-17T10:59:00.283Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic template="Default" modified="2026-11-23T16:47:50.021Z" lasteditedby="robert" version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title>Version History</title>
   <keywords>
     <keyword>#2127</keyword>
@@ -38,6 +38,7 @@
       <li styleclass="List1">Fixes two issues when including C# files in the source files for X# (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2151" target="_blank">#2151</link> and <link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2153" target="_blank">#2153</link>)</li>
       <li styleclass="List1">Fixed an issue when assigning a lambda expression to a variable declared as USUAL or OBJECT. A lambda without a real target type is now converted to its natural delegate type (Func&lt;...&gt; or Action&lt;...&gt;) first and that delegate is then converted to the destination type</li>
       <li styleclass="List1">Fixed random XS0266, XS1503 and XS0121 errors when compiling with /vo4 caused by the SuppressVo4 setting being shared between compiler threads (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2173" target="_blank">#2173</link>)</li>
+      <li styleclass="List1">Fixed issue with Wrong [CallerLineNumber] for calls without arguments (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2194" target="_blank">#2194</link>)</li>
     </list>
     <para styleclass="Heading2">Build System</para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -58,6 +59,8 @@
       <li styleclass="List1">Expanded VFP database support with CLOSE DATABASES/CLOSE TABLES and DBC commands such as ADD TABLE, REMOVE TABLE and RENAME TABLE, plus support for long DBC field names</li>
       <li styleclass="List1">Expanded XSharp.VFP.UI with ON KEY LABEL support, FormSet constructors, additional control properties, dynamic colors, and broader Grid and Menu support</li>
       <li styleclass="List1">Implemented the VFP functions CNTBAR() and CNTPAD() (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2172" target="_blank">#2172</link>)</li>
+      <li styleclass="List1">Implemented the VFP functions SKPBAR(), SKPPAD(), BARCOUNT() and BARPROMPT() (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2190" target="_blank">#2190</link>)</li>
+      <li styleclass="List1">Improved the speed of MemCopy() and MemSet(), especially for large blocks of memory.</li>
     </list>
     <para styleclass="Heading3">Bug Fixes</para>
     <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -96,6 +99,9 @@
       <li styleclass="List1">Added support for primary constructors and static interface constructors</li>
       <li styleclass="List1">Implemented the Project context menu option &quot;Convert to SDK format&quot; for projects in the legacy format. The old project file is saved with a .BAK extension.</li>
       <li styleclass="List1">The project Property pages are now based on the XAML files in the MsBuild Rules folder</li>
+    </list>
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
+      <li styleclass="List1">The IDE no longer uses EnvDTE to find the startup project</li>
       <li styleclass="List1">Added support for several new Intellisense features, contributed by one of our customers (Thanks HansJoerg)</li>
       <list id="5" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:&apos;Courier New&apos;; font-size:11pt; color:#000000;">
         <li styleclass="List1">Added support for <text style="font-weight:bold;">Find All References </text>in the source code editor (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/issues/2148" target="_blank">#2148</link>)</li>
@@ -107,6 +113,7 @@
         <li styleclass="List1"><text style="font-weight:bold;">Goto Definition </text>now also works for types and members in the C# and VB projects of the solution. F12 picks the correct overload (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2170" target="_blank">#2170</link>)</li>
         <li styleclass="List1">The Code Search window (Ctrl-T) now shows a preview for X# results and the preview no longer takes the focus (<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2171" target="_blank">#2171</link>)</li>
       </list>
+     <li styleclass="List1">Improved the speed of loading the intellisense database when a solution is opened &#160;(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2191" target="_blank">#2191</link>)</li>
     </list>
     <para styleclass="Heading3">Bug Fixes</para>
     <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
@@ -128,9 +135,9 @@
       <li styleclass="List1">SDK style projects now also add references to projects in other languages to the code model</li>
       <li styleclass="List1">The error squiggle now has the length of the token at the error position</li>
       <li styleclass="List1">Fixed an exception for an incomplete VAR statement</li>
-      <li styleclass="List1">The IDE no longer uses EnvDTE to find the startup project</li>
+      <li styleclass="List1">Cross targeting projects were sometimes not including all files in the intellisense database for each target &#160;(<link displaytype="text" defaultstyle="true" type="weblink" href="https://github.com/X-Sharp/XSharpPublic/pull/2192" target="_blank">#2192</link>)</li>
     </list>
-    <para styleclass="Heading2">VFPExporter</para>
+     <para styleclass="Heading2">VFPExporter</para>
     <para styleclass="Heading3">New Features</para>
     <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="List1" style="font-family:Symbol; font-size:11pt; color:#000000;">
       <li styleclass="List1">Added a KeepFolderStructure option so exported projects can preserve the original VFP folder tree</li>

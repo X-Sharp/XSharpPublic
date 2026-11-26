@@ -3,8 +3,6 @@
     <BuildType Name="Debug" />
     <BuildType Name="Public" />
     <BuildType Name="Release" />
-    <Platform Name="Any CPU" />
-    <Platform Name="x64" />
   </Configurations>
   <Folder Name="/CSharp/">
     <Project Path="Compiler/src/Tools/csc/csc.csproj">
@@ -34,7 +32,6 @@
     </Project>
     <Project Path="Roslyn/src/Tools/Source/CompilerGeneratorTools/Source/CSharpSyntaxGenerator/CSharpSyntaxGenerator.csproj">
       <BuildType Solution="Public|*" Project="Debug" />
-      <Platform Solution="*|x64" Project="x64" />
     </Project>
   </Folder>
   <Folder Name="/Solution Items/">

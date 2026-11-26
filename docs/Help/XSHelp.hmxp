@@ -11,6 +11,7 @@
               <task-config-value name="skin">XSharp.hmskin</task-config-value>
               <task-config-value name="deletetemp">1</task-config-value>
               <task-config-value name="make0include">CHM</task-config-value>
+              <task-config-value name="make0includeskin">PRINTBUTTON</task-config-value>
               <task-config-value name="make0status">*</task-config-value>
             </task-config-group>
           </export-task>
@@ -39,7 +40,7 @@
           <export-task name="Publish as HXS" format="HXS">
             <task-config-group name="settings">
               <task-config-value name="outputfile">..\..\artifacts\Doc\XSharp.mshc</task-config-value>
-              <task-config-value name="deletetemp">0</task-config-value>
+              <task-config-value name="deletetemp">1</task-config-value>
               <task-config-value name="make2include">HXS</task-config-value>
               <task-config-value name="make2status">*</task-config-value>
             </task-config-group>
@@ -192,11 +193,11 @@
       <config-value name="tidyxml">1</config-value>
       <config-value name="contents">XSharp</config-value>
       <config-value name="make3includeskin">OPT_PARENTHOME,OPT_TOPICFOOTER,OPT_WEBFONTS</config-value>
-      <config-value name="make5include">PRINT</config-value>
+      <config-value name="make5include">DOCX</config-value>
       <config-value name="make5status">*</config-value>
       <config-value name="make6include">HTML,EBOOK</config-value>
       <config-value name="make6status">*</config-value>
-      <config-group name="bookmarks"/>
+      <config-value name="make0includeskin">PRINTBUTTON</config-value>
     </config-group>
     <config-group name="pdf">
       <config-value name="style">0</config-value>
@@ -704,16 +705,16 @@
       <config-value name="deletetemp">0</config-value>
     </config-group>
     <config-group name="print">
-      <config-value name="include">PRINT</config-value>
+      <config-value name="include">DOCX</config-value>
       <config-value name="template">Standard_manual_A4.mnl</config-value>
       <config-value name="colortext">0</config-value>
       <config-value name="insertseealso">0</config-value>
       <config-value name="insertseealsostyle">-1</config-value>
-      <config-value name="tocname">Table of Contents</config-value>
+      <config-value name="printoptions">0</config-value>
+      <config-value name="printoptionscutmarks">0</config-value>
     </config-group>
     <config-group name="rtf">
       <config-value name="outputfile">XSHelp_manual.docx</config-value>
-      <config-value name="template">$(HMSYS)Templates\Word\Word-Template-Simple-A4.docx</config-value>
     </config-group>
     <config-group name="ebook">
       <config-value name="outputfile">..\..\artifacts\doc\XSHelp.ewriter</config-value>

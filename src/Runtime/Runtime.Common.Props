@@ -2,6 +2,7 @@
 <Project>
   <Import Project="..\Shared.props" />
   <PropertyGroup>
+    <Configurations>Debug;Release</Configurations>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <OutputType>Library</OutputType>
     <RootNamespace>XSharp</RootNamespace>

@@ -198,8 +198,9 @@
   </Folder>
   <Folder Name="/Tools/SHFB/">
     <File Path="Tools/SHFB/SHFB.Targets" />
-    <Project Path="Tools/SHFB/XSharpPlugin/XSharpPlugin.csproj" Id="9e903f77-f7c7-4440-8508-7a30a4fa43fd" />
-    <Project Path="Tools/SHFB/XSharpSyntax/XSharpSyntax.csproj" Id="8e45c5bd-c5f7-4c00-8fb2-ec84413626d0" />
+    <Project Path="Tools/SHFB/XSharpPlugin/XSharpDocChanger.csproj">
+      <BuildType Solution="Public|*" Project="Release" />
+    </Project>
     <Project Path="Tools/SHFB/XSharpVs/XSharpVs.csproj" Id="770cc19a-4bf3-4755-a293-39e9b20739d7" />
   </Folder>
   <Folder Name="/Tools/VFP/">

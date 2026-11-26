@@ -81,7 +81,7 @@
     <SdkLinkTarget>Blank</SdkLinkTarget>
     <HelpFileFormat>HtmlHelp1, MSHelpViewer, Website</HelpFileFormat>
     <SyntaxFilters>C#, X#</SyntaxFilters>
-    <PresentationStyle>VS2013XSharp</PresentationStyle>
+    <PresentationStyle>VS2013</PresentationStyle>
     <CleanIntermediates>False</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
     <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
@@ -183,17 +183,28 @@
     </ComponentConfigurations>
     <MissingTags>AutoDocumentCtors, Namespace, AutoDocumentDispose</MissingTags>
     <TransformComponentArguments>
-      <Argument Key="logoFile" Value="logo100.jpg" />
-      <Argument Key="logoHeight" Value="50" />
-      <Argument Key="logoWidth" Value="" />
-      <Argument Key="logoAltText" Value="X#" />
-      <Argument Key="logoPlacement" Value="right" />
-      <Argument Key="logoAlignment" Value="center" />
-      <Argument Key="maxVersionParts" Value="" />
-      <Argument Key="defaultLanguage" Value="xs" />
-      <Argument Key="includeEnumValues" Value="true" />
-      <Argument Key="baseSourceCodeUrl" Value="https://github.com/X-Sharp/XSharpPublic/blob/main/src/" />
-      <Argument Key="requestExampleUrl" Value="mailto:info@xsharp.eu" />
+      <Argument Key="RobotsMetadata" Value="" />
+      <Argument Key="BibliographyDataFile" Value="" />
+      <Argument Key="RootBreadcrumbTitleText" Value="Docs" />
+      <Argument Key="ResizableTocColumn" Value="False" />
+      <Argument Key="LogoFile" Value="logo100.jpg" />
+      <Argument Key="LogoHeight" Value="50" />
+      <Argument Key="LogoWidth" Value="" />
+      <Argument Key="LogoAltText" Value="X#" />
+      <Argument Key="LogoPlacement" Value="right" />
+      <Argument Key="LogoAlignment" Value="center" />
+      <Argument Key="MaxVersionParts" Value="" />
+      <Argument Key="DefaultLanguage" Value="xs" />
+      <Argument Key="IncludeEnumValues" Value="true" />
+      <Argument Key="EnumMemberSortOrder" Value="Value" />
+      <Argument Key="FlagsEnumValueFormat" Value="IntegerValue" />
+      <Argument Key="FlagsEnumSeparatorSize" Value="0" />
+      <Argument Key="IncludeIntegerEnumSeparators" Value="true" />
+      <Argument Key="ProjectUrl" Value="" />
+      <Argument Key="BaseSourceCodeUrl" Value="https://github.com/X-Sharp/XSharpPublic/blob/main/src/" />
+      <Argument Key="RequestExampleUrl" Value="mailto:info@xsharp.eu" />
+      <Argument Key="ShowParametersOnAllMethods" Value="False" />
+      <Argument Key="AlwaysShowTopLevelAutoOutline" Value="true" />
     </TransformComponentArguments>
     <HtmlSdkLinkType>Msdn</HtmlSdkLinkType>
     <BinaryTOC>True</BinaryTOC>
@@ -260,19 +271,10 @@
     <SaveComponentCacheCapacity>0</SaveComponentCacheCapacity>
     <TocOrder>-1</TocOrder>
     <PlugInConfigurations>
-      <PlugInConfig id="XSharp Function Output" enabled="True">
+      <PlugInConfig id="XSharp Doc Changer" enabled="True">
         <configuration />
       </PlugInConfig>
-      <PlugInConfig id="XPath Reflection File Filter" enabled="True">
-        <configuration>
-          <expressions>
-            <expression>/reflection/apis/api[contains(@id,"N:") and string-length(@id)=2]</expression>
-            <expression>/reflection/apis/api[starts-with(apidata/@name,"$")]</expression>
-            <expression>/reflection/apis/api[starts-with(apidata/@name,"__") and not(starts-with(@id,"T:"))]</expression>
-          </expressions>
-        </configuration>
-      </PlugInConfig>
-    </PlugInConfigurations>
+<PlugInConfig id="XPath Reflection File Filter" enabled="True"><configuration><expressions><expression>/reflection/apis/api[contains(@id,"N:") and string-length(@id)=2]</expression><expression>/reflection/apis/api[starts-with(apidata/@name,"$")]</expression><expression>/reflection/apis/api[starts-with(apidata/@name,"__") and not(starts-with(@id,"T:"))]</expression></expressions></configuration></PlugInConfig></PlugInConfigurations>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->

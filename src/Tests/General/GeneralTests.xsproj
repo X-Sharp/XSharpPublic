@@ -3,9 +3,9 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <RootNamespace>ConsoleApplication2</RootNamespace>
-    <TargetFramework>net47</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Name>GeneralTests</Name>
-    <Dialect>VO</Dialect>
+    <Dialect>FoxPro</Dialect>
     <VulcanCompatibleResources>False</VulcanCompatibleResources>
     <NoWin32Manifest>True</NoWin32Manifest>
     <VO1>false</VO1>
@@ -44,6 +44,7 @@
     <ProjectReference Include="..\..\Runtime\XSharp.Core\XSharp.Core.xsproj" />
     <ProjectReference Include="..\..\Runtime\XSharp.Rdd\XSharp.RDD.xsproj" />
     <ProjectReference Include="..\..\Runtime\XSharp.RT\XSharp.RT.xsproj" />
+    <ProjectReference Include="..\..\Runtime\XSharp.VFP\XSharp.VFP.xsproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

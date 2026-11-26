@@ -1,5 +1,4 @@
-﻿using Sandcastle.Core;
-using SandcastleBuilder.Utils.BuildEngine;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,6 +6,15 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
+
+using Sandcastle.Core;
+using Sandcastle.Core.BuildEngine;
+using Sandcastle.Core.PlugIn;
+using Sandcastle.Core.PresentationStyle.Transformation;
+using Sandcastle.Core.PresentationStyle.Transformation.Elements;
+using Sandcastle.Core.PresentationStyle.Transformation.Elements.Html;
+using Sandcastle.Core.Project;
 
 namespace XSharpDocs
 {
@@ -123,7 +131,7 @@ namespace XSharpDocs
         }
 
 
-        static internal void Convert(BuildProcess builder, HelpFileFormats format)
+        static internal void Convert(IBuildProcess builder, HelpFileFormats format)
         {
             // Check which modes all need to be compiled
             string basePath = builder.WorkingFolder;
@@ -132,12 +140,13 @@ namespace XSharpDocs
             string websitePath = @"Output\Website";
             string htmlPath = "html";
             InitXSharpTypeNames();
+            htmlHelp1Path = Path.Combine(basePath, htmlHelp1Path);
             if (format == HelpFileFormats.HtmlHelp1)
             {
                 builder.ReportProgress("Editing htmlHelp1 files...");
-                string htmlFolderPath = Path.Combine(basePath, htmlHelp1Path, htmlPath);
-                string[] hhcPaths = Directory.GetFiles(basePath, "*.hhc", SearchOption.TopDirectoryOnly);
-                string[] hhkPaths = Directory.GetFiles(basePath, "*.hhk", SearchOption.TopDirectoryOnly);
+                string htmlFolderPath = Path.Combine(htmlHelp1Path, htmlPath);
+                string[] hhcPaths = Directory.GetFiles(htmlHelp1Path, "*.hhc", SearchOption.TopDirectoryOnly);
+                string[] hhkPaths = Directory.GetFiles(htmlHelp1Path, "*.hhk", SearchOption.TopDirectoryOnly);
 
                 if (Directory.Exists(htmlFolderPath))
                 {
@@ -153,8 +162,12 @@ namespace XSharpDocs
                     builder.ReportProgress("  Editing {0} TOC's for HtmlHelp1...", hhcPaths.Length);
                     foreach (string hhc in hhcPaths)
                     {
-                        EditHhc(hhc);
-                        EditXSharpTypeNames(builder, hhc);
+                        var topic = new hhtopic() { FileName = hhc, Type = FileType.Other, FieldType = "", Assembly = "" };
+                        topic.Read();
+                        EditHhc(topic);
+                        EditXSharpTypeNames(builder, topic);
+                        topic.Write();
+
                     }
                 }
                 else
@@ -167,8 +180,12 @@ namespace XSharpDocs
                     builder.ReportProgress("  Editing {0} index file(s) for HtmlHelp1...", hhkPaths.Length);
                     foreach (string hhk in hhkPaths)
                     {
-                        EditHhk(hhk);
-                        EditXSharpTypeNames(builder, hhk);
+                        var topic = new hhtopic() { FileName = hhk, Type = FileType.Other, FieldType = "", Assembly = "" };
+                        topic.Read();
+                        EditHhk(topic);
+                        EditXSharpTypeNames(builder, topic);
+                        topic.Write();
+
                     }
                 }
                 else
@@ -281,7 +298,7 @@ namespace XSharpDocs
             //Edit the See Also for all but functions classPage
             if (topic.Type != FileType.FunctionClass)
             {
-                ReplaceSeeAlso(topic.FileName);
+                ReplaceSeeAlso(topic);
             }
             if (topic.Type != FileType.Function && topic.Type != FileType.Define)
             {
@@ -289,7 +306,7 @@ namespace XSharpDocs
             }
         }
 
-        static void EditHtmlFolder(BuildProcess builder, string path, HelpFileFormats format)
+        static void EditHtmlFolder(IBuildProcess builder, string path, HelpFileFormats format)
         {
             string[] htmlFilesPaths = Directory.GetFiles(path, "*.htm", SearchOption.TopDirectoryOnly);
             // Then we classify the Files into different types
@@ -304,28 +321,30 @@ namespace XSharpDocs
                 htmlFileName = htmlFileName.Remove(htmlFileName.Length - 4); // remove the .htm at the end of the string.
                 FileType fileType = findFileType(htmlFileName);
                 string strType = "";
-                if (fileType == FileType.Define)
+                var topic = new hhtopic() { FileName = htmlFilePath, Type = fileType, FieldType = strType };
+                topic.Read();
+                if(fileType == FileType.Define)
                 {
-                    var contents = File.ReadAllText(htmlFilePath);
-                    strType = DetermineFieldType(contents);
+                    strType = DetermineFieldType(topic.Text);
                 }
-                if (fileType == FileType.Other)
+                if(fileType == FileType.Other)
                 {
-                    EditXSharpTypeNames(builder, htmlFilePath);
+                    EditXSharpTypeNames(builder, topic);
+                    topic.Write();
                 }
                 else
                 {
-                    var topic = new hhtopic() { FileName = htmlFilePath, Type = fileType, FieldType = strType };
                     editWebPage(topic);
                     // edit all the typeNames on the page
-                    EditXSharpTypeNames(builder, topic.FileName);
-                    if (format == HelpFileFormats.MSHelpViewer)
+                    EditXSharpTypeNames(builder, topic);
+                    if(format == HelpFileFormats.MSHelpViewer)
                     {
                         editFileForMSHV(topic);
                     }
+                    topic.Write();
                 }
                 Interlocked.Increment(ref counter);
-                if (counter % 500 == 0)
+                if(counter % 500 == 0)
                 {
                     builder.ReportProgress("   Adjusted {0} pages", counter);
                 }
@@ -349,10 +368,10 @@ namespace XSharpDocs
             return output;
         }
 
-        static private void ReplaceSeeAlso(string path)
+        static private void ReplaceSeeAlso(hhtopic topic)
         {
             // For all lines
-            string[] fileLines = File.ReadAllLines(path);
+            string[] fileLines = topic.Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
             int i = 0, newLineIndex = -1;
             string newLine = "";
             foreach (string line in fileLines)
@@ -365,7 +384,7 @@ namespace XSharpDocs
                     newLineIndex = i;
                     if (newLine == line)
                     {
-                        Console.WriteLine("Could not edit the See Also for file: {0} ", path);
+                        Console.WriteLine("Could not edit the See Also for file: {0} ", topic.FileName);
                         return;
                     }
                     break;
@@ -378,15 +397,10 @@ namespace XSharpDocs
             }
             else
             {
-                Console.WriteLine("Could not find the See Also for file: {0} ", path);
+                Console.WriteLine("Could not find the See Also for file: {0} ", topic.FileName);
                 return;
             }
-            var writer = new StreamWriter(path);
-            foreach (string line in fileLines)
-            {
-                writer.WriteLine(line);
-            }
-            writer.Close();
+            topic.Text = String.Join(Environment.NewLine, fileLines);
             return;
         }
 
@@ -433,9 +447,12 @@ namespace XSharpDocs
         static private void ReplaceWebPageTitle(hhtopic topic)
         {
             var path = topic.FileName;
-            string fileWhole = File.ReadAllText(topic.FileName);
+            string fileWhole = topic.Text;
             var len = fileWhole.Length;
             fileWhole = fileWhole.Replace("</tr>", "</tr>\r\n");
+            fileWhole = GenericOpen.Replace(fileWhole, "&lt;");
+            fileWhole = GenericClose.Replace(fileWhole, "&gt;");
+            fileWhole = LangSpecificSpan.Replace(fileWhole, ".");
             var len2 = fileWhole.Length;
             string newFileWhole = fileWhole;
             bool isSdk = path.IndexOf(pageTypedVoSDK, StringComparison.OrdinalIgnoreCase) > 0;
@@ -483,9 +500,7 @@ namespace XSharpDocs
                 Console.WriteLine("Could not edit Title for file: {0}", path);
                 return;
             }
-            var writer = new StreamWriter(path);
-            writer.Write(newFileWhole);
-            writer.Close();
+            topic.Text = newFileWhole;
             return;
         }
         static private void ReplaceListTitles(hhtopic topic)
@@ -499,11 +514,9 @@ namespace XSharpDocs
             }
             // For all lines
             // convert </tr> to </tr>\r\n to redule the line lengths
-            var source = File.ReadAllText(path);
+            var source = topic.Text;
             source = source.Replace("</tr>", "</tr>\r\n");
-            File.WriteAllText(path, source);
-            source = null;
-            string[] fileLines = File.ReadAllLines(path);
+            string[] fileLines = source.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
             List<Tuple<string, int>> newLines = new List<Tuple<string, int>>();
             int i = 0, count = 0;
             foreach (string line in fileLines)
@@ -541,12 +554,7 @@ namespace XSharpDocs
                 Console.WriteLine("Could not replace one or more ListTitles for file: {0} ", path);
                 return;
             }
-            var writer = new StreamWriter(path);
-            foreach (string line in fileLines)
-            {
-                writer.WriteLine(line);
-            }
-            writer.Close();
+            topic.Text = String.Join(Environment.NewLine, fileLines);
             return;
         }
 
@@ -675,12 +683,39 @@ namespace XSharpDocs
             internal string FieldType;
             internal string Assembly;
             internal int SeeAlso;
+            internal string Text;
+            internal bool Read()
+            {
+                try
+                {
+                    Text = File.ReadAllText(FileName);
+                    Text = Text.Replace("<wbr />", "");
+
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+            internal bool Write()
+            {
+                try
+                {
+                    File.WriteAllText(FileName, Text);
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
         }
 
-        static public void EditHhc(string path)
+        static public void EditHhc(hhtopic hhtopic)
         {
-            string[] fileLines = File.ReadAllLines(path);
-            string folder = Path.GetDirectoryName(path);
+            string[] fileLines = hhtopic.Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            string folder = Path.GetDirectoryName(hhtopic.FileName);
             folder = Path.Combine(folder, @"Output\HtmlHelp1");
 
             var topics = new List<hhtopic>();
@@ -706,17 +741,12 @@ namespace XSharpDocs
                 string output = changeHhcTocField(fileLines[topic.Line], topic);
                 if (fileLines[topic.Line] == output)
                 {
-                    Console.WriteLine("Could not edit the hhc field of {2} on line {0} of type {1}", topic.Line, topic.Type, path);
+                    Console.WriteLine("Could not edit the hhc field of {2} on line {0} of type {1}", topic.Line, topic.Type, hhtopic.FileName);
                     continue;
                 }
                 fileLines[topic.Line] = output;
             }
-            var writer = new StreamWriter(path);
-            foreach (string line in fileLines)
-            {
-                writer.WriteLine(line);
-            }
-            writer.Close();
+            hhtopic.Text = String.Join(Environment.NewLine, fileLines);
             return;
         }
 
@@ -742,7 +772,7 @@ namespace XSharpDocs
         {
             string output = original;
             var regex = new Regex(Regex.Escape(hhkFieldMethodPrefix));  // Remove "Functions."
-            output = regex.Replace(output, string.Empty, 1);
+            output = regex.Replace(output, String.Empty, 1);
             regex = new Regex(Regex.Escape(hhkFieldPostfix), RegexOptions.RightToLeft | RegexOptions.IgnoreCase);//Remove the last occurrence of 'Field'
             output = regex.Replace(output, " " + topic.FieldType, 1);
             return output;
@@ -752,9 +782,9 @@ namespace XSharpDocs
         {
             string output = original;
             var regex = new Regex(Regex.Escape(hhkFieldMethodPrefix));   // Remove "Functions."
-            output = regex.Replace(output, string.Empty, 1);
+            output = regex.Replace(output, String.Empty, 1);
             regex = new Regex(Regex.Escape(hhkMethodPostfix), RegexOptions.RightToLeft | RegexOptions.IgnoreCase);//Remove the last occurrence of 'Method'
-            if (string.IsNullOrEmpty(topic.Assembly))
+            if (String.IsNullOrEmpty(topic.Assembly))
                 output = regex.Replace(output, TitleFunction, 1); //TODO: perhaps make this lowercase?
             else
                 output = regex.Replace(output, TitleFunction + " (" + topic.Assembly + ")", 1);
@@ -766,7 +796,7 @@ namespace XSharpDocs
             string output = original;
             var regex = new Regex(Regex.Escape(postFix), RegexOptions.RightToLeft | RegexOptions.IgnoreCase);//Remove the last occurrence of 'Method'
             // just add the assembly name
-            if (!string.IsNullOrEmpty(topic.Assembly) && output.IndexOf("XSharp.VO.SDK") == -1)
+            if (!String.IsNullOrEmpty(topic.Assembly) && output.IndexOf("XSharp.VO.SDK") == -1)
             {
                 output = regex.Replace(output, "$0 (" + topic.Assembly + ")", 1);
             }
@@ -820,10 +850,10 @@ namespace XSharpDocs
             }
             return output;
         }
-        static public void EditHhk(string path)
+        static public void EditHhk(hhtopic hhtopic)
         {
-            string[] fileLines = File.ReadAllLines(path);
-            string folder = Path.GetDirectoryName(path);
+            string[] fileLines = hhtopic.Text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            string folder = Path.GetDirectoryName(hhtopic.FileName);
             folder = Path.Combine(folder, @"Output\HtmlHelp1");
             var topics = new List<hhtopic>();
             int lastSeeAlso = -1;
@@ -854,7 +884,7 @@ namespace XSharpDocs
                     string temp = Regex.Replace(line, hhkSpecialCase, hhkSpecialCaseReplace);// inplace editing is a bit easier for the see also line.
                     if (temp == fileLines[i])
                     {
-                        Console.WriteLine("Could not edit the hhk field of {2} on line {0} of type {1}", i, FileType.FunctionClass, path);
+                        Console.WriteLine("Could not edit the hhk field of {2} on line {0} of type {1}", i, FileType.FunctionClass, hhtopic.FileName);
                     }
                     else
                     {
@@ -867,7 +897,7 @@ namespace XSharpDocs
                 string output = ChangeHhkTopic(fileLines[topic.Line], topic);
                 if (fileLines[topic.Line] == output)
                 {
-                    Console.WriteLine("Could not edit the hhk field of {2} on line {0} of type {1}", topic.Line, topic.Type, path);
+                    Console.WriteLine("Could not edit the hhk field of {2} on line {0} of type {1}", topic.Line, topic.Type, hhtopic.FileName);
                     continue;
                 }
                 fileLines[topic.Line] = output;
@@ -881,19 +911,14 @@ namespace XSharpDocs
                     }
                 }
             }
-            var writer = new StreamWriter(path);
-            foreach (string line in fileLines)
-            {
-                writer.WriteLine(line);
-            }
-            writer.Close();
+            hhtopic.Text = String.Join(Environment.NewLine, fileLines);
             return;
         }
 
 
         static void editFileForMSHV(hhtopic topic)
         {
-            string fileText = File.ReadAllText(topic.FileName);
+            string fileText = topic.Text;
             string newText = fileText;
             bool errorKw = false;
             bool errorTitle = false;
@@ -997,9 +1022,7 @@ namespace XSharpDocs
             {
                 Console.WriteLine("Could not edit keywords of {0} of type {1}", topic.FileName, topic.Type);
             }
-            var writer = new StreamWriter(topic.FileName);
-            writer.Write(newText);
-            writer.Close();
+            topic.Text = newText;
             return;
         }
         static public void EditWebsiteTOC(string path)
@@ -1041,7 +1064,7 @@ namespace XSharpDocs
                 }
             }
             if (!edited) { return; }
-            string newToc = string.Join("", seperateTags);
+            string newToc = String.Join("", seperateTags);
             var writer = new StreamWriter(path);
             writer.Write(seperatedText[0]);
             writer.Write("<div class=\"leftNav\" id=\"leftNav\">");
@@ -1076,7 +1099,7 @@ namespace XSharpDocs
 
             return newTag;
         }
-        static public void EditWebsiteFolder(BuildProcess builder, string path)
+        static public void EditWebsiteFolder(IBuildProcess builder, string path)
         {
             string[] htmlFilesPaths = Directory.GetFiles(path, "*.htm", SearchOption.TopDirectoryOnly);
             int counter = 0;
@@ -1135,7 +1158,7 @@ namespace XSharpDocs
                     "value=\"",
                     "content=\""
                 };
-                delimiters = "(" + string.Join("|", delims) + ")";
+                delimiters = "(" + String.Join("|", delims) + ")";
             }
             if (replacements == null)
             {
@@ -1151,19 +1174,33 @@ namespace XSharpDocs
                     { Usual, UsualReplace },
                     { Currency, CurrencyReplace },
                     { Binary, BinaryReplace },
-                    { "Int32", "Long" },
-                    { "UInt32", "DWord" },
-                    { "UInt16", "Word" },
-                    { "Int16", "Short" },
-                    { "Boolean", "Logic" }
+                    { "Int32", "LONG" },
+                    { "UInt32", "DWORD" },
+                    { "UInt16", "WORD" },
+                    { "Int16", "SHORT" },
+                    { "Boolean", "LOGIC" }
                 };
-                pattern = delimiters + "(" + string.Join("|", new List<string>(replacements.Keys).ToArray()) + ")";
+                pattern = delimiters + "(" + String.Join("|", new List<string>(replacements.Keys).ToArray()) + ")";
             }
         }
-        static public void EditXSharpTypeNames(BuildProcess builder, string path)
+        static readonly Regex LangSpecificSpan = new Regex(
+             @"<span\b[^>]*\bdata-languageSpecificText\s*=\s*""[^""]*\bnu=\.[^""]*""[^>]*>.*?</span\s*>",
+            RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        static readonly Regex GenericOpen = new Regex(
+             @"<span\b[^>]*\bdata-languageSpecificText\s*=\s*""[^""]*\bcs=&lt;[^""]*""[^>]*>.*?</span\s*>",
+            RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        static readonly Regex GenericClose = new Regex(
+             @"<span\b[^>]*\bdata-languageSpecificText\s*=\s*""[^""]*\bcs=&gt;[^""]*""[^>]*>.*?</span\s*>",
+            RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        static public void EditXSharpTypeNames(IBuildProcess builder, hhtopic topic)
         {
             Regex regex = new Regex(pattern);
-            string allText = File.ReadAllText(path);
+            string allText = topic.Text;
+            allText = GenericOpen.Replace(allText, "&lt;");
+            allText = GenericClose.Replace(allText, "&gt;");
+            allText = LangSpecificSpan.Replace(allText, ".");
             bool usualType = false;
             if (allText.IndexOf("__UsualType") >= 0)
             {
@@ -1185,12 +1222,7 @@ namespace XSharpDocs
                 {
                     newText = newText.Replace("__XUsualType", "__UsualType");
                 }
-                if (newText != allText)
-                {
-                    var writer = new StreamWriter(path);
-                    writer.Write(newText);
-                    writer.Close();
-                }
+                topic.Text = newText;
             }
             return;
         }

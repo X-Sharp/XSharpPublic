@@ -759,6 +759,46 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     INSERT INTO nested_child VALUES (4, "four")
     INSERT INTO nested_child VALUES (NULL, "null")
 
+    LOCAL openAreas := XSharp.__FoxArray{} AS ARRAY
+    LOCAL workAreaCountBeforeDerived := AUsed(openAreas) AS DWORD
+    SELECT d.Id, d.Label FROM (SELECT c.Id, c.Label FROM nested_child c WHERE c.Id > 1) d ;
+        WHERE d.Id >= 2 ORDER BY d.Id, d.Label
+    VerifyTable(3, "Derived table fields should support outer filtering and ordering", TRUE, ;
+        {{2, "duplicate"}, {2, "first"}, {4, "four"}})
+    IF AUsed(openAreas) != workAreaCountBeforeDerived
+        THROW Exception{"Derived table cursor should close after the outer SELECT completes"}
+    ENDIF
+
+    SELECT d.Id, COUNT(*) AS Quantity FROM (SELECT c.Id FROM nested_child c WHERE c.Id > 1) d ;
+        GROUP BY d.Id ORDER BY d.Id
+    VerifyTable(2, "Outer grouping should work over a derived table", TRUE, {{2, 2}, {4, 1}})
+    IF AUsed(openAreas) != workAreaCountBeforeDerived
+        THROW Exception{"Derived table cursor should close after grouped SELECT execution"}
+    ENDIF
+
+    LOCAL failedDerivedExecutionRejected := FALSE AS LOGIC
+    LOCAL derivedFailureCallerArea := VoDbGetSelect() AS DWORD
+    TRY
+        SELECT d.Id FROM (SELECT c.Id FROM nested_child c) d ;
+            WHERE d.Id = (SELECT c.Id FROM nested_child c WHERE c.Id = 2)
+    CATCH ex AS Exception
+        failedDerivedExecutionRejected := ex:Message:Contains("more than one record")
+    END TRY
+    IF !failedDerivedExecutionRejected .OR. AUsed(openAreas) != workAreaCountBeforeDerived .OR. ;
+       VoDbGetSelect() != derivedFailureCallerArea
+        THROW Exception{"Failing outer SELECT should close the derived cursor and restore workarea"}
+    ENDIF
+
+    LOCAL correlatedDerivedRejected := FALSE AS LOGIC
+    TRY
+        SELECT d.Id FROM (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id) d
+    CATCH ex AS Exception
+        correlatedDerivedRejected := ex:Message:Contains("cannot be correlated")
+    END TRY
+    IF !correlatedDerivedRejected .OR. AUsed(openAreas) != workAreaCountBeforeDerived
+        THROW Exception{"Correlated derived tables should be rejected without leaking a workarea"}
+    ENDIF
+
     LOCAL projectionScalarBefore := SqlOptimizationCount("ScalarExecutions") AS INT
     SELECT p.Id, (SELECT c.Id FROM nested_child c WHERE c.Label = "four") AS ScalarId ;
         FROM nested_parent p WHERE p.Id <= 2 ORDER BY p.Id

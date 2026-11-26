@@ -779,21 +779,50 @@ PARTIAL CLASS SQLParser
         // Parse table list - support both comma-separated tables and explicit JOIN syntax
         LOCAL firstTableProcessed := FALSE AS LOGIC
         LOCAL hasCommaSeparatedTables := FALSE AS LOGIC
-
-        // First, check if we have comma-separated tables (traditional SQL syntax)
-        VAR nameFound := SELF:ParseTableName(OUT VAR firstTableName)
-
-        // Check for optional alias (AS alias or just alias)
+        LOCAL firstIsDerivedTable := FALSE AS LOGIC
+        LOCAL firstTableName AS STRING
         LOCAL firstAliasName := NULL AS STRING
-        IF SELF:Expect(XTokenType.AS) .AND. SELF:Matches(XTokenType.ID)
-            firstAliasName := SELF:ConsumeAndGetText()
-        ELSEIF SELF:Matches(XTokenType.ID) .AND. ;
-                !(SELF:La2 == XTokenType.JOIN .AND. (SELF:Lt1:Text:Equals("INNER", StringComparison.OrdinalIgnoreCase) .OR. ;
-                  SELF:Lt1:Text:Equals("LEFT", StringComparison.OrdinalIgnoreCase) .OR. ;
-                  SELF:Lt1:Text:Equals("RIGHT", StringComparison.OrdinalIgnoreCase) .OR. ;
-                  SELF:Lt1:Text:Equals("FULL", StringComparison.OrdinalIgnoreCase) .OR. ;
-                  SELF:Lt1:Text:Equals("OUTER", StringComparison.OrdinalIgnoreCase)))
-            firstAliasName := SELF:ConsumeAndGetText()
+
+        // VFP 9 derived tables are parsed here as a SELECT branch. This
+        // increment supports one derived source by itself; joins are rejected.
+        IF SELF:Matches(XTokenType.LPAREN) .AND. SELF:La2 == XTokenType.SELECT
+            SELF:Consume()
+            LOCAL derivedQuery AS FoxSelectContext
+            IF !SELF:ParseSelectBranch(OUT derivedQuery)
+                RETURN FALSE
+            ENDIF
+            IF !SELF:Expect(XTokenType.RPAREN)
+                SELF:SetError("Expected ')' after derived table SELECT")
+                RETURN FALSE
+            ENDIF
+            IF SELF:Expect(XTokenType.AS)
+                IF !SELF:Matches(XTokenType.ID)
+                    SELF:SetError("Expected alias after derived table")
+                    RETURN FALSE
+                ENDIF
+                firstAliasName := SELF:ConsumeAndGetText()
+            ELSEIF SELF:Matches(XTokenType.ID)
+                firstAliasName := SELF:ConsumeAndGetText()
+            ELSE
+                SELF:SetError("A derived table requires an alias")
+                RETURN FALSE
+            ENDIF
+            firstTableName := firstAliasName
+            firstIsDerivedTable := TRUE
+            stmt:DerivedTables[firstAliasName] := derivedQuery
+        ELSE
+            VAR nameFound := SELF:ParseTableName(OUT firstTableName)
+            // Check for optional alias (AS alias or just alias)
+            IF SELF:Expect(XTokenType.AS) .AND. SELF:Matches(XTokenType.ID)
+                firstAliasName := SELF:ConsumeAndGetText()
+            ELSEIF SELF:Matches(XTokenType.ID) .AND. ;
+                    !(SELF:La2 == XTokenType.JOIN .AND. (SELF:Lt1:Text:Equals("INNER", StringComparison.OrdinalIgnoreCase) .OR. ;
+                      SELF:Lt1:Text:Equals("LEFT", StringComparison.OrdinalIgnoreCase) .OR. ;
+                      SELF:Lt1:Text:Equals("RIGHT", StringComparison.OrdinalIgnoreCase) .OR. ;
+                      SELF:Lt1:Text:Equals("FULL", StringComparison.OrdinalIgnoreCase) .OR. ;
+                      SELF:Lt1:Text:Equals("OUTER", StringComparison.OrdinalIgnoreCase)))
+                firstAliasName := SELF:ConsumeAndGetText()
+            ENDIF
         ENDIF
 
         stmt:TableList:Add(firstTableName)
@@ -802,9 +831,17 @@ PARTIAL CLASS SQLParser
 
         // Check if we have comma-separated tables
         IF SELF:Expect(XTokenType.COMMA)
+            IF firstIsDerivedTable
+                SELF:SetError("Joins involving derived tables are not supported yet")
+                RETURN FALSE
+            ENDIF
             hasCommaSeparatedTables := TRUE
             // Continue processing comma-separated tables
             DO WHILE TRUE
+                IF SELF:Matches(XTokenType.LPAREN) .AND. SELF:La2 == XTokenType.SELECT
+                    SELF:SetError("Joins involving derived tables are not supported yet")
+                    RETURN FALSE
+                ENDIF
                 VAR found := SELF:ParseTableName(OUT VAR tableName)
 
                 // Check for optional alias (AS alias or just alias)
@@ -868,6 +905,10 @@ PARTIAL CLASS SQLParser
                     ENDIF
                 ENDIF
 
+                IF firstIsDerivedTable .OR. (SELF:Matches(XTokenType.LPAREN) .AND. SELF:La2 == XTokenType.SELECT)
+                    SELF:SetError("Joins involving derived tables are not supported yet")
+                    RETURN FALSE
+                ENDIF
                 IF ! SELF:ParseTableName(OUT VAR joinedTableName)
                     SELF:SetError("Expected table name after JOIN")
                     RETURN FALSE

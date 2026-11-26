@@ -1446,6 +1446,12 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         RETURN
 
     PRIVATE STATIC METHOD ValidateSelectSubqueries(query AS FoxSelectContext) AS VOID
+        FOREACH VAR derivedEntry IN query:DerivedTables
+            IF HasExternalSubqueryReference(derivedEntry:Value)
+                THROW Error{"Derived table subqueries cannot be correlated"}
+            ENDIF
+            ValidateSelectSubqueries(derivedEntry:Value)
+        NEXT
         FOREACH VAR expression IN query:SelectList
             IF HasCorrelatedProjectionSubquery(expression)
                 THROW Error{"Correlated scalar subqueries in the SELECT list are not supported yet"}
@@ -1828,7 +1834,40 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         LOCAL savedArea := VoDbGetSelect() AS DWORD
         LOCAL target := IIF(String.IsNullOrEmpty(selectCtx:TargetCursor), "QUERYRESULT", AllTrim(selectCtx:TargetCursor)) AS STRING
         LOCAL targetAlreadyOpen := Used(target) AS LOGIC
+        LOCAL derivedCursor := NULL AS STRING
+        LOCAL derivedAlias := NULL AS STRING
+        LOCAL originalTableName := NULL AS STRING
+        LOCAL originalAliasTarget := NULL AS STRING
+        LOCAL derivedSourceInstalled := FALSE AS LOGIC
         TRY
+            IF selectCtx:DerivedTables:Count > 0
+                IF selectCtx:DerivedTables:Count != 1 .OR. selectCtx:TableList:Count != 1 .OR. ;
+                   selectCtx:Joins:Count != 0
+                    THROW Error{"Only one derived table without joins is supported yet"}
+                ENDIF
+                VAR derivedEntry := selectCtx:DerivedTables:First()
+                derivedAlias := derivedEntry:Key
+                IF HasExternalSubqueryReference(derivedEntry:Value)
+                    THROW Error{"Derived table subqueries cannot be correlated"}
+                ENDIF
+                originalTableName := selectCtx:TableList[0]
+                originalAliasTarget := selectCtx:TableAliases[derivedAlias]
+                derivedCursor := "DT" + Guid.NewGuid():ToString("N"):Substring(0, 8)
+                VAR previousDerivedTarget := derivedEntry:Value:TargetCursor
+                TRY
+                    derivedEntry:Value:TargetCursor := derivedCursor
+                    ExecuteSelect(derivedEntry:Value)
+                FINALLY
+                    derivedEntry:Value:TargetCursor := previousDerivedTarget
+                END TRY
+                IF !Used(derivedCursor)
+                    THROW Error{"Derived table subquery did not produce a result cursor"}
+                ENDIF
+                selectCtx:TableList[0] := derivedCursor
+                selectCtx:TableAliases[derivedAlias] := derivedCursor
+                derivedSourceInstalled := TRUE
+            ENDIF
+            ValidateSelectSubqueries(selectCtx)
             ExecuteSelectCore(selectCtx)
         CATCH
             IF !targetAlreadyOpen .AND. Used(target)
@@ -1838,6 +1877,14 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 DbSelectArea(savedArea)
             ENDIF
             THROW
+        FINALLY
+            IF derivedSourceInstalled
+                selectCtx:TableList[0] := originalTableName
+                selectCtx:TableAliases[derivedAlias] := originalAliasTarget
+            ENDIF
+            IF derivedCursor != NULL .AND. Used(derivedCursor)
+                (derivedCursor)->DbCloseArea()
+            ENDIF
         END TRY
         RETURN
 

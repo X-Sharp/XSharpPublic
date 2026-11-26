@@ -139,6 +139,7 @@ CLASS FoxSelectContext
     PROPERTY FieldSelectionList AS List<SqlFieldSelectionContext> AUTO  // New property for field selections with aliases
     PROPERTY TableList   AS List<STRING> AUTO
     PROPERTY TableAliases AS Dictionary<STRING,STRING> AUTO
+    PROPERTY DerivedTables AS Dictionary<STRING,FoxSelectContext> AUTO
     PROPERTY JoinList    AS List<STRING> AUTO
     PROPERTY Joins       AS List<FoxSelectJoinContext> AUTO
     PROPERTY TargetCursor AS STRING AUTO  // Property to store the target cursor name for INTO CURSOR
@@ -158,6 +159,7 @@ CLASS FoxSelectContext
         FieldSelectionList := List<SqlFieldSelectionContext>{}  // Initialize the new property
         TableList := List<String>{}
         TableAliases := Dictionary<STRING,STRING>{StringComparer.OrdinalIgnoreCase}
+        DerivedTables := Dictionary<STRING,FoxSelectContext>{StringComparer.OrdinalIgnoreCase}
         JoinList := List<String>{}
         Joins := List<FoxSelectJoinContext>{}
         OrderByClause := List<FoxOrderByItem>{}

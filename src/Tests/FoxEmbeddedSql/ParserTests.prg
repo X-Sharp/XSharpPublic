@@ -142,6 +142,27 @@ FUNCTION TestSelectParsing() AS VOID
         THROW Exception{"UNION should preserve operators and final ORDER BY/INTO clauses"}
     ENDIF
 
+    VAR derivedLexer := XSqlLexer{"SELECT d.Id FROM (SELECT c.Id FROM Child c WHERE c.Id > 1) d WHERE d.Id < 5"}
+    VAR derivedParser := SQLParser{XTokenList{derivedLexer:AllTokens()}}
+    LOCAL derivedCtx AS FoxSelectContext
+    IF !derivedParser:ParseSelectStatement(OUT derivedCtx) .OR. ;
+       derivedCtx:DerivedTables:Count != 1 .OR. ;
+       !derivedCtx:DerivedTables:ContainsKey("d") .OR. ;
+       derivedCtx:DerivedTables["d"]:SelectList:Count != 1
+        THROW Exception{"Aliased FROM subqueries should parse and retain their SELECT context: " + derivedParser:Error}
+    ENDIF
+    FOREACH VAR invalidDerivedSql IN <STRING>{ ;
+        "SELECT d.Id FROM (SELECT c.Id FROM Child c)", ;
+        "SELECT d.Id FROM (SELECT c.Id FROM Child c", ;
+        "SELECT d.Id FROM (SELECT c.Id FROM Child c) d JOIN Other o ON d.Id = o.Id", ;
+        "SELECT d.Id FROM Child c, (SELECT x.Id FROM Other x) d" }
+        VAR invalidDerivedParser := SQLParser{XTokenList{XSqlLexer{invalidDerivedSql}:AllTokens()}}
+        LOCAL invalidDerivedCtx AS FoxSelectContext
+        IF invalidDerivedParser:ParseSelectStatement(OUT invalidDerivedCtx)
+            THROW Exception{"Invalid or unsupported derived table form should be rejected: " + invalidDerivedSql}
+        ENDIF
+    NEXT
+
     VAR inLexer := XSqlLexer{"SELECT a.Id FROM Parent a WHERE a.Id IN (SELECT b.Id FROM Child b WHERE b.Active = .T.)"}
     VAR scalarLexer := XSqlLexer{"SELECT a.Id FROM Parent a WHERE a.Id >= (SELECT b.Id FROM Child b WHERE b.Active = .T.)"}
     VAR scalarParser := SQLParser{XTokenList{scalarLexer:AllTokens()}}

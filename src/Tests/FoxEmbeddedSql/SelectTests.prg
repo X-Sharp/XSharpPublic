@@ -754,6 +754,8 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     CREATE CURSOR nested_char_child (Code C(5) NULL, OutVal N(5) NULL)
     CREATE CURSOR nested_currency_parent (Id I, Amount Y NULL)
     CREATE CURSOR nested_currency_child (Amount Y NULL, OutVal I)
+    CREATE CURSOR nested_key_parent (Id I NULL, Code C(5) NULL, Amount Y NULL)
+    CREATE CURSOR nested_key_child (Id I NULL, Code C(5) NULL, Amount Y NULL)
     INSERT INTO nested_parent VALUES (1)
     INSERT INTO nested_parent VALUES (2)
     INSERT INTO nested_parent VALUES (3)
@@ -795,6 +797,16 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     INSERT INTO nested_currency_parent VALUES (4, NULL)
     INSERT INTO nested_currency_child VALUES (2.5, 25)
     INSERT INTO nested_currency_child VALUES (4.125, 41)
+    INSERT INTO nested_key_parent VALUES (1, "abc", 2.5)
+    INSERT INTO nested_key_parent VALUES (1, "abc", 2.5)
+    INSERT INTO nested_key_parent VALUES (1, "ABC", 2.5)
+    INSERT INTO nested_key_parent VALUES (1, "abc", 4.125)
+    INSERT INTO nested_key_parent VALUES (2, "abc", 2.5)
+    INSERT INTO nested_key_parent VALUES (3, "abc", NULL)
+    INSERT INTO nested_key_child VALUES (1, "abc", 2.5)
+    INSERT INTO nested_key_child VALUES (1, "abc", 2.5)
+    INSERT INTO nested_key_child VALUES (1, "ABC", 2.5)
+    INSERT INTO nested_key_child VALUES (1, "abc", 4.125)
 
     LOCAL openAreas := XSharp.__FoxArray{} AS ARRAY
     LOCAL workAreaCountBeforeDerived := AUsed(openAreas) AS DWORD
@@ -1163,6 +1175,20 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     scalarCachePlansBefore := SqlOptimizationCount("CorrelatedScalarCachePlans")
     scalarCacheHitsBefore := SqlOptimizationCount("CorrelatedScalarCacheHits")
     scalarBefore := SqlOptimizationCount("ScalarExecutions")
+    SELECT p.Id, (SELECT COUNT(*) FROM nested_key_child c ;
+        WHERE c.Id = p.Id AND c.Code = p.Code AND c.Amount = p.Amount) AS Matches ;
+        FROM nested_key_parent p
+    VerifyTable(6, "Composite character and currency scalar keys should memoize as one tuple", TRUE, ;
+        {{1, 2}, {1, 2}, {1, 1}, {1, 1}, {2, NULL}, {3, NULL}})
+    IF SqlOptimizationCount("ScalarExecutions") - scalarBefore != IIF(optimizationsDisabled, 6, 4) .OR. ;
+       SqlOptimizationCount("CorrelatedScalarCachePlans") - scalarCachePlansBefore != IIF(optimizationsDisabled, 0, 1) .OR. ;
+       SqlOptimizationCount("CorrelatedScalarCacheHits") - scalarCacheHitsBefore != IIF(optimizationsDisabled, 0, 1)
+        THROW Exception{"Mixed character/currency scalar tuples should cache repeated complete keys only when enabled"}
+    ENDIF
+
+    scalarCachePlansBefore := SqlOptimizationCount("CorrelatedScalarCachePlans")
+    scalarCacheHitsBefore := SqlOptimizationCount("CorrelatedScalarCacheHits")
+    scalarBefore := SqlOptimizationCount("ScalarExecutions")
     SELECT p.Id, (SELECT c.Id FROM nested_scalar_unique c ;
         INNER JOIN nested_scalar_extra x ON c.Id = x.Id WHERE c.Id = p.Id) AS CalcVal ;
         FROM nested_parent_duplicates p
@@ -1391,6 +1417,13 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     SELECT p.Id FROM nested_parent_duplicates p WHERE p.Id IN (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id)
     VerifyTable(3, "Correlated IN should preserve outer duplicates without multiplying inner duplicates", TRUE, {{2}, {2}, {4}})
 
+    correlatedPlansBefore := SqlOptimizationCount("CorrelatedInPlans")
+    SELECT p.Id FROM nested_key_parent p WHERE p.Id IN (SELECT c.Id FROM nested_key_child c ;
+        WHERE c.Id = p.Id AND c.Code = p.Code AND c.Amount = p.Amount) ORDER BY p.Id
+    VerifySqlOptimization("CorrelatedInPlans", correlatedPlansBefore)
+    VerifyTable(4, "Composite correlated IN should match complete numeric, character, and currency keys", TRUE, ;
+        {{1}, {1}, {1}, {1}})
+
     LOCAL unsupportedCorrelationRejected := FALSE AS LOGIC
     TRY
         SELECT Id FROM nested_parent p WHERE Id IN (SELECT p.Id FROM nested_child c WHERE c.Id > 0)
@@ -1442,6 +1475,12 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     ENDIF
     IF Used("nested_currency_child")
         USE IN nested_currency_child
+    ENDIF
+    IF Used("nested_key_parent")
+        USE IN nested_key_parent
+    ENDIF
+    IF Used("nested_key_child")
+        USE IN nested_key_child
     ENDIF
     RETURN
 
@@ -1518,12 +1557,42 @@ FUNCTION TestHashJoin() AS VOID
 
     hashJoinsBefore := SqlOptimizationCount("HashJoins")
     SELECT a.TextKey FROM hash_fraction_left a JOIN hash_fraction_right b ON a.TextKey = b.TextKey
+    VerifySqlOptimization("HashJoins", hashJoinsBefore)
+    VerifyTable(2, "Fixed-width character join should use the key optimization", TRUE)
+
+    CREATE CURSOR hash_width_right (Id N(8,2), TextKey C(5))
+    INSERT INTO hash_width_right VALUES (1.25, "one")
+    INSERT INTO hash_width_right VALUES (-2.50, "two")
+    hashJoinsBefore := SqlOptimizationCount("HashJoins")
+    SELECT a.Id FROM hash_fraction_left a JOIN hash_width_right b ;
+        ON a.Id = b.Id AND a.TextKey = b.TextKey
     IF SqlOptimizationCount("HashJoins") != hashJoinsBefore
-        THROW Exception{"Character join unexpectedly used hash optimization"}
+        THROW Exception{"Mismatched character key widths should retain the nested-loop fallback"}
     ENDIF
-    VerifyTable(2, "Character join fallback should preserve matches", TRUE)
+    VerifyTable(0, "Mismatched-width character equality should retain the baseline comparison result", TRUE)
     USE IN hash_fraction_left
     USE IN hash_fraction_right
+    USE IN hash_width_right
+
+    CREATE CURSOR hash_composite_left (Id I NULL, Code C(5) NULL, Amount Y NULL)
+    CREATE CURSOR hash_composite_right (Id I NULL, Code C(5) NULL, Amount Y NULL)
+    INSERT INTO hash_composite_left VALUES (1, "abc", 2.5)
+    INSERT INTO hash_composite_left VALUES (1, "ABC", 2.5)
+    INSERT INTO hash_composite_left VALUES (1, "abc", 4.125)
+    INSERT INTO hash_composite_left VALUES (2, "abc", 2.5)
+    INSERT INTO hash_composite_left VALUES (3, "abc", NULL)
+    INSERT INTO hash_composite_right VALUES (1, "abc", 2.5)
+    INSERT INTO hash_composite_right VALUES (1, "abc", 2.5)
+    INSERT INTO hash_composite_right VALUES (1, "ABC", 2.5)
+    INSERT INTO hash_composite_right VALUES (1, "abc", 4.125)
+    hashJoinsBefore := SqlOptimizationCount("HashJoins")
+    SELECT a.Id, a.Code, a.Amount FROM hash_composite_left a JOIN hash_composite_right b ;
+        ON a.Id = b.Id AND a.Code = b.Code AND a.Amount = b.Amount
+    VerifySqlOptimization("HashJoins", hashJoinsBefore)
+    VerifyTable(4, "Composite join keys should cover integer, character, and currency fields", TRUE, ;
+        {{1, "abc  ", 2.5}, {1, "abc  ", 2.5}, {1, "ABC  ", 2.5}, {1, "abc  ", 4.125}})
+    USE IN hash_composite_left
+    USE IN hash_composite_right
     RETURN
 
 FUNCTION TestLeftOuterJoin() AS VOID

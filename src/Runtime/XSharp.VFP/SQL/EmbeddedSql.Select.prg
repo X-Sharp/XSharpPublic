@@ -99,11 +99,11 @@ INTERNAL CLASS SqlCorrelatedScalarMemo
 
     INTERNAL CONSTRUCTOR(outerValueCodeBlocks AS IList<CODEBLOCK>)
         SELF:OuterValueCodeBlocks := outerValueCodeBlocks
-        SELF:Values := Dictionary<USUAL[],USUAL>{SqlScalarMemoKeyComparer{}}
+        SELF:Values := Dictionary<USUAL[],USUAL>{SqlEqualityKeyComparer{}}
         RETURN
 END CLASS
 
-INTERNAL CLASS SqlScalarMemoKeyComparer IMPLEMENTS IEqualityComparer<USUAL[]>
+INTERNAL CLASS SqlEqualityKeyComparer IMPLEMENTS IEqualityComparer<USUAL[]>
     PUBLIC METHOD Equals(left AS USUAL[], right AS USUAL[]) AS LOGIC
         IF left == right
             RETURN TRUE
@@ -137,6 +137,16 @@ INTERNAL CLASS SqlScalarMemoKeyComparer IMPLEMENTS IEqualityComparer<USUAL[]>
             hash := (hash * 31 + componentHash) % 2147483647
         NEXT
         RETURN (INT)hash
+END CLASS
+
+INTERNAL CLASS SqlEqualityKeyFieldPair
+    INTERNAL OuterField AS SqlNameExpressionContext
+    INTERNAL InnerField AS SqlNameExpressionContext
+
+    INTERNAL CONSTRUCTOR(outerField AS SqlNameExpressionContext, innerField AS SqlNameExpressionContext)
+        SELF:OuterField := outerField
+        SELF:InnerField := innerField
+        RETURN
 END CLASS
 
 /// Runtime switches used by the embedded SQL implementation.
@@ -323,12 +333,14 @@ END CLASS
 
 INTERNAL CLASS SqlCorrelatedInPlan
     PRIVATE _outerValueCodeBlock AS CODEBLOCK
-    PRIVATE _innerValues AS Dictionary<USUAL,BYTE>
+    PRIVATE _outerKeyCodeBlocks AS IList<CODEBLOCK>
+    PRIVATE _innerValues AS Dictionary<USUAL[],Dictionary<USUAL[],BYTE>>
     PRIVATE _isNegated AS LOGIC
 
-    INTERNAL CONSTRUCTOR(outerValueCodeBlock AS CODEBLOCK, innerValues AS Dictionary<USUAL,BYTE>, ;
-        isNegated AS LOGIC)
+    INTERNAL CONSTRUCTOR(outerValueCodeBlock AS CODEBLOCK, outerKeyCodeBlocks AS IList<CODEBLOCK>, ;
+        innerValues AS Dictionary<USUAL[],Dictionary<USUAL[],BYTE>>, isNegated AS LOGIC)
         SELF:_outerValueCodeBlock := outerValueCodeBlock
+        SELF:_outerKeyCodeBlocks := outerKeyCodeBlocks
         SELF:_innerValues := innerValues
         SELF:_isNegated := isNegated
         RETURN
@@ -336,32 +348,39 @@ INTERNAL CLASS SqlCorrelatedInPlan
     INTERNAL METHOD Matches() AS LOGIC
         LOCAL outerValue := (USUAL)SELF:_outerValueCodeBlock:Eval() AS USUAL
         LOCAL found := FALSE AS LOGIC
-        IF !outerValue:IsNull
-            found := SELF:_innerValues:ContainsKey(outerValue)
+        LOCAL outerKey := USUAL[]{SELF:_outerKeyCodeBlocks:Count} AS USUAL[]
+        LOCAL hasNullKey := FALSE AS LOGIC
+        FOR LOCAL keyIndex := 1 AS INT TO SELF:_outerKeyCodeBlocks:Count
+            outerKey[keyIndex] := (USUAL)SELF:_outerKeyCodeBlocks[keyIndex-1]:Eval()
+            IF outerKey[keyIndex]:IsNull
+                hasNullKey := TRUE
+                EXIT
+            ENDIF
+        NEXT
+        IF !hasNullKey .AND. !outerValue:IsNull
+            LOCAL innerSet AS Dictionary<USUAL[],BYTE>
+            IF SELF:_innerValues:TryGetValue(outerKey, OUT innerSet)
+                found := innerSet:ContainsKey(USUAL[]{outerValue})
+            ENDIF
         ENDIF
-        // The supported correlated equality filters the inner rows by this same
-        // value, so NOT IN is the anti-semi-join complement, including NULL outer
-        // values whose correlated subquery is empty.
+        // A NULL correlation component makes the correlated equality return no
+        // rows. NOT IN therefore complements the empty result set as before.
         RETURN IIF(SELF:_isNegated, !found, found)
-END CLASS
-
-INTERNAL CLASS SqlCorrelationCounter
-    INTERNAL PROPERTY Count AS INT AUTO
 END CLASS
 
 INTERNAL CLASS SqlHashJoinCursor
     PRIVATE _outerTable AS STRING
-    PRIVATE _outerKeyCodeBlock AS CODEBLOCK
-    PRIVATE _keyBuckets AS Dictionary<USUAL,List<LONG>>
+    PRIVATE _outerKeyCodeBlocks AS IList<CODEBLOCK>
+    PRIVATE _keyBuckets AS Dictionary<USUAL[],List<LONG>>
     PRIVATE _currentBucket AS List<LONG>
     PRIVATE _bucketIndex AS INT
     PRIVATE _currentOuterRecNo AS LONG
     PRIVATE _started AS LOGIC
 
-    INTERNAL CONSTRUCTOR(outerTable AS STRING, outerKeyCodeBlock AS CODEBLOCK, ;
-        keyBuckets AS Dictionary<USUAL,List<LONG>>)
+    INTERNAL CONSTRUCTOR(outerTable AS STRING, outerKeyCodeBlocks AS IList<CODEBLOCK>, ;
+        keyBuckets AS Dictionary<USUAL[],List<LONG>>)
         SELF:_outerTable := outerTable
-        SELF:_outerKeyCodeBlock := outerKeyCodeBlock
+        SELF:_outerKeyCodeBlocks := outerKeyCodeBlocks
         SELF:_keyBuckets := keyBuckets
         SELF:_currentBucket := NULL
         SELF:_bucketIndex := 0
@@ -391,10 +410,18 @@ INTERNAL CLASS SqlHashJoinCursor
             ENDIF
 
             SELF:_currentOuterRecNo := (LONG)(SELF:_outerTable)->RecNo()
-            VAR keyValue := (USUAL) SELF:_outerKeyCodeBlock:Eval()
+            VAR keyValue := USUAL[]{SELF:_outerKeyCodeBlocks:Count}
             SELF:_currentBucket := NULL
             SELF:_bucketIndex := 0
-            IF !keyValue:IsNull
+            LOCAL hasNullKey := FALSE AS LOGIC
+            FOR LOCAL keyIndex := 1 AS INT TO SELF:_outerKeyCodeBlocks:Count
+                keyValue[keyIndex] := (USUAL)SELF:_outerKeyCodeBlocks[keyIndex-1]:Eval()
+                IF keyValue[keyIndex]:IsNull
+                    hasNullKey := TRUE
+                    EXIT
+                ENDIF
+            NEXT
+            IF !hasNullKey
                 SELF:_keyBuckets:TryGetValue(keyValue, OUT SELF:_currentBucket)
             ENDIF
         ENDDO
@@ -689,59 +716,51 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         NEXT
         RETURN
 
-    PRIVATE STATIC METHOD FindHashJoinKey(expression AS SqlExpressionContext, ;
+    PRIVATE STATIC METHOD FindHashJoinKeys(expression AS SqlExpressionContext, ;
         tableAliases AS IDictionary<STRING,STRING>, outerTable AS STRING, innerTable AS STRING, ;
-        outerKey OUT SqlNameExpressionContext, innerKey OUT SqlNameExpressionContext) AS LOGIC
-        outerKey := NULL
-        innerKey := NULL
+        keys AS IList<SqlEqualityKeyFieldPair>) AS VOID
 
         IF expression IS SqlParenExpressionContext VAR parenExpr
-            RETURN FindHashJoinKey(parenExpr:Expr, tableAliases, outerTable, innerTable, OUT outerKey, OUT innerKey)
+            FindHashJoinKeys(parenExpr:Expr, tableAliases, outerTable, innerTable, keys)
+            RETURN
         ENDIF
 
         IF expression IS SqlLogicExpressionContext VAR logicExpr
             IF logicExpr:Op:Type == XTokenType.AND
-                IF FindHashJoinKey(logicExpr:Left, tableAliases, outerTable, innerTable, OUT outerKey, OUT innerKey)
-                    RETURN TRUE
-                ENDIF
-                RETURN FindHashJoinKey(logicExpr:Right, tableAliases, outerTable, innerTable, OUT outerKey, OUT innerKey)
+                FindHashJoinKeys(logicExpr:Left, tableAliases, outerTable, innerTable, keys)
+                FindHashJoinKeys(logicExpr:Right, tableAliases, outerTable, innerTable, keys)
             ENDIF
-            RETURN FALSE
+            RETURN
         ENDIF
 
         IF expression IS SqlCompareExpressionContext VAR compareExpr
             IF compareExpr:Op:Type != XTokenType.EQ .OR. ;
                compareExpr:Left IS NOT SqlNameExpressionContext .OR. ;
                compareExpr:Right IS NOT SqlNameExpressionContext
-                RETURN FALSE
+                RETURN
             ENDIF
 
             VAR leftName := (SqlNameExpressionContext) compareExpr:Left
             VAR rightName := (SqlNameExpressionContext) compareExpr:Right
             IF String.IsNullOrEmpty(leftName:Table) .OR. String.IsNullOrEmpty(rightName:Table)
-                RETURN FALSE
+                RETURN
             ENDIF
 
             VAR leftDependencies := leftName:GetTableDependencies(tableAliases)
             VAR rightDependencies := rightName:GetTableDependencies(tableAliases)
             IF leftDependencies:Count != 1 .OR. rightDependencies:Count != 1
-                RETURN FALSE
+                RETURN
             ENDIF
 
             IF leftDependencies[0]:Equals(outerTable, StringComparison.OrdinalIgnoreCase) .AND. ;
                rightDependencies[0]:Equals(innerTable, StringComparison.OrdinalIgnoreCase)
-                outerKey := leftName
-                innerKey := rightName
-                RETURN TRUE
+                keys:Add(SqlEqualityKeyFieldPair{leftName, rightName})
             ELSEIF rightDependencies[0]:Equals(outerTable, StringComparison.OrdinalIgnoreCase) .AND. ;
                    leftDependencies[0]:Equals(innerTable, StringComparison.OrdinalIgnoreCase)
-                outerKey := rightName
-                innerKey := leftName
-                RETURN TRUE
+                keys:Add(SqlEqualityKeyFieldPair{rightName, leftName})
             ENDIF
         ENDIF
-
-        RETURN FALSE
+        RETURN
 
     PRIVATE STATIC METHOD HashJoinFieldType(tableName AS STRING, fieldName AS STRING) AS STRING
         VAR fieldPosition := (tableName)->FieldPos(fieldName)
@@ -777,6 +796,37 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             // Other field types need comparison and hash compatibility coverage.
             RETURN FALSE
         END SWITCH
+
+    PRIVATE STATIC METHOD IsSqlEqualityKeyFieldType(fieldType AS STRING) AS LOGIC
+        IF IsHashJoinFieldType(fieldType)
+            RETURN TRUE
+        ENDIF
+        IF String.IsNullOrEmpty(fieldType)
+            RETURN FALSE
+        ENDIF
+        RETURN fieldType:Equals("Y", StringComparison.OrdinalIgnoreCase) .OR. ;
+               fieldType:Equals("C", StringComparison.OrdinalIgnoreCase)
+
+    PRIVATE STATIC METHOD IsNumericSqlFieldType(fieldType AS STRING) AS LOGIC
+        RETURN IsHashJoinFieldType(fieldType) .OR. ;
+               String.Equals(fieldType, "Y", StringComparison.OrdinalIgnoreCase)
+
+    PRIVATE STATIC METHOD SqlEqualityKeyFieldsCompatible(leftTable AS STRING, leftField AS STRING, ;
+        rightTable AS STRING, rightField AS STRING) AS LOGIC
+        VAR leftType := HashJoinFieldType(leftTable, leftField)
+        VAR rightType := HashJoinFieldType(rightTable, rightField)
+        IF !IsSqlEqualityKeyFieldType(leftType) .OR. ;
+           !String.Equals(leftType, rightType, StringComparison.OrdinalIgnoreCase)
+            RETURN FALSE
+        ENDIF
+        IF leftType == "C"
+            VAR leftPosition := (leftTable)->FieldPos(leftField)
+            VAR rightPosition := (rightTable)->FieldPos(rightField)
+            VAR leftStructure := (leftTable)->DbStruct()
+            VAR rightStructure := (rightTable)->DbStruct()
+            RETURN leftStructure[leftPosition][3] == rightStructure[rightPosition][3]
+        ENDIF
+        RETURN TRUE
 
     PRIVATE STATIC METHOD IsCorrelatedScalarMemoFieldType(fieldType AS STRING) AS LOGIC
         IF String.IsNullOrEmpty(fieldType)
@@ -1121,22 +1171,24 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             RETURN NULL
         ENDIF
 
-        LOCAL correlation AS SqlCorrelationCounter
-        correlation := SqlCorrelationCounter{}
-        LOCAL outerReferences := List<SqlNameExpressionContext>{} AS List<SqlNameExpressionContext>
-        VAR residualWhere := ExtractCorrelatedScalarEquality(subquery:WhereClause, ;
-            subquery:TableAliases, outerTableAliases, correlation, outerReferences)
-        IF correlation:Count < 1 .OR. outerReferences:Count != correlation:Count .OR. ;
+        VAR correlationKeys := List<SqlEqualityKeyFieldPair>{}
+        VAR residualWhere := ExtractCorrelatedKeyEqualities(subquery:WhereClause, ;
+            subquery:TableAliases, outerTableAliases, correlationKeys)
+        IF correlationKeys:Count < 1 .OR. ;
            (residualWhere != NULL .AND. ;
             (HasExternalSubqueryDependency(residualWhere, subquery:TableAliases) .OR. ;
              ContainsInSubqueryExpression(residualWhere)))
             RETURN NULL
         ENDIF
         LOCAL outerValueCodeBlocks := List<CODEBLOCK>{} AS List<CODEBLOCK>
-        FOREACH VAR outerField IN outerReferences
+        FOREACH VAR keyPair IN correlationKeys
+            VAR outerField := keyPair:OuterField
             LOCAL resolvedOuterTable := outerField:Table AS STRING
             outerTableAliases:TryGetValue(outerField:Table, OUT resolvedOuterTable)
-            IF !IsCorrelatedScalarMemoFieldType(HashJoinFieldType(resolvedOuterTable, outerField:Name))
+            LOCAL resolvedInnerTable := keyPair:InnerField:Table AS STRING
+            subquery:TableAliases:TryGetValue(keyPair:InnerField:Table, OUT resolvedInnerTable)
+            IF !IsCorrelatedScalarMemoFieldType(HashJoinFieldType(resolvedOuterTable, outerField:Name)) .OR. ;
+               !IsCorrelatedScalarMemoFieldType(HashJoinFieldType(resolvedInnerTable, keyPair:InnerField:Name))
                 RETURN NULL
             ENDIF
             VAR outerValueCodeBlock := MCompile(outerField:ToResolvedString(outerTableAliases))
@@ -1146,56 +1198,6 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             outerValueCodeBlocks:Add(outerValueCodeBlock)
         NEXT
         RETURN SqlCorrelatedScalarMemo{outerValueCodeBlocks}
-
-    PRIVATE STATIC METHOD ExtractCorrelatedScalarEquality(expression AS SqlExpressionContext, ;
-        innerAliases AS Dictionary<STRING,STRING>, ;
-        outerAliases AS Dictionary<STRING,STRING>, counter AS SqlCorrelationCounter, ;
-        outerFields AS IList<SqlNameExpressionContext>) AS SqlExpressionContext
-        IF expression == NULL
-            RETURN NULL
-        ENDIF
-        IF expression IS SqlParenExpressionContext VAR paren .AND. paren:Expr IS SqlCompareExpressionContext
-            VAR residual := ExtractCorrelatedScalarEquality(paren:Expr, innerAliases, ;
-                outerAliases, counter, outerFields)
-            IF residual == NULL
-                RETURN NULL
-            ENDIF
-            RETURN SqlParenExpressionContext{} { Open := paren:Open, Expr := residual, Close := paren:Close }
-        ENDIF
-        IF expression IS SqlLogicExpressionContext VAR logicNode .AND. logicNode:Op:Type == XTokenType.AND
-            VAR leftResidual := ExtractCorrelatedScalarEquality(logicNode:Left, innerAliases, ;
-                outerAliases, counter, outerFields)
-            VAR rightResidual := ExtractCorrelatedScalarEquality(logicNode:Right, innerAliases, ;
-                outerAliases, counter, outerFields)
-            IF leftResidual == NULL
-                RETURN rightResidual
-            ELSEIF rightResidual == NULL
-                RETURN leftResidual
-            ENDIF
-            RETURN SqlLogicExpressionContext{} { Left := leftResidual, Op := logicNode:Op, Right := rightResidual }
-        ENDIF
-        IF expression IS SqlCompareExpressionContext VAR compare .AND. compare:Op:Type == XTokenType.EQ
-            LOCAL inner := NULL AS SqlNameExpressionContext
-            LOCAL outer := NULL AS SqlNameExpressionContext
-            IF compare:Left IS SqlNameExpressionContext VAR leftName .AND. ;
-               compare:Right IS SqlNameExpressionContext VAR rightName
-                IF !String.IsNullOrEmpty(leftName:Table) .AND. !String.IsNullOrEmpty(rightName:Table)
-                    IF innerAliases:ContainsKey(leftName:Table) .AND. outerAliases:ContainsKey(rightName:Table)
-                        inner := leftName
-                        outer := rightName
-                    ELSEIF innerAliases:ContainsKey(rightName:Table) .AND. outerAliases:ContainsKey(leftName:Table)
-                        inner := rightName
-                        outer := leftName
-                    ENDIF
-                ENDIF
-            ENDIF
-            IF inner != NULL .AND. outer != NULL
-                counter:Count++
-                outerFields:Add(outer)
-                RETURN NULL
-            ENDIF
-        ENDIF
-        RETURN expression
 
     PRIVATE STATIC METHOD HasCorrelatedInSubquery(expression AS SqlExpressionContext, ;
         tableAliases AS Dictionary<STRING,STRING>) AS LOGIC
@@ -1386,40 +1388,32 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             IF !(query:SelectList[0] IS SqlNameExpressionContext VAR selected) .OR. ;
                String.IsNullOrEmpty(selected:Table) .OR. !query:TableAliases:ContainsKey(selected:Table) .OR. ;
                !String.Equals(query:TableAliases[selected:Table], innerTable, StringComparison.OrdinalIgnoreCase) .OR. ;
-               (innerTable)->FieldPos(selected:Name) == 0 .OR. ;
-               !IsHashJoinFieldType(HashJoinFieldType(innerTable, selected:Name))
+               (innerTable)->FieldPos(selected:Name) == 0
                 RETURN FALSE
             ENDIF
         ENDIF
-        IF !(query:WhereClause IS SqlCompareExpressionContext VAR comparison) .OR. ;
-           !(comparison:Left IS SqlNameExpressionContext VAR leftField) .OR. ;
-           !(comparison:Right IS SqlNameExpressionContext VAR rightField) .OR. ;
-           comparison:Op:Type != XTokenType.EQ
+        VAR correlationKeys := List<SqlEqualityKeyFieldPair>{}
+        VAR innerOnlyWhere := ExtractCorrelatedKeyEqualities(query:WhereClause, ;
+            query:TableAliases, outerAliases, correlationKeys)
+        IF correlationKeys:Count == 0 .OR. ;
+           (innerOnlyWhere != NULL .AND. ;
+            (HasExternalSubqueryDependency(innerOnlyWhere, query:TableAliases) .OR. ;
+             ContainsInSubqueryExpression(innerOnlyWhere)))
             RETURN FALSE
         ENDIF
-        IF String.IsNullOrEmpty(leftField:Table) .OR. String.IsNullOrEmpty(rightField:Table)
-            RETURN FALSE
-        ENDIF
-        LOCAL innerField AS SqlNameExpressionContext
-        LOCAL outerField AS SqlNameExpressionContext
-        IF query:TableAliases:ContainsKey(leftField:Table) .AND. outerAliases:ContainsKey(rightField:Table)
-            innerField := leftField
-            outerField := rightField
-        ELSEIF query:TableAliases:ContainsKey(rightField:Table) .AND. outerAliases:ContainsKey(leftField:Table)
-            innerField := rightField
-            outerField := leftField
-        ELSE
-            RETURN FALSE
-        ENDIF
-        VAR outerTable := outerAliases[outerField:Table]
-        IF !String.Equals(query:TableAliases[innerField:Table], innerTable, StringComparison.OrdinalIgnoreCase) .OR. ;
-           !Used(outerTable) .OR. (innerTable)->FieldPos(innerField:Name) == 0 .OR. ;
-           (outerTable)->FieldPos(outerField:Name) == 0
-            RETURN FALSE
-        ENDIF
-        VAR innerType := HashJoinFieldType(innerTable, innerField:Name)
-        VAR outerType := HashJoinFieldType(outerTable, outerField:Name)
-        RETURN IsHashJoinFieldType(innerType) .AND. String.Equals(innerType, outerType, StringComparison.OrdinalIgnoreCase)
+        FOREACH VAR keyPair IN correlationKeys
+            LOCAL innerKeyTable := keyPair:InnerField:Table AS STRING
+            query:TableAliases:TryGetValue(keyPair:InnerField:Table, OUT innerKeyTable)
+            LOCAL outerKeyTable := keyPair:OuterField:Table AS STRING
+            outerAliases:TryGetValue(keyPair:OuterField:Table, OUT outerKeyTable)
+            IF !String.Equals(innerKeyTable, innerTable, StringComparison.OrdinalIgnoreCase) .OR. ;
+               !Used(outerKeyTable) .OR. ;
+               !SqlEqualityKeyFieldsCompatible(outerKeyTable, keyPair:OuterField:Name, ;
+                                                innerKeyTable, keyPair:InnerField:Name)
+                RETURN FALSE
+            ENDIF
+        NEXT
+        RETURN TRUE
 
     PRIVATE STATIC METHOD HasUnsafeCorrelatedCandidate(expression AS SqlExpressionContext, ;
         outerAliases AS Dictionary<STRING,STRING>) AS LOGIC
@@ -1481,7 +1475,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             IF String.IsNullOrEmpty(field:Table) .OR. !outerAliases:ContainsKey(field:Table)
                 RETURN FALSE
             ENDIF
-            RETURN IsHashJoinFieldType(HashJoinFieldType(outerAliases[field:Table], field:Name))
+            RETURN IsNumericSqlFieldType(HashJoinFieldType(outerAliases[field:Table], field:Name))
         ELSEIF expression IS SqlSimpleExpressionContext VAR simple
             RETURN simple:Tokens != NULL .AND. simple:Tokens:Count == 1 .AND. ;
                    simple:Tokens[0]:Type == XTokenType.NUMERIC_CONST
@@ -1824,16 +1818,37 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             RETURN NULL
         ENDIF
 
-        VAR outerType := HashJoinFieldType(resolvedOuterTable, outerValue:Name)
-        VAR innerType := HashJoinFieldType(resolvedInnerTable, innerValue:Name)
-        IF !IsHashJoinFieldType(outerType) .OR. !outerType:Equals(innerType, StringComparison.OrdinalIgnoreCase)
+        IF !SqlEqualityKeyFieldsCompatible(resolvedOuterTable, outerValue:Name, resolvedInnerTable, innerValue:Name)
             RETURN NULL
         ENDIF
 
-        LOCAL correlationCounter := SqlCorrelationCounter{} AS SqlCorrelationCounter
-        VAR innerOnlyWhere := RemoveCorrelatedEquality( ;
-            subquery:WhereClause, innerValue, outerValue, correlationCounter)
-        IF correlationCounter:Count != 1 .OR. ;
+        VAR correlationKeys := List<SqlEqualityKeyFieldPair>{}
+        VAR innerOnlyWhere := ExtractCorrelatedKeyEqualities(subquery:WhereClause, ;
+            subquery:TableAliases, outerTableAliases, correlationKeys)
+        LOCAL hasMembershipCorrelation := FALSE AS LOGIC
+        LOCAL outerKeyCodeBlocks := List<CODEBLOCK>{} AS List<CODEBLOCK>
+        FOREACH VAR keyPair IN correlationKeys
+            LOCAL pairOuterTable := keyPair:OuterField:Table AS STRING
+            outerTableAliases:TryGetValue(keyPair:OuterField:Table, OUT pairOuterTable)
+            LOCAL pairInnerTable := keyPair:InnerField:Table AS STRING
+            subquery:TableAliases:TryGetValue(keyPair:InnerField:Table, OUT pairInnerTable)
+            IF !SqlEqualityKeyFieldsCompatible(pairOuterTable, keyPair:OuterField:Name, ;
+                                               pairInnerTable, keyPair:InnerField:Name)
+                RETURN NULL
+            ENDIF
+            IF keyPair:OuterField:ToResolvedString(outerTableAliases):Equals( ;
+               outerValue:ToResolvedString(outerTableAliases), StringComparison.OrdinalIgnoreCase) .AND. ;
+               keyPair:InnerField:ToResolvedString(subquery:TableAliases):Equals( ;
+               innerValue:ToResolvedString(subquery:TableAliases), StringComparison.OrdinalIgnoreCase)
+                hasMembershipCorrelation := TRUE
+            ENDIF
+            VAR keyCodeBlock := MCompile(keyPair:OuterField:ToResolvedString(outerTableAliases))
+            IF keyCodeBlock == NULL
+                RETURN NULL
+            ENDIF
+            outerKeyCodeBlocks:Add(keyCodeBlock)
+        NEXT
+        IF correlationKeys:Count < 1 .OR. !hasMembershipCorrelation .OR. ;
            (innerOnlyWhere != NULL .AND. ;
             (HasExternalSubqueryDependency(innerOnlyWhere, subquery:TableAliases) .OR. ;
              ContainsInSubqueryExpression(innerOnlyWhere)))
@@ -1848,8 +1863,17 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         LOCAL innerAlias := "SQ" + Guid.NewGuid():ToString("N"):Substring(0, 8) AS STRING
         VAR innerSelect := CopySelectBranch(subquery, innerAlias)
         innerSelect:WhereClause := innerOnlyWhere
+        VAR expandedSelectList := List<SqlExpressionContext>{}
+        FOREACH VAR selectedExpression IN subquery:SelectList
+            expandedSelectList:Add(selectedExpression)
+        NEXT
+        FOREACH VAR keyPair IN correlationKeys
+            expandedSelectList:Add(keyPair:InnerField)
+        NEXT
+        innerSelect:SelectList := expandedSelectList
         LOCAL savedArea := VoDbGetSelect() AS DWORD
-        VAR innerValues := Dictionary<USUAL,BYTE>{}
+        VAR innerValueSet := Dictionary<USUAL[],BYTE>{SqlEqualityKeyComparer{}}
+        VAR innerValues := Dictionary<USUAL[],Dictionary<USUAL[],BYTE>>{SqlEqualityKeyComparer{}}
         TRY
             ExecuteSelect(innerSelect)
             IF !Used(innerAlias)
@@ -1858,8 +1882,24 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             (innerAlias)->DbGoTop()
             DO WHILE !(innerAlias)->Eof()
                 VAR value := (USUAL)(innerAlias)->FieldGet(1)
-                IF !value:IsNull .AND. !innerValues:ContainsKey(value)
-                    innerValues[value] := 0
+                VAR innerKey := USUAL[]{correlationKeys:Count}
+                LOCAL hasNullKey := FALSE AS LOGIC
+                FOR LOCAL keyIndex := 1 AS INT TO correlationKeys:Count
+                    innerKey[keyIndex] := (USUAL)(innerAlias)->FieldGet(keyIndex + 1)
+                    IF innerKey[keyIndex]:IsNull
+                        hasNullKey := TRUE
+                        EXIT
+                    ENDIF
+                NEXT
+                IF !hasNullKey .AND. !value:IsNull
+                    IF !innerValues:TryGetValue(innerKey, OUT innerValueSet)
+                        innerValueSet := Dictionary<USUAL[],BYTE>{SqlEqualityKeyComparer{}}
+                        innerValues[innerKey] := innerValueSet
+                    ENDIF
+                    VAR valueKey := USUAL[]{value}
+                    IF !innerValueSet:ContainsKey(valueKey)
+                        innerValueSet[valueKey] := 0
+                    ENDIF
                 ENDIF
                 (innerAlias)->DbSkip(1)
             ENDDO
@@ -1872,67 +1912,44 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             ENDIF
         END TRY
         System.Threading.Interlocked.Increment(REF SqlOptimizationDiagnostics.CorrelatedInPlans)
-        RETURN SqlCorrelatedInPlan{outerValueCodeBlock, innerValues, inExpression:IsNegated}
+        RETURN SqlCorrelatedInPlan{outerValueCodeBlock, outerKeyCodeBlocks, innerValues, inExpression:IsNegated}
 
-    PRIVATE STATIC METHOD RemoveCorrelatedEquality(expression AS SqlExpressionContext, ;
-        innerField AS SqlNameExpressionContext, outerField AS SqlNameExpressionContext, ;
-        counter AS SqlCorrelationCounter) AS SqlExpressionContext
-        RETURN RemoveCorrelatedEqualityCore(expression, innerField, outerField, counter)
-
-    PRIVATE STATIC METHOD RemoveCorrelatedEqualityCore(expression AS SqlExpressionContext, ;
-        innerField AS SqlNameExpressionContext, outerField AS SqlNameExpressionContext, ;
-        counter AS SqlCorrelationCounter) AS SqlExpressionContext
-        IF expression IS SqlParenExpressionContext VAR parenExpression
-            LOCAL oldCount := counter:Count AS INT
-            VAR innerExpression := RemoveCorrelatedEqualityCore( ;
-                parenExpression:Expr, innerField, outerField, counter)
-            IF oldCount == counter:Count
-                RETURN expression
-            ENDIF
-            IF innerExpression == NULL
+    PRIVATE STATIC METHOD ExtractCorrelatedKeyEqualities(expression AS SqlExpressionContext, ;
+        innerAliases AS IDictionary<STRING,STRING>, outerAliases AS IDictionary<STRING,STRING>, ;
+        keys AS IList<SqlEqualityKeyFieldPair>) AS SqlExpressionContext
+        IF expression == NULL
+            RETURN NULL
+        ENDIF
+        IF expression IS SqlParenExpressionContext VAR paren .AND. paren:Expr IS SqlCompareExpressionContext
+            VAR residual := ExtractCorrelatedKeyEqualities(paren:Expr, innerAliases, outerAliases, keys)
+            IF residual == NULL
                 RETURN NULL
             ENDIF
-            RETURN SqlParenExpressionContext{} { ;
-                Open := parenExpression:Open, Expr := innerExpression, Close := parenExpression:Close }
+            RETURN SqlParenExpressionContext{} { Open := paren:Open, Expr := residual, Close := paren:Close }
         ENDIF
-
-        IF expression IS SqlLogicExpressionContext VAR logicExpression .AND. ;
-           logicExpression:Op:Type == XTokenType.AND
-            LOCAL oldCount := counter:Count AS INT
-            VAR leftExpression := RemoveCorrelatedEqualityCore( ;
-                logicExpression:Left, innerField, outerField, counter)
-            VAR rightExpression := RemoveCorrelatedEqualityCore( ;
-                logicExpression:Right, innerField, outerField, counter)
-            IF oldCount == counter:Count
-                RETURN expression
+        IF expression IS SqlLogicExpressionContext VAR logicExpression .AND. logicExpression:Op:Type == XTokenType.AND
+            VAR leftResidual := ExtractCorrelatedKeyEqualities(logicExpression:Left, innerAliases, outerAliases, keys)
+            VAR rightResidual := ExtractCorrelatedKeyEqualities(logicExpression:Right, innerAliases, outerAliases, keys)
+            IF leftResidual == NULL
+                RETURN rightResidual
+            ELSEIF rightResidual == NULL
+                RETURN leftResidual
             ENDIF
-            IF leftExpression == NULL
-                RETURN rightExpression
-            ELSEIF rightExpression == NULL
-                RETURN leftExpression
-            ENDIF
-            RETURN SqlLogicExpressionContext{} { ;
-                Left := leftExpression, Op := logicExpression:Op, Right := rightExpression }
+            RETURN SqlLogicExpressionContext{} { Left := leftResidual, Op := logicExpression:Op, Right := rightResidual }
         ENDIF
-
-        IF expression IS SqlCompareExpressionContext VAR compareExpression .AND. ;
-           compareExpression:Op:Type == XTokenType.EQ
-            IF (IsSameSqlField(compareExpression:Left, innerField) .AND. ;
-                IsSameSqlField(compareExpression:Right, outerField)) .OR. ;
-               (IsSameSqlField(compareExpression:Right, innerField) .AND. ;
-                IsSameSqlField(compareExpression:Left, outerField))
-                counter:Count++
+        IF expression IS SqlCompareExpressionContext VAR compare .AND. compare:Op:Type == XTokenType.EQ .AND. ;
+           compare:Left IS SqlNameExpressionContext VAR leftField .AND. ;
+           compare:Right IS SqlNameExpressionContext VAR rightField .AND. ;
+           !String.IsNullOrEmpty(leftField:Table) .AND. !String.IsNullOrEmpty(rightField:Table)
+            IF innerAliases:ContainsKey(leftField:Table) .AND. outerAliases:ContainsKey(rightField:Table)
+                keys:Add(SqlEqualityKeyFieldPair{rightField, leftField})
+                RETURN NULL
+            ELSEIF innerAliases:ContainsKey(rightField:Table) .AND. outerAliases:ContainsKey(leftField:Table)
+                keys:Add(SqlEqualityKeyFieldPair{leftField, rightField})
                 RETURN NULL
             ENDIF
         ENDIF
         RETURN expression
-
-    PRIVATE STATIC METHOD IsSameSqlField(expression AS SqlExpressionContext, field AS SqlNameExpressionContext) AS LOGIC
-        IF expression IS SqlNameExpressionContext VAR nameExpression
-            RETURN String.Equals(nameExpression:Name, field:Name, StringComparison.OrdinalIgnoreCase) .AND. ;
-                   String.Equals(nameExpression:Table, field:Table, StringComparison.OrdinalIgnoreCase)
-        ENDIF
-        RETURN FALSE
 
     PRIVATE STATIC METHOD ContainsInSubqueryExpression(expression AS SqlExpressionContext) AS LOGIC
         IF expression == NULL
@@ -2661,23 +2678,42 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
            !((STRING)tableNames[1]):Equals((STRING)tableNames[2], StringComparison.OrdinalIgnoreCase)
             VAR outerTable := (STRING)tableNames[1]
             VAR innerTable := (STRING)tableNames[2]
-            IF FindHashJoinKey(selectCtx:Joins[0]:OnClause, selectCtx:TableAliases, ;
-                               outerTable, innerTable, OUT VAR outerKey, OUT VAR innerKey)
-                VAR outerFieldType := HashJoinFieldType(outerTable, outerKey:Name)
-                VAR innerFieldType := HashJoinFieldType(innerTable, innerKey:Name)
-                IF IsHashJoinFieldType(outerFieldType) .AND. ;
-                   outerFieldType:Equals(innerFieldType, StringComparison.OrdinalIgnoreCase)
-                    VAR outerKeyExpression := outerKey:ToResolvedString(selectCtx:TableAliases)
-                    VAR innerKeyExpression := innerKey:ToResolvedString(selectCtx:TableAliases)
-                    VAR outerKeyCodeBlock := MCompile(outerKeyExpression)
-                    VAR innerKeyCodeBlock := MCompile(innerKeyExpression)
-                    IF outerKeyCodeBlock != NULL .AND. innerKeyCodeBlock != NULL
-                        VAR keyBuckets := Dictionary<USUAL,List<LONG>>{}
+            VAR keyPairs := List<SqlEqualityKeyFieldPair>{}
+            FindHashJoinKeys(selectCtx:Joins[0]:OnClause, selectCtx:TableAliases, outerTable, innerTable, keyPairs)
+            IF keyPairs:Count > 0
+                LOCAL outerKeyCodeBlocks := List<CODEBLOCK>{} AS List<CODEBLOCK>
+                LOCAL innerKeyCodeBlocks := List<CODEBLOCK>{} AS List<CODEBLOCK>
+                LOCAL compatible := TRUE AS LOGIC
+                FOREACH VAR keyPair IN keyPairs
+                    IF !SqlEqualityKeyFieldsCompatible(outerTable, keyPair:OuterField:Name, innerTable, keyPair:InnerField:Name)
+                        compatible := FALSE
+                        EXIT
+                    ENDIF
+                    VAR outerKeyCodeBlock := MCompile(keyPair:OuterField:ToResolvedString(selectCtx:TableAliases))
+                    VAR innerKeyCodeBlock := MCompile(keyPair:InnerField:ToResolvedString(selectCtx:TableAliases))
+                    IF outerKeyCodeBlock == NULL .OR. innerKeyCodeBlock == NULL
+                        compatible := FALSE
+                        EXIT
+                    ENDIF
+                    outerKeyCodeBlocks:Add(outerKeyCodeBlock)
+                    innerKeyCodeBlocks:Add(innerKeyCodeBlock)
+                NEXT
+                IF compatible
+                    VAR comparer := SqlEqualityKeyComparer{}
+                    VAR keyBuckets := Dictionary<USUAL[],List<LONG>>{comparer}
                         TRY
                             (innerTable)->DbGoTop()
                             DO WHILE !(innerTable)->Eof()
-                                VAR keyValue := (USUAL) innerKeyCodeBlock:Eval()
-                                IF !keyValue:IsNull
+                                VAR keyValue := USUAL[]{innerKeyCodeBlocks:Count}
+                                LOCAL hasNullKey := FALSE AS LOGIC
+                                FOR LOCAL keyIndex := 1 AS INT TO innerKeyCodeBlocks:Count
+                                    keyValue[keyIndex] := (USUAL)innerKeyCodeBlocks[keyIndex-1]:Eval()
+                                    IF keyValue[keyIndex]:IsNull
+                                        hasNullKey := TRUE
+                                        EXIT
+                                    ENDIF
+                                NEXT
+                                IF !hasNullKey
                                     VAR innerRecNo := (LONG)(innerTable)->RecNo()
                                     IF keyBuckets:ContainsKey(keyValue)
                                         keyBuckets[keyValue]:Add(innerRecNo)
@@ -2690,14 +2726,13 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                                 (innerTable)->DbSkip(1)
                             ENDDO
 
-                            hashJoinCursor := SqlHashJoinCursor{outerTable, outerKeyCodeBlock, keyBuckets}
+                            hashJoinCursor := SqlHashJoinCursor{outerTable, outerKeyCodeBlocks, keyBuckets}
                             useHashJoin := TRUE
                             System.Threading.Interlocked.Increment(REF SqlOptimizationDiagnostics.HashJoins)
                         CATCH ex AS Exception
                             hashJoinCursor := NULL
                             useHashJoin := FALSE
                         END TRY
-                    ENDIF
                 ENDIF
             ENDIF
         ENDIF

@@ -270,6 +270,7 @@ RETURN
 
 FUNCTION TestMembershipBitmap() AS VOID
     CREATE CURSOR bitmap_outer (Id I NULL, Flag I)
+    CREATE CURSOR bitmap_currency_outer (Id I NULL, Amount Y)
     CREATE CURSOR bitmap_inner (Id I NULL)
     CREATE CURSOR bitmap_empty (Id I NULL)
     INSERT INTO bitmap_outer VALUES (4, 4)
@@ -277,6 +278,8 @@ FUNCTION TestMembershipBitmap() AS VOID
     INSERT INTO bitmap_outer VALUES (3, 3)
     INSERT INTO bitmap_outer VALUES (2, 2)
     INSERT INTO bitmap_outer VALUES (NULL, 5)
+    INSERT INTO bitmap_currency_outer VALUES (4, 2.5)
+    INSERT INTO bitmap_currency_outer VALUES (2, 3.0)
     INSERT INTO bitmap_inner VALUES (2)
     INSERT INTO bitmap_inner VALUES (2)
     INSERT INTO bitmap_inner VALUES (4)
@@ -345,6 +348,13 @@ FUNCTION TestMembershipBitmap() AS VOID
         IF SqlOptimizationCount("ScalarExecutions") - scalarBefore != IIF(disabled, 5, 1)
             THROW Exception{"Membership bitmap should reduce correlated scalar executions"}
         ENDIF
+
+        before := SqlOptimizationCount("MembershipBitmaps")
+        SELECT p.Id FROM bitmap_currency_outer p ;
+            WHERE p.Id IN (SELECT i.Id FROM bitmap_inner i) AND p.Amount = 2.5 AND ;
+                  1 = (SELECT COUNT(*) FROM bitmap_inner e WHERE e.Id = p.Id)
+        VerifySqlOptimization("MembershipBitmaps", before)
+        VerifyTable(1, "Currency comparisons should remain eligible for safe membership pruning", TRUE, {{4}})
 
         before := SqlOptimizationCount("MembershipBitmaps")
         LOCAL cardinalityRejected := FALSE AS LOGIC
@@ -431,6 +441,9 @@ FUNCTION TestMembershipBitmap() AS VOID
         ENDIF
         IF Used("bitmap_inner")
             USE IN bitmap_inner
+        ENDIF
+        IF Used("bitmap_currency_outer")
+            USE IN bitmap_currency_outer
         ENDIF
         IF Used("bitmap_empty")
             USE IN bitmap_empty

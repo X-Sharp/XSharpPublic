@@ -753,10 +753,10 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     VerifyTable(2, "IN subquery should support a UNION result", TRUE, {{2}, {4}})
 
     __SqlSelect("SELECT Id FROM nested_parent WHERE Id NOT IN (SELECT Id FROM nested_child WHERE Id > 0)")
-    VerifyTable(3, "NOT IN should exclude matching values and preserve nonmatching values and NULL", TRUE, {{1}, {3}, {NULL}})
+    VerifyTable(2, "NOT IN should exclude matching values and NULL outer values", TRUE, {{1}, {3}})
 
     __SqlSelect("SELECT Id FROM nested_parent WHERE Id NOT IN (SELECT Id FROM nested_child)")
-    VerifyTable(3, "NOT IN should retain INLIST-style behavior when the subquery contains NULL", TRUE, {{1}, {3}, {NULL}})
+    VerifyTable(0, "NOT IN should match no rows when the subquery contains NULL", TRUE)
 
     __SqlSelect("SELECT Id FROM nested_parent WHERE Id IN (SELECT Id FROM nested_empty)")
     VerifyTable(0, "IN an empty subquery should match no rows", TRUE)
@@ -774,14 +774,17 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
         THROW Exception{"IN subquery should reject a result with multiple columns"}
     ENDIF
 
-    LOCAL correlatedRejected := FALSE AS LOGIC
+    __SqlSelect("SELECT p.Id FROM nested_parent p WHERE p.Id IN (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id)")
+    VerifyTable(2, "Correlated IN subqueries should evaluate against the current outer row", TRUE, {{2}, {4}})
+
+    LOCAL unsupportedCorrelationRejected := FALSE AS LOGIC
     TRY
-        __SqlSelect("SELECT p.Id FROM nested_parent p WHERE p.Id IN (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id)")
+        __SqlSelect("SELECT Id FROM nested_parent p WHERE Id IN (SELECT p.Id FROM nested_child c WHERE c.Id > 0)")
     CATCH ex AS Exception
-        correlatedRejected := ex:Message:Contains("Correlated")
+        unsupportedCorrelationRejected := ex:Message:Contains("immediate outer query")
     END TRY
-    IF !correlatedRejected
-        THROW Exception{"Correlated IN subqueries should fail clearly instead of using an outer row implicitly"}
+    IF !unsupportedCorrelationRejected
+        THROW Exception{"Correlated IN references outside the subquery WHERE clause should fail clearly"}
     ENDIF
 
     IF Used("nested_parent")

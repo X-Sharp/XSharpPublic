@@ -341,30 +341,12 @@ CLASS SqlInSubqueryExpressionContext INHERIT SqlExpressionContext
         END TRY
 
     OVERRIDE METHOD BuildString(sb AS StringBuilder) AS VOID
-        IF Values == NULL
-            THROW InvalidOperationException{"IN subquery has not been prepared for execution"}
-        ENDIF
-        IF Values:Count == 0
-            sb:Append(IIF(IsNegated, ".T.", ".F."))
-            RETURN
-        ENDIF
-        sb:Append("(!ISNULL(")
-        ValueExpression:BuildString(sb)
-        sb:Append(") .AND. ")
-        IF IsNegated
-            sb:Append("!")
-        ENDIF
-        sb:Append("INLIST(")
-        ValueExpression:BuildString(sb)
-        sb:Append(", ")
-        SELF:AppendValues(sb)
-        sb:Append(")")
-        IF IsNegated .AND. SELF:HasNullValue()
-            sb:Append(" .AND. .F.")
-        ENDIF
-        sb:Append(")")
+        SELF:BuildMembershipPredicate(sb, NULL)
 
     OVERRIDE METHOD BuildStringWithFieldResolution(sb AS StringBuilder, tableAliases AS IDictionary<STRING,STRING>) AS VOID
+        SELF:BuildMembershipPredicate(sb, tableAliases)
+
+    PRIVATE METHOD BuildMembershipPredicate(sb AS StringBuilder, tableAliases AS IDictionary<STRING,STRING>) AS VOID
         IF Values == NULL
             THROW InvalidOperationException{"IN subquery has not been prepared for execution"}
         ENDIF
@@ -372,21 +354,32 @@ CLASS SqlInSubqueryExpressionContext INHERIT SqlExpressionContext
             sb:Append(IIF(IsNegated, ".T.", ".F."))
             RETURN
         ENDIF
-        IF IsNegated
-            sb:Append("NOT (")
+        IF IsNegated .AND. SELF:HasNullValue()
+            sb:Append(".F.")
+            RETURN
         ENDIF
+        IF !SELF:HasNonNullValue()
+            sb:Append(".F.")
+            RETURN
+        ENDIF
+        // WHERE treats UNKNOWN as nonmatching. Emit an explicit Boolean result so
+        // MacroCompiler's NOT/.NULL. coercion cannot admit NULL outer values.
         sb:Append("IIF(ISNULL(")
-        ValueExpression:BuildStringWithFieldResolution(sb, tableAliases)
-        sb:Append("), .NULL., IIF(INLIST(")
-        ValueExpression:BuildStringWithFieldResolution(sb, tableAliases)
+        SELF:AppendValueExpression(sb, tableAliases)
+        sb:Append("), .F., IIF(INLIST(")
+        SELF:AppendValueExpression(sb, tableAliases)
         sb:Append(", ")
-        SELF:AppendValues(sb)
-        sb:Append("), .T., ")
-        sb:Append(IIF(SELF:HasNullValue(), ".NULL.", ".F."))
-        sb:Append("))")
-        IF IsNegated
-            sb:Append(")")
+        SELF:AppendNonNullValues(sb)
+        sb:Append("), ")
+        sb:Append(IIF(IsNegated, ".F., .T.))", ".T., .F.))"))
+
+    PRIVATE METHOD AppendValueExpression(sb AS StringBuilder, tableAliases AS IDictionary<STRING,STRING>) AS VOID
+        IF tableAliases == NULL
+            ValueExpression:BuildString(sb)
+        ELSE
+            ValueExpression:BuildStringWithFieldResolution(sb, tableAliases)
         ENDIF
+        RETURN
 
     PRIVATE METHOD HasNullValue() AS LOGIC
         FOREACH VAR value IN Values
@@ -396,15 +389,27 @@ CLASS SqlInSubqueryExpressionContext INHERIT SqlExpressionContext
         NEXT
         RETURN FALSE
 
-    PRIVATE METHOD AppendValues(sb AS StringBuilder) AS VOID
+    PRIVATE METHOD HasNonNullValue() AS LOGIC
+        FOREACH VAR value IN Values
+            IF !value:IsNull
+                RETURN TRUE
+            ENDIF
+        NEXT
+        RETURN FALSE
+
+    PRIVATE METHOD AppendNonNullValues(sb AS StringBuilder) AS VOID
         LOCAL first := TRUE AS LOGIC
         FOREACH VAR value IN Values
+            IF value:IsNull
+                LOOP
+            ENDIF
             IF !first
                 sb:Append(", ")
             ENDIF
             SqlInSubqueryExpressionContext.AppendValue(sb, value)
             first := FALSE
         NEXT
+        RETURN
 
     PRIVATE STATIC METHOD AppendValue(sb AS StringBuilder, value AS USUAL) AS VOID
         IF value:IsNull

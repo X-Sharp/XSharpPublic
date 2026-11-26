@@ -62,7 +62,7 @@ FUNCTION RunTests(tests := NULL AS List<TestInfo>) AS TUPLE(INT, INT)
     RETURN TUPLE(passed, failed)
 
 FUNCTION TestRunner(test AS TestInfo) AS VOID
-    LOCAL switchName := "XSharp.VFP.EmbeddedSql.DisableOptimizations" AS STRING
+    LOCAL switchName := EmbeddedSqlRuntimeOptions.DisableOptimizationsSwitch AS STRING
     LOCAL previousSwitch := FALSE AS LOGIC
     LOCAL switchWasSet := AppContext.TryGetSwitch(switchName, OUT previousSwitch) AS LOGIC
     AppContext.SetSwitch(switchName, test:DisableSqlOptimizations)

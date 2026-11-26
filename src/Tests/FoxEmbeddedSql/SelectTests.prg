@@ -19,7 +19,7 @@ FUNCTION SqlOptimizationCount(name AS STRING) AS INT
 
 FUNCTION VerifySqlOptimization(name AS STRING, previous AS INT) AS VOID
     LOCAL disabled := FALSE AS LOGIC
-    AppContext.TryGetSwitch("XSharp.VFP.EmbeddedSql.DisableOptimizations", OUT disabled)
+    AppContext.TryGetSwitch(EmbeddedSqlRuntimeOptions.DisableOptimizationsSwitch, OUT disabled)
     IF (SqlOptimizationCount(name) > previous) == disabled
         THROW Exception{"Unexpected optimizer selection: " + name}
     ENDIF
@@ -1421,6 +1421,23 @@ FUNCTION TestLeftOuterJoin() AS VOID
         ORDER BY a.Id, b.Id
     VerifyTable(9, "Out-of-group LEFT JOIN references should follow a changed source work-area record", TRUE, ;
         { {1, 1}, {1, 1}, {1, 1}, {2, 1}, {2, 1}, {2, 1}, {3, 1}, {3, 1}, {3, 1} } )
+
+    // Disabling the compatibility switch restores row-wise X# evaluation.
+    LOCAL compatibilitySwitch := EmbeddedSqlRuntimeOptions.DisableOutOfScopeJoinWorkAreaCompatibilitySwitch AS STRING
+    LOCAL previousCompatibilitySwitch := FALSE AS LOGIC
+    LOCAL compatibilitySwitchWasSet := AppContext.TryGetSwitch(compatibilitySwitch, OUT previousCompatibilitySwitch) AS LOGIC
+    TRY
+        AppContext.SetSwitch(compatibilitySwitch, TRUE)
+        outer_left->DbGoto(3)
+        SELECT a.Id, c.Id ;
+            FROM outer_left a, outer_right b ;
+            LEFT JOIN outer_inner c ON a.Id = c.Id ;
+            ORDER BY a.Id, b.Id
+        VerifyTable(9, "Disabling work-area compatibility should restore row-wise ON evaluation", TRUE, ;
+            { {1, 1}, {1, 1}, {1, 1}, {2, NULL}, {2, NULL}, {2, NULL}, {3, 3}, {3, 3}, {3, 3} } )
+    FINALLY
+        AppContext.SetSwitch(compatibilitySwitch, IIF(compatibilitySwitchWasSet, previousCompatibilitySwitch, FALSE))
+    END TRY
 
     USE IN outer_left
     USE IN outer_right

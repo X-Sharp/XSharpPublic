@@ -284,7 +284,7 @@ FUNCTION TestMembershipBitmap() AS VOID
 
     LOCAL oldDeleted := SetDeleted() AS LOGIC
     LOCAL disabled := FALSE AS LOGIC
-    AppContext.TryGetSwitch("XSharp.VFP.EmbeddedSql.DisableOptimizations", OUT disabled)
+    AppContext.TryGetSwitch(EmbeddedSqlRuntimeOptions.DisableOptimizationsSwitch, OUT disabled)
     TRY
         LOCAL before := SqlOptimizationCount("MembershipBitmaps") AS INT
         SELECT p.Id FROM bitmap_outer p WHERE p.Id IN (SELECT i.Id FROM bitmap_inner i)
@@ -446,7 +446,7 @@ FUNCTION TestMembershipBitmapBenchmark() AS VOID
     NEXT
     INSERT INTO bm_bench_inner VALUES (1)
     INSERT INTO bm_bench_inner VALUES (2)
-    LOCAL switchName := "XSharp.VFP.EmbeddedSql.DisableOptimizations" AS STRING
+    LOCAL switchName := EmbeddedSqlRuntimeOptions.DisableOptimizationsSwitch AS STRING
     LOCAL previousSwitch := FALSE AS LOGIC
     LOCAL switchWasSet := AppContext.TryGetSwitch(switchName, OUT previousSwitch) AS LOGIC
     LOCAL timer := Stopwatch{} AS Stopwatch
@@ -512,7 +512,7 @@ FUNCTION TestSparseOptimizationBenchmark() AS VOID
     NEXT
 
     LOCAL query := "SELECT COUNT(*) AS PairCount FROM sparse_left a CROSS JOIN sparse_right b WHERE a.MatchFlag = 1 AND b.MatchFlag = 1 INTO CURSOR SparseResult" AS STRING
-    LOCAL switchName := "XSharp.VFP.EmbeddedSql.DisableOptimizations" AS STRING
+    LOCAL switchName := EmbeddedSqlRuntimeOptions.DisableOptimizationsSwitch AS STRING
     LOCAL previousSwitch := FALSE AS LOGIC
     LOCAL switchWasSet := AppContext.TryGetSwitch(switchName, OUT previousSwitch) AS LOGIC
     LOCAL optimizedMilliseconds AS INT64
@@ -566,7 +566,7 @@ FUNCTION TestCorrelatedInOptimizationBenchmark() AS VOID
     NEXT
 
     LOCAL query := "SELECT COUNT(*) AS MatchCount FROM correlated_bench_parent p WHERE p.Id IN (SELECT c.Id FROM correlated_bench_child c WHERE c.Id = p.Id) INTO CURSOR CorrelatedBenchResult" AS STRING
-    LOCAL switchName := "XSharp.VFP.EmbeddedSql.DisableOptimizations" AS STRING
+    LOCAL switchName := EmbeddedSqlRuntimeOptions.DisableOptimizationsSwitch AS STRING
     LOCAL previousSwitch := FALSE AS LOGIC
     LOCAL switchWasSet := AppContext.TryGetSwitch(switchName, OUT previousSwitch) AS LOGIC
     LOCAL optimizedMilliseconds AS INT64

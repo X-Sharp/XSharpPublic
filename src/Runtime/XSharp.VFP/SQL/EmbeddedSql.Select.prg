@@ -89,6 +89,23 @@ INTERNAL STATIC CLASS SqlOptimizationDiagnostics
     INTERNAL STATIC DerivedTableExecutions AS INT
 END CLASS
 
+/// Runtime switches used by the embedded SQL implementation.
+PUBLIC STATIC CLASS EmbeddedSqlRuntimeOptions
+    PUBLIC CONST DisableOptimizationsSwitch := "XSharp.VFP.EmbeddedSql.DisableOptimizations" AS STRING
+    PUBLIC CONST DisableOutOfScopeJoinWorkAreaCompatibilitySwitch := ;
+        "XSharp.VFP.EmbeddedSql.DisableOutOfScopeJoinWorkAreaCompatibility" AS STRING
+
+    PUBLIC STATIC METHOD OptimizationsEnabled() AS LOGIC
+        LOCAL disabled := FALSE AS LOGIC
+        AppContext.TryGetSwitch(DisableOptimizationsSwitch, OUT disabled)
+        RETURN !disabled
+
+    PUBLIC STATIC METHOD OutOfScopeJoinWorkAreaCompatibilityEnabled() AS LOGIC
+        LOCAL disabled := FALSE AS LOGIC
+        AppContext.TryGetSwitch(DisableOutOfScopeJoinWorkAreaCompatibilitySwitch, OUT disabled)
+        RETURN !disabled
+END CLASS
+
 INTERNAL CLASS SqlDerivedTableExecution
     INTERNAL SourceIndex AS INT
     INTERNAL Alias AS STRING
@@ -703,9 +720,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         END SWITCH
 
     PRIVATE STATIC METHOD SqlOptimizationsEnabled() AS LOGIC
-        LOCAL disabled := FALSE AS LOGIC
-        AppContext.TryGetSwitch("XSharp.VFP.EmbeddedSql.DisableOptimizations", OUT disabled)
-        RETURN !disabled
+        RETURN EmbeddedSqlRuntimeOptions.OptimizationsEnabled()
 
     STATIC METHOD ParseSqlSelect(sCommand as STRING) AS FoxSelectContext
         VAR lexer := XSqlLexer{sCommand}
@@ -1932,7 +1947,11 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         NEXT
 
         IF hasLeftOuterJoin .AND. selectCtx:OuterJoinRows == NULL
-            selectCtx:WorkAreaRecordSnapshot := CaptureWorkAreaRecordNumbers(selectCtx)
+            IF EmbeddedSqlRuntimeOptions.OutOfScopeJoinWorkAreaCompatibilityEnabled()
+                selectCtx:WorkAreaRecordSnapshot := CaptureWorkAreaRecordNumbers(selectCtx)
+            ELSE
+                selectCtx:WorkAreaRecordSnapshot := NULL
+            ENDIF
             ExecuteLeftOuterJoinSelect(selectCtx)
             RETURN
         ENDIF
@@ -3052,7 +3071,8 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         RETURN result
 
     PRIVATE STATIC METHOD RestoreOutOfScopeJoinSources(selectCtx AS FoxSelectContext, joinIndex AS INT) AS VOID
-        IF selectCtx:WorkAreaRecordSnapshot == NULL .OR. joinIndex < 0 .OR. joinIndex >= selectCtx:Joins:Count
+        IF !EmbeddedSqlRuntimeOptions.OutOfScopeJoinWorkAreaCompatibilityEnabled() .OR. ;
+           selectCtx:WorkAreaRecordSnapshot == NULL .OR. joinIndex < 0 .OR. joinIndex >= selectCtx:Joins:Count
             RETURN
         ENDIF
         // A comma starts a new table expression. Earlier comma groups are outside

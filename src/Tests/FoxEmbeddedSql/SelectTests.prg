@@ -756,6 +756,8 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     CREATE CURSOR nested_currency_child (Amount Y NULL, OutVal I)
     CREATE CURSOR nested_key_parent (Id I NULL, Code C(5) NULL, Amount Y NULL)
     CREATE CURSOR nested_key_child (Id I NULL, Code C(5) NULL, Amount Y NULL)
+    CREATE CURSOR nested_temporal_parent (Id I NULL, Dte D, Stamp T, Active L NULL)
+    CREATE CURSOR nested_temporal_child (Id I NULL, Dte D, Stamp T, Active L NULL)
     INSERT INTO nested_parent VALUES (1)
     INSERT INTO nested_parent VALUES (2)
     INSERT INTO nested_parent VALUES (3)
@@ -807,6 +809,16 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     INSERT INTO nested_key_child VALUES (1, "abc", 2.5)
     INSERT INTO nested_key_child VALUES (1, "ABC", 2.5)
     INSERT INTO nested_key_child VALUES (1, "abc", 4.125)
+    InsertTemporalKeyRow("nested_temporal_parent", 1, DateTime{2024, 1, 2}, DateTime{2024, 1, 2, 12, 34, 56}, TRUE)
+    InsertTemporalKeyRow("nested_temporal_parent", 1, DateTime{2024, 1, 2}, DateTime{2024, 1, 2, 12, 34, 56}, TRUE)
+    InsertTemporalKeyRow("nested_temporal_parent", 1, DateTime{2024, 1, 2}, DateTime{2024, 1, 2, 12, 34, 56}, FALSE)
+    InsertTemporalKeyRow("nested_temporal_parent", 2, DateTime{2024, 1, 3}, DateTime{2024, 1, 3, 12, 34, 56}, FALSE)
+    InsertTemporalKeyRow("nested_temporal_parent", 3, DateTime{2024, 1, 4}, DateTime{2024, 1, 4, 12, 34, 56}, TRUE)
+    InsertTemporalKeyRow("nested_temporal_parent", 4, DateTime{2024, 1, 2}, DateTime{2024, 1, 2, 12, 34, 56}, NULL)
+    InsertTemporalKeyRow("nested_temporal_child", 1, DateTime{2024, 1, 2}, DateTime{2024, 1, 2, 12, 34, 56}, TRUE)
+    InsertTemporalKeyRow("nested_temporal_child", 1, DateTime{2024, 1, 2}, DateTime{2024, 1, 2, 12, 34, 56}, TRUE)
+    InsertTemporalKeyRow("nested_temporal_child", 1, DateTime{2024, 1, 2}, DateTime{2024, 1, 2, 12, 34, 56}, FALSE)
+    InsertTemporalKeyRow("nested_temporal_child", 2, DateTime{2024, 1, 3}, DateTime{2024, 1, 3, 12, 34, 56}, FALSE)
 
     LOCAL openAreas := XSharp.__FoxArray{} AS ARRAY
     LOCAL workAreaCountBeforeDerived := AUsed(openAreas) AS DWORD
@@ -1189,6 +1201,20 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     scalarCachePlansBefore := SqlOptimizationCount("CorrelatedScalarCachePlans")
     scalarCacheHitsBefore := SqlOptimizationCount("CorrelatedScalarCacheHits")
     scalarBefore := SqlOptimizationCount("ScalarExecutions")
+    SELECT p.Id, (SELECT COUNT(*) FROM nested_temporal_child c ;
+        WHERE c.Id = p.Id AND c.Dte = p.Dte AND c.Stamp = p.Stamp AND c.Active = p.Active) AS Matches ;
+        FROM nested_temporal_parent p
+    VerifyTable(6, "Date, datetime, and logical scalar keys should memoize as a composite tuple", TRUE, ;
+        {{1, 2}, {1, 2}, {1, 1}, {2, 1}, {3, NULL}, {4, NULL}})
+    IF SqlOptimizationCount("ScalarExecutions") - scalarBefore != IIF(optimizationsDisabled, 6, 4) .OR. ;
+       SqlOptimizationCount("CorrelatedScalarCachePlans") - scalarCachePlansBefore != IIF(optimizationsDisabled, 0, 1) .OR. ;
+       SqlOptimizationCount("CorrelatedScalarCacheHits") - scalarCacheHitsBefore != IIF(optimizationsDisabled, 0, 1)
+        THROW Exception{"Date/datetime/logical composite scalar keys should share the tuple cache"}
+    ENDIF
+
+    scalarCachePlansBefore := SqlOptimizationCount("CorrelatedScalarCachePlans")
+    scalarCacheHitsBefore := SqlOptimizationCount("CorrelatedScalarCacheHits")
+    scalarBefore := SqlOptimizationCount("ScalarExecutions")
     SELECT p.Id, (SELECT c.Id FROM nested_scalar_unique c ;
         INNER JOIN nested_scalar_extra x ON c.Id = x.Id WHERE c.Id = p.Id) AS CalcVal ;
         FROM nested_parent_duplicates p
@@ -1424,6 +1450,13 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     VerifyTable(4, "Composite correlated IN should match complete numeric, character, and currency keys", TRUE, ;
         {{1}, {1}, {1}, {1}})
 
+    correlatedPlansBefore := SqlOptimizationCount("CorrelatedInPlans")
+    SELECT p.Id FROM nested_temporal_parent p WHERE p.Id IN (SELECT c.Id FROM nested_temporal_child c ;
+        WHERE c.Id = p.Id AND c.Dte = p.Dte AND c.Stamp = p.Stamp AND c.Active = p.Active)
+    VerifySqlOptimization("CorrelatedInPlans", correlatedPlansBefore)
+    VerifyTable(4, "Composite correlated IN should support date, datetime, and logical keys", TRUE, ;
+        {{1}, {1}, {1}, {2}})
+
     LOCAL unsupportedCorrelationRejected := FALSE AS LOGIC
     TRY
         SELECT Id FROM nested_parent p WHERE Id IN (SELECT p.Id FROM nested_child c WHERE c.Id > 0)
@@ -1481,6 +1514,12 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     ENDIF
     IF Used("nested_key_child")
         USE IN nested_key_child
+    ENDIF
+    IF Used("nested_temporal_parent")
+        USE IN nested_temporal_parent
+    ENDIF
+    IF Used("nested_temporal_child")
+        USE IN nested_temporal_child
     ENDIF
     RETURN
 
@@ -1593,6 +1632,27 @@ FUNCTION TestHashJoin() AS VOID
         {{1, "abc  ", 2.5}, {1, "abc  ", 2.5}, {1, "ABC  ", 2.5}, {1, "abc  ", 4.125}})
     USE IN hash_composite_left
     USE IN hash_composite_right
+
+    CREATE CURSOR hash_temporal_left (Id I NULL, Dte D, Stamp T, Active L NULL)
+    CREATE CURSOR hash_temporal_right (Id I NULL, Dte D, Stamp T, Active L NULL)
+    InsertTemporalKeyRow("hash_temporal_left", 1, DateTime{2024, 1, 2}, DateTime{2024, 1, 2, 12, 34, 56}, TRUE)
+    InsertTemporalKeyRow("hash_temporal_left", 1, DateTime{2024, 1, 2}, DateTime{2024, 1, 2, 12, 34, 56}, TRUE)
+    InsertTemporalKeyRow("hash_temporal_left", 1, DateTime{2024, 1, 2}, DateTime{2024, 1, 2, 12, 34, 56}, FALSE)
+    InsertTemporalKeyRow("hash_temporal_left", 2, DateTime{2024, 1, 3}, DateTime{2024, 1, 3, 12, 34, 56}, FALSE)
+    InsertTemporalKeyRow("hash_temporal_left", 3, DateTime{2024, 1, 2}, DateTime{2024, 1, 2, 12, 34, 56}, NULL)
+    InsertTemporalKeyRow("hash_temporal_right", 1, DateTime{2024, 1, 2}, DateTime{2024, 1, 2, 12, 34, 56}, TRUE)
+    InsertTemporalKeyRow("hash_temporal_right", 1, DateTime{2024, 1, 2}, DateTime{2024, 1, 2, 12, 34, 56}, TRUE)
+    InsertTemporalKeyRow("hash_temporal_right", 1, DateTime{2024, 1, 2}, DateTime{2024, 1, 2, 12, 34, 56}, FALSE)
+    InsertTemporalKeyRow("hash_temporal_right", 2, DateTime{2024, 1, 3}, DateTime{2024, 1, 3, 12, 34, 56}, FALSE)
+    InsertTemporalKeyRow("hash_temporal_right", 3, DateTime{2024, 1, 2}, DateTime{2024, 1, 2, 12, 34, 56}, TRUE)
+    hashJoinsBefore := SqlOptimizationCount("HashJoins")
+    SELECT a.Id, a.Active FROM hash_temporal_left a JOIN hash_temporal_right b ;
+        ON a.Id = b.Id AND a.Dte = b.Dte AND a.Stamp = b.Stamp AND a.Active = b.Active
+    VerifySqlOptimization("HashJoins", hashJoinsBefore)
+    VerifyTable(6, "Composite hash joins should support date, datetime, and logical keys", TRUE, ;
+        {{1, TRUE}, {1, TRUE}, {1, TRUE}, {1, TRUE}, {1, FALSE}, {2, FALSE}})
+    USE IN hash_temporal_left
+    USE IN hash_temporal_right
     RETURN
 
 FUNCTION TestLeftOuterJoin() AS VOID

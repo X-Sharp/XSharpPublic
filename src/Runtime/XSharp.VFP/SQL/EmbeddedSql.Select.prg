@@ -788,14 +788,8 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             RETURN FALSE
         ENDIF
 
-        SWITCH fieldType:ToUpperInvariant()
-        CASE "N" // Numeric
-        CASE "I" // Integer
-            RETURN TRUE
-        OTHERWISE
-            // Other field types need comparison and hash compatibility coverage.
-            RETURN FALSE
-        END SWITCH
+        RETURN fieldType:Equals("N", StringComparison.OrdinalIgnoreCase) .OR. ;
+               fieldType:Equals("I", StringComparison.OrdinalIgnoreCase)
 
     PRIVATE STATIC METHOD IsSqlEqualityKeyFieldType(fieldType AS STRING) AS LOGIC
         IF IsHashJoinFieldType(fieldType)
@@ -805,7 +799,10 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             RETURN FALSE
         ENDIF
         RETURN fieldType:Equals("Y", StringComparison.OrdinalIgnoreCase) .OR. ;
-               fieldType:Equals("C", StringComparison.OrdinalIgnoreCase)
+               fieldType:Equals("C", StringComparison.OrdinalIgnoreCase) .OR. ;
+               fieldType:Equals("D", StringComparison.OrdinalIgnoreCase) .OR. ;
+               fieldType:Equals("T", StringComparison.OrdinalIgnoreCase) .OR. ;
+               fieldType:Equals("L", StringComparison.OrdinalIgnoreCase)
 
     PRIVATE STATIC METHOD IsNumericSqlFieldType(fieldType AS STRING) AS LOGIC
         RETURN IsHashJoinFieldType(fieldType) .OR. ;
@@ -828,19 +825,6 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         ENDIF
         RETURN TRUE
 
-    PRIVATE STATIC METHOD IsCorrelatedScalarMemoFieldType(fieldType AS STRING) AS LOGIC
-        IF String.IsNullOrEmpty(fieldType)
-            RETURN FALSE
-        ENDIF
-        SWITCH fieldType:ToUpperInvariant()
-        CASE "N" // Numeric
-        CASE "I" // Integer
-        CASE "Y" // Currency
-        CASE "C" // Fixed-width character; memo keys use exact ordinal identity.
-            RETURN TRUE
-        OTHERWISE
-            RETURN FALSE
-        END SWITCH
     PRIVATE STATIC METHOD SqlOptimizationsEnabled() AS LOGIC
         RETURN EmbeddedSqlRuntimeOptions.OptimizationsEnabled()
 
@@ -1187,8 +1171,8 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             outerTableAliases:TryGetValue(outerField:Table, OUT resolvedOuterTable)
             LOCAL resolvedInnerTable := keyPair:InnerField:Table AS STRING
             subquery:TableAliases:TryGetValue(keyPair:InnerField:Table, OUT resolvedInnerTable)
-            IF !IsCorrelatedScalarMemoFieldType(HashJoinFieldType(resolvedOuterTable, outerField:Name)) .OR. ;
-               !IsCorrelatedScalarMemoFieldType(HashJoinFieldType(resolvedInnerTable, keyPair:InnerField:Name))
+            IF !IsSqlEqualityKeyFieldType(HashJoinFieldType(resolvedOuterTable, outerField:Name)) .OR. ;
+               !IsSqlEqualityKeyFieldType(HashJoinFieldType(resolvedInnerTable, keyPair:InnerField:Name))
                 RETURN NULL
             ENDIF
             VAR outerValueCodeBlock := MCompile(outerField:ToResolvedString(outerTableAliases))

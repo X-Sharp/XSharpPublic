@@ -10,6 +10,16 @@ USING XSharp.Data
 USING XSharp.Data.Query
 USING XSharp.VFP
 
+FUNCTION InsertTemporalKeyRow(aliasName AS STRING, id AS INT, dateValue AS USUAL, ;
+    timestampValue AS USUAL, logicalValue AS USUAL) AS VOID
+    DbSelectArea(aliasName)
+    DbAppend()
+    FieldPut(1, id)
+    FieldPut(2, dateValue)
+    FieldPut(3, timestampValue)
+    FieldPut(4, logicalValue)
+    RETURN
+
 FUNCTION PrintTable() AS DWORD
     LOCAL count := 0 AS DWORD
 

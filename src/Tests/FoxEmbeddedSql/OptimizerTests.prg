@@ -271,6 +271,8 @@ RETURN
 FUNCTION TestMembershipBitmap() AS VOID
     CREATE CURSOR bitmap_outer (Id I NULL, Flag I)
     CREATE CURSOR bitmap_currency_outer (Id I NULL, Amount Y)
+    CREATE CURSOR bitmap_temporal_outer (Id I NULL, Dte D, Stamp T, Active L NULL)
+    CREATE CURSOR bitmap_temporal_inner (Id I NULL, Dte D, Stamp T, Active L NULL)
     CREATE CURSOR bitmap_inner (Id I NULL)
     CREATE CURSOR bitmap_empty (Id I NULL)
     INSERT INTO bitmap_outer VALUES (4, 4)
@@ -280,6 +282,12 @@ FUNCTION TestMembershipBitmap() AS VOID
     INSERT INTO bitmap_outer VALUES (NULL, 5)
     INSERT INTO bitmap_currency_outer VALUES (4, 2.5)
     INSERT INTO bitmap_currency_outer VALUES (2, 3.0)
+    InsertTemporalKeyRow("bitmap_temporal_outer", 4, DateTime{2024, 1, 2}, DateTime{2024, 1, 2, 12, 34, 56}, TRUE)
+    InsertTemporalKeyRow("bitmap_temporal_outer", 2, DateTime{2024, 1, 3}, DateTime{2024, 1, 3, 12, 34, 56}, FALSE)
+    InsertTemporalKeyRow("bitmap_temporal_outer", 7, DateTime{2024, 1, 4}, DateTime{2024, 1, 4, 12, 34, 56}, TRUE)
+    InsertTemporalKeyRow("bitmap_temporal_inner", 4, DateTime{2024, 1, 2}, DateTime{2024, 1, 2, 12, 34, 56}, TRUE)
+    InsertTemporalKeyRow("bitmap_temporal_inner", 2, DateTime{2024, 1, 3}, DateTime{2024, 1, 3, 12, 34, 56}, FALSE)
+    InsertTemporalKeyRow("bitmap_temporal_inner", 7, DateTime{2024, 1, 4}, DateTime{2024, 1, 4, 12, 34, 56}, TRUE)
     INSERT INTO bitmap_inner VALUES (2)
     INSERT INTO bitmap_inner VALUES (2)
     INSERT INTO bitmap_inner VALUES (4)
@@ -355,6 +363,19 @@ FUNCTION TestMembershipBitmap() AS VOID
                   1 = (SELECT COUNT(*) FROM bitmap_inner e WHERE e.Id = p.Id)
         VerifySqlOptimization("MembershipBitmaps", before)
         VerifyTable(1, "Currency comparisons should remain eligible for safe membership pruning", TRUE, {{4}})
+
+        LOCAL temporalExistsBefore := SqlOptimizationCount("ExistsExecutions") AS INT
+        before := SqlOptimizationCount("MembershipBitmaps")
+        SELECT p.Id FROM bitmap_temporal_outer p ;
+            WHERE p.Id IN (SELECT i.Id FROM bitmap_inner i) AND ;
+                  EXISTS (SELECT e.Id FROM bitmap_temporal_inner e WHERE e.Id = p.Id AND ;
+                      e.Dte = p.Dte AND e.Stamp = p.Stamp AND e.Active = p.Active)
+        VerifySqlOptimization("MembershipBitmaps", before)
+        VerifyTable(2, "Date/datetime/logical correlated EXISTS should stay eligible for membership pruning", TRUE, ;
+            {{4}, {2}})
+        IF SqlOptimizationCount("ExistsExecutions") - temporalExistsBefore != IIF(disabled, 3, 2)
+            THROW Exception{"Composite temporal EXISTS should run only for membership candidates when optimized"}
+        ENDIF
 
         before := SqlOptimizationCount("MembershipBitmaps")
         LOCAL cardinalityRejected := FALSE AS LOGIC
@@ -444,6 +465,12 @@ FUNCTION TestMembershipBitmap() AS VOID
         ENDIF
         IF Used("bitmap_currency_outer")
             USE IN bitmap_currency_outer
+        ENDIF
+        IF Used("bitmap_temporal_outer")
+            USE IN bitmap_temporal_outer
+        ENDIF
+        IF Used("bitmap_temporal_inner")
+            USE IN bitmap_temporal_inner
         ENDIF
         IF Used("bitmap_empty")
             USE IN bitmap_empty

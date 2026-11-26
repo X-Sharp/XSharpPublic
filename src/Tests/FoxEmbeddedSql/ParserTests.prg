@@ -151,10 +151,24 @@ FUNCTION TestSelectParsing() AS VOID
        derivedCtx:DerivedTables["d"]:SelectList:Count != 1
         THROW Exception{"Aliased FROM subqueries should parse and retain their SELECT context: " + derivedParser:Error}
     ENDIF
+    FOREACH VAR derivedJoinSql IN <STRING>{ ;
+        "SELECT p.Id, d.Id FROM Parent p INNER JOIN (SELECT c.Id FROM Child c) d ON p.Id = d.Id", ;
+        "SELECT d.Id, p.Id FROM (SELECT c.Id FROM Child c) AS d JOIN Parent p ON d.Id = p.Id" }
+        VAR derivedJoinParser := SQLParser{XTokenList{XSqlLexer{derivedJoinSql}:AllTokens()}}
+        LOCAL derivedJoinCtx AS FoxSelectContext
+        IF !derivedJoinParser:ParseSelectStatement(OUT derivedJoinCtx) .OR. ;
+           derivedJoinCtx:DerivedTables:Count != 1 .OR. derivedJoinCtx:Joins:Count != 1 .OR. ;
+           derivedJoinCtx:Joins[0]:Kind != FoxSelectJoinKind.Inner .OR. derivedJoinCtx:TableList:Count != 2
+            THROW Exception{"INNER JOIN should accept one derived source in either position: " + derivedJoinParser:Error}
+        ENDIF
+    NEXT
     FOREACH VAR invalidDerivedSql IN <STRING>{ ;
         "SELECT d.Id FROM (SELECT c.Id FROM Child c)", ;
         "SELECT d.Id FROM (SELECT c.Id FROM Child c", ;
-        "SELECT d.Id FROM (SELECT c.Id FROM Child c) d JOIN Other o ON d.Id = o.Id", ;
+        "SELECT d.Id FROM (SELECT c.Id FROM Child c) d CROSS JOIN Other o", ;
+        "SELECT d.Id FROM (SELECT c.Id FROM Child c) d LEFT JOIN Other o ON d.Id = o.Id", ;
+        "SELECT d.Id FROM Parent p INNER JOIN (SELECT c.Id FROM Child c)", ;
+        "SELECT d.Id FROM Parent p INNER JOIN (SELECT c.Id FROM Child c) d LEFT JOIN Other o ON d.Id = o.Id", ;
         "SELECT d.Id FROM Child c, (SELECT x.Id FROM Other x) d" }
         VAR invalidDerivedParser := SQLParser{XTokenList{XSqlLexer{invalidDerivedSql}:AllTokens()}}
         LOCAL invalidDerivedCtx AS FoxSelectContext

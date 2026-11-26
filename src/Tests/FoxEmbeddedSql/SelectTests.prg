@@ -776,6 +776,27 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
         THROW Exception{"Derived table cursor should close after grouped SELECT execution"}
     ENDIF
 
+    LOCAL hashJoinBeforeDerived := SqlOptimizationCount("HashJoins") AS INT
+    SELECT p.Id, d.Label FROM nested_parent p INNER JOIN ;
+        (SELECT c.Id, c.Label FROM nested_child c WHERE c.Id > 1) d ON p.Id = d.Id ;
+        ORDER BY p.Id, d.Label
+    VerifyTable(3, "INNER JOIN should resolve fields from a derived right source", TRUE, ;
+        {{2, "duplicate"}, {2, "first"}, {4, "four"}})
+    VerifySqlOptimization("HashJoins", hashJoinBeforeDerived)
+    IF AUsed(openAreas) != workAreaCountBeforeDerived
+        THROW Exception{"Joined derived table cursor should close after execution"}
+    ENDIF
+
+    SELECT d.Id, p.Id FROM (SELECT c.Id FROM nested_child c WHERE c.Id > 1) d ;
+        INNER JOIN nested_parent p ON d.Id = p.Id ORDER BY d.Id
+    VerifyTable(3, "INNER JOIN should resolve a derived left source", TRUE, {{2, 2}, {2, 2}, {4, 4}})
+
+    SELECT p.Id FROM nested_parent p INNER JOIN (SELECT c.Id FROM nested_empty c) d ON p.Id = d.Id
+    VerifyTable(0, "An empty derived source should produce no INNER JOIN matches", TRUE)
+    IF AUsed(openAreas) != workAreaCountBeforeDerived
+        THROW Exception{"Empty joined derived table cursor should close after execution"}
+    ENDIF
+
     LOCAL failedDerivedExecutionRejected := FALSE AS LOGIC
     LOCAL derivedFailureCallerArea := VoDbGetSelect() AS DWORD
     TRY

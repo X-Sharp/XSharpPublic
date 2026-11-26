@@ -783,8 +783,7 @@ PARTIAL CLASS SQLParser
         LOCAL firstTableName AS STRING
         LOCAL firstAliasName := NULL AS STRING
 
-        // VFP 9 derived tables are parsed here as a SELECT branch. This
-        // increment supports one derived source by itself; joins are rejected.
+        // VFP 9 derived tables are parsed here as a SELECT branch.
         IF SELF:Matches(XTokenType.LPAREN) .AND. SELF:La2 == XTokenType.SELECT
             SELF:Consume()
             LOCAL derivedQuery AS FoxSelectContext
@@ -867,6 +866,10 @@ PARTIAL CLASS SQLParser
                      SELF:Lt1:Text:Equals("RIGHT", StringComparison.OrdinalIgnoreCase) .OR. ;
                      SELF:Lt1:Text:Equals("FULL", StringComparison.OrdinalIgnoreCase) .OR. ;
                      SELF:Lt1:Text:Equals("OUTER", StringComparison.OrdinalIgnoreCase)))
+                IF stmt:DerivedTables:Count > 0 .AND. stmt:Joins:Count > 0
+                    SELF:SetError("Only one derived table with one INNER JOIN is supported yet")
+                    RETURN FALSE
+                ENDIF
                 LOCAL joinKind AS FoxSelectJoinKind
                 IF SELF:Matches(XTokenType.CROSS)
                     SELF:ConsumeAndGet()
@@ -905,29 +908,65 @@ PARTIAL CLASS SQLParser
                     ENDIF
                 ENDIF
 
-                IF firstIsDerivedTable .OR. (SELF:Matches(XTokenType.LPAREN) .AND. SELF:La2 == XTokenType.SELECT)
-                    SELF:SetError("Joins involving derived tables are not supported yet")
+                IF stmt:DerivedTables:Count > 0 .AND. joinKind != FoxSelectJoinKind.Inner
+                    SELF:SetError("Derived tables are currently supported only with INNER JOIN")
                     RETURN FALSE
                 ENDIF
-                IF ! SELF:ParseTableName(OUT VAR joinedTableName)
-                    SELF:SetError("Expected table name after JOIN")
-                    RETURN FALSE
-                ENDIF
-
+                LOCAL joinedTableName AS STRING
                 LOCAL joinedAliasName := NULL AS STRING
-                IF SELF:Expect(XTokenType.AS)
-                    IF ! SELF:Matches(XTokenType.ID)
-                        SELF:SetError("Expected table alias after AS")
+                IF SELF:Matches(XTokenType.LPAREN) .AND. SELF:La2 == XTokenType.SELECT
+                    IF stmt:DerivedTables:Count > 0
+                        SELF:SetError("Only one derived table is supported per joined query")
                         RETURN FALSE
                     ENDIF
-                    joinedAliasName := SELF:ConsumeAndGetText()
-                ELSEIF SELF:Matches(XTokenType.ID) .AND. ;
-                        !(SELF:La2 == XTokenType.JOIN .AND. (SELF:Lt1:Text:Equals("INNER", StringComparison.OrdinalIgnoreCase) .OR. ;
-                          SELF:Lt1:Text:Equals("LEFT", StringComparison.OrdinalIgnoreCase) .OR. ;
-                          SELF:Lt1:Text:Equals("RIGHT", StringComparison.OrdinalIgnoreCase) .OR. ;
-                          SELF:Lt1:Text:Equals("FULL", StringComparison.OrdinalIgnoreCase) .OR. ;
-                          SELF:Lt1:Text:Equals("OUTER", StringComparison.OrdinalIgnoreCase)))
-                    joinedAliasName := SELF:ConsumeAndGetText()
+                    SELF:Consume()
+                    LOCAL joinedDerivedQuery AS FoxSelectContext
+                    IF !SELF:ParseSelectBranch(OUT joinedDerivedQuery)
+                        RETURN FALSE
+                    ENDIF
+                    IF !SELF:Expect(XTokenType.RPAREN)
+                        SELF:SetError("Expected ')' after derived table SELECT")
+                        RETURN FALSE
+                    ENDIF
+                    IF SELF:Expect(XTokenType.AS)
+                        IF !SELF:Matches(XTokenType.ID)
+                            SELF:SetError("Expected alias after derived table")
+                            RETURN FALSE
+                        ENDIF
+                        joinedAliasName := SELF:ConsumeAndGetText()
+                    ELSEIF SELF:Matches(XTokenType.ID)
+                        joinedAliasName := SELF:ConsumeAndGetText()
+                    ELSE
+                        SELF:SetError("A derived table requires an alias")
+                        RETURN FALSE
+                    ENDIF
+                    joinedTableName := joinedAliasName
+                    stmt:DerivedTables[joinedAliasName] := joinedDerivedQuery
+                ELSE
+                    IF ! SELF:ParseTableName(OUT joinedTableName)
+                        SELF:SetError("Expected table name after JOIN")
+                        RETURN FALSE
+                    ENDIF
+
+                    IF SELF:Expect(XTokenType.AS)
+                        IF ! SELF:Matches(XTokenType.ID)
+                            SELF:SetError("Expected table alias after AS")
+                            RETURN FALSE
+                        ENDIF
+                        joinedAliasName := SELF:ConsumeAndGetText()
+                    ELSEIF SELF:Matches(XTokenType.ID) .AND. ;
+                            !(SELF:La2 == XTokenType.JOIN .AND. (SELF:Lt1:Text:Equals("INNER", StringComparison.OrdinalIgnoreCase) .OR. ;
+                              SELF:Lt1:Text:Equals("LEFT", StringComparison.OrdinalIgnoreCase) .OR. ;
+                              SELF:Lt1:Text:Equals("RIGHT", StringComparison.OrdinalIgnoreCase) .OR. ;
+                              SELF:Lt1:Text:Equals("FULL", StringComparison.OrdinalIgnoreCase) .OR. ;
+                              SELF:Lt1:Text:Equals("OUTER", StringComparison.OrdinalIgnoreCase)))
+                        joinedAliasName := SELF:ConsumeAndGetText()
+                    ENDIF
+                ENDIF
+
+                IF joinedAliasName != NULL .AND. stmt:TableAliases:ContainsKey(joinedAliasName)
+                    SELF:SetError("Duplicate table alias: " + joinedAliasName)
+                    RETURN FALSE
                 ENDIF
 
                 stmt:TableList:Add(joinedTableName)

@@ -758,6 +758,8 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     CREATE CURSOR nested_key_child (Id I NULL, Code C(5) NULL, Amount Y NULL)
     CREATE CURSOR nested_temporal_parent (Id I NULL, Dte D, Stamp T, Active L NULL)
     CREATE CURSOR nested_temporal_child (Id I NULL, Dte D, Stamp T, Active L NULL)
+    CREATE CURSOR nested_binary_parent (Id I, DoubleKey B, FloatKey F(10,2))
+    CREATE CURSOR nested_binary_child (DoubleKey B, FloatKey F(12,3), OutVal I)
     INSERT INTO nested_parent VALUES (1)
     INSERT INTO nested_parent VALUES (2)
     INSERT INTO nested_parent VALUES (3)
@@ -819,6 +821,14 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     InsertTemporalKeyRow("nested_temporal_child", 1, DateTime{2024, 1, 2}, DateTime{2024, 1, 2, 12, 34, 56}, TRUE)
     InsertTemporalKeyRow("nested_temporal_child", 1, DateTime{2024, 1, 2}, DateTime{2024, 1, 2, 12, 34, 56}, FALSE)
     InsertTemporalKeyRow("nested_temporal_child", 2, DateTime{2024, 1, 3}, DateTime{2024, 1, 3, 12, 34, 56}, FALSE)
+    INSERT INTO nested_binary_parent VALUES (1, 1.25, 1.25)
+    INSERT INTO nested_binary_parent VALUES (2, 1.25, 1.25)
+    INSERT INTO nested_binary_parent VALUES (3, -2.5, -2.5)
+    INSERT INTO nested_binary_parent VALUES (4, 3.75, 3.75)
+    INSERT INTO nested_binary_child VALUES (1.25, 1.25, 1)
+    INSERT INTO nested_binary_child VALUES (1.25, 1.25, 2)
+    INSERT INTO nested_binary_child VALUES (-2.5, -2.5, 3)
+    INSERT INTO nested_binary_child VALUES (3.75, 3.75, 4)
 
     LOCAL openAreas := XSharp.__FoxArray{} AS ARRAY
     LOCAL workAreaCountBeforeDerived := AUsed(openAreas) AS DWORD
@@ -1457,6 +1467,27 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     VerifyTable(4, "Composite correlated IN should support date, datetime, and logical keys", TRUE, ;
         {{1}, {1}, {1}, {2}})
 
+    correlatedPlansBefore := SqlOptimizationCount("CorrelatedInPlans")
+    SELECT p.Id FROM nested_binary_parent p WHERE p.Id IN ;
+        (SELECT c.OutVal FROM nested_binary_child c WHERE c.OutVal = p.Id AND ;
+            c.DoubleKey = p.DoubleKey AND c.FloatKey = p.FloatKey)
+    VerifySqlOptimization("CorrelatedInPlans", correlatedPlansBefore)
+    VerifyTable(4, "Correlated IN should support Double and differently sized Float keys", TRUE, {{1}, {2}, {3}, {4}})
+
+    scalarCachePlansBefore := SqlOptimizationCount("CorrelatedScalarCachePlans")
+    scalarCacheHitsBefore := SqlOptimizationCount("CorrelatedScalarCacheHits")
+    scalarBefore := SqlOptimizationCount("ScalarExecutions")
+    SELECT p.Id, (SELECT COUNT(*) FROM nested_binary_child c ;
+        WHERE c.DoubleKey = p.DoubleKey AND c.FloatKey = p.FloatKey) AS Matches ;
+        FROM nested_binary_parent p ORDER BY p.Id
+    VerifyTable(4, "Correlated scalar memoization should accept Double and Float composite keys", TRUE, ;
+        {{1, 2}, {2, 2}, {3, 1}, {4, 1}})
+    IF SqlOptimizationCount("ScalarExecutions") - scalarBefore != IIF(optimizationsDisabled, 4, 3) .OR. ;
+       SqlOptimizationCount("CorrelatedScalarCachePlans") - scalarCachePlansBefore != IIF(optimizationsDisabled, 0, 1) .OR. ;
+       SqlOptimizationCount("CorrelatedScalarCacheHits") - scalarCacheHitsBefore != IIF(optimizationsDisabled, 0, 1)
+        THROW Exception{"Double/Float scalar memoization should reuse repeated composite keys only when enabled"}
+    ENDIF
+
     LOCAL unsupportedCorrelationRejected := FALSE AS LOGIC
     TRY
         SELECT Id FROM nested_parent p WHERE Id IN (SELECT p.Id FROM nested_child c WHERE c.Id > 0)
@@ -1520,6 +1551,12 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     ENDIF
     IF Used("nested_temporal_child")
         USE IN nested_temporal_child
+    ENDIF
+    IF Used("nested_binary_parent")
+        USE IN nested_binary_parent
+    ENDIF
+    IF Used("nested_binary_child")
+        USE IN nested_binary_child
     ENDIF
     RETURN
 
@@ -1653,6 +1690,23 @@ FUNCTION TestHashJoin() AS VOID
         {{1, TRUE}, {1, TRUE}, {1, TRUE}, {1, TRUE}, {1, FALSE}, {2, FALSE}})
     USE IN hash_temporal_left
     USE IN hash_temporal_right
+
+    CREATE CURSOR hash_binary_left (DoubleKey B, FloatKey F(10,2))
+    CREATE CURSOR hash_binary_right (DoubleKey B, FloatKey F(12,3))
+    INSERT INTO hash_binary_left VALUES (1.25, 1.25)
+    INSERT INTO hash_binary_left VALUES (-2.5, -2.5)
+    INSERT INTO hash_binary_left VALUES (3.75, 3.75)
+    INSERT INTO hash_binary_right VALUES (1.25, 1.25)
+    INSERT INTO hash_binary_right VALUES (-2.5, -2.5)
+    INSERT INTO hash_binary_right VALUES (4.0, 4.0)
+    hashJoinsBefore := SqlOptimizationCount("HashJoins")
+    SELECT a.DoubleKey, a.FloatKey FROM hash_binary_left a JOIN hash_binary_right b ;
+        ON a.DoubleKey = b.DoubleKey AND a.FloatKey = b.FloatKey ORDER BY a.DoubleKey
+    VerifySqlOptimization("HashJoins", hashJoinsBefore)
+    VerifyTable(2, "Double and Float composite keys should match fractional and negative values across Float precisions", TRUE, ;
+        {{-2.5, -2.5}, {1.25, 1.25}})
+    USE IN hash_binary_left
+    USE IN hash_binary_right
     RETURN
 
 FUNCTION TestLeftOuterJoin() AS VOID

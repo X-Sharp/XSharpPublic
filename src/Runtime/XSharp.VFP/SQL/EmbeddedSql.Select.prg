@@ -789,7 +789,9 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         ENDIF
 
         RETURN fieldType:Equals("N", StringComparison.OrdinalIgnoreCase) .OR. ;
-               fieldType:Equals("I", StringComparison.OrdinalIgnoreCase)
+               fieldType:Equals("I", StringComparison.OrdinalIgnoreCase) .OR. ;
+               fieldType:Equals("B", StringComparison.OrdinalIgnoreCase) .OR. ;
+               fieldType:Equals("F", StringComparison.OrdinalIgnoreCase)
 
     PRIVATE STATIC METHOD IsSqlEqualityKeyFieldType(fieldType AS STRING) AS LOGIC
         IF IsHashJoinFieldType(fieldType)

@@ -714,8 +714,15 @@ PARTIAL CLASS SQLParser
                     RETURN FALSE
                 ENDIF
                 stmt:TargetArray := SELF:ConsumeAndGetText()
+            ELSEIF SELF:Expect(XTokenType.TABLE)
+                LOCAL targetTable AS STRING
+                IF !SELF:ParseTableName(OUT targetTable)
+                    SELF:SetError("Expected table name after INTO TABLE")
+                    RETURN FALSE
+                ENDIF
+                stmt:TargetTable := targetTable
             ELSE
-                SELF:SetError("Expected CURSOR or ARRAY after INTO")
+                SELF:SetError("Expected CURSOR, ARRAY, or TABLE after INTO")
                 RETURN FALSE
             ENDIF
         ENDIF

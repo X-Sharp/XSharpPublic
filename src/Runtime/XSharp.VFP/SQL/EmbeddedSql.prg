@@ -160,6 +160,33 @@ FUNCTION __SqlSelect(sCommand as STRING) AS VOID
                         DbSelectArea(savedArea)
                     ENDIF
                 END TRY
+            ELSEIF !String.IsNullOrEmpty(oContext:TargetTable)
+                LOCAL originalTargetCursor := oContext:TargetCursor AS STRING
+                LOCAL tableCursor := "SQLTABLE" + System.Guid.NewGuid():ToString("N"):Substring(0, 8) AS STRING
+                LOCAL cursorPath := "" AS STRING
+                TRY
+                    oContext:TargetCursor := tableCursor
+                    FoxEmbeddedSQL.ExecuteSelect(oContext)
+                    IF !Used(tableCursor)
+                        THROW Error{"SELECT INTO TABLE did not produce a result cursor"}
+                    ENDIF
+                    cursorPath := (tableCursor)->DbInfo(DBI_FULLPATH)
+                    FoxEmbeddedSQL.CopySelectCursorToTable(tableCursor, oContext:TargetTable)
+                FINALLY
+                    IF Used(tableCursor)
+                        (tableCursor)->DbCloseArea()
+                    ENDIF
+                    IF !String.IsNullOrEmpty(cursorPath)
+                        IF File.Exists(cursorPath)
+                            File.Delete(cursorPath)
+                        ENDIF
+                        VAR memoPath := System.IO.Path.ChangeExtension(cursorPath, ".fpt")
+                        IF File.Exists(memoPath)
+                            File.Delete(memoPath)
+                        ENDIF
+                    ENDIF
+                    oContext:TargetCursor := originalTargetCursor
+                END TRY
             ELSE
                 FoxEmbeddedSQL.ExecuteSelect(oContext)
             ENDIF

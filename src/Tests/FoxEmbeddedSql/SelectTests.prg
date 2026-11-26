@@ -510,6 +510,71 @@ FUNCTION TestSelectIntoArray() AS VOID
     USE IN sql_array_source
     RETURN
 
+FUNCTION TestSelectIntoTable() AS VOID
+    LOCAL previousSafety := SetSafety() AS LOGIC
+    LOCAL tablePath := System.IO.Path.Combine(System.IO.Path.GetTempPath(), "FoxSqlIntoTableTest.DBF") AS STRING
+    LOCAL emptyTablePath := System.IO.Path.Combine(System.IO.Path.GetTempPath(), "FoxSqlIntoTableEmptyTest.DBF") AS STRING
+    TRY
+        SetSafety(FALSE)
+        IF Used("FoxSqlIntoTableTest")
+            DbCloseArea("FoxSqlIntoTableTest")
+        ENDIF
+        IF Used("FoxSqlIntoTableEmptyTest")
+            DbCloseArea("FoxSqlIntoTableEmptyTest")
+        ENDIF
+        IF System.IO.File.Exists(tablePath)
+            System.IO.File.Delete(tablePath)
+        ENDIF
+        IF System.IO.File.Exists(emptyTablePath)
+            System.IO.File.Delete(emptyTablePath)
+        ENDIF
+
+        CREATE CURSOR sql_table_source (Id I NULL, Label C(10) NULL)
+        INSERT INTO sql_table_source VALUES (1, "One")
+        INSERT INTO sql_table_source VALUES (2, NULL)
+        INSERT INTO sql_table_source VALUES (3, "Three")
+        CREATE TABLE (tablePath) (OldValue I)
+        INSERT INTO FoxSqlIntoTableTest VALUES (99)
+        USE IN FoxSqlIntoTableTest
+
+        SELECT Id, Label FROM sql_table_source ORDER BY Id DESC INTO TABLE (tablePath)
+        IF !Used("FoxSqlIntoTableTest") .OR. Alias() != "FOXSQLINTOTABLETEST" .OR. ;
+           RecCount() != 3 .OR. FCount() != 2 .OR. FieldName(1) != "ID" .OR. FieldName(2) != "LABEL"
+            THROW Exception{"SELECT INTO TABLE should replace the existing table and select the new DBF"}
+        ENDIF
+        GO TOP
+        IF FieldGet(1) != 3 .OR. FieldGet(2) != "Three"
+            THROW Exception{"SELECT INTO TABLE should preserve ordered result rows"}
+        ENDIF
+        IF !Used("sql_table_source")
+            THROW Exception{"SELECT INTO TABLE should leave its source cursor open"}
+        ENDIF
+
+        SELECT Id, Label FROM sql_table_source WHERE Id < 0 INTO TABLE (emptyTablePath)
+        IF Alias() != "FOXSQLINTOTABLEEMPTYTEST" .OR. RecCount() != 0 .OR. ;
+           FCount() != 2 .OR. FieldName(1) != "ID" .OR. FieldName(2) != "LABEL"
+            THROW Exception{"Empty SELECT INTO TABLE should create an empty DBF with the result schema"}
+        ENDIF
+    FINALLY
+        IF Used("FoxSqlIntoTableTest")
+            DbCloseArea("FoxSqlIntoTableTest")
+        ENDIF
+        IF Used("FoxSqlIntoTableEmptyTest")
+            DbCloseArea("FoxSqlIntoTableEmptyTest")
+        ENDIF
+        IF Used("sql_table_source")
+            DbCloseArea("sql_table_source")
+        ENDIF
+        IF System.IO.File.Exists(tablePath)
+            System.IO.File.Delete(tablePath)
+        ENDIF
+        IF System.IO.File.Exists(emptyTablePath)
+            System.IO.File.Delete(emptyTablePath)
+        ENDIF
+        SetSafety(previousSafety)
+    END TRY
+    RETURN
+
 FUNCTION TestCrossJoinFunctionality() AS VOID
     ? "Testing CROSS JOIN functionality..."
 

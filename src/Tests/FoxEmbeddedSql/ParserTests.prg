@@ -87,6 +87,14 @@ FUNCTION TestSelectParsing() AS VOID
         THROW Exception{"SELECT INTO ARRAY without a target should be rejected"}
     ENDIF
 
+    VAR tableOutputParser := SQLParser{XTokenList{XSqlLexer{"SELECT Id FROM Customers INTO TABLE customer_copy"}:AllTokens()}}
+    LOCAL tableOutputCtx AS FoxSelectContext
+    IF !tableOutputParser:ParseSelectStatement(OUT tableOutputCtx) .OR. ;
+       tableOutputCtx:TargetTable != "customer_copy" .OR. ;
+       !String.IsNullOrEmpty(tableOutputCtx:TargetCursor) .OR. !String.IsNullOrEmpty(tableOutputCtx:TargetArray)
+        THROW Exception{"SELECT INTO TABLE should retain a persistent table target: " + tableOutputParser:Error}
+    ENDIF
+
     VAR joinLexer := XSqlLexer{"SELECT a.Id FROM TableA a JOIN TableB b ON a.Id = b.Id INNER JOIN TableC c ON b.Id = c.Id"}
     VAR joinParser := SqlParser{XTokenList{joinLexer:AllTokens()}}
     LOCAL joinCtx AS FoxSelectContext

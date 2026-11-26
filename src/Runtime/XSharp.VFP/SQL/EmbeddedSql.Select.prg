@@ -3825,6 +3825,61 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         XSharp.MemVar.Put(arrayName, targetArray)
         RETURN
 
+    STATIC METHOD CopySelectCursorToTable(cursorName AS STRING, targetTable AS STRING) AS VOID
+        LOCAL tablePath := AllTrim(targetTable) AS STRING
+        IF String.IsNullOrEmpty(Path.GetExtension(tablePath))
+            tablePath += ".DBF"
+        ENDIF
+        IF !Path.IsPathRooted(tablePath)
+            LOCAL defaultPath := SetDefault() AS STRING
+            IF String.IsNullOrEmpty(defaultPath)
+                defaultPath := Directory.GetCurrentDirectory()
+            ENDIF
+            tablePath := Path.Combine(defaultPath, tablePath)
+        ENDIF
+
+        LOCAL tableAlias := Path.GetFileNameWithoutExtension(tablePath) AS STRING
+        IF Used(tableAlias)
+            (tableAlias)->DbCloseArea()
+        ENDIF
+        IF File.Exists(tablePath)
+            IF SetSafety()
+                THROW Error{"File exists: " + tablePath}
+            ENDIF
+            File.Delete(tablePath)
+            VAR memoPath := Path.ChangeExtension(tablePath, ".FPT")
+            IF File.Exists(memoPath)
+                File.Delete(memoPath)
+            ENDIF
+            VAR indexPath := Path.ChangeExtension(tablePath, ".CDX")
+            IF File.Exists(indexPath)
+                File.Delete(indexPath)
+            ENDIF
+        ENDIF
+
+        DbSelectArea(cursorName)
+        VAR fieldList := DbStruct()
+        LOCAL rowCount := (LONG)RecCount() AS LONG
+        IF !DbCreate(tablePath, fieldList, "DBFVFP", TRUE, tableAlias)
+            THROW Error{"Could not create SELECT INTO TABLE target: " + tablePath}
+        ENDIF
+
+        DbSelectArea(cursorName)
+        DbGoTop()
+        FOR LOCAL rowIndex := 1 AS LONG TO rowCount
+            LOCAL rowValues := USUAL[]{fieldList:Length} AS USUAL[]
+            FOR LOCAL columnIndex := 1 AS LONG TO fieldList:Length
+                rowValues[columnIndex] := FieldGet((DWORD)columnIndex)
+            NEXT
+            AppendSelectResult(tableAlias, fieldList, rowValues)
+            IF rowIndex < rowCount
+                DbSkip(1)
+            ENDIF
+        NEXT
+
+        DbSelectArea(tableAlias)
+        RETURN
+
     STATIC METHOD SqlExpressionToFieldName(expr AS SqlExpressionContext) AS STRING
         // Convert an SQL expression context to a VFP-compatible field name
         // This method handles different types of expressions and generates appropriate field names

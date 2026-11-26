@@ -1133,10 +1133,10 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     scalarCachePlansBefore := SqlOptimizationCount("CorrelatedScalarCachePlans")
     scalarCacheHitsBefore := SqlOptimizationCount("CorrelatedScalarCacheHits")
     scalarBefore := SqlOptimizationCount("ScalarExecutions")
-    SELECT p.Id, (SELECT d.Id FROM (SELECT c.Id FROM nested_scalar_unique c) d ;
+    SELECT p.Id, (SELECT d.Id + 1 FROM (SELECT c.Id FROM nested_scalar_unique c) d ;
         WHERE d.Id = p.Id) AS DerVal FROM nested_parent_duplicates p
-    VerifyTable(4, "Derived correlated scalar projections should infer schema and cache results", TRUE, ;
-        {{2, 2}, {2, 2}, {4, 4}, {NULL, NULL}})
+    VerifyTable(4, "Derived correlated scalar projections should infer computed schema and cache results", TRUE, ;
+        {{2, 3}, {2, 3}, {4, 5}, {NULL, NULL}})
     IF SqlOptimizationCount("ScalarExecutions") - scalarBefore != IIF(optimizationsDisabled, 4, 2) .OR. ;
        SqlOptimizationCount("CorrelatedScalarCachePlans") - scalarCachePlansBefore != IIF(optimizationsDisabled, 0, 1) .OR. ;
        SqlOptimizationCount("CorrelatedScalarCacheHits") - scalarCacheHitsBefore != IIF(optimizationsDisabled, 0, 1)

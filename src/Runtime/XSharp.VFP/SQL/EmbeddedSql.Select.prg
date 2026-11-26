@@ -2044,21 +2044,73 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             ENDIF
             RETURN NULL
         ELSEIF expression IS SqlSimpleExpressionContext VAR simpleExpression
-            IF simpleExpression:Tokens == NULL .OR. simpleExpression:Tokens:Count != 1
+            IF simpleExpression:Tokens == NULL .OR. simpleExpression:Tokens:Count == 0
                 RETURN NULL
             ENDIF
-            VAR token := simpleExpression:Tokens[0]
-            SWITCH token:Type
-            CASE XTokenType.NUMERIC_CONST
+            LOCAL literalType := NULL AS STRING
+            LOCAL literalCount := 0 AS INT
+            LOCAL nonPlusOperator := FALSE AS LOGIC
+            FOREACH VAR token IN simpleExpression:Tokens
+                SWITCH token:Type
+                CASE XTokenType.PLUS
+                CASE XTokenType.MINUS
+                CASE XTokenType.MULT
+                CASE XTokenType.DIV
+                CASE XTokenType.EXP
+                    IF token:Type != XTokenType.PLUS
+                        nonPlusOperator := TRUE
+                    ENDIF
+                    LOOP
+                CASE XTokenType.NUMERIC_CONST
+                    IF literalType != NULL .AND. literalType != "N"
+                        RETURN NULL
+                    ENDIF
+                    literalType := "N"
+                    literalCount++
+                CASE XTokenType.STRING_CONST
+                    IF literalType != NULL .AND. literalType != "C"
+                        RETURN NULL
+                    ENDIF
+                    literalType := "C"
+                    literalCount++
+                CASE XTokenType.TRUE_CONST
+                CASE XTokenType.FALSE_CONST
+                    IF literalType != NULL .AND. literalType != "L"
+                        RETURN NULL
+                    ENDIF
+                    literalType := "L"
+                    literalCount++
+                CASE XTokenType.DATE_CONST
+                    IF literalCount > 0
+                        RETURN NULL
+                    ENDIF
+                    literalType := "D"
+                    literalCount++
+                CASE XTokenType.DATETIME_CONST
+                    IF literalCount > 0
+                        RETURN NULL
+                    ENDIF
+                    literalType := "T"
+                    literalCount++
+                OTHERWISE
+                    RETURN NULL
+                END SWITCH
+            NEXT
+            IF literalCount == 0 .OR. (literalType == "C" .AND. nonPlusOperator) .OR. ;
+               ((literalType == "D" .OR. literalType == "T" .OR. literalType == "L") .AND. literalCount > 1)
+                RETURN NULL
+            ENDIF
+            SWITCH literalType
+            CASE "N"
                 RETURN {NULL, "N", 20, 4, NULL, (LONG)DBFFieldFlags.Nullable}
-            CASE XTokenType.STRING_CONST
-                RETURN {NULL, "C", 254, 0, NULL, (LONG)DBFFieldFlags.Nullable}
-            CASE XTokenType.TRUE_CONST
-            CASE XTokenType.FALSE_CONST
+            CASE "C"
+                RETURN {NULL, "C", Math.Min(254, 254 * literalCount), 0, NULL, ;
+                    (LONG)DBFFieldFlags.Nullable}
+            CASE "L"
                 RETURN {NULL, "L", 1, 0, NULL, (LONG)DBFFieldFlags.Nullable}
-            CASE XTokenType.DATE_CONST
+            CASE "D"
                 RETURN {NULL, "D", 8, 0, NULL, (LONG)DBFFieldFlags.Nullable}
-            CASE XTokenType.DATETIME_CONST
+            CASE "T"
                 RETURN {NULL, "T", 8, 0, NULL, (LONG)DBFFieldFlags.Nullable}
             END SWITCH
             RETURN NULL
@@ -2155,17 +2207,9 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         LOCAL previousArea := VoDbGetSelect() AS DWORD
         LOCAL openedTables := List<STRING>{} AS List<STRING>
         TRY
-            FOREACH VAR tableName IN query:TableList
-                IF query:DerivedTables:ContainsKey(tableName)
-                    LOOP
-                ENDIF
-                IF !Used(tableName)
-                    IF !FoxEmbeddedSQL.OpenArea(tableName)
-                        RETURN NULL
-                    ENDIF
-                    openedTables:Add(tableName)
-                ENDIF
-            NEXT
+            IF !OpenScalarInferenceTables(query, openedTables)
+                RETURN NULL
+            ENDIF
             RETURN InferScalarProjectionFieldDefinition(query:SelectList[0], ;
                 query:TableAliases, query:DerivedTables)
         FINALLY
@@ -2178,6 +2222,26 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 DbSelectArea(previousArea)
             ENDIF
         END TRY
+
+    PRIVATE STATIC METHOD OpenScalarInferenceTables(query AS FoxSelectContext, ;
+        openedTables AS IList<STRING>) AS LOGIC
+        IF query == NULL
+            RETURN TRUE
+        ENDIF
+        FOREACH VAR tableName IN query:TableList
+            LOCAL derivedQuery AS FoxSelectContext
+            IF query:DerivedTables != NULL .AND. query:DerivedTables:TryGetValue(tableName, OUT derivedQuery)
+                IF !OpenScalarInferenceTables(derivedQuery, openedTables)
+                    RETURN FALSE
+                ENDIF
+            ELSEIF !Used(tableName)
+                IF !FoxEmbeddedSQL.OpenArea(tableName)
+                    RETURN FALSE
+                ENDIF
+                openedTables:Add(tableName)
+            ENDIF
+        NEXT
+        RETURN TRUE
 
     STATIC METHOD ExecuteSelect(selectCtx AS FoxSelectContext) AS VOID
         LOCAL savedArea := VoDbGetSelect() AS DWORD
@@ -2454,7 +2518,8 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 ENDIF
 
                 IF !fieldFound .AND. ContainsScalarSubquery(expr)
-                    fieldInfo := InferScalarProjectionFieldDefinition(expr, selectCtx:TableAliases)
+                    fieldInfo := InferScalarProjectionFieldDefinition(expr, selectCtx:TableAliases, ;
+                        selectCtx:DerivedTables)
                     IF fieldInfo == NULL
                         THROW Error{"Could not infer the result type of SELECT expression containing a scalar subquery: " + resolvedExprStr}
                     ENDIF
@@ -3643,6 +3708,9 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 (resultTable)->FieldPut(i, NULL)
             ELSEIF fieldList[i][2] == "C"
                 (resultTable)->FieldPut(i, sourceValues[i]:ToString())
+            ELSEIF fieldList[i][2] == "N" .AND. UsualType(sourceValues[i]) == __UsualType.String .AND. ;
+                   Double.TryParse(sourceValues[i]:ToString():Trim(), OUT VAR numericValue)
+                (resultTable)->FieldPut(i, numericValue)
             ELSE
                 (resultTable)->FieldPut(i, sourceValues[i])
             ENDIF

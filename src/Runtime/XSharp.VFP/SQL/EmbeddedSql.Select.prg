@@ -78,6 +78,11 @@ INTERNAL CLASS SqlAggregateGroup
         RETURN
 END CLASS
 
+INTERNAL STATIC CLASS SqlOptimizationDiagnostics
+    INTERNAL STATIC CorrelatedInPlans AS INT
+    INTERNAL STATIC HashJoins AS INT
+END CLASS
+
 INTERNAL CLASS SqlCorrelatedInPlan
     PRIVATE _outerValueCodeBlock AS CODEBLOCK
     PRIVATE _innerValues AS Dictionary<USUAL,BYTE>
@@ -497,7 +502,20 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             RETURN NULL
         ENDIF
         VAR structure := (tableName)->DbStruct()
-        RETURN (STRING) structure[fieldPosition][2]
+        LOCAL descriptor := (STRING) structure[fieldPosition][2] AS STRING
+        IF String.IsNullOrEmpty(descriptor)
+            RETURN NULL
+        ENDIF
+        descriptor := descriptor:ToUpperInvariant()
+        IF descriptor:Length == 1
+            RETURN descriptor
+        ENDIF
+        // RddFieldInfo.FieldTypeFlags appends a colon and field flags.
+        // Only nullability is needed here; other flags retain the fallback.
+        IF descriptor:Length == 3 .AND. descriptor[1] == c':' .AND. descriptor[2] == c'0'
+            RETURN descriptor:Substring(0, 1)
+        ENDIF
+        RETURN NULL
 
     PRIVATE STATIC METHOD IsHashJoinFieldType(fieldType AS STRING) AS LOGIC
         IF String.IsNullOrEmpty(fieldType)
@@ -506,17 +524,10 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
 
         SWITCH fieldType:ToUpperInvariant()
         CASE "N" // Numeric
-        CASE "F" // Float
-        CASE "B" // Double
         CASE "I" // Integer
-        CASE "Y" // Currency
-        CASE "D" // Date
-        CASE "T" // DateTime
-        CASE "L" // Logical
             RETURN TRUE
         OTHERWISE
-            // Character equality can be directional when SET EXACT is off, and its
-            // runtime comparison rules do not share a general-purpose hash key.
+            // Other field types need comparison and hash compatibility coverage.
             RETURN FALSE
         END SWITCH
 
@@ -776,6 +787,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 DbSelectArea(savedArea)
             ENDIF
         END TRY
+        System.Threading.Interlocked.Increment(REF SqlOptimizationDiagnostics.CorrelatedInPlans)
         RETURN SqlCorrelatedInPlan{outerValueCodeBlock, innerValues, inExpression:IsNegated}
 
     PRIVATE STATIC METHOD RemoveCorrelatedEquality(expression AS SqlExpressionContext, ;
@@ -1256,6 +1268,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
 
                             hashJoinCursor := SqlHashJoinCursor{outerTable, outerKeyCodeBlock, keyBuckets}
                             useHashJoin := TRUE
+                            System.Threading.Interlocked.Increment(REF SqlOptimizationDiagnostics.HashJoins)
                         CATCH ex AS Exception
                             hashJoinCursor := NULL
                             useHashJoin := FALSE

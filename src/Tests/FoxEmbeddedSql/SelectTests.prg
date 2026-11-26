@@ -12,6 +12,19 @@ USING XSharp.VFP
 
 #include "foxcmd.xh"
 
+FUNCTION SqlOptimizationCount(name AS STRING) AS INT
+    VAR diagnosticType := System.Reflection.Assembly.Load("XSharp.VFP"):GetType("XSharp.VFP.SqlOptimizationDiagnostics", TRUE)
+    VAR field := diagnosticType:GetField(name, System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
+    RETURN (INT)field:GetValue(NULL)
+
+FUNCTION VerifySqlOptimization(name AS STRING, previous AS INT) AS VOID
+    LOCAL disabled := FALSE AS LOGIC
+    AppContext.TryGetSwitch("XSharp.VFP.EmbeddedSql.DisableOptimizations", OUT disabled)
+    IF (SqlOptimizationCount(name) > previous) == disabled
+        THROW Exception{"Unexpected optimizer selection: " + name}
+    ENDIF
+    RETURN
+
 FUNCTION TestSelectFunctionality() AS VOID
     ? "Testing SELECT functionality..."
 
@@ -779,7 +792,9 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
         THROW Exception{"IN subquery should reject a result with multiple columns"}
     ENDIF
 
+    LOCAL correlatedPlansBefore := SqlOptimizationCount("CorrelatedInPlans") AS INT
     SELECT p.Id FROM nested_parent p WHERE p.Id IN (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id)
+    VerifySqlOptimization("CorrelatedInPlans", correlatedPlansBefore)
     VerifyTable(2, "Correlated IN subqueries should evaluate against the current outer row", TRUE, {{2}, {4}})
 
     SELECT p.Id FROM nested_parent p WHERE p.Id IN (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id AND c.Label = "four")
@@ -836,11 +851,13 @@ FUNCTION TestHashJoin() AS VOID
 
     // Duplicate keys must produce every matching pair, while residual ON and WHERE
     // predicates still run after the hash lookup.
+    LOCAL hashJoinsBefore := SqlOptimizationCount("HashJoins") AS INT
     SELECT lhs.LeftName, rhs.RightName ;
         FROM hash_join_left lhs ;
         INNER JOIN hash_join_right rhs ON lhs.JoinId = rhs.JoinId AND rhs.Active = .T. ;
         WHERE lhs.JoinId <= 2 ;
         ORDER BY lhs.LeftName, rhs.RightName
+    VerifySqlOptimization("HashJoins", hashJoinsBefore)
     VerifyTable(5, "Failed: Hash join lost duplicate matches or residual predicates", TRUE, ;
         { {"Left A", "Right A"}, ;
           {"Left A", "Right B"}, ;
@@ -872,6 +889,26 @@ FUNCTION TestHashJoin() AS VOID
 
     USE IN hash_join_left
     USE IN hash_join_right
+
+    CREATE CURSOR hash_fraction_left (Id N(8,2), TextKey C(4))
+    CREATE CURSOR hash_fraction_right (Id N(10,3), TextKey C(4))
+    INSERT INTO hash_fraction_left VALUES (1.25, "one")
+    INSERT INTO hash_fraction_left VALUES (-2.50, "two")
+    INSERT INTO hash_fraction_right VALUES (1.25, "one")
+    INSERT INTO hash_fraction_right VALUES (-2.50, "two")
+    hashJoinsBefore := SqlOptimizationCount("HashJoins")
+    SELECT a.Id FROM hash_fraction_left a JOIN hash_fraction_right b ON a.Id = b.Id
+    VerifySqlOptimization("HashJoins", hashJoinsBefore)
+    VerifyTable(2, "Fractional numeric keys should match across field widths", TRUE, {{1.25}, {-2.50}})
+
+    hashJoinsBefore := SqlOptimizationCount("HashJoins")
+    SELECT a.TextKey FROM hash_fraction_left a JOIN hash_fraction_right b ON a.TextKey = b.TextKey
+    IF SqlOptimizationCount("HashJoins") != hashJoinsBefore
+        THROW Exception{"Character join unexpectedly used hash optimization"}
+    ENDIF
+    VerifyTable(2, "Character join fallback should preserve matches", TRUE)
+    USE IN hash_fraction_left
+    USE IN hash_fraction_right
     RETURN
 
 FUNCTION TestLeftOuterJoin() AS VOID

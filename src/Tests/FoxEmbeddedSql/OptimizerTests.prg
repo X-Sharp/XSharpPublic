@@ -351,9 +351,11 @@ FUNCTION TestCorrelatedInOptimizationBenchmark() AS VOID
         USE IN CorrelatedBenchResult
 
         AppContext.SetSwitch(switchName, FALSE)
+        LOCAL plansBefore := SqlOptimizationCount("CorrelatedInPlans") AS INT
         timer:Restart()
         __SqlSelect(query)
         timer:Stop()
+        VerifySqlOptimization("CorrelatedInPlans", plansBefore)
         optimizedMilliseconds := timer:ElapsedMilliseconds
         GO TOP
         IF (LONG)FieldGet(1) != 200
@@ -362,9 +364,11 @@ FUNCTION TestCorrelatedInOptimizationBenchmark() AS VOID
         USE IN CorrelatedBenchResult
 
         AppContext.SetSwitch(switchName, TRUE)
+        plansBefore := SqlOptimizationCount("CorrelatedInPlans")
         timer:Restart()
         __SqlSelect(query)
         timer:Stop()
+        VerifySqlOptimization("CorrelatedInPlans", plansBefore)
         baselineMilliseconds := timer:ElapsedMilliseconds
         GO TOP
         IF (LONG)FieldGet(1) != 200

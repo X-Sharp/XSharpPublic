@@ -263,11 +263,41 @@ CLASS SqlPrefixExpressionContext INHERIT SqlExpressionContext
     CONSTRUCTOR()
         RETURN
     OVERRIDE METHOD BuildString(sb AS StringBuilder) AS VOID
+        IF Op:Type == XTokenType.NOT .AND. Expr IS SqlInSubqueryExpressionContext VAR inSubquery
+            inSubquery:BuildWithNegation(sb, NULL, TRUE)
+            RETURN
+        ELSEIF Op:Type == XTokenType.NOT .AND. Expr IS SqlInListExpressionContext VAR inList
+            inList:BuildWithNegation(sb, NULL, TRUE)
+            RETURN
+        ELSEIF Op:Type == XTokenType.NOT .AND. Expr IS SqlParenExpressionContext VAR paren .AND. ;
+               paren:Expr IS SqlInSubqueryExpressionContext VAR parenthesizedSubquery
+            parenthesizedSubquery:BuildWithNegation(sb, NULL, TRUE)
+            RETURN
+        ELSEIF Op:Type == XTokenType.NOT .AND. Expr IS SqlParenExpressionContext VAR listParen .AND. ;
+               listParen:Expr IS SqlInListExpressionContext VAR parenthesizedList
+            parenthesizedList:BuildWithNegation(sb, NULL, TRUE)
+            RETURN
+        ENDIF
         sb:Append(Op:Leadingws)
         sb:Append(Op:Text)
         Expr:BuildString(sb)
 
     OVERRIDE METHOD BuildStringWithFieldResolution(sb AS StringBuilder, tableAliases AS IDictionary<STRING,STRING>) AS VOID
+        IF Op:Type == XTokenType.NOT .AND. Expr IS SqlInSubqueryExpressionContext VAR inSubquery
+            inSubquery:BuildWithNegation(sb, tableAliases, TRUE)
+            RETURN
+        ELSEIF Op:Type == XTokenType.NOT .AND. Expr IS SqlInListExpressionContext VAR inList
+            inList:BuildWithNegation(sb, tableAliases, TRUE)
+            RETURN
+        ELSEIF Op:Type == XTokenType.NOT .AND. Expr IS SqlParenExpressionContext VAR paren .AND. ;
+               paren:Expr IS SqlInSubqueryExpressionContext VAR parenthesizedSubquery
+            parenthesizedSubquery:BuildWithNegation(sb, tableAliases, TRUE)
+            RETURN
+        ELSEIF Op:Type == XTokenType.NOT .AND. Expr IS SqlParenExpressionContext VAR listParen .AND. ;
+               listParen:Expr IS SqlInListExpressionContext VAR parenthesizedList
+            parenthesizedList:BuildWithNegation(sb, tableAliases, TRUE)
+            RETURN
+        ENDIF
         sb:Append(Op:Leadingws)
         sb:Append(Op:Text)
         Expr:BuildStringWithFieldResolution(sb, tableAliases)
@@ -284,6 +314,208 @@ END CLASS
 CLASS SqlCompareExpressionContext INHERIT SqlBinaryExpressionContext
     CONSTRUCTOR()
         RETURN
+END CLASS
+
+/// An uncorrelated SELECT used as the value set of an IN predicate.
+CLASS SqlInSubqueryExpressionContext INHERIT SqlExpressionContext
+    PROPERTY ValueExpression AS SqlExpressionContext AUTO
+    PROPERTY Subquery AS FoxSelectContext AUTO
+    PROPERTY IsNegated AS LOGIC AUTO
+    PROPERTY Values AS IList<USUAL> AUTO
+
+    CONSTRUCTOR()
+        Values := NULL
+        RETURN
+
+    METHOD BuildWithNegation(sb AS StringBuilder, tableAliases AS IDictionary<STRING,STRING>, negated AS LOGIC) AS VOID
+        LOCAL previous := IsNegated AS LOGIC
+        IsNegated := negated
+        TRY
+            IF tableAliases == NULL
+                SELF:BuildString(sb)
+            ELSE
+                SELF:BuildStringWithFieldResolution(sb, tableAliases)
+            ENDIF
+        FINALLY
+            IsNegated := previous
+        END TRY
+
+    OVERRIDE METHOD BuildString(sb AS StringBuilder) AS VOID
+        IF Values == NULL
+            THROW InvalidOperationException{"IN subquery has not been prepared for execution"}
+        ENDIF
+        IF Values:Count == 0
+            sb:Append(IIF(IsNegated, ".T.", ".F."))
+            RETURN
+        ENDIF
+        sb:Append("(!ISNULL(")
+        ValueExpression:BuildString(sb)
+        sb:Append(") .AND. ")
+        IF IsNegated
+            sb:Append("!")
+        ENDIF
+        sb:Append("INLIST(")
+        ValueExpression:BuildString(sb)
+        sb:Append(", ")
+        SELF:AppendValues(sb)
+        sb:Append(")")
+        IF IsNegated .AND. SELF:HasNullValue()
+            sb:Append(" .AND. .F.")
+        ENDIF
+        sb:Append(")")
+
+    OVERRIDE METHOD BuildStringWithFieldResolution(sb AS StringBuilder, tableAliases AS IDictionary<STRING,STRING>) AS VOID
+        IF Values == NULL
+            THROW InvalidOperationException{"IN subquery has not been prepared for execution"}
+        ENDIF
+        IF Values:Count == 0
+            sb:Append(IIF(IsNegated, ".T.", ".F."))
+            RETURN
+        ENDIF
+        IF IsNegated
+            sb:Append("NOT (")
+        ENDIF
+        sb:Append("IIF(ISNULL(")
+        ValueExpression:BuildStringWithFieldResolution(sb, tableAliases)
+        sb:Append("), .NULL., IIF(INLIST(")
+        ValueExpression:BuildStringWithFieldResolution(sb, tableAliases)
+        sb:Append(", ")
+        SELF:AppendValues(sb)
+        sb:Append("), .T., ")
+        sb:Append(IIF(SELF:HasNullValue(), ".NULL.", ".F."))
+        sb:Append("))")
+        IF IsNegated
+            sb:Append(")")
+        ENDIF
+
+    PRIVATE METHOD HasNullValue() AS LOGIC
+        FOREACH VAR value IN Values
+            IF value:IsNull
+                RETURN TRUE
+            ENDIF
+        NEXT
+        RETURN FALSE
+
+    PRIVATE METHOD AppendValues(sb AS StringBuilder) AS VOID
+        LOCAL first := TRUE AS LOGIC
+        FOREACH VAR value IN Values
+            IF !first
+                sb:Append(", ")
+            ENDIF
+            SqlInSubqueryExpressionContext.AppendValue(sb, value)
+            first := FALSE
+        NEXT
+
+    PRIVATE STATIC METHOD AppendValue(sb AS StringBuilder, value AS USUAL) AS VOID
+        IF value:IsNull
+            sb:Append(".NULL.")
+            RETURN
+        ENDIF
+        VAR boxed := (OBJECT)value
+        SWITCH UsualType(boxed)
+        CASE __UsualType.String
+        CASE __UsualType.Memo
+            sb:Append("'")
+            sb:Append(((STRING)boxed):Replace("'", "''"))
+            sb:Append("'")
+        CASE __UsualType.Logic
+            sb:Append(IIF((LOGIC)boxed, ".T.", ".F."))
+        CASE __UsualType.Date
+            sb:Append("{^")
+            sb:Append(((DATE)boxed):ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture))
+            sb:Append("}")
+        CASE __UsualType.DateTime
+            sb:Append("{^")
+            sb:Append(((System.DateTime)boxed):ToString("yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.InvariantCulture))
+            sb:Append("}")
+        OTHERWISE
+            IF UsualType(boxed) == __UsualType.Byte .OR. UsualType(boxed) == __UsualType.ShortInt .OR. ;
+               UsualType(boxed) == __UsualType.Word .OR. UsualType(boxed) == __UsualType.Long .OR. ;
+               UsualType(boxed) == __UsualType.DWord .OR. UsualType(boxed) == __UsualType.Int64 .OR. ;
+               UsualType(boxed) == __UsualType.UInt64 .OR. UsualType(boxed) == __UsualType.Real4 .OR. ;
+               UsualType(boxed) == __UsualType.Real8 .OR. UsualType(boxed) == __UsualType.Float .OR. ;
+               UsualType(boxed) == __UsualType.Decimal .OR. ;
+               UsualType(boxed) == __UsualType.Currency
+                sb:Append(Convert.ToString(boxed, System.Globalization.CultureInfo.InvariantCulture))
+            ELSE
+                THROW Error{"Unsupported value type in IN subquery result"}
+            ENDIF
+        END SWITCH
+END CLASS
+
+CLASS SqlInListExpressionContext INHERIT SqlExpressionContext
+    PROPERTY ValueExpression AS SqlExpressionContext AUTO
+    PROPERTY Items AS IList<SqlExpressionContext> AUTO
+    PROPERTY IsNegated AS LOGIC AUTO
+    CONSTRUCTOR()
+        Items := List<SqlExpressionContext>{}
+        RETURN
+    METHOD BuildWithNegation(sb AS StringBuilder, tableAliases AS IDictionary<STRING,STRING>, negated AS LOGIC) AS VOID
+        LOCAL previous := IsNegated AS LOGIC
+        IsNegated := negated
+        TRY
+            SELF:BuildResolved(sb, tableAliases)
+        FINALLY
+            IsNegated := previous
+        END TRY
+    OVERRIDE METHOD BuildString(sb AS StringBuilder) AS VOID
+        SELF:BuildResolved(sb, NULL)
+    OVERRIDE METHOD BuildStringWithFieldResolution(sb AS StringBuilder, tableAliases AS IDictionary<STRING,STRING>) AS VOID
+        SELF:BuildResolved(sb, tableAliases)
+    PRIVATE METHOD BuildResolved(sb AS StringBuilder, tableAliases AS IDictionary<STRING,STRING>) AS VOID
+        sb:Append("(!ISNULL(")
+        IF tableAliases == NULL
+            ValueExpression:BuildString(sb)
+        ELSE
+            ValueExpression:BuildStringWithFieldResolution(sb, tableAliases)
+        ENDIF
+        sb:Append(") .AND. ")
+        IF IsNegated
+            sb:Append("!")
+        ENDIF
+        sb:Append("INLIST(")
+        IF tableAliases == NULL
+            ValueExpression:BuildString(sb)
+        ELSE
+            ValueExpression:BuildStringWithFieldResolution(sb, tableAliases)
+        ENDIF
+        sb:Append(", ")
+        LOCAL first := TRUE AS LOGIC
+        LOCAL containsNull := FALSE AS LOGIC
+        FOREACH VAR item IN Items
+            IF !first
+                sb:Append(", ")
+            ENDIF
+            IF tableAliases == NULL
+                item:BuildString(sb)
+            ELSE
+                item:BuildStringWithFieldResolution(sb, tableAliases)
+            ENDIF
+            IF item:ToString():Trim():Equals(".NULL.", StringComparison.OrdinalIgnoreCase)
+                containsNull := TRUE
+            ENDIF
+            first := FALSE
+        NEXT
+        sb:Append(")")
+        IF IsNegated .AND. containsNull
+            sb:Append(" .AND. .F.")
+        ENDIF
+        sb:Append(")")
+    OVERRIDE METHOD GetTableDependencies(tableAliases AS IDictionary<STRING,STRING>) AS IList<STRING>
+        VAR result := List<STRING>{}
+        FOREACH VAR dep IN ValueExpression:GetTableDependencies(tableAliases)
+            IF !result:Contains(dep)
+                result:Add(dep)
+            ENDIF
+        NEXT
+        FOREACH VAR item IN Items
+            FOREACH VAR dep IN item:GetTableDependencies(tableAliases)
+                IF !result:Contains(dep)
+                    result:Add(dep)
+                ENDIF
+            NEXT
+        NEXT
+        RETURN result
 END CLASS
 
 END NAMESPACE

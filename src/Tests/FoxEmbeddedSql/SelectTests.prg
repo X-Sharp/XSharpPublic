@@ -726,6 +726,75 @@ FUNCTION TestUnionFunctionality() AS VOID
     ENDIF
     RETURN
 
+FUNCTION TestNestedSubqueryFunctionality() AS VOID
+    CREATE CURSOR nested_parent (Id N(5) NULL)
+    CREATE CURSOR nested_child (Id N(5) NULL, Label C(20))
+    CREATE CURSOR nested_empty (Id N(5) NULL)
+    INSERT INTO nested_parent VALUES (1)
+    INSERT INTO nested_parent VALUES (2)
+    INSERT INTO nested_parent VALUES (3)
+    INSERT INTO nested_parent VALUES (4)
+    INSERT INTO nested_parent VALUES (NULL)
+    INSERT INTO nested_child VALUES (2, "first")
+    INSERT INTO nested_child VALUES (2, "duplicate")
+    INSERT INTO nested_child VALUES (4, "four")
+    INSERT INTO nested_child VALUES (NULL, "null")
+
+    __SqlSelect("SELECT Id FROM nested_parent WHERE Id IN (SELECT Id FROM nested_child)")
+    VerifyTable(2, "IN subquery should return matching outer values once", TRUE, {{2}, {4}})
+
+    __SqlSelect("SELECT Id FROM nested_parent WHERE Id IN (SELECT Id FROM nested_child WHERE Id = 2)")
+    VerifyTable(1, "IN subquery should execute its own WHERE clause", TRUE, {{2}})
+
+    __SqlSelect("SELECT Id FROM nested_parent WHERE Id IN (2, 4)")
+    VerifyTable(2, "Literal IN lists should remain executable", TRUE, {{2}, {4}})
+
+    __SqlSelect("SELECT Id FROM nested_parent WHERE Id IN (SELECT Id FROM nested_child WHERE Id = 2 UNION SELECT Id FROM nested_child WHERE Id = 4)")
+    VerifyTable(2, "IN subquery should support a UNION result", TRUE, {{2}, {4}})
+
+    __SqlSelect("SELECT Id FROM nested_parent WHERE Id NOT IN (SELECT Id FROM nested_child WHERE Id > 0)")
+    VerifyTable(3, "NOT IN should exclude matching values and preserve nonmatching values and NULL", TRUE, {{1}, {3}, {NULL}})
+
+    __SqlSelect("SELECT Id FROM nested_parent WHERE Id NOT IN (SELECT Id FROM nested_child)")
+    VerifyTable(3, "NOT IN should retain INLIST-style behavior when the subquery contains NULL", TRUE, {{1}, {3}, {NULL}})
+
+    __SqlSelect("SELECT Id FROM nested_parent WHERE Id IN (SELECT Id FROM nested_empty)")
+    VerifyTable(0, "IN an empty subquery should match no rows", TRUE)
+
+    __SqlSelect("SELECT Id FROM nested_parent WHERE Id NOT IN (SELECT Id FROM nested_empty)")
+    VerifyTable(5, "NOT IN an empty subquery should match every outer row", TRUE)
+
+    LOCAL invalidArityRejected := FALSE AS LOGIC
+    TRY
+        __SqlSelect("SELECT Id FROM nested_parent WHERE Id IN (SELECT Id, Label FROM nested_child)")
+    CATCH ex AS Exception
+        invalidArityRejected := ex:Message:Contains("exactly one column")
+    END TRY
+    IF !invalidArityRejected
+        THROW Exception{"IN subquery should reject a result with multiple columns"}
+    ENDIF
+
+    LOCAL correlatedRejected := FALSE AS LOGIC
+    TRY
+        __SqlSelect("SELECT p.Id FROM nested_parent p WHERE p.Id IN (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id)")
+    CATCH ex AS Exception
+        correlatedRejected := ex:Message:Contains("Correlated")
+    END TRY
+    IF !correlatedRejected
+        THROW Exception{"Correlated IN subqueries should fail clearly instead of using an outer row implicitly"}
+    ENDIF
+
+    IF Used("nested_parent")
+        USE IN nested_parent
+    ENDIF
+    IF Used("nested_child")
+        USE IN nested_child
+    ENDIF
+    IF Used("nested_empty")
+        USE IN nested_empty
+    ENDIF
+    RETURN
+
 FUNCTION TestHashJoin() AS VOID
     ? "Testing hash join functionality..."
 

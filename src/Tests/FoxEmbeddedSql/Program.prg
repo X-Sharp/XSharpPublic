@@ -102,6 +102,8 @@ FUNCTION Start(args AS STRING[]) AS VOID STRICT
     RegisterTest("TestNewSqlFeatures", { => TestNewSqlFeatures() })
     RegisterTest("TestSelectFunctionality [optimized]", { => TestSelectFunctionality() })
     RegisterTest("TestSelectFunctionality [baseline]", { => TestSelectFunctionality() }, TRUE)
+    RegisterTest("TestNestedSubquery [optimized]", { => TestNestedSubqueryFunctionality() })
+    RegisterTest("TestNestedSubquery [baseline]", { => TestNestedSubqueryFunctionality() }, TRUE)
     RegisterTest("TestCrossJoinFunctionality [optimized]", { => TestCrossJoinFunctionality() })
     RegisterTest("TestCrossJoinFunctionality [baseline]", { => TestCrossJoinFunctionality() }, TRUE)
     RegisterTest("TestUnionFunctionality [optimized]", { => TestUnionFunctionality() })

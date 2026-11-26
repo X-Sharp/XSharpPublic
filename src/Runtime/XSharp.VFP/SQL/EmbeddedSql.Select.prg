@@ -507,6 +507,136 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         ENDIF
         RETURN selectCtx
 
+    PRIVATE STATIC METHOD PrepareSubqueryExpression(expression AS SqlExpressionContext) AS VOID
+        IF expression == NULL
+            RETURN
+        ENDIF
+        IF expression IS SqlInSubqueryExpressionContext VAR inExpression
+            VAR subquery := inExpression:Subquery
+            IF HasExternalSubqueryReference(subquery)
+                THROW Error{"Correlated or unresolved references in IN subqueries are not supported yet"}
+            ENDIF
+            IF subquery:SelectList:Count != 1
+                THROW Error{"IN subquery must return exactly one column"}
+            ENDIF
+            LOCAL alias := "SQ" + Guid.NewGuid():ToString("N"):Substring(0, 8) AS STRING
+            subquery:TargetCursor := alias
+            VAR savedArea := DbSelect()
+            TRY
+                ExecuteSelect(subquery)
+                IF !Used(alias)
+                    THROW Error{"IN subquery did not produce a result cursor"}
+                ENDIF
+                IF (alias)->FCount() != 1
+                    THROW Error{"IN subquery must return exactly one column"}
+                ENDIF
+                VAR values := List<USUAL>{}
+                (alias)->DbGoTop()
+                DO WHILE !(alias)->Eof()
+                    values:Add((USUAL)(alias)->FieldGet(1))
+                    (alias)->DbSkip(1)
+                ENDDO
+                inExpression:Values := values
+            FINALLY
+                IF Used(alias)
+                    (alias)->DbCloseArea()
+                ENDIF
+                IF savedArea > 0
+                    DbSelectArea(savedArea)
+                ENDIF
+            END TRY
+            RETURN
+        ENDIF
+        IF expression IS SqlParenExpressionContext VAR parenExpression
+            PrepareSubqueryExpression(parenExpression:Expr)
+        ELSEIF expression IS SqlPrefixExpressionContext VAR prefixExpression
+            PrepareSubqueryExpression(prefixExpression:Expr)
+        ELSEIF expression IS SqlBinaryExpressionContext VAR binaryExpression
+            PrepareSubqueryExpression(binaryExpression:Left)
+            PrepareSubqueryExpression(binaryExpression:Right)
+        ELSEIF expression IS SqlCompositeExpressionContext VAR compositeExpression
+            FOREACH VAR child IN compositeExpression:Exprs
+                PrepareSubqueryExpression(child)
+            NEXT
+        ENDIF
+        RETURN
+
+    PRIVATE STATIC METHOD HasExternalSubqueryReference(selectCtx AS FoxSelectContext) AS LOGIC
+        FOREACH VAR expression IN selectCtx:SelectList
+            IF HasExternalSubqueryDependency(expression, selectCtx:TableAliases)
+                RETURN TRUE
+            ENDIF
+        NEXT
+        IF HasExternalSubqueryDependency(selectCtx:WhereClause, selectCtx:TableAliases) .OR. ;
+           HasExternalSubqueryDependency(selectCtx:HavingClause, selectCtx:TableAliases)
+            RETURN TRUE
+        ENDIF
+        FOREACH VAR expression IN selectCtx:GroupByItems
+            IF HasExternalSubqueryDependency(expression, selectCtx:TableAliases)
+                RETURN TRUE
+            ENDIF
+        NEXT
+        FOREACH VAR join IN selectCtx:Joins
+            IF HasExternalSubqueryDependency(join:OnClause, selectCtx:TableAliases)
+                RETURN TRUE
+            ENDIF
+        NEXT
+        FOREACH VAR orderItem IN selectCtx:OrderByClause
+            IF HasExternalSubqueryDependency(orderItem:Expression, selectCtx:TableAliases)
+                RETURN TRUE
+            ENDIF
+        NEXT
+        FOREACH VAR branch IN selectCtx:UnionBranches
+            IF HasExternalSubqueryReference(branch)
+                RETURN TRUE
+            ENDIF
+        NEXT
+        RETURN FALSE
+
+    PRIVATE STATIC METHOD HasExternalSubqueryDependency(expression AS SqlExpressionContext, ;
+            aliases AS Dictionary<STRING,STRING>) AS LOGIC
+        IF expression == NULL
+            RETURN FALSE
+        ENDIF
+        FOREACH VAR dependency IN expression:GetTableDependencies(aliases)
+            LOCAL found := FALSE AS LOGIC
+            FOREACH VAR tableName IN aliases:Values
+                IF tableName:Equals(dependency, StringComparison.OrdinalIgnoreCase)
+                    found := TRUE
+                    EXIT
+                ENDIF
+            NEXT
+            IF !found
+                RETURN TRUE
+            ENDIF
+        NEXT
+        IF expression IS SqlParenExpressionContext VAR parenExpression
+            RETURN HasExternalSubqueryDependency(parenExpression:Expr, aliases)
+        ELSEIF expression IS SqlPrefixExpressionContext VAR prefixExpression
+            RETURN HasExternalSubqueryDependency(prefixExpression:Expr, aliases)
+        ELSEIF expression IS SqlBinaryExpressionContext VAR binaryExpression
+            RETURN HasExternalSubqueryDependency(binaryExpression:Left, aliases) .OR. ;
+                   HasExternalSubqueryDependency(binaryExpression:Right, aliases)
+        ELSEIF expression IS SqlCompositeExpressionContext VAR compositeExpression
+            FOREACH VAR child IN compositeExpression:Exprs
+                IF HasExternalSubqueryDependency(child, aliases)
+                    RETURN TRUE
+                ENDIF
+            NEXT
+        ELSEIF expression IS SqlAggregateExpressionContext VAR aggregateExpression
+            RETURN HasExternalSubqueryDependency(aggregateExpression:Argument, aliases)
+        ELSEIF expression IS SqlInListExpressionContext VAR inListExpression
+            IF HasExternalSubqueryDependency(inListExpression:ValueExpression, aliases)
+                RETURN TRUE
+            ENDIF
+            FOREACH VAR item IN inListExpression:Items
+                IF HasExternalSubqueryDependency(item, aliases)
+                    RETURN TRUE
+                ENDIF
+            NEXT
+        ENDIF
+        RETURN FALSE
+
     STATIC METHOD ExecuteSelect(selectCtx as FoxSelectContext) AS VOID
         // Implementation of SELECT execution
         // This will handle opening tables, selecting records, and returning results
@@ -754,6 +884,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         LOCAL hasWhereClause AS LOGIC
         hasWhereClause := FALSE
         IF selectCtx:WhereClause != NULL
+            PrepareSubqueryExpression(selectCtx:WhereClause)
             whereClause := selectCtx:WhereClause:ToResolvedString(selectCtx:TableAliases)
             hasWhereClause := TRUE
             whereCodeBlock := MCompile(whereClause)

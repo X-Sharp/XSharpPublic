@@ -142,6 +142,36 @@ FUNCTION TestSelectParsing() AS VOID
         THROW Exception{"UNION should preserve operators and final ORDER BY/INTO clauses"}
     ENDIF
 
+    VAR inLexer := XSqlLexer{"SELECT a.Id FROM Parent a WHERE a.Id IN (SELECT b.Id FROM Child b WHERE b.Active = .T.)"}
+    VAR inParser := SQLParser{XTokenList{inLexer:AllTokens()}}
+    LOCAL inCtx AS FoxSelectContext
+    IF !inParser:ParseSelectStatement(OUT inCtx) .OR. ;
+       !(inCtx:WhereClause IS SqlInSubqueryExpressionContext)
+        THROW Exception{"IN subquery predicate should parse into a dedicated expression"}
+    ENDIF
+    VAR inExpression := (SqlInSubqueryExpressionContext)inCtx:WhereClause
+    IF inExpression:Subquery:TableList:Count != 1 .OR. inExpression:Subquery:WhereClause == NULL
+        THROW Exception{"IN subquery should retain its SELECT source and WHERE clause"}
+    ENDIF
+
+    VAR notInLexer := XSqlLexer{"SELECT Id FROM Parent WHERE Id NOT IN (SELECT Id FROM Child)"}
+    VAR notInParser := SQLParser{XTokenList{notInLexer:AllTokens()}}
+    LOCAL notInCtx AS FoxSelectContext
+    IF !notInParser:ParseSelectStatement(OUT notInCtx) .OR. ;
+       !(notInCtx:WhereClause IS SqlInSubqueryExpressionContext VAR notInExpression) .OR. ;
+       !notInExpression:IsNegated
+        THROW Exception{"NOT IN subquery should preserve negation"}
+    ENDIF
+
+    VAR inListLexer := XSqlLexer{"SELECT Id FROM Parent WHERE Id IN (1, 2, 3)"}
+    VAR inListParser := SQLParser{XTokenList{inListLexer:AllTokens()}}
+    LOCAL inListCtx AS FoxSelectContext
+    IF !inListParser:ParseSelectStatement(OUT inListCtx) .OR. ;
+       !(inListCtx:WhereClause IS SqlInListExpressionContext VAR inListExpression) .OR. ;
+       inListExpression:Items:Count != 3
+        THROW Exception{"Existing literal IN lists should remain parseable"}
+    ENDIF
+
     VAR incompleteUnionLexer := XSqlLexer{"SELECT Id FROM FirstTable UNION"}
     VAR incompleteUnionParser := SQLParser{XTokenList{incompleteUnionLexer:AllTokens()}}
     LOCAL incompleteUnionCtx AS FoxSelectContext

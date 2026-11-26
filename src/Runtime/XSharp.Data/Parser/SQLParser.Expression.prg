@@ -52,7 +52,9 @@ PARTIAL CLASS SQLParser
         CASE XTokenType.HAVING
         CASE XTokenType.INTO
         CASE XTokenType.ORDER
+        CASE XTokenType.UNION
         CASE XTokenType.JOIN
+        CASE XTokenType.IN
         CASE XTokenType.WHERE
             RETURN TRUE
         OTHERWISE
@@ -121,7 +123,15 @@ PARTIAL CLASS SQLParser
         IF SELF:PrefixOp()
             VAR o := SELF:ConsumeAndGet()
             VAR c := SELF:ParseCompareExpression()
-            e := SqlPrefixExpressionContext{} { Op := o, Expr := c }
+            IF o:Type == XTokenType.NOT .AND. c IS SqlInSubqueryExpressionContext VAR inSubquery
+                inSubquery:IsNegated := !inSubquery:IsNegated
+                e := inSubquery
+            ELSEIF o:Type == XTokenType.NOT .AND. c IS SqlInListExpressionContext VAR inList
+                inList:IsNegated := !inList:IsNegated
+                e := inList
+            ELSE
+                e := SqlPrefixExpressionContext{} { Op := o, Expr := c }
+            ENDIF
         ELSE
             e := SELF:ParseCompareExpression()
         ENDIF
@@ -129,6 +139,60 @@ PARTIAL CLASS SQLParser
 
     PRIVATE METHOD ParseCompareExpression() AS SqlExpressionContext
         VAR e := SELF:ParseExpressionTerm()
+        LOCAL isNegated := FALSE AS LOGIC
+        IF SELF:Matches(XTokenType.NOT) .AND. SELF:La2 == XTokenType.IN
+            SELF:Consume()
+            isNegated := TRUE
+        ENDIF
+        IF SELF:Expect(XTokenType.IN)
+            IF !SELF:Expect(XTokenType.LPAREN)
+                THROW ArgumentException{"Expected opening parenthesis after IN", "SQLParser"}
+            ENDIF
+            IF !SELF:Matches(XTokenType.SELECT)
+                VAR listExpression := SqlInListExpressionContext{} { ValueExpression := e, IsNegated := isNegated }
+                DO WHILE TRUE
+                    IF SELF:Matches(XTokenType.RPAREN) .OR. SELF:Eos()
+                        THROW ArgumentException{"IN list cannot be empty", "SQLParser"}
+                    ENDIF
+                    listExpression:Items:Add(SELF:ParseExpressionContext())
+                    IF SELF:Expect(XTokenType.COMMA)
+                        LOOP
+                    ENDIF
+                    IF !SELF:Expect(XTokenType.RPAREN)
+                        THROW ArgumentException{"Expected closing parenthesis for IN list", "SQLParser"}
+                    ENDIF
+                    EXIT
+                ENDDO
+                RETURN listExpression
+            ENDIF
+            VAR subqueryTokens := List<XToken>{}
+            LOCAL depth := 1 AS LONG
+            DO WHILE !SELF:Eoi()
+                IF SELF:La1 == XTokenType.LPAREN
+                    depth++
+                ELSEIF SELF:La1 == XTokenType.RPAREN
+                    depth--
+                    IF depth == 0
+                        EXIT
+                    ENDIF
+                ENDIF
+                subqueryTokens:Add(SELF:ConsumeAndGet())
+            ENDDO
+            IF depth != 0 .OR. subqueryTokens:Count == 0
+                THROW ArgumentException{"Unclosed or empty IN subquery", "SQLParser"}
+            ENDIF
+            IF !SELF:Expect(XTokenType.RPAREN)
+                THROW ArgumentException{"Expected closing parenthesis for IN subquery", "SQLParser"}
+            ENDIF
+            VAR subParser := SQLParser{XTokenList{subqueryTokens}}
+            LOCAL subquery AS FoxSelectContext
+            IF !subParser:ParseSelectStatement(OUT subquery)
+                THROW ArgumentException{"Invalid IN subquery: " + subParser:Error, "SQLParser"}
+            ENDIF
+            RETURN SqlInSubqueryExpressionContext{} { ValueExpression := e, Subquery := subquery, IsNegated := isNegated }
+        ELSEIF isNegated
+            THROW ArgumentException{"Expected IN after NOT", "SQLParser"}
+        ENDIF
         IF SELF:CompareOp()
             VAR o := SELF:ConsumeAndGet()
             VAR r := SELF:ParseExpressionTerm()

@@ -112,7 +112,11 @@ INTERNAL CLASS SqlScalarMemoKeyComparer IMPLEMENTS IEqualityComparer<USUAL[]>
             RETURN FALSE
         ENDIF
         FOR LOCAL i := 1 AS INT TO left:Length
-            IF !EqualityComparer<USUAL>.Default:Equals(left[i], right[i])
+            IF UsualType(left[i]) == __UsualType.String .AND. UsualType(right[i]) == __UsualType.String
+                IF !String.Equals(left[i]:ToString(), right[i]:ToString(), StringComparison.Ordinal)
+                    RETURN FALSE
+                ENDIF
+            ELSEIF !EqualityComparer<USUAL>.Default:Equals(left[i], right[i])
                 RETURN FALSE
             ENDIF
         NEXT
@@ -124,7 +128,13 @@ INTERNAL CLASS SqlScalarMemoKeyComparer IMPLEMENTS IEqualityComparer<USUAL[]>
         ENDIF
         LOCAL hash := 17 AS LONG
         FOR LOCAL i := 1 AS INT TO values:Length
-            hash := (hash * 31 + EqualityComparer<USUAL>.Default:GetHashCode(values[i])) % 2147483647
+            LOCAL componentHash AS INT
+            IF UsualType(values[i]) == __UsualType.String
+                componentHash := StringComparer.Ordinal:GetHashCode(values[i]:ToString())
+            ELSE
+                componentHash := EqualityComparer<USUAL>.Default:GetHashCode(values[i])
+            ENDIF
+            hash := (hash * 31 + componentHash) % 2147483647
         NEXT
         RETURN (INT)hash
 END CLASS
@@ -768,6 +778,18 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             RETURN FALSE
         END SWITCH
 
+    PRIVATE STATIC METHOD IsCorrelatedScalarMemoFieldType(fieldType AS STRING) AS LOGIC
+        IF String.IsNullOrEmpty(fieldType)
+            RETURN FALSE
+        ENDIF
+        SWITCH fieldType:ToUpperInvariant()
+        CASE "N" // Numeric
+        CASE "I" // Integer
+        CASE "C" // Fixed-width character; memo keys use exact ordinal identity.
+            RETURN TRUE
+        OTHERWISE
+            RETURN FALSE
+        END SWITCH
     PRIVATE STATIC METHOD SqlOptimizationsEnabled() AS LOGIC
         RETURN EmbeddedSqlRuntimeOptions.OptimizationsEnabled()
 
@@ -1113,7 +1135,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         FOREACH VAR outerField IN outerReferences
             LOCAL resolvedOuterTable := outerField:Table AS STRING
             outerTableAliases:TryGetValue(outerField:Table, OUT resolvedOuterTable)
-            IF !IsHashJoinFieldType(HashJoinFieldType(resolvedOuterTable, outerField:Name))
+            IF !IsCorrelatedScalarMemoFieldType(HashJoinFieldType(resolvedOuterTable, outerField:Name))
                 RETURN NULL
             ENDIF
             VAR outerValueCodeBlock := MCompile(outerField:ToResolvedString(outerTableAliases))

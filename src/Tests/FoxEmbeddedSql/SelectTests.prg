@@ -750,6 +750,8 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     CREATE CURSOR nested_scalar_extra (Id N(5) NULL, Amount N(5) NULL)
     CREATE CURSOR nested_composite_parent (Id N(5) NULL, Bucket N(5) NULL)
     CREATE CURSOR nested_composite_child (Id N(5) NULL, Bucket N(5) NULL, OutVal N(5) NULL)
+    CREATE CURSOR nested_char_parent (Id N(5) NULL, Code C(5) NULL)
+    CREATE CURSOR nested_char_child (Code C(5) NULL, OutVal N(5) NULL)
     INSERT INTO nested_parent VALUES (1)
     INSERT INTO nested_parent VALUES (2)
     INSERT INTO nested_parent VALUES (3)
@@ -779,6 +781,12 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     INSERT INTO nested_composite_child VALUES (2, 1, 21)
     INSERT INTO nested_composite_child VALUES (2, 2, 22)
     INSERT INTO nested_composite_child VALUES (4, 1, 41)
+    INSERT INTO nested_char_parent VALUES (1, "abc")
+    INSERT INTO nested_char_parent VALUES (2, "ABC")
+    INSERT INTO nested_char_parent VALUES (3, "abc")
+    INSERT INTO nested_char_parent VALUES (4, "xyz")
+    INSERT INTO nested_char_child VALUES ("abc", 11)
+    INSERT INTO nested_char_child VALUES ("ABC", 12)
 
     LOCAL openAreas := XSharp.__FoxArray{} AS ARRAY
     LOCAL workAreaCountBeforeDerived := AUsed(openAreas) AS DWORD
@@ -1101,6 +1109,19 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
 
     scalarCachePlansBefore := SqlOptimizationCount("CorrelatedScalarCachePlans")
     scalarCacheHitsBefore := SqlOptimizationCount("CorrelatedScalarCacheHits")
+    scalarBefore := SqlOptimizationCount("ScalarExecutions")
+    SELECT p.Id, (SELECT c.OutVal FROM nested_char_child c WHERE c.Code = p.Code) AS ChildVal ;
+        FROM nested_char_parent p
+    VerifyTable(4, "Character scalar keys should preserve case-sensitive VFP equality and reuse identical keys", TRUE, ;
+        {{1, 11}, {2, 12}, {3, 11}, {4, NULL}})
+    IF SqlOptimizationCount("ScalarExecutions") - scalarBefore != IIF(optimizationsDisabled, 4, 3) .OR. ;
+       SqlOptimizationCount("CorrelatedScalarCachePlans") - scalarCachePlansBefore != IIF(optimizationsDisabled, 0, 1) .OR. ;
+       SqlOptimizationCount("CorrelatedScalarCacheHits") - scalarCacheHitsBefore != IIF(optimizationsDisabled, 0, 1)
+        THROW Exception{"Character scalar memoization should reuse exact duplicate keys without conflating case variants"}
+    ENDIF
+
+    scalarCachePlansBefore := SqlOptimizationCount("CorrelatedScalarCachePlans")
+    scalarCacheHitsBefore := SqlOptimizationCount("CorrelatedScalarCacheHits")
     scalarNullKeysBefore := SqlOptimizationCount("CorrelatedScalarNullKeys")
     scalarBefore := SqlOptimizationCount("ScalarExecutions")
     SELECT p.Id, p.Bucket, ;
@@ -1386,6 +1407,12 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     ENDIF
     IF Used("nested_composite_child")
         USE IN nested_composite_child
+    ENDIF
+    IF Used("nested_char_parent")
+        USE IN nested_char_parent
+    ENDIF
+    IF Used("nested_char_child")
+        USE IN nested_char_child
     ENDIF
     RETURN
 

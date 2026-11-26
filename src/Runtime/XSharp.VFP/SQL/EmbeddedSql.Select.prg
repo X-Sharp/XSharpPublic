@@ -67,6 +67,7 @@ INTERNAL CLASS SqlAggregateGroup
     PUBLIC PROPERTY States AS Dictionary<SqlAggregateExpressionContext,SqlAggregateState> AUTO
     PUBLIC PROPERTY Sequence AS LONG AUTO
     PUBLIC PROPERTY InputCount AS LONG AUTO
+    PUBLIC PROPERTY SourceRecordNumbers AS LONG[] AUTO
     INTERNAL CONSTRUCTOR(keyValues AS USUAL[], aggregates AS IList<SqlAggregateExpressionContext>, sequence AS LONG)
         SELF:KeyValues := keyValues
         SELF:Sequence := sequence
@@ -630,6 +631,15 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         NEXT
         RETURN
 
+    PRIVATE STATIC METHOD PositionAggregateGroupSources(selectCtx AS FoxSelectContext, group AS SqlAggregateGroup) AS VOID
+        IF group:SourceRecordNumbers == NULL .OR. group:SourceRecordNumbers:Length != selectCtx:TableList:Count
+            RETURN
+        ENDIF
+        FOR LOCAL sourceIndex := 0 AS INT TO selectCtx:TableList:Count - 1
+            DbGoto(group:SourceRecordNumbers[sourceIndex+1], selectCtx:TableList[sourceIndex])
+        NEXT
+        RETURN
+
     PRIVATE STATIC METHOD FindHashJoinKey(expression AS SqlExpressionContext, ;
         tableAliases AS IDictionary<STRING,STRING>, outerTable AS STRING, innerTable AS STRING, ;
         outerKey OUT SqlNameExpressionContext, innerKey OUT SqlNameExpressionContext) AS LOGIC
@@ -753,6 +763,9 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             ENDIF
             IF scalarCorrelated .AND. deferCorrelated
                 scalarExpression:Value := NULL
+                IF scalarExpression:ResultFieldDefinition == NULL
+                    scalarExpression:ResultFieldDefinition := InferCorrelatedScalarResultFieldDefinition(scalarQuery)
+                ENDIF
                 scalarExpression:IsPrepared := TRUE
                 RETURN
             ENDIF
@@ -1478,8 +1491,8 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             ValidateSelectSubqueries(derivedEntry:Value)
         NEXT
         FOREACH VAR expression IN query:SelectList
-            IF HasCorrelatedProjectionSubquery(expression)
-                THROW Error{"Correlated scalar subqueries in the SELECT list are not supported yet"}
+            IF HasCorrelatedProjectionSubquery(expression) .AND. IsAggregateSelect(query)
+                ValidateCorrelatedProjectionGrouping(expression, query)
             ENDIF
             ValidateNestedSubqueries(expression, query:TableAliases)
         NEXT
@@ -1502,6 +1515,89 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         ELSEIF expression IS SqlCompositeExpressionContext VAR compositeExpression
             FOREACH VAR child IN compositeExpression:Exprs
                 IF HasCorrelatedProjectionSubquery(child)
+                    RETURN TRUE
+                ENDIF
+            NEXT
+        ENDIF
+        RETURN FALSE
+
+    PRIVATE STATIC METHOD IsAggregateSelect(query AS FoxSelectContext) AS LOGIC
+        IF query:GroupByItems:Count > 0
+            RETURN TRUE
+        ENDIF
+        VAR aggregates := List<SqlAggregateExpressionContext>{}
+        FOREACH VAR expression IN query:SelectList
+            CollectAggregates(expression, aggregates)
+        NEXT
+        CollectAggregates(query:HavingClause, aggregates)
+        FOREACH VAR orderItem IN query:OrderByClause
+            CollectAggregates(orderItem:Expression, aggregates)
+        NEXT
+        RETURN aggregates:Count > 0
+
+    PRIVATE STATIC METHOD ValidateCorrelatedProjectionGrouping(expression AS SqlExpressionContext, ;
+            parentQuery AS FoxSelectContext) AS VOID
+        IF expression IS SqlScalarSubqueryExpressionContext VAR scalarExpression
+            VAR subquery := scalarExpression:Subquery
+            IF HasExternalSubqueryReference(subquery) .AND. ;
+               HasUngroupedOuterReference(subquery:WhereClause, subquery:TableAliases, parentQuery)
+                THROW Error{"Correlated scalar projection references must appear in GROUP BY"}
+            ENDIF
+        ELSEIF expression IS SqlParenExpressionContext VAR parenExpression
+            ValidateCorrelatedProjectionGrouping(parenExpression:Expr, parentQuery)
+        ELSEIF expression IS SqlPrefixExpressionContext VAR prefixExpression
+            ValidateCorrelatedProjectionGrouping(prefixExpression:Expr, parentQuery)
+        ELSEIF expression IS SqlBinaryExpressionContext VAR binaryExpression
+            ValidateCorrelatedProjectionGrouping(binaryExpression:Left, parentQuery)
+            ValidateCorrelatedProjectionGrouping(binaryExpression:Right, parentQuery)
+        ELSEIF expression IS SqlCompositeExpressionContext VAR compositeExpression
+            FOREACH VAR child IN compositeExpression:Exprs
+                ValidateCorrelatedProjectionGrouping(child, parentQuery)
+            NEXT
+        ENDIF
+        RETURN
+
+    PRIVATE STATIC METHOD HasUngroupedOuterReference(expression AS SqlExpressionContext, ;
+            innerAliases AS Dictionary<STRING,STRING>, parentQuery AS FoxSelectContext) AS LOGIC
+        IF expression == NULL
+            RETURN FALSE
+        ENDIF
+        IF expression IS SqlNameExpressionContext VAR nameExpression
+            IF !String.IsNullOrEmpty(nameExpression:Table) .AND. ;
+               !innerAliases:ContainsKey(nameExpression:Table) .AND. ;
+               parentQuery:TableAliases:ContainsKey(nameExpression:Table)
+                VAR resolvedReference := nameExpression:ToResolvedString(parentQuery:TableAliases)
+                FOREACH VAR groupItem IN parentQuery:GroupByItems
+                    VAR resolvedGroupExpression := ResolveGroupItem(groupItem, parentQuery)
+                    VAR resolvedGroup := resolvedGroupExpression:ToResolvedString(parentQuery:TableAliases)
+                    IF resolvedReference:Equals(resolvedGroup, StringComparison.OrdinalIgnoreCase)
+                        RETURN FALSE
+                    ENDIF
+                NEXT
+                RETURN TRUE
+            ENDIF
+            RETURN FALSE
+        ELSEIF expression IS SqlParenExpressionContext VAR parenExpression
+            RETURN HasUngroupedOuterReference(parenExpression:Expr, innerAliases, parentQuery)
+        ELSEIF expression IS SqlPrefixExpressionContext VAR prefixExpression
+            RETURN HasUngroupedOuterReference(prefixExpression:Expr, innerAliases, parentQuery)
+        ELSEIF expression IS SqlBinaryExpressionContext VAR binaryExpression
+            RETURN HasUngroupedOuterReference(binaryExpression:Left, innerAliases, parentQuery) .OR. ;
+                   HasUngroupedOuterReference(binaryExpression:Right, innerAliases, parentQuery)
+        ELSEIF expression IS SqlAggregateExpressionContext VAR aggregateExpression
+            RETURN HasUngroupedOuterReference(aggregateExpression:Argument, innerAliases, parentQuery)
+        ELSEIF expression IS SqlCompositeExpressionContext VAR compositeExpression
+            FOREACH VAR child IN compositeExpression:Exprs
+                IF HasUngroupedOuterReference(child, innerAliases, parentQuery)
+                    RETURN TRUE
+                ENDIF
+            NEXT
+        ELSEIF expression IS SqlInListExpressionContext VAR inListExpression
+            IF HasUngroupedOuterReference(inListExpression:ValueExpression, innerAliases, parentQuery)
+                RETURN TRUE
+            ENDIF
+            FOREACH VAR item IN inListExpression:Items
+                IF HasUngroupedOuterReference(item, innerAliases, parentQuery)
                     RETURN TRUE
                 ENDIF
             NEXT
@@ -1855,6 +1951,36 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         ENDIF
         RETURN NULL
 
+    PRIVATE STATIC METHOD InferCorrelatedScalarResultFieldDefinition(query AS FoxSelectContext) AS ARRAY
+        IF query:SelectList:Count != 1
+            RETURN NULL
+        ENDIF
+        LOCAL previousArea := VoDbGetSelect() AS DWORD
+        LOCAL openedTables := List<STRING>{} AS List<STRING>
+        TRY
+            FOREACH VAR tableName IN query:TableList
+                IF query:DerivedTables:ContainsKey(tableName)
+                    RETURN NULL
+                ENDIF
+                IF !Used(tableName)
+                    IF !FoxEmbeddedSQL.OpenArea(tableName)
+                        RETURN NULL
+                    ENDIF
+                    openedTables:Add(tableName)
+                ENDIF
+            NEXT
+            RETURN InferScalarProjectionFieldDefinition(query:SelectList[0], query:TableAliases)
+        FINALLY
+            FOREACH VAR tableName IN openedTables
+                IF Used(tableName)
+                    (tableName)->DbCloseArea()
+                ENDIF
+            NEXT
+            IF previousArea > 0
+                DbSelectArea(previousArea)
+            ENDIF
+        END TRY
+
     STATIC METHOD ExecuteSelect(selectCtx AS FoxSelectContext) AS VOID
         LOCAL savedArea := VoDbGetSelect() AS DWORD
         LOCAL target := IIF(String.IsNullOrEmpty(selectCtx:TargetCursor), "QUERYRESULT", AllTrim(selectCtx:TargetCursor)) AS STRING
@@ -2001,10 +2127,10 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             AAdd(tableNames, tableName)
         NEXT
 
-        // Projection subqueries are uncorrelated in this increment. Prepare them
-        // once before generating the result schema and evaluating outer rows.
+        // Prepare uncorrelated projection subqueries once. Correlated values are
+        // deferred until their current outer row or group is positioned.
         FOREACH VAR projectionExpression IN selectCtx:SelectList
-            PrepareSubqueryExpression(projectionExpression)
+            PrepareSubqueryExpression(projectionExpression, selectCtx:TableAliases, TRUE)
         NEXT
 
         LOCAL fieldList AS ARRAY
@@ -2643,12 +2769,24 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                         aggregateGroups[key] := group
                         aggregateGroupList:Add(group)
                     ENDIF
+                    IF group:InputCount == 0
+                        group:SourceRecordNumbers := LONG[]{ALen(tableNames)}
+                        FOR LOCAL sourceIndex := 1 AS INT TO ALen(tableNames)
+                            group:SourceRecordNumbers[sourceIndex] := (LONG)(tableNames[sourceIndex])->RecNo()
+                        NEXT
+                    ENDIF
                     UpdateGroup(group, aggregates, aggregateCodeBlocks)
                 ELSE
                 // Get values from current record combination
                 LOCAL sourceValues AS USUAL[]
                 sourceValues := USUAL[]{ALen(selectFieldNames)}
                 FOR LOCAL i := 1 AS DWORD TO ALen(selectFieldNames)
+                    IF selectCtx:SelectList:Count == ALen(selectFieldNames) .AND. ;
+                       HasCorrelatedProjectionSubquery(selectCtx:SelectList[(INT)i - 1])
+                        PrepareSubqueryExpression(selectCtx:SelectList[(INT)i - 1], ;
+                            selectCtx:TableAliases, FALSE, TRUE)
+                        selectExpressions[i] := selectCtx:SelectList[(INT)i - 1]:ToResolvedString(selectCtx:TableAliases)
+                    ENDIF
                     sourceValues[i] := &(selectExpressions[i])
                 NEXT
 
@@ -2785,6 +2923,11 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 ENDIF
                 LOCAL resultValues := USUAL[]{selectCtx:SelectList:Count} AS USUAL[]
                 FOR LOCAL selectIndex := 0 AS INT TO selectCtx:SelectList:Count - 1
+                    IF HasCorrelatedProjectionSubquery(selectCtx:SelectList[selectIndex])
+                        PositionAggregateGroupSources(selectCtx, group)
+                        PrepareSubqueryExpression(selectCtx:SelectList[selectIndex], ;
+                            selectCtx:TableAliases, FALSE, TRUE)
+                    ENDIF
                     resultValues[selectIndex+1] := EvaluateGroupedExpression( ;
                         selectCtx:SelectList[selectIndex], selectCtx, group, aggregates, groupExpressions)
                 NEXT

@@ -742,6 +742,7 @@ FUNCTION TestUnionFunctionality() AS VOID
 FUNCTION TestNestedSubqueryFunctionality() AS VOID
     CREATE CURSOR nested_parent (Id N(5) NULL)
     CREATE CURSOR nested_parent_duplicates (Id N(5) NULL)
+    CREATE CURSOR nested_group_parent (Bucket I, Id N(5) NULL)
     CREATE CURSOR nested_child (Id N(5) NULL, Label C(20))
     CREATE CURSOR nested_empty (Id N(5) NULL)
     CREATE CURSOR nested_repeat (Id N(5) NULL)
@@ -754,6 +755,9 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     INSERT INTO nested_parent_duplicates VALUES (2)
     INSERT INTO nested_parent_duplicates VALUES (4)
     INSERT INTO nested_parent_duplicates VALUES (NULL)
+    INSERT INTO nested_group_parent VALUES (1, 2)
+    INSERT INTO nested_group_parent VALUES (1, 4)
+    INSERT INTO nested_group_parent VALUES (2, 2)
     INSERT INTO nested_child VALUES (2, "first")
     INSERT INTO nested_child VALUES (2, "duplicate")
     INSERT INTO nested_child VALUES (4, "four")
@@ -1050,15 +1054,45 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     IF !quantifiedColumnsRejected
         THROW Exception{"Quantified subqueries should reject multiple columns"}
     ENDIF
-    LOCAL correlatedProjectionRejected := FALSE AS LOGIC
+    scalarBefore := SqlOptimizationCount("ScalarExecutions")
+    SELECT p.Id, (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id AND c.Label != "duplicate") AS ChildId ;
+        FROM nested_parent p
+    VerifyTable(5, "Correlated scalar projection should evaluate once per outer row", TRUE, ;
+        {{1, NULL}, {2, 2}, {3, NULL}, {4, 4}, {NULL, NULL}})
+    IF SqlOptimizationCount("ScalarExecutions") - scalarBefore != 5
+        THROW Exception{"Correlated scalar projection should execute once for each outer row"}
+    ENDIF
+
+    LOCAL correlatedProjectionRowsRejected := FALSE AS LOGIC
     TRY
         SELECT p.Id, (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id) AS ChildId ;
             FROM nested_parent p
     CATCH ex AS Exception
-        correlatedProjectionRejected := ex:Message:Contains("SELECT list")
+        correlatedProjectionRowsRejected := ex:Message:Contains("more than one record")
     END TRY
-    IF !correlatedProjectionRejected
-        THROW Exception{"Correlated scalar projections should be rejected in this increment"}
+    IF !correlatedProjectionRowsRejected
+        THROW Exception{"Correlated scalar projection should reject multiple matching rows"}
+    ENDIF
+
+    scalarBefore := SqlOptimizationCount("ScalarExecutions")
+    SELECT p.Id, COUNT(*) AS ParentCount, ;
+        (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id AND c.Label != "duplicate") AS ChildId ;
+        FROM nested_group_parent p GROUP BY p.Id ORDER BY p.Id
+    VerifyTable(2, "Grouped correlated scalar projection should evaluate for each group", TRUE, ;
+        {{2, 2, 2}, {4, 1, 4}})
+    IF SqlOptimizationCount("ScalarExecutions") - scalarBefore != 2
+        THROW Exception{"Grouped correlated scalar projection should execute once per group"}
+    ENDIF
+
+    LOCAL ungroupedProjectionCorrelationRejected := FALSE AS LOGIC
+    TRY
+        SELECT p.Bucket, (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id) AS ChildId ;
+            FROM nested_group_parent p GROUP BY p.Bucket
+    CATCH ex AS Exception
+        ungroupedProjectionCorrelationRejected := ex:Message:Contains("GROUP BY")
+    END TRY
+    IF !ungroupedProjectionCorrelationRejected
+        THROW Exception{"Grouped correlated projection should reject outer references that are not group keys"}
     ENDIF
     LOCAL scalarDeepRejected := FALSE AS LOGIC
     TRY
@@ -1227,6 +1261,9 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     ENDIF
     IF Used("nested_parent_duplicates")
         USE IN nested_parent_duplicates
+    ENDIF
+    IF Used("nested_group_parent")
+        USE IN nested_group_parent
     ENDIF
     IF Used("nested_child")
         USE IN nested_child

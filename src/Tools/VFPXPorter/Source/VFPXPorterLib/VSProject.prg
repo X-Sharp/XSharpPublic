@@ -289,34 +289,12 @@ CLASS VSProject
         //parent:AppendChild( dummy )
         SELF:CreateElement(parent, "Name", name + "App")
         SELF:CreateElement(parent, "ProjectGuid", SELF:GUID)
-        // Mapping MSBuild project types
-        LOCAL outputTypeStr AS STRING
-        SWITCH SELF:ProjectType
-        CASE ProjectType.ClassLibrary
-            outputTypeStr := "Library"
-
-        CASE ProjectType.Console
-            outputTypeStr := "Exe"
-
-        OTHERWISE
-            outputTypeStr := "WinExe"
-        END SWITCH
-        SELF:CreateElement(parent, "OutputType", outputTypeStr)
+        SELF:CreateElement(parent, "OutputType", SELF:GetOutputTypeName())
 
         SELF:CreateElement(parent, "AppDesignerFolder","Properties")
         SELF:CreateElement(parent, "RootNamespace", name)
 
-        // Assembly name according to type
-        LOCAL assemblyName AS STRING
-        SWITCH SELF:ProjectType
-        CASE ProjectType.ClassLibrary
-            assemblyName := Name + "Lib"
-        CASE ProjectType.Console
-            assemblyName := Name + "Console"
-        OTHERWISE
-            assemblyName := Name + "App"
-        END SWITCH
-        SELF:CreateElement(parent, "AssemblyName", assemblyName)
+        SELF:CreateElement(parent, "AssemblyName", SELF:GetAssemblyName( name ))
 
         SELF:CreateElement(parent, "TargetFrameworkVersion", SELF:FrameworkVersion)
         SELF:CreateElement(parent, "NoLogo", "true")
@@ -337,6 +315,32 @@ CLASS VSProject
     /// The classic format writes AllowOldStyleAssignments twice; it is kept so existing exports stay
     /// byte-identical. Writers that must not repeat a property should skip keys already written.
     /// </remarks>
+    /// <summary>
+    /// MSBuild OutputType for the <see cref="ProjectType" />: Library, Exe or WinExe.
+    /// </summary>
+    PROTECTED METHOD GetOutputTypeName() AS STRING
+        SWITCH SELF:ProjectType
+        CASE ProjectType.ClassLibrary
+            RETURN "Library"
+        CASE ProjectType.Console
+            RETURN "Exe"
+        OTHERWISE
+            RETURN "WinExe"
+        END SWITCH
+
+    /// <summary>
+    /// Assembly name for the <see cref="ProjectType" />: name + "Lib", "Console" or "App".
+    /// </summary>
+    PROTECTED METHOD GetAssemblyName( name AS STRING ) AS STRING
+        SWITCH SELF:ProjectType
+        CASE ProjectType.ClassLibrary
+            RETURN name + "Lib"
+        CASE ProjectType.Console
+            RETURN name + "Console"
+        OTHERWISE
+            RETURN name + "App"
+        END SWITCH
+
     PROTECTED VIRTUAL METHOD GetCompilerSwitches( name AS STRING ) AS List<KeyValuePair<STRING, STRING>>
         VAR switches := List<KeyValuePair<STRING, STRING>>{}
         switches:Add( KeyValuePair<STRING, STRING>{ "Dialect", "FoxPro" } )
@@ -514,6 +518,33 @@ CLASS Reference
                 dummy:InnerText := SELF:Include
             ENDIF
             refer:AppendChild( dummy )
+        ENDIF
+
+    /// <summary>
+    /// Write this reference for an SDK-style project: only Include, plus a HintPath for a local
+    /// DLL or an X# assembly. Framework assemblies need nothing else in SDK projects.
+    /// </summary>
+    /// <param name="parent">The ItemGroup to add to.</param>
+    /// <param name="xsharpAssembliesFolder">Folder of the installed X# assemblies (used when IsXSharp).</param>
+    METHOD AppendToSdk( parent AS XmlElement, xsharpAssembliesFolder AS STRING ) AS VOID
+        VAR xmlDoc := parent:OwnerDocument
+        VAR refer := xmlDoc:CreateElement("Reference")
+        parent:AppendChild(refer)
+        VAR referInfo := xmlDoc:CreateAttribute( "Include" )
+        IF SELF:Include:EndsWith(".dll", StringComparison.OrdinalIgnoreCase)
+            referInfo:Value := Path.GetFileNameWithoutExtension(SELF:Include)
+        ELSE
+            referInfo:Value := Path.GetFileName(SELF:Include)
+        ENDIF
+        refer:Attributes:Append( referInfo )
+        IF SELF:IsXSharp .OR. SELF:IsLocal
+            VAR hint := xmlDoc:CreateElement("HintPath")
+            IF SELF:IsXSharp
+                hint:InnerText := Path.Combine( xsharpAssembliesFolder, referInfo:Value + ".dll" )
+            ELSE
+                hint:InnerText := SELF:Include
+            ENDIF
+            refer:AppendChild( hint )
         ENDIF
 END CLASS
 

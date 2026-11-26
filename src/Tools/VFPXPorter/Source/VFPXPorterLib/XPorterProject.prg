@@ -710,6 +710,9 @@ BEGIN NAMESPACE VFPXPorterLib
                 XPorterLogger.Instance:Warning("CopyDbcOwnedTables: cannot read '" + dbcPath + "': " + e:Message)
             END TRY
 
+        // X# package version of SDK projects, resolved by the first CreateVSProject() of an export
+        PRIVATE _xsharpPackageVersion := NULL AS STRING
+
         /// <summary>
         /// Create the project object used to write one exported .xsproj, with its standard references.
         /// Single place that decides the project format.
@@ -717,9 +720,18 @@ BEGIN NAMESPACE VFPXPorterLib
         /// <param name="name">Project name.</param>
         /// <param name="isLibrary">TRUE for a class library project.</param>
         PRIVATE METHOD CreateVSProject( name AS STRING, isLibrary AS LOGIC ) AS VSProject
-            VAR prj := VSProject{ name }
-            prj:FrameworkVersion := IIF( String.IsNullOrWhiteSpace( SELF:Settings:FrameworkVersion ), ;
-                XPorterSettings.DefaultFrameworkVersion, SELF:Settings:FrameworkVersion:Trim() )
+            LOCAL prj AS VSProject
+            IF SELF:Settings:ProjectFormat == ProjectFormat.Sdk
+                // Resolved once per export (registry + Nuget folder lookup, warning on "*")
+                IF SELF:_xsharpPackageVersion == NULL
+                    SELF:_xsharpPackageVersion := SELF:Settings:ResolveXSharpPackageVersion()
+                ENDIF
+                prj := VSSDKProject{ name, SELF:Settings:TargetFramework, SELF:Settings:XSharpReferences, SELF:_xsharpPackageVersion }
+            ELSE
+                prj := VSProject{ name }
+                prj:FrameworkVersion := IIF( String.IsNullOrWhiteSpace( SELF:Settings:FrameworkVersion ), ;
+                    XPorterSettings.DefaultFrameworkVersion, SELF:Settings:FrameworkVersion:Trim() )
+            ENDIF
             prj:IsLibrary := isLibrary
             prj:AddStandardReferences()
             RETURN prj
@@ -798,6 +810,7 @@ BEGIN NAMESPACE VFPXPorterLib
         PRIVATE METHOD GenerateSolution( vfpxporterPath AS STRING ) AS VOID
             LOCAL xsLibs := NULL AS VSProject
             VAR vcxProjects := Dictionary<STRING, VSProject>{ StringComparer.OrdinalIgnoreCase }
+            SELF:_xsharpPackageVersion := NULL   // resolve again for this export
 
             // Compute solution location upfront — needed for per-library RelativePath calculation
             LOCAL solutionBasePath AS STRING

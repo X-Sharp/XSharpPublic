@@ -62,8 +62,13 @@ Format of the generated `.xsproj` and solution files. An invalid value prints a 
 | `-xsharpVersion:"<x.y.z>"` | *(installed X#)* | SDK projects only. Version of the X# packages. By default, the version of the installed X# (highest `XSharp.VFP` package in `<X# folder>\Nuget`); `*` if X# is not found. |
 | `-solutionFormat:<format>` | `Sln` | `Sln` or `Slnx` (XML solution, Visual Studio 2022 17.13 and later). |
 
-> Work in progress on branch `VFPX_SDKFormat`: the switches are parsed, but only `-frameworkVersion`
-> changes the output so far. SDK projects and `.slnx` solutions come in the next steps.
+> Work in progress on branch `VFPX_SDKFormat`: SDK projects are generated; `-solutionFormat:Slnx`
+> is not implemented yet (a `.sln` is still written).
+>
+> SDK projects reference the single `XSharp.VFP` package (it contains `XSharp.VFP.UI` and brings
+> `XSharp.RT` / `XSharp.Core` as dependencies). `InstalledAssemblies` only works for .NET Framework
+> targets: the X# installation has no .NET 8 runtime assemblies, so the package is used instead.
+> Building an exported SDK project requires X# to be installed (it provides the compiler).
 
 ### Code conversion options
 

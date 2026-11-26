@@ -207,6 +207,17 @@ PARTIAL CLASS SQLParser
         IF SELF:CompareOp()
             VAR o := SELF:ConsumeAndGet()
             LOCAL r AS SqlExpressionContext
+            IF SELF:Matches(XTokenType.ID) .AND. ;
+               (SELF:Lt1:Text:Equals("ANY", StringComparison.OrdinalIgnoreCase) .OR. ;
+                SELF:Lt1:Text:Equals("SOME", StringComparison.OrdinalIgnoreCase) .OR. ;
+                SELF:Lt1:Text:Equals("ALL", StringComparison.OrdinalIgnoreCase))
+                VAR quantifier := SELF:ConsumeAndGetText():ToUpperInvariant()
+                IF !SELF:Expect(XTokenType.LPAREN) .OR. !SELF:Matches(XTokenType.SELECT)
+                    THROW ArgumentException{"Expected SELECT subquery after " + quantifier, "SQLParser"}
+                ENDIF
+                RETURN SqlQuantifiedSubqueryExpressionContext{} { ;
+                    ValueExpression := e, Op := o, Quantifier := quantifier, Subquery := SELF:ParseSubquery(quantifier) }
+            ENDIF
             IF SELF:Matches(XTokenType.LPAREN) .AND. SELF:La2 == XTokenType.SELECT
                 SELF:Consume()
                 r := SqlScalarSubqueryExpressionContext{} { Subquery := SELF:ParseSubquery("scalar") }

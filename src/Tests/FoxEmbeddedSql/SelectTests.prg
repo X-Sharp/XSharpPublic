@@ -759,6 +759,40 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     INSERT INTO nested_child VALUES (4, "four")
     INSERT INTO nested_child VALUES (NULL, "null")
 
+    SELECT p.Id FROM nested_parent p WHERE p.Id = ANY (SELECT c.Id FROM nested_child c WHERE c.Id > 0)
+    VerifyTable(2, "ANY should match a value occurring in the subquery set", TRUE, {{2}, {4}})
+    SELECT p.Id FROM nested_parent p WHERE p.Id == SOME (SELECT c.Id FROM nested_child c WHERE c.Id > 0)
+    VerifyTable(2, "SOME should be an alias for ANY", TRUE, {{2}, {4}})
+    SELECT p.Id FROM nested_parent p WHERE p.Id < ALL (SELECT c.Id FROM nested_child c WHERE c.Id > 0)
+    VerifyTable(1, "ALL should require the comparison to match every non-NULL set value", TRUE, {{1}})
+    SELECT p.Id FROM nested_parent p WHERE p.Id >= ANY (SELECT c.Id FROM nested_child c WHERE c.Label = "four")
+    VerifyTable(1, "ANY should support ordered comparisons", TRUE, {{4}})
+    SELECT p.Id FROM nested_parent p WHERE p.Id > ANY (SELECT c.Id FROM nested_child c WHERE c.Id = 2)
+    VerifyTable(2, "ANY should support greater-than comparisons", TRUE, {{3}, {4}})
+    SELECT p.Id FROM nested_parent p WHERE p.Id <= ANY (SELECT c.Id FROM nested_child c WHERE c.Id = 2)
+    VerifyTable(2, "ANY should support less-than-or-equal comparisons", TRUE, {{1}, {2}})
+    SELECT p.Id FROM nested_parent p WHERE p.Id != ALL (SELECT c.Id FROM nested_child c WHERE c.Id = 2)
+    VerifyTable(3, "ALL should support inequality comparisons", TRUE, {{1}, {3}, {4}})
+    SELECT p.Id FROM nested_parent p WHERE p.Id = ANY (SELECT c.Id FROM nested_empty c)
+    VerifyTable(0, "ANY over an empty set should be false", TRUE)
+    SELECT p.Id FROM nested_parent p WHERE p.Id = ALL (SELECT c.Id FROM nested_empty c)
+    VerifyTable(5, "ALL over an empty set should be true, including for a NULL left operand", TRUE, ;
+        {{1}, {2}, {3}, {4}, {NULL}})
+    SELECT p.Id FROM nested_parent p WHERE p.Id = ANY (SELECT c.Id FROM nested_child c WHERE c.Label = "null")
+    VerifyTable(0, "ANY comparisons with only NULL values should be unknown", TRUE)
+    SELECT p.Id FROM nested_parent p WHERE p.Id < ANY (SELECT c.Id FROM nested_child c WHERE c.Id = 4 OR c.Label = "null")
+    VerifyTable(3, "ANY should propagate NULL only when no comparison is true", TRUE, {{1}, {2}, {3}})
+    SELECT p.Id FROM nested_parent p WHERE p.Id < ALL (SELECT c.Id FROM nested_child c WHERE c.Id = 4 OR c.Label = "null")
+    VerifyTable(0, "ALL should propagate NULL when no comparison is false", TRUE)
+    SELECT p.Id FROM nested_parent p WHERE p.Id < ANY (SELECT c.Id FROM nested_child c WHERE c.Id >= p.Id)
+    VerifyTable(3, "Correlated ANY should evaluate its set for each outer row", TRUE, {{1}, {2}, {3}})
+    SELECT p.Id FROM nested_parent p WHERE NOT (p.Id = ANY (SELECT c.Id FROM nested_child c WHERE c.Label = "null"))
+    VerifyTable(0, "NOT should preserve UNKNOWN from a quantified comparison", TRUE)
+    SELECT p.Id FROM nested_parent p WHERE p.Id = 1 OR p.Id = ANY (SELECT c.Id FROM nested_child c WHERE c.Id = 4)
+    VerifyTable(2, "Quantified comparisons should compose with OR", TRUE, {{1}, {4}})
+    SELECT p.Id FROM nested_parent p WHERE p.Id = ANY (SELECT c.Id FROM nested_child c WHERE c.Id > 0) AND EXISTS (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id)
+    VerifyTable(2, "Quantified predicates should compose with correlated EXISTS", TRUE, {{2}, {4}})
+
     LOCAL scalarBefore := SqlOptimizationCount("ScalarExecutions") AS INT
     SELECT p.Id FROM nested_parent p WHERE p.Id = (SELECT c.Id FROM nested_child c WHERE c.Label = "four")
     VerifyTable(1, "Scalar comparison should match the single value", TRUE, {{4}})
@@ -822,6 +856,15 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     END TRY
     IF !scalarColumnsRejected
         THROW Exception{"Scalar subquery should reject multiple columns"}
+    ENDIF
+    LOCAL quantifiedColumnsRejected := FALSE AS LOGIC
+    TRY
+        SELECT p.Id FROM nested_parent p WHERE p.Id >= ANY (SELECT c.Id, c.Label FROM nested_child c)
+    CATCH ex AS Exception
+        quantifiedColumnsRejected := ex:Message:Contains("one column")
+    END TRY
+    IF !quantifiedColumnsRejected
+        THROW Exception{"Quantified subqueries should reject multiple columns"}
     ENDIF
     LOCAL scalarDeepRejected := FALSE AS LOGIC
     TRY

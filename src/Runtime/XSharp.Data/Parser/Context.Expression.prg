@@ -344,6 +344,22 @@ CLASS SqlScalarSubqueryExpressionContext INHERIT SqlExpressionContext
         ENDIF
 END CLASS
 
+/// A quantified comparison against the single-column result of a SELECT.
+CLASS SqlQuantifiedSubqueryExpressionContext INHERIT SqlExpressionContext
+    PROPERTY ValueExpression AS SqlExpressionContext AUTO
+    PROPERTY Op AS XToken AUTO
+    PROPERTY Quantifier AS STRING AUTO
+    PROPERTY Subquery AS FoxSelectContext AUTO
+    PROPERTY Values AS IList<USUAL> AUTO
+
+    CONSTRUCTOR()
+        Values := NULL
+        RETURN
+
+    OVERRIDE METHOD BuildString(sb AS StringBuilder) AS VOID
+        THROW System.InvalidOperationException{"Quantified subquery predicate must be evaluated as a WHERE predicate"}
+END CLASS
+
 /// An uncorrelated SELECT used as the value set of an IN predicate.
 CLASS SqlInSubqueryExpressionContext INHERIT SqlExpressionContext
     PROPERTY ValueExpression AS SqlExpressionContext AUTO

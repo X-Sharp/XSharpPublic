@@ -97,6 +97,7 @@ INTERNAL CLASS SqlThreeValuePredicate
     INTERNAL ValueBlock AS CODEBLOCK
     INTERNAL Scalar AS SqlScalarSubqueryExpressionContext
     INTERNAL InQuery AS SqlInSubqueryExpressionContext
+    INTERNAL QuantifiedQuery AS SqlQuantifiedSubqueryExpressionContext
     INTERNAL ExistsQuery AS SqlExistsSubqueryExpressionContext
     INTERNAL Items AS List<SqlThreeValuePredicate>
     INTERNAL Negated AS LOGIC
@@ -198,6 +199,41 @@ INTERNAL CLASS SqlThreeValuePredicate
                 RETURN -1
             ENDIF
             RETURN IIF(SELF:Negated, 1, 0)
+        CASE "QUANTIFIED"
+            VAR leftValue := SELF:Left:Value()
+            LOCAL hasUnknown := FALSE AS LOGIC
+            FOREACH VAR rightValue IN SELF:QuantifiedQuery:Values
+                IF IsUnknown(leftValue) .OR. IsUnknown(rightValue)
+                    hasUnknown := TRUE
+                    LOOP
+                ENDIF
+                LOCAL matches := FALSE AS LOGIC
+                SWITCH SELF:QuantifiedQuery:Op:Type
+                CASE XTokenType.EQ
+                    matches := leftValue = rightValue
+                CASE XTokenType.EEQ
+                    matches := leftValue == rightValue
+                CASE XTokenType.NEQ
+                    matches := leftValue != rightValue
+                CASE XTokenType.LT
+                    matches := leftValue < rightValue
+                CASE XTokenType.LTE
+                    matches := leftValue <= rightValue
+                CASE XTokenType.GT
+                    matches := leftValue > rightValue
+                CASE XTokenType.GTE
+                    matches := leftValue >= rightValue
+                END SWITCH
+                IF SELF:QuantifiedQuery:Quantifier == "ALL" .AND. !matches
+                    RETURN 0
+                ELSEIF SELF:QuantifiedQuery:Quantifier != "ALL" .AND. matches
+                    RETURN 1
+                ENDIF
+            NEXT
+            IF hasUnknown
+                RETURN -1
+            ENDIF
+            RETURN IIF(SELF:QuantifiedQuery:Quantifier == "ALL", 1, 0)
         CASE "BOOL"
             VAR boolValue := SELF:Value()
             IF IsUnknown(boolValue)
@@ -861,6 +897,63 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             END TRY
             RETURN
         ENDIF
+        IF expression IS SqlQuantifiedSubqueryExpressionContext VAR quantifiedExpression
+            VAR quantifiedQuery := quantifiedExpression:Subquery
+            LOCAL isQuantifiedCorrelated := HasExternalSubqueryReference(quantifiedQuery) AS LOGIC
+            IF refreshCorrelated .AND. !isQuantifiedCorrelated .AND. quantifiedExpression:Values != NULL
+                RETURN
+            ENDIF
+            IF isQuantifiedCorrelated
+                IF outerTableAliases == NULL .OR. HasUnsupportedSubqueryCorrelation(quantifiedQuery, outerTableAliases)
+                    THROW Error{"Only references to the immediate outer query in a quantified subquery WHERE clause are supported"}
+                ENDIF
+                IF deferCorrelated
+                    quantifiedExpression:Values := List<USUAL>{}
+                    RETURN
+                ENDIF
+            ENDIF
+            IF quantifiedQuery:SelectList:Count != 1
+                THROW Error{"Quantified subquery must return exactly one column"}
+            ENDIF
+            LOCAL quantifiedAlias := "SQ" + Guid.NewGuid():ToString("N"):Substring(0, 8) AS STRING
+            LOCAL previousQuantifiedTarget := quantifiedQuery:TargetCursor AS STRING
+            quantifiedQuery:TargetCursor := quantifiedAlias
+            VAR savedQuantifiedArea := VoDbGetSelect()
+            LOCAL addedQuantifiedAliases := List<STRING>{} AS List<STRING>
+            TRY
+                IF isQuantifiedCorrelated
+                    FOREACH VAR outerAlias IN outerTableAliases
+                        IF !quantifiedQuery:TableAliases:ContainsKey(outerAlias:Key)
+                            quantifiedQuery:TableAliases[outerAlias:Key] := outerAlias:Value
+                            addedQuantifiedAliases:Add(outerAlias:Key)
+                        ENDIF
+                    NEXT
+                ENDIF
+                ExecuteSelect(quantifiedQuery)
+                IF !Used(quantifiedAlias) .OR. (quantifiedAlias)->FCount() != 1
+                    THROW Error{"Quantified subquery must return exactly one column"}
+                ENDIF
+                VAR quantifiedValues := List<USUAL>{}
+                (quantifiedAlias)->DbGoTop()
+                DO WHILE !(quantifiedAlias)->Eof()
+                    quantifiedValues:Add((USUAL)(quantifiedAlias)->FieldGet(1))
+                    (quantifiedAlias)->DbSkip(1)
+                ENDDO
+                quantifiedExpression:Values := quantifiedValues
+            FINALLY
+                quantifiedQuery:TargetCursor := previousQuantifiedTarget
+                FOREACH VAR outerAlias IN addedQuantifiedAliases
+                    quantifiedQuery:TableAliases:Remove(outerAlias)
+                NEXT
+                IF Used(quantifiedAlias)
+                    (quantifiedAlias)->DbCloseArea()
+                ENDIF
+                IF savedQuantifiedArea > 0
+                    DbSelectArea(savedQuantifiedArea)
+                ENDIF
+            END TRY
+            RETURN
+        ENDIF
         IF expression IS SqlParenExpressionContext VAR parenExpression
             PrepareSubqueryExpression(parenExpression:Expr, outerTableAliases, deferCorrelated, refreshCorrelated)
         ELSEIF expression IS SqlPrefixExpressionContext VAR prefixExpression
@@ -884,6 +977,15 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             IF HasExternalSubqueryReference(scalarExpression:Subquery)
                 IF HasUnsupportedSubqueryCorrelation(scalarExpression:Subquery, tableAliases)
                     THROW Error{"Only references to the immediate outer query in a scalar subquery WHERE clause are supported"}
+                ENDIF
+                RETURN TRUE
+            ENDIF
+            RETURN FALSE
+        ENDIF
+        IF expression IS SqlQuantifiedSubqueryExpressionContext VAR quantifiedExpression
+            IF HasExternalSubqueryReference(quantifiedExpression:Subquery)
+                IF HasUnsupportedSubqueryCorrelation(quantifiedExpression:Subquery, tableAliases)
+                    THROW Error{"Only references to the immediate outer query in a quantified subquery WHERE clause are supported"}
                 ENDIF
                 RETURN TRUE
             ENDIF
@@ -983,7 +1085,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
     // Validate lexical scopes before correlation aliases are temporarily added
     // to a subquery. Otherwise a grandparent can appear to be its parent.
     PRIVATE STATIC METHOD ContainsScalarSubquery(expression AS SqlExpressionContext) AS LOGIC
-        IF expression IS SqlScalarSubqueryExpressionContext
+        IF expression IS SqlScalarSubqueryExpressionContext .OR. expression IS SqlQuantifiedSubqueryExpressionContext
             RETURN TRUE
         ELSEIF expression IS SqlParenExpressionContext VAR paren
             RETURN ContainsScalarSubquery(paren:Expr)
@@ -1092,7 +1194,9 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
 
     PRIVATE STATIC METHOD HasUnsafeCorrelatedCandidate(expression AS SqlExpressionContext, ;
         outerAliases AS Dictionary<STRING,STRING>) AS LOGIC
-        IF expression IS SqlScalarSubqueryExpressionContext VAR scalarExpression
+        IF expression IS SqlQuantifiedSubqueryExpressionContext
+            RETURN TRUE
+        ELSEIF expression IS SqlScalarSubqueryExpressionContext VAR scalarExpression
             RETURN HasExternalSubqueryReference(scalarExpression:Subquery) .AND. ;
                    !IsSafeCorrelatedCandidate(scalarExpression:Subquery, outerAliases, TRUE)
         ELSEIF expression IS SqlExistsSubqueryExpressionContext VAR existsExpression
@@ -1278,6 +1382,11 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             node:InQuery := inExpression
             node:Negated := inExpression:IsNegated
             node:Left := BuildThreeValueOperand(inExpression:ValueExpression, aliases)
+        ELSEIF expression IS SqlQuantifiedSubqueryExpressionContext VAR quantifiedExpression
+            node:Kind := "QUANTIFIED"
+            node:QuantifiedQuery := quantifiedExpression
+            node:Op := quantifiedExpression:Op:Type
+            node:Left := BuildThreeValueOperand(quantifiedExpression:ValueExpression, aliases)
         ELSEIF expression IS SqlInListExpressionContext VAR inList
             node:Kind := "IN"
             node:Negated := inList:IsNegated
@@ -1307,6 +1416,9 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         ELSEIF expression IS SqlInSubqueryExpressionContext VAR inExpression
             ValidateNestedSubqueries(inExpression:ValueExpression, parentAliases)
             child := inExpression:Subquery
+        ELSEIF expression IS SqlQuantifiedSubqueryExpressionContext VAR quantifiedExpression
+            ValidateNestedSubqueries(quantifiedExpression:ValueExpression, parentAliases)
+            child := quantifiedExpression:Subquery
         ELSEIF expression IS SqlParenExpressionContext VAR paren
             ValidateNestedSubqueries(paren:Expr, parentAliases)
         ELSEIF expression IS SqlPrefixExpressionContext VAR prefix
@@ -1483,8 +1595,8 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         IF expression == NULL
             RETURN FALSE
         ENDIF
-        IF expression IS SqlInSubqueryExpressionContext .OR. expression IS SqlExistsSubqueryExpressionContext .OR. ;
-           expression IS SqlScalarSubqueryExpressionContext
+        IF expression IS SqlInSubqueryExpressionContext .OR. expression IS SqlQuantifiedSubqueryExpressionContext .OR. ;
+           expression IS SqlExistsSubqueryExpressionContext .OR. expression IS SqlScalarSubqueryExpressionContext
             RETURN TRUE
         ELSEIF expression IS SqlParenExpressionContext VAR parenExpression
             RETURN ContainsInSubqueryExpression(parenExpression:Expr)

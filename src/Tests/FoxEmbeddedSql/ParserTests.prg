@@ -151,6 +151,16 @@ FUNCTION TestSelectParsing() AS VOID
        !(scalarComparison:Right IS SqlScalarSubqueryExpressionContext)
         THROW Exception{"Scalar comparison should parse into a dedicated subquery expression"}
     ENDIF
+    FOREACH VAR quantifier IN <STRING>{"ANY", "SOME", "ALL"}
+        VAR quantifiedParser := SQLParser{XTokenList{XSqlLexer{"SELECT a.Id FROM Parent a WHERE a.Id >= " + quantifier + " (SELECT b.Id FROM Child b)"}:AllTokens()}}
+        LOCAL quantifiedCtx AS FoxSelectContext
+        IF !quantifiedParser:ParseSelectStatement(OUT quantifiedCtx) .OR. ;
+           !(quantifiedCtx:WhereClause IS SqlQuantifiedSubqueryExpressionContext VAR quantifiedExpression) .OR. ;
+           quantifiedExpression:Quantifier != quantifier .OR. quantifiedExpression:Op:Type != XTokenType.GTE .OR. ;
+           quantifiedExpression:Subquery:SelectList:Count != 1
+            THROW Exception{"Quantified comparison should preserve its operator and subquery: " + quantifier}
+        ENDIF
+    NEXT
     VAR existsLexer := XSqlLexer{"SELECT a.Id FROM Parent a WHERE NOT EXISTS (SELECT b.Id FROM Child b WHERE b.Id = a.Id)"}
     VAR existsParser := SQLParser{XTokenList{existsLexer:AllTokens()}}
     LOCAL existsCtx AS FoxSelectContext
@@ -177,7 +187,9 @@ FUNCTION TestSelectParsing() AS VOID
         "SELECT Id FROM Parent WHERE EXISTS (SELECT Id FROM Child INTO CURSOR c WHERE Id = 1)", ;
         "SELECT Id FROM Parent WHERE Id IN (SELECT Id FROM Child INTO CURSOR c WHERE Id = 1)", ;
         "SELECT Id FROM Parent WHERE Id = (SELECT Id FROM Child", ;
-        "SELECT Id FROM Parent WHERE Id = (SELECT Id FROM Child INTO CURSOR c WHERE Id = 1)" }
+        "SELECT Id FROM Parent WHERE Id = (SELECT Id FROM Child INTO CURSOR c WHERE Id = 1)", ;
+        "SELECT Id FROM Parent WHERE Id >= ANY ()", ;
+        "SELECT Id FROM Parent WHERE Id >= SOME SELECT Id FROM Child" }
         LOCAL rejected := FALSE AS LOGIC
         TRY
             VAR malformedParser := SQLParser{XTokenList{XSqlLexer{malformed}:AllTokens()}}

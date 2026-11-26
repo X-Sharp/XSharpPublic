@@ -162,7 +162,12 @@ CLASS DBFVFP INHERIT DBFCDX IMPLEMENTS IVfpLinked
             ENDIF
             nullFld:Length := (BYTE) nLen
         ENDIF
-        SELF:_NullCount := NullCount
+        // AddField assigns each nullable/variable-length bit while the base
+        // CreateFields implementation builds the field list. NullCount above
+        // is only used to size the _NullFlags field; starting the running
+        // counter here at the total would offset every assigned bit and can
+        // make it exceed the allocated bitmap.
+        SELF:_NullCount := 0
         lOk := super:CreateFields(aFields)
         RETURN lOk
 

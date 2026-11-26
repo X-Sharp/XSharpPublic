@@ -758,6 +758,8 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     CREATE CURSOR nested_key_child (Id I NULL, Code C(5) NULL, Amount Y NULL)
     CREATE CURSOR nested_temporal_parent (Id I NULL, Dte D, Stamp T, Active L NULL)
     CREATE CURSOR nested_temporal_child (Id I NULL, Dte D, Stamp T, Active L NULL)
+    CREATE CURSOR nested_nullable_temporal_parent (Id I NULL, Dte D NULL, Stamp T NULL, Active L NULL, Extra L NULL)
+    CREATE CURSOR nested_nullable_temporal_child (Id I NULL, Dte D NULL, Stamp T NULL, Active L NULL, Extra L NULL)
     CREATE CURSOR nested_binary_parent (Id I, DoubleKey B, FloatKey F(10,2))
     CREATE CURSOR nested_binary_child (DoubleKey B, FloatKey F(12,3), OutVal I)
     INSERT INTO nested_parent VALUES (1)
@@ -821,6 +823,16 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     InsertTemporalKeyRow("nested_temporal_child", 1, DateTime{2024, 1, 2}, DateTime{2024, 1, 2, 12, 34, 56}, TRUE)
     InsertTemporalKeyRow("nested_temporal_child", 1, DateTime{2024, 1, 2}, DateTime{2024, 1, 2, 12, 34, 56}, FALSE)
     InsertTemporalKeyRow("nested_temporal_child", 2, DateTime{2024, 1, 3}, DateTime{2024, 1, 3, 12, 34, 56}, FALSE)
+    InsertTemporalKeyRow("nested_nullable_temporal_parent", 1, DateTime{2024, 1, 2}, ;
+        DateTime{2024, 1, 2, 12, 34, 56}, TRUE)
+    FieldPut(5, TRUE)
+    InsertTemporalKeyRow("nested_nullable_temporal_parent", 2, NULL, NULL, TRUE)
+    FieldPut(5, NULL)
+    InsertTemporalKeyRow("nested_nullable_temporal_child", 1, DateTime{2024, 1, 2}, ;
+        DateTime{2024, 1, 2, 12, 34, 56}, TRUE)
+    FieldPut(5, TRUE)
+    InsertTemporalKeyRow("nested_nullable_temporal_child", 2, NULL, NULL, TRUE)
+    FieldPut(5, NULL)
     INSERT INTO nested_binary_parent VALUES (1, 1.25, 1.25)
     INSERT INTO nested_binary_parent VALUES (2, 1.25, 1.25)
     INSERT INTO nested_binary_parent VALUES (3, -2.5, -2.5)
@@ -1468,6 +1480,27 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
         {{1}, {1}, {1}, {2}})
 
     correlatedPlansBefore := SqlOptimizationCount("CorrelatedInPlans")
+    SELECT p.Id FROM nested_nullable_temporal_parent p WHERE p.Id IN ;
+        (SELECT c.Id FROM nested_nullable_temporal_child c WHERE c.Id = p.Id AND ;
+            c.Dte = p.Dte AND c.Stamp = p.Stamp AND c.Active = p.Active AND c.Extra = p.Extra)
+    VerifySqlOptimization("CorrelatedInPlans", correlatedPlansBefore)
+    VerifyTable(1, "Nullable date/time correlation should preserve NULL comparison semantics", TRUE, {{1}})
+
+    SELECT d.Id, d.Dte, d.Stamp, d.Active, d.Extra FROM ;
+        (SELECT n.Id, n.Dte, n.Stamp, n.Active, n.Extra FROM nested_nullable_temporal_parent n) d ;
+        ORDER BY d.Id INTO CURSOR NullableDateProjection
+    VerifyTable(2, "Derived table materialization should preserve nullable date/time values", FALSE)
+    GO TOP
+    IF IsNull(FieldGet(2)) .OR. IsNull(FieldGet(3))
+        THROW Exception{"Non-NULL date/time values became NULL in derived table materialization"}
+    ENDIF
+    SKIP
+    IF !IsNull(FieldGet(2)) .OR. !IsNull(FieldGet(3))
+        THROW Exception{"NULL date/time values were not preserved in derived table materialization"}
+    ENDIF
+    USE IN NullableDateProjection
+
+    correlatedPlansBefore := SqlOptimizationCount("CorrelatedInPlans")
     SELECT p.Id FROM nested_binary_parent p WHERE p.Id IN ;
         (SELECT c.OutVal FROM nested_binary_child c WHERE c.OutVal = p.Id AND ;
             c.DoubleKey = p.DoubleKey AND c.FloatKey = p.FloatKey)
@@ -1551,6 +1584,12 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     ENDIF
     IF Used("nested_temporal_child")
         USE IN nested_temporal_child
+    ENDIF
+    IF Used("nested_nullable_temporal_parent")
+        USE IN nested_nullable_temporal_parent
+    ENDIF
+    IF Used("nested_nullable_temporal_child")
+        USE IN nested_nullable_temporal_child
     ENDIF
     IF Used("nested_binary_parent")
         USE IN nested_binary_parent

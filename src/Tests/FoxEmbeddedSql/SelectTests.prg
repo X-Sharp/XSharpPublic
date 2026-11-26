@@ -744,6 +744,7 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     CREATE CURSOR nested_parent_duplicates (Id N(5) NULL)
     CREATE CURSOR nested_child (Id N(5) NULL, Label C(20))
     CREATE CURSOR nested_empty (Id N(5) NULL)
+    CREATE CURSOR nested_repeat (Id N(5) NULL)
     INSERT INTO nested_parent VALUES (1)
     INSERT INTO nested_parent VALUES (2)
     INSERT INTO nested_parent VALUES (3)
@@ -772,14 +773,58 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     VerifyTable(3, "Correlated EXISTS should support inequalities", TRUE, {{1}, {2}, {3}})
     SELECT p.Id FROM nested_parent p WHERE EXISTS (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id AND EXISTS (SELECT e.Id FROM nested_empty e))
     VerifyTable(0, "Nested EXISTS should respect an empty inner result", TRUE)
-    SELECT Id FROM nested_parent WHERE EXISTS (SELECT COUNT(*) FROM nested_empty)
-    VerifyTable(5, "EXISTS should see the aggregate result row for an empty input", TRUE)
+    LOCAL existsAggregateRejected := FALSE AS LOGIC
+    TRY
+        SELECT Id FROM nested_parent WHERE EXISTS (SELECT COUNT(*) FROM nested_empty)
+    CATCH ex AS Exception
+        existsAggregateRejected := TRUE
+    END TRY
+    IF !existsAggregateRejected
+        THROW Exception{"VFP rejects aggregate SELECT lists in EXISTS subqueries"}
+    ENDIF
+    SELECT Id FROM nested_parent WHERE EXISTS (SELECT c.Id FROM nested_child c GROUP BY c.Id)
+    VerifyTable(5, "EXISTS should see grouped subquery results", TRUE)
+    SELECT p.Id FROM nested_parent p WHERE EXISTS (SELECT p.Id FROM nested_child p WHERE p.Id = 2)
+    VerifyTable(5, "An inner alias should shadow the outer alias", TRUE)
     LOCAL existsBefore := SqlOptimizationCount("ExistsExecutions") AS INT
     SELECT p.Id FROM nested_parent p WHERE EXISTS (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id) AND EXISTS (SELECT Id FROM nested_child)
     VerifyTable(2, "Mixed correlated and uncorrelated EXISTS predicates should match", TRUE, {{2}, {4}})
     IF SqlOptimizationCount("ExistsExecutions") - existsBefore != 6
         THROW Exception{"Uncorrelated EXISTS should execute once per outer query"}
     ENDIF
+
+    SELECT p.Id FROM nested_parent p WHERE p.Id IN (SELECT c.Id FROM nested_child c) AND NOT EXISTS (SELECT e.Id FROM nested_empty e)
+    VerifyTable(2, "Mixed IN and EXISTS predicates should match", TRUE, {{2}, {4}})
+    SELECT Id FROM nested_parent WHERE EXISTS (SELECT Id FROM nested_repeat)
+    VerifyTable(0, "Empty EXISTS should be false before insertion", TRUE)
+    INSERT INTO nested_repeat VALUES (7)
+    SELECT Id FROM nested_parent WHERE EXISTS (SELECT Id FROM nested_repeat)
+    VerifyTable(5, "EXISTS should be reevaluated after data changes", TRUE)
+
+    LOCAL deepCorrelationRejected := FALSE AS LOGIC
+    TRY
+        SELECT p.Id FROM nested_parent p WHERE EXISTS (SELECT c.Id FROM nested_child c WHERE EXISTS (SELECT e.Id FROM nested_empty e WHERE e.Id = p.Id))
+    CATCH ex AS Exception
+        deepCorrelationRejected := ex:Message:Contains("immediate outer query")
+    END TRY
+    IF !deepCorrelationRejected
+        THROW Exception{"Grandparent correlation should be rejected clearly"}
+    ENDIF
+
+    SELECT nested_parent
+    LOCAL callerArea := VoDbGetSelect() AS DWORD
+    LOCAL failureRejected := FALSE AS LOGIC
+    TRY
+        SELECT p.Id FROM nested_parent p WHERE EXISTS (SELECT c.Id FROM nested_child c WHERE c.Id IN (SELECT Id, Label FROM nested_child))
+    CATCH ex AS Exception
+        failureRejected := TRUE
+    END TRY
+    IF !failureRejected .OR. VoDbGetSelect() != callerArea .OR. Used("QUERYRESULT")
+        THROW Exception{"Failed inner SELECT should restore the workarea and close its result"}
+    ENDIF
+
+    SELECT p.Id FROM nested_parent p WHERE EXISTS (SELECT c.Id FROM nested_child c WHERE EXISTS (SELECT e.Id FROM nested_parent e WHERE e.Id = c.Id))
+    VerifyTable(5, "Innermost correlation should resolve the immediate parent", TRUE)
 
     SELECT Id FROM nested_parent WHERE Id IN (SELECT Id FROM nested_child)
     VerifyTable(2, "IN subquery should return matching outer values once", TRUE, {{2}, {4}})
@@ -850,6 +895,9 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     ENDIF
     IF Used("nested_empty")
         USE IN nested_empty
+    ENDIF
+    IF Used("nested_repeat")
+        USE IN nested_repeat
     ENDIF
     RETURN
 

@@ -163,6 +163,23 @@ FUNCTION TestSelectParsing() AS VOID
     IF !badExistsRejected
         THROW Exception{"Unclosed EXISTS subquery should be rejected"}
     ENDIF
+    FOREACH VAR malformed IN <STRING>{ ;
+        "SELECT Id FROM Parent WHERE EXISTS ()", ;
+        "SELECT Id FROM Parent WHERE EXISTS SELECT Id FROM Child", ;
+        "SELECT Id FROM Parent WHERE EXISTS (SELECT Id FROM Child INTO CURSOR c WHERE Id = 1)", ;
+        "SELECT Id FROM Parent WHERE Id IN (SELECT Id FROM Child INTO CURSOR c WHERE Id = 1)" }
+        LOCAL rejected := FALSE AS LOGIC
+        TRY
+            VAR malformedParser := SQLParser{XTokenList{XSqlLexer{malformed}:AllTokens()}}
+            LOCAL malformedCtx AS FoxSelectContext
+            rejected := !malformedParser:ParseSelectStatement(OUT malformedCtx)
+        CATCH ex AS Exception
+            rejected := TRUE
+        END TRY
+        IF !rejected
+            THROW Exception{"Malformed subquery should be rejected: " + malformed}
+        ENDIF
+    NEXT
     VAR inParser := SQLParser{XTokenList{inLexer:AllTokens()}}
     LOCAL inCtx AS FoxSelectContext
     IF !inParser:ParseSelectStatement(OUT inCtx) .OR. ;

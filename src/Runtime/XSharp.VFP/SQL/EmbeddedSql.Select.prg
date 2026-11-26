@@ -555,6 +555,13 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         ENDIF
         IF expression IS SqlExistsSubqueryExpressionContext VAR existsExpression
             VAR existsQuery := existsExpression:Subquery
+            VAR existsAggregates := List<SqlAggregateExpressionContext>{}
+            FOREACH VAR selectedExpression IN existsQuery:SelectList
+                CollectAggregates(selectedExpression, existsAggregates)
+            NEXT
+            IF existsAggregates:Count > 0
+                THROW Error{"Aggregate expressions in EXISTS subqueries are not supported"}
+            ENDIF
             LOCAL existsCorrelated := HasExternalSubqueryReference(existsQuery) AS LOGIC
             IF refreshCorrelated .AND. !existsCorrelated .AND. existsExpression:IsPrepared
                 RETURN
@@ -569,9 +576,10 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 RETURN
             ENDIF
             LOCAL existsAlias := "SQ" + Guid.NewGuid():ToString("N"):Substring(0, 8) AS STRING
-            LOCAL savedExistsArea := DbSelect() AS DWORD
+            LOCAL savedExistsArea := VoDbGetSelect() AS DWORD
             LOCAL addedExistsAliases := List<STRING>{} AS List<STRING>
             LOCAL previousTarget := existsQuery:TargetCursor AS STRING
+            existsExpression:IsPrepared := FALSE
             TRY
                 existsQuery:TargetCursor := existsAlias
                 IF existsCorrelated
@@ -620,8 +628,9 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 THROW Error{"IN subquery must return exactly one column"}
             ENDIF
             LOCAL alias := "SQ" + Guid.NewGuid():ToString("N"):Substring(0, 8) AS STRING
+            LOCAL previousInTarget := subquery:TargetCursor AS STRING
             subquery:TargetCursor := alias
-            VAR savedArea := DbSelect()
+            VAR savedArea := VoDbGetSelect()
             LOCAL addedOuterAliases := List<STRING>{} AS List<STRING>
             TRY
                 // Correlated names are lexical references, not additional FROM
@@ -650,6 +659,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 ENDDO
                 inExpression:Values := values
             FINALLY
+                subquery:TargetCursor := previousInTarget
                 FOREACH VAR outerAlias IN addedOuterAliases
                     subquery:TableAliases:Remove(outerAlias)
                 NEXT
@@ -772,6 +782,51 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         NEXT
         RETURN FALSE
 
+    // Validate lexical scopes before correlation aliases are temporarily added
+    // to a subquery. Otherwise a grandparent can appear to be its parent.
+    PRIVATE STATIC METHOD ValidateNestedSubqueries(expression AS SqlExpressionContext, ;
+        parentAliases AS Dictionary<STRING,STRING>) AS VOID
+        IF expression == NULL
+            RETURN
+        ENDIF
+        LOCAL child := NULL AS FoxSelectContext
+        IF expression IS SqlExistsSubqueryExpressionContext VAR existsExpression
+            child := existsExpression:Subquery
+        ELSEIF expression IS SqlInSubqueryExpressionContext VAR inExpression
+            ValidateNestedSubqueries(inExpression:ValueExpression, parentAliases)
+            child := inExpression:Subquery
+        ELSEIF expression IS SqlParenExpressionContext VAR paren
+            ValidateNestedSubqueries(paren:Expr, parentAliases)
+        ELSEIF expression IS SqlPrefixExpressionContext VAR prefix
+            ValidateNestedSubqueries(prefix:Expr, parentAliases)
+        ELSEIF expression IS SqlBinaryExpressionContext VAR binary
+            ValidateNestedSubqueries(binary:Left, parentAliases)
+            ValidateNestedSubqueries(binary:Right, parentAliases)
+        ELSEIF expression IS SqlCompositeExpressionContext VAR composite
+            FOREACH VAR item IN composite:Exprs
+                ValidateNestedSubqueries(item, parentAliases)
+            NEXT
+        ELSEIF expression IS SqlInListExpressionContext VAR inList
+            ValidateNestedSubqueries(inList:ValueExpression, parentAliases)
+            FOREACH VAR item IN inList:Items
+                ValidateNestedSubqueries(item, parentAliases)
+            NEXT
+        ENDIF
+        IF child != NULL
+            IF HasExternalSubqueryReference(child) .AND. HasUnsupportedSubqueryCorrelation(child, parentAliases)
+                THROW Error{"Only references to the immediate outer query in a subquery WHERE clause are supported"}
+            ENDIF
+            ValidateSelectSubqueries(child)
+        ENDIF
+        RETURN
+
+    PRIVATE STATIC METHOD ValidateSelectSubqueries(query AS FoxSelectContext) AS VOID
+        ValidateNestedSubqueries(query:WhereClause, query:TableAliases)
+        FOREACH VAR branch IN query:UnionBranches
+            ValidateSelectSubqueries(branch)
+        NEXT
+        RETURN
+
     PRIVATE STATIC METHOD TryCreateCorrelatedInPlan(inExpression AS SqlInSubqueryExpressionContext, ;
         outerTableAliases AS Dictionary<STRING,STRING>, outerTableName AS STRING) AS SqlCorrelatedInPlan
         VAR subquery := inExpression:Subquery
@@ -826,7 +881,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         LOCAL innerAlias := "SQ" + Guid.NewGuid():ToString("N"):Substring(0, 8) AS STRING
         VAR innerSelect := CopySelectBranch(subquery, innerAlias)
         innerSelect:WhereClause := innerOnlyWhere
-        LOCAL savedArea := DbSelect() AS DWORD
+        LOCAL savedArea := VoDbGetSelect() AS DWORD
         VAR innerValues := Dictionary<USUAL,BYTE>{}
         TRY
             ExecuteSelect(innerSelect)
@@ -1010,9 +1065,28 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         ENDIF
         RETURN FALSE
 
-    STATIC METHOD ExecuteSelect(selectCtx as FoxSelectContext) AS VOID
+    STATIC METHOD ExecuteSelect(selectCtx AS FoxSelectContext) AS VOID
+        LOCAL savedArea := VoDbGetSelect() AS DWORD
+        LOCAL target := IIF(String.IsNullOrEmpty(selectCtx:TargetCursor), "QUERYRESULT", AllTrim(selectCtx:TargetCursor)) AS STRING
+        LOCAL targetAlreadyOpen := Used(target) AS LOGIC
+        TRY
+            ExecuteSelectCore(selectCtx)
+        CATCH
+            IF !targetAlreadyOpen .AND. Used(target)
+                (target)->DbCloseArea()
+            ENDIF
+            IF savedArea > 0
+                DbSelectArea(savedArea)
+            ENDIF
+            THROW
+        END TRY
+        RETURN
+
+    PRIVATE STATIC METHOD ExecuteSelectCore(selectCtx as FoxSelectContext) AS VOID
         // Implementation of SELECT execution
         // This will handle opening tables, selecting records, and returning results
+
+        ValidateSelectSubqueries(selectCtx)
 
         IF selectCtx:UnionBranches != NULL .AND. selectCtx:UnionBranches:Count > 0
             ExecuteUnionSelect(selectCtx)

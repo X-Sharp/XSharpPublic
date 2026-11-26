@@ -125,12 +125,18 @@ FUNCTION __SqlCreateTable(sCommand as STRING) AS LOGIC
     THROW Error{"Syntax error in command: "+sCommand}
 
 FUNCTION __SqlSelect(sCommand as STRING) AS VOID
-    // Parse the SELECT command using the SQL parser
-    var oContext := FoxEmbeddedSQL.ParseSqlSelect(sCommand)
-    if (oContext != NULL)
-        // Execute the SELECT statement based on the parsed context
-        FoxEmbeddedSQL.ExecuteSelect(oContext)
-    endif
+    LOCAL savedArea := VoDbGetSelect() AS DWORD
+    TRY
+        var oContext := FoxEmbeddedSQL.ParseSqlSelect(sCommand)
+        if (oContext != NULL)
+            FoxEmbeddedSQL.ExecuteSelect(oContext)
+        endif
+    CATCH
+        IF savedArea > 0
+            DbSelectArea(savedArea)
+        ENDIF
+        THROW
+    END TRY
     RETURN
 
 

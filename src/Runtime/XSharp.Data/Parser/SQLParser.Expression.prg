@@ -137,33 +137,40 @@ PARTIAL CLASS SQLParser
         ENDIF
         RETURN e
 
+    // The opening parenthesis has already been consumed by the caller.
+    PRIVATE METHOD ParseSubquery(predicateName AS STRING) AS FoxSelectContext
+        IF !SELF:Matches(XTokenType.SELECT)
+            THROW ArgumentException{"Expected SELECT in " + predicateName + " subquery", "SQLParser"}
+        ENDIF
+        VAR subqueryTokens := List<XToken>{}
+        LOCAL depth := 1 AS LONG
+        DO WHILE !SELF:Eoi()
+            IF SELF:La1 == XTokenType.LPAREN
+                depth++
+            ELSEIF SELF:La1 == XTokenType.RPAREN
+                depth--
+                IF depth == 0
+                    EXIT
+                ENDIF
+            ENDIF
+            subqueryTokens:Add(SELF:ConsumeAndGet())
+        ENDDO
+        IF depth != 0 .OR. !SELF:Expect(XTokenType.RPAREN)
+            THROW ArgumentException{"Unclosed " + predicateName + " subquery", "SQLParser"}
+        ENDIF
+        VAR subParser := SQLParser{XTokenList{subqueryTokens}}
+        LOCAL subquery AS FoxSelectContext
+        IF !subParser:ParseSelectStatement(OUT subquery) .OR. !subParser:Eoi()
+            THROW ArgumentException{"Invalid " + predicateName + " subquery: " + subParser:Error, "SQLParser"}
+        ENDIF
+        RETURN subquery
+
     PRIVATE METHOD ParseCompareExpression() AS SqlExpressionContext
         IF SELF:Expect(XTokenType.EXISTS)
-            IF !SELF:Expect(XTokenType.LPAREN) .OR. !SELF:Matches(XTokenType.SELECT)
-                THROW ArgumentException{"Expected SELECT in EXISTS parentheses", "SQLParser"}
+            IF !SELF:Expect(XTokenType.LPAREN)
+                THROW ArgumentException{"Expected opening parenthesis after EXISTS", "SQLParser"}
             ENDIF
-            VAR existsTokens := List<XToken>{}
-            LOCAL existsDepth := 1 AS LONG
-            DO WHILE !SELF:Eoi()
-                IF SELF:La1 == XTokenType.LPAREN
-                    existsDepth++
-                ELSEIF SELF:La1 == XTokenType.RPAREN
-                    existsDepth--
-                    IF existsDepth == 0
-                        EXIT
-                    ENDIF
-                ENDIF
-                existsTokens:Add(SELF:ConsumeAndGet())
-            ENDDO
-            IF existsDepth != 0 .OR. !SELF:Expect(XTokenType.RPAREN)
-                THROW ArgumentException{"Unclosed EXISTS subquery", "SQLParser"}
-            ENDIF
-            VAR existsParser := SQLParser{XTokenList{existsTokens}}
-            LOCAL existsQuery AS FoxSelectContext
-            IF !existsParser:ParseSelectStatement(OUT existsQuery)
-                THROW ArgumentException{"Invalid EXISTS subquery: " + existsParser:Error, "SQLParser"}
-            ENDIF
-            RETURN SqlExistsSubqueryExpressionContext{} { Subquery := existsQuery }
+            RETURN SqlExistsSubqueryExpressionContext{} { Subquery := SELF:ParseSubquery("EXISTS") }
         ENDIF
         VAR e := SELF:ParseExpressionTerm()
         LOCAL isNegated := FALSE AS LOGIC
@@ -192,31 +199,7 @@ PARTIAL CLASS SQLParser
                 ENDDO
                 RETURN listExpression
             ENDIF
-            VAR subqueryTokens := List<XToken>{}
-            LOCAL depth := 1 AS LONG
-            DO WHILE !SELF:Eoi()
-                IF SELF:La1 == XTokenType.LPAREN
-                    depth++
-                ELSEIF SELF:La1 == XTokenType.RPAREN
-                    depth--
-                    IF depth == 0
-                        EXIT
-                    ENDIF
-                ENDIF
-                subqueryTokens:Add(SELF:ConsumeAndGet())
-            ENDDO
-            IF depth != 0 .OR. subqueryTokens:Count == 0
-                THROW ArgumentException{"Unclosed or empty IN subquery", "SQLParser"}
-            ENDIF
-            IF !SELF:Expect(XTokenType.RPAREN)
-                THROW ArgumentException{"Expected closing parenthesis for IN subquery", "SQLParser"}
-            ENDIF
-            VAR subParser := SQLParser{XTokenList{subqueryTokens}}
-            LOCAL subquery AS FoxSelectContext
-            IF !subParser:ParseSelectStatement(OUT subquery)
-                THROW ArgumentException{"Invalid IN subquery: " + subParser:Error, "SQLParser"}
-            ENDIF
-            RETURN SqlInSubqueryExpressionContext{} { ValueExpression := e, Subquery := subquery, IsNegated := isNegated }
+            RETURN SqlInSubqueryExpressionContext{} { ValueExpression := e, Subquery := SELF:ParseSubquery("IN"), IsNegated := isNegated }
         ELSEIF isNegated
             THROW ArgumentException{"Expected IN after NOT", "SQLParser"}
         ENDIF

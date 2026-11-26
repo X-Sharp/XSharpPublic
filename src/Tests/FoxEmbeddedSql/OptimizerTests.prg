@@ -275,6 +275,8 @@ FUNCTION TestMembershipBitmap() AS VOID
     CREATE CURSOR bitmap_double_inner (Id B)
     CREATE CURSOR bitmap_float_outer (Id F(10,2))
     CREATE CURSOR bitmap_float_inner (Id F(12,3))
+    CREATE CURSOR bitmap_numeric_cross_outer (Id N(10,4))
+    CREATE CURSOR bitmap_numeric_cross_inner (Id Y)
     CREATE CURSOR bitmap_temporal_outer (Id I NULL, Dte D, Stamp T, Active L NULL)
     CREATE CURSOR bitmap_temporal_inner (Id I NULL, Dte D, Stamp T, Active L NULL)
     CREATE CURSOR bitmap_inner (Id I NULL)
@@ -296,6 +298,11 @@ FUNCTION TestMembershipBitmap() AS VOID
     INSERT INTO bitmap_float_outer VALUES (3.75)
     INSERT INTO bitmap_float_inner VALUES (1.25)
     INSERT INTO bitmap_float_inner VALUES (-2.5)
+    INSERT INTO bitmap_numeric_cross_outer VALUES (1.25)
+    INSERT INTO bitmap_numeric_cross_outer VALUES (-2.5)
+    INSERT INTO bitmap_numeric_cross_outer VALUES (3.75)
+    INSERT INTO bitmap_numeric_cross_inner VALUES (1.25)
+    INSERT INTO bitmap_numeric_cross_inner VALUES (-2.5)
     InsertTemporalKeyRow("bitmap_temporal_outer", 4, DateTime{2024, 1, 2}, DateTime{2024, 1, 2, 12, 34, 56}, TRUE)
     InsertTemporalKeyRow("bitmap_temporal_outer", 2, DateTime{2024, 1, 3}, DateTime{2024, 1, 3, 12, 34, 56}, FALSE)
     InsertTemporalKeyRow("bitmap_temporal_outer", 7, DateTime{2024, 1, 4}, DateTime{2024, 1, 4, 12, 34, 56}, TRUE)
@@ -387,6 +394,30 @@ FUNCTION TestMembershipBitmap() AS VOID
         SELECT p.Id FROM bitmap_float_outer p WHERE p.Id IN (SELECT i.Id FROM bitmap_float_inner i) ORDER BY p.Id
         VerifySqlOptimization("MembershipBitmaps", before)
         VerifyTable(2, "Float membership should handle differing precision and negative values", TRUE, {{-2.5}, {1.25}})
+
+        LOCAL savedFloatDelta := RuntimeState.FloatDelta AS REAL8
+        TRY
+            RuntimeState.FloatDelta := 0
+            before := SqlOptimizationCount("MembershipBitmaps")
+            SELECT p.Id FROM bitmap_numeric_cross_outer p ;
+                WHERE p.Id IN (SELECT i.Id FROM bitmap_numeric_cross_inner i) ORDER BY p.Id
+            VerifySqlOptimization("MembershipBitmaps", before)
+            VerifyTable(2, "Membership bitmaps should compare across numeric DBF types", TRUE, {{-2.5}, {1.25}})
+        FINALLY
+            RuntimeState.FloatDelta := savedFloatDelta
+        END TRY
+
+        LOCAL savedMembershipFloatDelta := RuntimeState.FloatDelta AS REAL8
+        TRY
+            RuntimeState.FloatDelta := 0.01
+            before := SqlOptimizationCount("MembershipBitmaps")
+            SELECT p.Id FROM bitmap_float_outer p WHERE p.Id IN ;
+                (SELECT i.Id FROM bitmap_float_inner i WHERE i.Id = 1.255)
+            VerifySqlOptimization("MembershipBitmaps", before)
+        FINALLY
+            RuntimeState.FloatDelta := savedMembershipFloatDelta
+        END TRY
+        VerifyTable(1, "FLOATDELTA membership bitmap should preserve the baseline predicate result", TRUE, {{1.25}})
 
         LOCAL temporalExistsBefore := SqlOptimizationCount("ExistsExecutions") AS INT
         before := SqlOptimizationCount("MembershipBitmaps")
@@ -501,6 +532,12 @@ FUNCTION TestMembershipBitmap() AS VOID
         ENDIF
         IF Used("bitmap_float_inner")
             USE IN bitmap_float_inner
+        ENDIF
+        IF Used("bitmap_numeric_cross_outer")
+            USE IN bitmap_numeric_cross_outer
+        ENDIF
+        IF Used("bitmap_numeric_cross_inner")
+            USE IN bitmap_numeric_cross_inner
         ENDIF
         IF Used("bitmap_temporal_outer")
             USE IN bitmap_temporal_outer

@@ -762,6 +762,8 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     CREATE CURSOR nested_nullable_temporal_child (Id I NULL, Dte D NULL, Stamp T NULL, Active L NULL, Extra L NULL)
     CREATE CURSOR nested_binary_parent (Id I, DoubleKey B, FloatKey F(10,2))
     CREATE CURSOR nested_binary_child (DoubleKey B, FloatKey F(12,3), OutVal I)
+    CREATE CURSOR nested_numeric_parent (Id I, NKey N(10,4), YKey Y)
+    CREATE CURSOR nested_numeric_child (OutVal I, BKey B, FKey F(12,3))
     INSERT INTO nested_parent VALUES (1)
     INSERT INTO nested_parent VALUES (2)
     INSERT INTO nested_parent VALUES (3)
@@ -841,6 +843,11 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     INSERT INTO nested_binary_child VALUES (1.25, 1.25, 2)
     INSERT INTO nested_binary_child VALUES (-2.5, -2.5, 3)
     INSERT INTO nested_binary_child VALUES (3.75, 3.75, 4)
+    INSERT INTO nested_numeric_parent VALUES (1, 1.25, 4.5)
+    INSERT INTO nested_numeric_parent VALUES (1, 1.25, 4.5)
+    INSERT INTO nested_numeric_parent VALUES (2, 1.25, 4.5)
+    INSERT INTO nested_numeric_child VALUES (1, 1.25, 4.5)
+    INSERT INTO nested_numeric_child VALUES (2, 1.25, 4.5)
 
     LOCAL openAreas := XSharp.__FoxArray{} AS ARRAY
     LOCAL workAreaCountBeforeDerived := AUsed(openAreas) AS DWORD
@@ -1521,6 +1528,50 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
         THROW Exception{"Double/Float scalar memoization should reuse repeated composite keys only when enabled"}
     ENDIF
 
+    correlatedPlansBefore := SqlOptimizationCount("CorrelatedInPlans")
+    SELECT p.Id FROM nested_numeric_parent p WHERE p.Id IN ;
+        (SELECT c.OutVal FROM nested_numeric_child c WHERE c.OutVal = p.Id AND ;
+            c.BKey = p.NKey AND c.FKey = p.YKey)
+    VerifySqlOptimization("CorrelatedInPlans", correlatedPlansBefore)
+    VerifyTable(3, "Correlated IN should use composite keys across numeric DBF types", TRUE, {{1}, {1}, {2}})
+
+    scalarCachePlansBefore := SqlOptimizationCount("CorrelatedScalarCachePlans")
+    scalarCacheHitsBefore := SqlOptimizationCount("CorrelatedScalarCacheHits")
+    scalarBefore := SqlOptimizationCount("ScalarExecutions")
+    SELECT p.Id, (SELECT COUNT(*) FROM nested_numeric_child c ;
+        WHERE c.BKey = p.NKey AND c.FKey = p.YKey) AS Matches FROM nested_numeric_parent p
+    VerifyTable(3, "Scalar memoization should reuse cross-type numeric composite keys", TRUE, ;
+        {{1, 2}, {1, 2}, {2, 2}})
+    IF SqlOptimizationCount("ScalarExecutions") - scalarBefore != IIF(optimizationsDisabled, 3, 1) .OR. ;
+       SqlOptimizationCount("CorrelatedScalarCachePlans") - scalarCachePlansBefore != IIF(optimizationsDisabled, 0, 1) .OR. ;
+       SqlOptimizationCount("CorrelatedScalarCacheHits") - scalarCacheHitsBefore != IIF(optimizationsDisabled, 0, 2)
+        THROW Exception{"Cross-type scalar memoization should reuse duplicate numeric tuples only when enabled"}
+    ENDIF
+
+    CREATE CURSOR nested_floatdelta_parent (FloatValue F(10,3))
+    CREATE CURSOR nested_floatdelta_child (FloatValue F(10,3))
+    INSERT INTO nested_floatdelta_parent VALUES (1.000)
+    INSERT INTO nested_floatdelta_child VALUES (1.005)
+    LOCAL savedNestedFloatDelta := RuntimeState.FloatDelta AS REAL8
+    LOCAL floatDeltaPlansBefore := SqlOptimizationCount("CorrelatedScalarCachePlans") AS INT
+    TRY
+        RuntimeState.FloatDelta := 0.01
+        SELECT p.FloatValue, (SELECT COUNT(*) FROM nested_floatdelta_child c WHERE c.FloatValue = p.FloatValue) AS Matches ;
+            FROM nested_floatdelta_parent p
+        VerifyTable(1, "FLOATDELTA scalar equality should match baseline semantics", TRUE, {{1.0, 1}})
+        IF SqlOptimizationCount("CorrelatedScalarCachePlans") != floatDeltaPlansBefore
+            THROW Exception{"Approximate FLOAT scalar keys must bypass memoization"}
+        ENDIF
+    FINALLY
+        RuntimeState.FloatDelta := savedNestedFloatDelta
+        IF Used("nested_floatdelta_parent")
+            USE IN nested_floatdelta_parent
+        ENDIF
+        IF Used("nested_floatdelta_child")
+            USE IN nested_floatdelta_child
+        ENDIF
+    END TRY
+
     LOCAL unsupportedCorrelationRejected := FALSE AS LOGIC
     TRY
         SELECT Id FROM nested_parent p WHERE Id IN (SELECT p.Id FROM nested_child c WHERE c.Id > 0)
@@ -1596,6 +1647,12 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     ENDIF
     IF Used("nested_binary_child")
         USE IN nested_binary_child
+    ENDIF
+    IF Used("nested_numeric_parent")
+        USE IN nested_numeric_parent
+    ENDIF
+    IF Used("nested_numeric_child")
+        USE IN nested_numeric_child
     ENDIF
     RETURN
 
@@ -1746,6 +1803,75 @@ FUNCTION TestHashJoin() AS VOID
         {{-2.5, -2.5}, {1.25, 1.25}})
     USE IN hash_binary_left
     USE IN hash_binary_right
+
+    LOCAL savedFloatDelta := RuntimeState.FloatDelta AS REAL8
+    TRY
+        RuntimeState.FloatDelta := 0
+        CREATE CURSOR hash_numeric_cross_left (NKey N(10,4) NULL, IKey I NULL, BKey B NULL, ;
+            FKey F(10,4) NULL, YKey Y NULL)
+        CREATE CURSOR hash_numeric_cross_right (NKey I NULL, IKey B NULL, BKey F(12,3) NULL, ;
+            FKey Y NULL, YKey N(10,4) NULL)
+        INSERT INTO hash_numeric_cross_left VALUES (1, 2, 3.25, 4.5, 5.25)
+        INSERT INTO hash_numeric_cross_left VALUES (8, 9, 10.5, NULL, 11.5)
+        INSERT INTO hash_numeric_cross_right VALUES (1, 2, 3.25, 4.5, 5.25)
+        INSERT INTO hash_numeric_cross_right VALUES (8, 9, 10.5, NULL, 11.5)
+        hashJoinsBefore := SqlOptimizationCount("HashJoins")
+        SELECT a.NKey, a.IKey, a.BKey, a.FKey, a.YKey FROM hash_numeric_cross_left a ;
+            JOIN hash_numeric_cross_right b ON a.NKey = b.NKey AND a.IKey = b.IKey AND ;
+                a.BKey = b.BKey AND a.FKey = b.FKey AND a.YKey = b.YKey
+        VerifySqlOptimization("HashJoins", hashJoinsBefore)
+        VerifyTable(1, "Composite hash joins should match across every supported numeric DBF type", TRUE, ;
+            {{1, 2, 3.25, 4.5, 5.25}})
+
+        CREATE CURSOR hash_numeric_cross2_left (NKey N(10,4), IKey I, BKey B, FKey F(10,4), YKey Y)
+        CREATE CURSOR hash_numeric_cross2_right (NKey F(12,3), IKey Y, BKey Y, FKey I, YKey B)
+        INSERT INTO hash_numeric_cross2_left VALUES (1.25, 2, 3.5, 4, 5)
+        INSERT INTO hash_numeric_cross2_right VALUES (1.25, 2, 3.5, 4, 5)
+        hashJoinsBefore := SqlOptimizationCount("HashJoins")
+        SELECT a.NKey, a.IKey, a.BKey, a.FKey, a.YKey FROM hash_numeric_cross2_left a ;
+            JOIN hash_numeric_cross2_right b ON a.NKey = b.NKey AND a.IKey = b.IKey AND ;
+                a.BKey = b.BKey AND a.FKey = b.FKey AND a.YKey = b.YKey
+        VerifySqlOptimization("HashJoins", hashJoinsBefore)
+        VerifyTable(1, "Composite hash joins should cover the remaining cross-type numeric pairs", TRUE, ;
+            {{1.25, 2, 3.5, 4, 5}})
+    FINALLY
+        RuntimeState.FloatDelta := savedFloatDelta
+        IF Used("hash_numeric_cross_left")
+            USE IN hash_numeric_cross_left
+        ENDIF
+        IF Used("hash_numeric_cross_right")
+            USE IN hash_numeric_cross_right
+        ENDIF
+        IF Used("hash_numeric_cross2_left")
+            USE IN hash_numeric_cross2_left
+        ENDIF
+        IF Used("hash_numeric_cross2_right")
+            USE IN hash_numeric_cross2_right
+        ENDIF
+    END TRY
+
+    savedFloatDelta := RuntimeState.FloatDelta
+    TRY
+        RuntimeState.FloatDelta := 0.01
+        CREATE CURSOR hash_floatdelta_left (FloatValue F(10,3))
+        CREATE CURSOR hash_floatdelta_right (FloatValue F(10,3))
+        INSERT INTO hash_floatdelta_left VALUES (1.000)
+        INSERT INTO hash_floatdelta_right VALUES (1.005)
+        hashJoinsBefore := SqlOptimizationCount("HashJoins")
+        SELECT a.FloatValue FROM hash_floatdelta_left a JOIN hash_floatdelta_right b ON a.FloatValue = b.FloatValue
+        IF SqlOptimizationCount("HashJoins") != hashJoinsBefore
+            THROW Exception{"Approximate FLOAT equality must retain the non-hash fallback"}
+        ENDIF
+        VerifyTable(1, "FLOATDELTA equality should match the baseline when hash joins are bypassed", TRUE, {{1.0}})
+    FINALLY
+        RuntimeState.FloatDelta := savedFloatDelta
+        IF Used("hash_floatdelta_left")
+            USE IN hash_floatdelta_left
+        ENDIF
+        IF Used("hash_floatdelta_right")
+            USE IN hash_floatdelta_right
+        ENDIF
+    END TRY
     RETURN
 
 FUNCTION TestLeftOuterJoin() AS VOID

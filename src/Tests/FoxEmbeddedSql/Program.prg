@@ -65,7 +65,11 @@ FUNCTION TestRunner(test AS TestInfo) AS VOID
     LOCAL switchName := EmbeddedSqlRuntimeOptions.DisableOptimizationsSwitch AS STRING
     LOCAL previousSwitch := FALSE AS LOGIC
     LOCAL switchWasSet := AppContext.TryGetSwitch(switchName, OUT previousSwitch) AS LOGIC
+    LOCAL previousFloatDelta := RuntimeState.FloatDelta AS REAL8
     AppContext.SetSwitch(switchName, test:DisableSqlOptimizations)
+    // Run the regular optimizer/baseline comparisons with exact numeric
+    // equality. Dedicated FLOATDELTA cases verify the conservative fallback.
+    RuntimeState.FloatDelta := 0
     TRY
         TRY
             ?
@@ -77,6 +81,7 @@ FUNCTION TestRunner(test AS TestInfo) AS VOID
         END TRY
     FINALLY
         AppContext.SetSwitch(switchName, IIF(switchWasSet, previousSwitch, FALSE))
+        RuntimeState.FloatDelta := previousFloatDelta
     END
 
     IF test:Result != "Passed" .OR. Verbose

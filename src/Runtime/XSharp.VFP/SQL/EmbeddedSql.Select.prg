@@ -131,6 +131,11 @@ INTERNAL CLASS SqlEqualityKeyComparer IMPLEMENTS IEqualityComparer<USUAL[]>
             LOCAL componentHash AS INT
             IF UsualType(values[i]) == __UsualType.String
                 componentHash := StringComparer.Ordinal:GetHashCode(values[i]:ToString())
+            ELSEIF values[i]:IsNumeric
+                // Numeric USUAL values can compare equal across CLR numeric
+                // types (for example LONG and FLOAT), so hash their common
+                // numeric value rather than the backing type's hash code.
+                componentHash := Convert.ToDouble(values[i]:Value):GetHashCode()
             ELSE
                 componentHash := EqualityComparer<USUAL>.Default:GetHashCode(values[i])
             ENDIF
@@ -793,12 +798,23 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                fieldType:Equals("B", StringComparison.OrdinalIgnoreCase) .OR. ;
                fieldType:Equals("F", StringComparison.OrdinalIgnoreCase)
 
+    PRIVATE STATIC METHOD IsFloatBackedSqlFieldType(fieldType AS STRING) AS LOGIC
+        RETURN String.Equals(fieldType, "N", StringComparison.OrdinalIgnoreCase) .OR. ;
+               String.Equals(fieldType, "B", StringComparison.OrdinalIgnoreCase) .OR. ;
+               String.Equals(fieldType, "F", StringComparison.OrdinalIgnoreCase)
+
     PRIVATE STATIC METHOD IsSqlEqualityKeyFieldType(fieldType AS STRING) AS LOGIC
-        IF IsHashJoinFieldType(fieldType)
-            RETURN TRUE
-        ENDIF
         IF String.IsNullOrEmpty(fieldType)
             RETURN FALSE
+        ENDIF
+        // FLOAT equality can use SET FLOATDELTA, which is approximate and
+        // cannot be represented by a stable hash key. Keep those predicates
+        // on the baseline path whenever the setting is nonzero.
+        IF IsFloatBackedSqlFieldType(fieldType) .AND. RuntimeState.FloatDelta != 0
+            RETURN FALSE
+        ENDIF
+        IF IsHashJoinFieldType(fieldType)
+            RETURN TRUE
         ENDIF
         RETURN fieldType:Equals("Y", StringComparison.OrdinalIgnoreCase) .OR. ;
                fieldType:Equals("C", StringComparison.OrdinalIgnoreCase) .OR. ;
@@ -807,15 +823,21 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                fieldType:Equals("L", StringComparison.OrdinalIgnoreCase)
 
     PRIVATE STATIC METHOD IsNumericSqlFieldType(fieldType AS STRING) AS LOGIC
-        RETURN IsHashJoinFieldType(fieldType) .OR. ;
-               String.Equals(fieldType, "Y", StringComparison.OrdinalIgnoreCase)
+        RETURN IsSqlEqualityKeyFieldType(fieldType) .AND. ;
+               (IsHashJoinFieldType(fieldType) .OR. ;
+                String.Equals(fieldType, "Y", StringComparison.OrdinalIgnoreCase))
 
     PRIVATE STATIC METHOD SqlEqualityKeyFieldsCompatible(leftTable AS STRING, leftField AS STRING, ;
         rightTable AS STRING, rightField AS STRING) AS LOGIC
         VAR leftType := HashJoinFieldType(leftTable, leftField)
         VAR rightType := HashJoinFieldType(rightTable, rightField)
-        IF !IsSqlEqualityKeyFieldType(leftType) .OR. ;
-           !String.Equals(leftType, rightType, StringComparison.OrdinalIgnoreCase)
+        IF !IsSqlEqualityKeyFieldType(leftType) .OR. !IsSqlEqualityKeyFieldType(rightType)
+            RETURN FALSE
+        ENDIF
+        IF IsNumericSqlFieldType(leftType) .AND. IsNumericSqlFieldType(rightType)
+            RETURN TRUE
+        ENDIF
+        IF !String.Equals(leftType, rightType, StringComparison.OrdinalIgnoreCase)
             RETURN FALSE
         ENDIF
         IF leftType == "C"

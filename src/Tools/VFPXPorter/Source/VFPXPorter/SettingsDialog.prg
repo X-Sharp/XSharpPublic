@@ -16,7 +16,30 @@ BEGIN NAMESPACE VFPXPorter
 		PUBLIC CONSTRUCTOR( ini AS ExporterSettings ) STRICT //SettingsDialog
 			SELF:InitializeComponent()
 			SELF:iniSettings := ini
+			SELF:comboProjectFormat:SelectedIndexChanged += System.EventHandler{ SELF, @comboProjectFormat_SelectedIndexChanged() }
+			SELF:comboXSharpReferences:SelectedIndexChanged += System.EventHandler{ SELF, @comboProjectFormat_SelectedIndexChanged() }
+			SELF:comboTargetFramework:TextChanged += System.EventHandler{ SELF, @comboProjectFormat_SelectedIndexChanged() }
+			SELF:toolTipCtrl:SetToolTip( SELF:comboTargetFramework, "SDK-style projects: any target framework, written as-is (net8.0-windows for .NET 8)" )
+			SELF:toolTipCtrl:SetToolTip( SELF:textFrameworkVersion, "Classic projects: TargetFrameworkVersion (e.g. 4.7.2)" )
+			SELF:toolTipCtrl:SetToolTip( SELF:textXSharpPackageVersion, "Leave empty to use the version of the installed X#" )
+			SELF:toolTipCtrl:SetToolTip( SELF:comboXSharpReferences, "Installed assemblies only exist for .NET Framework targets" )
 
+			RETURN
+
+		/// <summary>
+		/// Enable the project-file controls that apply to the selected format, and show the X# package
+		/// version that an empty version field resolves to.
+		/// </summary>
+		PRIVATE METHOD comboProjectFormat_SelectedIndexChanged(sender AS OBJECT, e AS System.EventArgs) AS VOID STRICT
+			VAR isSdk := SELF:comboProjectFormat:SelectedIndex == (INT) ProjectFormat.Sdk
+			SELF:comboTargetFramework:Enabled := isSdk
+			SELF:comboXSharpReferences:Enabled := isSdk
+			SELF:textFrameworkVersion:Enabled := !isSdk
+			// The package version is used in NuGet mode, which is also the fallback for non-.NET Framework targets
+			VAR usesPackage := isSdk .AND. ( SELF:comboXSharpReferences:SelectedIndex != (INT) XSharpReferenceMode.InstalledAssemblies ;
+				.OR. !VSSDKProject.IsNetFrameworkTarget( SELF:comboTargetFramework:Text:Trim() ) )
+			SELF:textXSharpPackageVersion:Enabled := usesPackage
+			SELF:labelXSharpVersionFound:Enabled := usesPackage
 			RETURN
 		PRIVATE METHOD outputButton_Click(sender AS OBJECT, e AS System.EventArgs) AS VOID STRICT
 			LOCAL fbd AS FolderBrowserDialog
@@ -59,6 +82,15 @@ BEGIN NAMESPACE VFPXPorter
             SELF:iniSettings:SeparateLibraryProjects := SELF:checkLibraryAsProject:Checked
             SELF:iniSettings:PlaceSolutionInSameDirectory := SELF:checkSlnWithProject:Checked
             SELF:iniSettings:ClassNamePrefix := SELF:classNamePrefixTextBox:Text
+            // Project file format (combo indexes follow the enum values)
+            SELF:iniSettings:ProjectFormat := (ProjectFormat) Math.Max( 0, SELF:comboProjectFormat:SelectedIndex )
+            SELF:iniSettings:TargetFramework := IIF( String.IsNullOrWhiteSpace( SELF:comboTargetFramework:Text ), ;
+                XPorterSettings.DefaultTargetFramework, SELF:comboTargetFramework:Text:Trim() )
+            SELF:iniSettings:FrameworkVersion := IIF( String.IsNullOrWhiteSpace( SELF:textFrameworkVersion:Text ), ;
+                XPorterSettings.DefaultFrameworkVersion, SELF:textFrameworkVersion:Text:Trim() )
+            SELF:iniSettings:XSharpReferences := (XSharpReferenceMode) Math.Max( 0, SELF:comboXSharpReferences:SelectedIndex )
+            SELF:iniSettings:XSharpPackageVersion := SELF:textXSharpPackageVersion:Text:Trim()
+            SELF:iniSettings:SolutionFormat := (SolutionFormat) Math.Max( 0, SELF:comboSolutionFormat:SelectedIndex )
 			//
 			VAR defFolders := ""
 			FOREACH lvi AS ListViewItem IN SELF:listFolders:Items
@@ -109,6 +141,19 @@ BEGIN NAMESPACE VFPXPorter
             SELF:checkLibraryAsProject:Checked := SELF:iniSettings:SeparateLibraryProjects
             SELF:checkSlnWithProject:Checked := SELF:iniSettings:PlaceSolutionInSameDirectory
             SELF:classNamePrefixTextBox:Text := SELF:iniSettings:ClassNamePrefix
+            // Project file format
+            SELF:comboProjectFormat:SelectedIndex := (INT) SELF:iniSettings:ProjectFormat
+            SELF:comboTargetFramework:Text := SELF:iniSettings:TargetFramework
+            SELF:textFrameworkVersion:Text := SELF:iniSettings:FrameworkVersion
+            SELF:comboXSharpReferences:SelectedIndex := (INT) SELF:iniSettings:XSharpReferences
+            SELF:textXSharpPackageVersion:Text := SELF:iniSettings:XSharpPackageVersion
+            SELF:comboSolutionFormat:SelectedIndex := (INT) SELF:iniSettings:SolutionFormat
+            VAR installFolder := XPorterSettings.XSharpInstallFolder
+            VAR installed := IIF( String.IsNullOrEmpty( installFolder ), "", ;
+                XPorterSettings.FindXSharpPackageVersion( System.IO.Path.Combine( installFolder, "Nuget" ) ) )
+            SELF:labelXSharpVersionFound:Text := IIF( String.IsNullOrEmpty( installed ), ;
+                "Empty version = * (X# installation not found)", "Empty version = installed X# (" + installed + ")" )
+            SELF:comboProjectFormat_SelectedIndexChanged( SELF, EventArgs.Empty )
 			// Fill Folders Name
 			// The order is : "Forms,Libs,Menus,Code,Databases,FreeTables,Others"
 			VAR defFolders := SELF:iniSettings:DefaultFolders

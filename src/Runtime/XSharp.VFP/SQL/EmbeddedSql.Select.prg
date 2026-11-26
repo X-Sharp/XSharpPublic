@@ -84,10 +84,23 @@ INTERNAL STATIC CLASS SqlOptimizationDiagnostics
     INTERNAL STATIC HashJoins AS INT
     INTERNAL STATIC ExistsExecutions AS INT
     INTERNAL STATIC ScalarExecutions AS INT
+    INTERNAL STATIC CorrelatedScalarCachePlans AS INT
+    INTERNAL STATIC CorrelatedScalarCacheHits AS INT
+    INTERNAL STATIC CorrelatedScalarNullKeys AS INT
     INTERNAL STATIC MembershipBitmaps AS INT
     INTERNAL STATIC MembershipCandidates AS INT
     INTERNAL STATIC MembershipScanned AS INT
     INTERNAL STATIC DerivedTableExecutions AS INT
+END CLASS
+
+INTERNAL CLASS SqlCorrelatedScalarMemo
+    INTERNAL OuterValueCodeBlock AS CODEBLOCK
+    INTERNAL Values AS Dictionary<USUAL,USUAL>
+
+    INTERNAL CONSTRUCTOR(outerValueCodeBlock AS CODEBLOCK)
+        SELF:OuterValueCodeBlock := outerValueCodeBlock
+        SELF:Values := Dictionary<USUAL,USUAL>{}
+        RETURN
 END CLASS
 
 /// Runtime switches used by the embedded SQL implementation.
@@ -298,6 +311,10 @@ END CLASS
 
 INTERNAL CLASS SqlCorrelationCounter
     INTERNAL PROPERTY Count AS INT AUTO
+END CLASS
+
+INTERNAL CLASS SqlNameExpressionReference
+    INTERNAL PROPERTY Value AS SqlNameExpressionContext AUTO
 END CLASS
 
 INTERNAL CLASS SqlHashJoinCursor
@@ -744,7 +761,8 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
 
     PRIVATE STATIC METHOD PrepareSubqueryExpression(expression AS SqlExpressionContext, ;
         outerTableAliases := NULL AS Dictionary<STRING,STRING>, deferCorrelated := FALSE AS LOGIC, ;
-        refreshCorrelated := FALSE AS LOGIC) AS VOID
+        refreshCorrelated := FALSE AS LOGIC, ;
+        scalarMemos := NULL AS Dictionary<SqlScalarSubqueryExpressionContext,SqlCorrelatedScalarMemo>) AS VOID
         IF expression == NULL
             RETURN
         ENDIF
@@ -766,8 +784,38 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 IF scalarExpression:ResultFieldDefinition == NULL
                     scalarExpression:ResultFieldDefinition := InferCorrelatedScalarResultFieldDefinition(scalarQuery)
                 ENDIF
+                IF SqlOptimizationsEnabled() .AND. scalarMemos != NULL .AND. ;
+                   !scalarMemos:ContainsKey(scalarExpression)
+                    VAR deferredMemo := TryCreateCorrelatedScalarMemo(scalarQuery, outerTableAliases)
+                    IF deferredMemo != NULL
+                        scalarMemos[scalarExpression] := deferredMemo
+                        System.Threading.Interlocked.Increment(REF SqlOptimizationDiagnostics.CorrelatedScalarCachePlans)
+                    ENDIF
+                ENDIF
                 scalarExpression:IsPrepared := TRUE
                 RETURN
+            ENDIF
+            LOCAL scalarMemo := NULL AS SqlCorrelatedScalarMemo
+            LOCAL scalarMemoKey := NULL AS USUAL
+            LOCAL useScalarMemo := FALSE AS LOGIC
+            IF scalarMemos != NULL
+                useScalarMemo := scalarMemos:TryGetValue(scalarExpression, OUT scalarMemo)
+            ENDIF
+            IF useScalarMemo
+                scalarMemoKey := (USUAL)scalarMemo:OuterValueCodeBlock:Eval()
+                IF scalarMemoKey:IsNull
+                    scalarExpression:Value := NULL
+                    scalarExpression:IsPrepared := TRUE
+                    System.Threading.Interlocked.Increment(REF SqlOptimizationDiagnostics.CorrelatedScalarNullKeys)
+                    RETURN
+                ENDIF
+                LOCAL memoValue AS USUAL
+                IF scalarMemo:Values:TryGetValue(scalarMemoKey, OUT memoValue)
+                    scalarExpression:Value := memoValue
+                    scalarExpression:IsPrepared := TRUE
+                    System.Threading.Interlocked.Increment(REF SqlOptimizationDiagnostics.CorrelatedScalarCacheHits)
+                    RETURN
+                ENDIF
             ENDIF
             LOCAL scalarAlias := "SQ" + Guid.NewGuid():ToString("N"):Substring(0, 8) AS STRING
             LOCAL savedScalarArea := VoDbGetSelect() AS DWORD
@@ -800,6 +848,9 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                     ENDIF
                 ENDIF
                 scalarExpression:IsPrepared := TRUE
+                IF useScalarMemo
+                    scalarMemo:Values[scalarMemoKey] := scalarExpression:Value
+                ENDIF
             FINALLY
                 scalarQuery:TargetCursor := previousScalarTarget
                 FOREACH VAR outerAlias IN addedScalarAliases
@@ -994,18 +1045,114 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             RETURN
         ENDIF
         IF expression IS SqlParenExpressionContext VAR parenExpression
-            PrepareSubqueryExpression(parenExpression:Expr, outerTableAliases, deferCorrelated, refreshCorrelated)
+            PrepareSubqueryExpression(parenExpression:Expr, outerTableAliases, deferCorrelated, refreshCorrelated, scalarMemos)
         ELSEIF expression IS SqlPrefixExpressionContext VAR prefixExpression
-            PrepareSubqueryExpression(prefixExpression:Expr, outerTableAliases, deferCorrelated, refreshCorrelated)
+            PrepareSubqueryExpression(prefixExpression:Expr, outerTableAliases, deferCorrelated, refreshCorrelated, scalarMemos)
         ELSEIF expression IS SqlBinaryExpressionContext VAR binaryExpression
-            PrepareSubqueryExpression(binaryExpression:Left, outerTableAliases, deferCorrelated, refreshCorrelated)
-            PrepareSubqueryExpression(binaryExpression:Right, outerTableAliases, deferCorrelated, refreshCorrelated)
+            PrepareSubqueryExpression(binaryExpression:Left, outerTableAliases, deferCorrelated, refreshCorrelated, scalarMemos)
+            PrepareSubqueryExpression(binaryExpression:Right, outerTableAliases, deferCorrelated, refreshCorrelated, scalarMemos)
         ELSEIF expression IS SqlCompositeExpressionContext VAR compositeExpression
             FOREACH VAR child IN compositeExpression:Exprs
-                PrepareSubqueryExpression(child, outerTableAliases, deferCorrelated, refreshCorrelated)
+                PrepareSubqueryExpression(child, outerTableAliases, deferCorrelated, refreshCorrelated, scalarMemos)
             NEXT
         ENDIF
         RETURN
+
+    PRIVATE STATIC METHOD TryCreateCorrelatedScalarMemo(subquery AS FoxSelectContext, ;
+        outerTableAliases AS Dictionary<STRING,STRING>) AS SqlCorrelatedScalarMemo
+        IF subquery:SelectList:Count != 1 .OR. subquery:TableList:Count != 1 .OR. ;
+           subquery:Joins:Count != 0 .OR. subquery:GroupByItems:Count != 0 .OR. ;
+           subquery:HavingClause != NULL .OR. subquery:OrderByClause:Count != 0 .OR. ;
+           subquery:UnionBranches:Count != 0 .OR. subquery:IsDistinct .OR. ;
+           !String.IsNullOrEmpty(subquery:TopCount) .OR. ;
+           !(subquery:SelectList[0] IS SqlNameExpressionContext VAR innerField) .OR. ;
+           String.IsNullOrEmpty(innerField:Table)
+            RETURN NULL
+        ENDIF
+        LOCAL innerTable := innerField:Table AS STRING
+        subquery:TableAliases:TryGetValue(innerField:Table, OUT innerTable)
+        IF !innerTable:Equals((STRING)subquery:TableList[0], StringComparison.OrdinalIgnoreCase)
+            RETURN NULL
+        ENDIF
+
+        LOCAL correlation AS SqlCorrelationCounter
+        correlation := SqlCorrelationCounter{}
+        LOCAL outerReference := SqlNameExpressionReference{} AS SqlNameExpressionReference
+        VAR residualWhere := RemoveCorrelatedScalarEquality(subquery:WhereClause, innerTable, ;
+            innerField:Name, subquery:TableAliases, outerTableAliases, correlation, outerReference)
+        IF correlation:Count != 1 .OR. ;
+           (residualWhere != NULL .AND. ;
+            (HasExternalSubqueryDependency(residualWhere, subquery:TableAliases) .OR. ;
+             ContainsInSubqueryExpression(residualWhere)))
+            RETURN NULL
+        ENDIF
+        LOCAL outerField := outerReference:Value AS SqlNameExpressionContext
+        IF outerField == NULL
+            RETURN NULL
+        ENDIF
+        LOCAL resolvedOuterTable := outerField:Table AS STRING
+        outerTableAliases:TryGetValue(outerField:Table, OUT resolvedOuterTable)
+        IF !IsHashJoinFieldType(HashJoinFieldType(resolvedOuterTable, outerField:Name)) .OR. ;
+           !String.Equals(HashJoinFieldType(resolvedOuterTable, outerField:Name), ;
+               HashJoinFieldType(innerTable, innerField:Name), StringComparison.OrdinalIgnoreCase)
+            RETURN NULL
+        ENDIF
+        VAR outerValueCodeBlock := MCompile(outerField:ToResolvedString(outerTableAliases))
+        IF outerValueCodeBlock == NULL
+            RETURN NULL
+        ENDIF
+        RETURN SqlCorrelatedScalarMemo{outerValueCodeBlock}
+
+    PRIVATE STATIC METHOD RemoveCorrelatedScalarEquality(expression AS SqlExpressionContext, ;
+        innerTable AS STRING, innerFieldName AS STRING, innerAliases AS Dictionary<STRING,STRING>, ;
+        outerAliases AS Dictionary<STRING,STRING>, counter AS SqlCorrelationCounter, ;
+        outerField AS SqlNameExpressionReference) AS SqlExpressionContext
+        IF expression == NULL
+            RETURN NULL
+        ENDIF
+        IF expression IS SqlParenExpressionContext VAR paren .AND. paren:Expr IS SqlCompareExpressionContext
+            RETURN RemoveCorrelatedScalarEquality(paren:Expr, innerTable, innerFieldName, innerAliases, ;
+                outerAliases, counter, outerField)
+        ENDIF
+        IF expression IS SqlLogicExpressionContext VAR logicNode .AND. logicNode:Op:Type == XTokenType.AND
+            VAR leftResidual := RemoveCorrelatedScalarEquality(logicNode:Left, innerTable, innerFieldName, innerAliases, ;
+                outerAliases, counter, outerField)
+            VAR rightResidual := RemoveCorrelatedScalarEquality(logicNode:Right, innerTable, innerFieldName, innerAliases, ;
+                outerAliases, counter, outerField)
+            IF leftResidual == NULL
+                RETURN rightResidual
+            ELSEIF rightResidual == NULL
+                RETURN leftResidual
+            ENDIF
+            RETURN SqlLogicExpressionContext{} { Left := leftResidual, Op := logicNode:Op, Right := rightResidual }
+        ENDIF
+        IF expression IS SqlCompareExpressionContext VAR compare .AND. compare:Op:Type == XTokenType.EQ
+            LOCAL outer := NULL AS SqlNameExpressionContext
+            IF compare:Left IS SqlNameExpressionContext VAR leftName .AND. ;
+               compare:Right IS SqlNameExpressionContext VAR rightName
+                IF leftName:Name:Equals(innerFieldName, StringComparison.OrdinalIgnoreCase)
+                    LOCAL table := leftName:Table AS STRING
+                    innerAliases:TryGetValue(leftName:Table, OUT table)
+                    IF table:Equals(innerTable, StringComparison.OrdinalIgnoreCase)
+                        outer := rightName
+                    ENDIF
+                ENDIF
+                IF outer == NULL .AND. rightName:Name:Equals(innerFieldName, StringComparison.OrdinalIgnoreCase)
+                    LOCAL table := rightName:Table AS STRING
+                    innerAliases:TryGetValue(rightName:Table, OUT table)
+                    IF table:Equals(innerTable, StringComparison.OrdinalIgnoreCase)
+                        outer := leftName
+                    ENDIF
+                ENDIF
+            ENDIF
+            IF outer != NULL .AND. !String.IsNullOrEmpty(outer:Table) .AND. ;
+               outerAliases:ContainsKey(outer:Table)
+                counter:Count++
+                outerField:Value := outer
+                RETURN NULL
+            ENDIF
+        ENDIF
+        RETURN expression
 
     PRIVATE STATIC METHOD HasCorrelatedInSubquery(expression AS SqlExpressionContext, ;
         tableAliases AS Dictionary<STRING,STRING>) AS LOGIC
@@ -2129,8 +2276,10 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
 
         // Prepare uncorrelated projection subqueries once. Correlated values are
         // deferred until their current outer row or group is positioned.
+        LOCAL scalarMemos := Dictionary<SqlScalarSubqueryExpressionContext,SqlCorrelatedScalarMemo>{} ;
+            AS Dictionary<SqlScalarSubqueryExpressionContext,SqlCorrelatedScalarMemo>
         FOREACH VAR projectionExpression IN selectCtx:SelectList
-            PrepareSubqueryExpression(projectionExpression, selectCtx:TableAliases, TRUE)
+            PrepareSubqueryExpression(projectionExpression, selectCtx:TableAliases, TRUE, FALSE, scalarMemos)
         NEXT
 
         LOCAL fieldList AS ARRAY
@@ -2784,7 +2933,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                     IF selectCtx:SelectList:Count == ALen(selectFieldNames) .AND. ;
                        HasCorrelatedProjectionSubquery(selectCtx:SelectList[(INT)i - 1])
                         PrepareSubqueryExpression(selectCtx:SelectList[(INT)i - 1], ;
-                            selectCtx:TableAliases, FALSE, TRUE)
+                            selectCtx:TableAliases, FALSE, TRUE, scalarMemos)
                         selectExpressions[i] := selectCtx:SelectList[(INT)i - 1]:ToResolvedString(selectCtx:TableAliases)
                     ENDIF
                     sourceValues[i] := &(selectExpressions[i])

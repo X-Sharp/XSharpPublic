@@ -104,9 +104,6 @@
     <None Include="Data\Templates\Tools\VFPXPorter.xh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Data\Templates\Tools\XSharp.VFP.UI.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Data\VFP2WinForms.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

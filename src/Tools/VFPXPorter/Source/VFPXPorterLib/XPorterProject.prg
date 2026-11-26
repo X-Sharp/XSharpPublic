@@ -725,6 +725,8 @@ BEGIN NAMESPACE VFPXPorterLib
             xsprj:AddReference("XSharp.RDD",TRUE)
             xsprj:AddReference("XSharp.Data",TRUE)
             xsprj:AddReference("XSharp.VFP",TRUE)
+            // After removing the XSharp.VFP.UI from Data/Templates/Tools, we MUST add it here
+            xsprj:AddReference("XSharp.VFP.UI",TRUE)
         END METHOD
 
         // Returns VCX paths in dependency-first order (a library comes before every library that depends on it).

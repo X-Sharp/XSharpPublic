@@ -2618,8 +2618,8 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
 
         // Create the result table
         LOCAL tempPath AS STRING
-        tempPath := System.IO.Path.GetTempFileName()
-        tempPath := System.IO.Path.ChangeExtension(tempPath, ".dbf")
+        tempPath := System.IO.Path.Combine(System.IO.Path.GetTempPath(), ;
+            System.Guid.NewGuid():ToString("N") + ".dbf")
 
         IF ! DbCreate(tempPath, fieldList, "DBFVFP", TRUE, resultTable)
             THROW Error{"Could not create result table: " + resultTable}
@@ -3621,8 +3621,8 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 (resultAlias)->DbCloseArea()
             ENDIF
 
-            LOCAL tempPath := System.IO.Path.GetTempFileName() AS STRING
-            tempPath := System.IO.Path.ChangeExtension(tempPath, ".dbf")
+            LOCAL tempPath := System.IO.Path.Combine(System.IO.Path.GetTempPath(), ;
+                System.Guid.NewGuid():ToString("N") + ".dbf") AS STRING
             IF !DbCreate(tempPath, firstStruct, "DBFVFP", TRUE, resultAlias)
                 THROW Error{"Could not create UNION result table: " + resultAlias}
             ENDIF

@@ -639,7 +639,8 @@ INTERNAL STATIC CLASS FoxXml
         if RuntimeState.Workareas:FindAlias(cAlias) != 0
             DbCloseArea(cAlias)
         endif
-        DbCreate(Path.GetTempFileName(), aStruct, "DBFVFP", TRUE, cAlias)
+        DbCreate(Path.Combine(Path.GetTempPath(), System.Guid.NewGuid():ToString("N") + ".dbf"), ;
+            aStruct, "DBFVFP", TRUE, cAlias)
         DbSelectArea(cAlias)
 
         FillCursor(oTable, aSource, aColumns)

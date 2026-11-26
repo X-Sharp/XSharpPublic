@@ -160,7 +160,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             VAR cTable := oTable:Name
             VAR cAlias := Path.GetFileNameWithoutExtension(oTable:Name)
             if oTable:IsCursor
-                cTable := Path.GetTempFileName()
+                cTable := Path.Combine(Path.GetTempPath(), System.Guid.NewGuid():ToString("N") + ".dbf")
                 cAlias := oTable:Name
             ENDIF
             if RuntimeState.Workareas:FindAlias(cAlias) != 0

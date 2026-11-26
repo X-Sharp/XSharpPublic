@@ -81,31 +81,8 @@
 #command UPDATE [<*clauses*>] <x:SELECT,JOIN> <*moreclauses*> => __NOFOXPROSQL__ <(udc)>
 
 
-// SELECT forms currently executed by the embedded SQL runtime.
-#command SELECT [<*distinct*>] [TOP <*topcount*>] <*selectlist*> ;
-  FROM <*tablelist*> ;
-  [WHERE <*whereclause*>] ;
-  [ORDER BY <*orderbylist*>] => __SqlSelect(<"udc">)
-
-#command SELECT <*selectlist*> ;
-  FROM <*tablelist*> ;
-  [WHERE <*whereclause*>] ;
-  [ORDER BY <*orderbylist*>] => __SqlSelect(<"udc">)
-
-#command SELECT [<*distinct*>] [TOP <*topcount*>] <*selectlist*> ;
-  FROM <*tablelist*> ;
-  [WHERE <*whereclause*>] ;
-  [ORDER BY <*orderbylist*>] ;
-  INTO CURSOR <(targetCursor)> => __SqlSelect(<"udc">)
-
-#command SELECT <*selectlist*> ;
-  FROM <*tablelist*> ;
-  [WHERE <*whereclause*>] ;
-  [ORDER BY <*orderbylist*>] ;
-  INTO CURSOR <(targetCursor)> => __SqlSelect(<"udc">)
-
-// UNION branches and final clauses are parsed by the SQL runtime.
-#command SELECT <*selectbeforeunion*> UNION <*selectafterunion*> => __SqlSelect(<"udc">)
+// SQL Select command
+#command SELECT <*selectbeforefrom*> FROM <*selectafterfrom*> => __SqlSelect(<"udc">)
 
    #endif
 // EOF

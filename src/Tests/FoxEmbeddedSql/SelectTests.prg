@@ -157,7 +157,7 @@ FUNCTION TestSelectFunctionality() AS VOID
 
     LOCAL rejectedAggregateQuery := FALSE AS LOGIC
     TRY
-        __SqlSelect("SELECT SUM(COUNT(Id)) FROM test_select_table")
+        SELECT SUM(COUNT(Id)) FROM test_select_table
     CATCH aggregateError AS Exception
         rejectedAggregateQuery := TRUE
     END TRY
@@ -167,7 +167,7 @@ FUNCTION TestSelectFunctionality() AS VOID
 
     rejectedAggregateQuery := FALSE
     TRY
-        __SqlSelect("SELECT Name, COUNT(*) FROM test_select_table GROUP BY Age")
+        SELECT Name, COUNT(*) FROM test_select_table GROUP BY Age
     CATCH groupingError AS Exception
         rejectedAggregateQuery := TRUE
     END TRY
@@ -695,7 +695,7 @@ FUNCTION TestUnionFunctionality() AS VOID
 
     LOCAL incompatibleSchemaError := FALSE AS LOGIC
     TRY
-        __SqlSelect("SELECT Label FROM union_left UNION ALL SELECT Id FROM union_integer")
+        SELECT Label FROM union_left UNION ALL SELECT Id FROM union_integer
     CATCH ex AS Exception
         incompatibleSchemaError := ex:Message:Contains("incompatible types")
     END TRY
@@ -740,33 +740,33 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     INSERT INTO nested_child VALUES (4, "four")
     INSERT INTO nested_child VALUES (NULL, "null")
 
-    __SqlSelect("SELECT Id FROM nested_parent WHERE Id IN (SELECT Id FROM nested_child)")
+    SELECT Id FROM nested_parent WHERE Id IN (SELECT Id FROM nested_child)
     VerifyTable(2, "IN subquery should return matching outer values once", TRUE, {{2}, {4}})
 
-    __SqlSelect("SELECT Id FROM nested_parent WHERE Id IN (SELECT Id FROM nested_child WHERE Id = 2)")
+    SELECT Id FROM nested_parent WHERE Id IN (SELECT Id FROM nested_child WHERE Id = 2)
     VerifyTable(1, "IN subquery should execute its own WHERE clause", TRUE, {{2}})
 
-    __SqlSelect("SELECT Id FROM nested_parent WHERE Id IN (2, 4)")
+    SELECT Id FROM nested_parent WHERE Id IN (2, 4)
     VerifyTable(2, "Literal IN lists should remain executable", TRUE, {{2}, {4}})
 
-    __SqlSelect("SELECT Id FROM nested_parent WHERE Id IN (SELECT Id FROM nested_child WHERE Id = 2 UNION SELECT Id FROM nested_child WHERE Id = 4)")
+    SELECT Id FROM nested_parent WHERE Id IN (SELECT Id FROM nested_child WHERE Id = 2 UNION SELECT Id FROM nested_child WHERE Id = 4)
     VerifyTable(2, "IN subquery should support a UNION result", TRUE, {{2}, {4}})
 
-    __SqlSelect("SELECT Id FROM nested_parent WHERE Id NOT IN (SELECT Id FROM nested_child WHERE Id > 0)")
+    SELECT Id FROM nested_parent WHERE Id NOT IN (SELECT Id FROM nested_child WHERE Id > 0)
     VerifyTable(2, "NOT IN should exclude matching values and NULL outer values", TRUE, {{1}, {3}})
 
-    __SqlSelect("SELECT Id FROM nested_parent WHERE Id NOT IN (SELECT Id FROM nested_child)")
+    SELECT Id FROM nested_parent WHERE Id NOT IN (SELECT Id FROM nested_child)
     VerifyTable(0, "NOT IN should match no rows when the subquery contains NULL", TRUE)
 
-    __SqlSelect("SELECT Id FROM nested_parent WHERE Id IN (SELECT Id FROM nested_empty)")
+    SELECT Id FROM nested_parent WHERE Id IN (SELECT Id FROM nested_empty)
     VerifyTable(0, "IN an empty subquery should match no rows", TRUE)
 
-    __SqlSelect("SELECT Id FROM nested_parent WHERE Id NOT IN (SELECT Id FROM nested_empty)")
+    SELECT Id FROM nested_parent WHERE Id NOT IN (SELECT Id FROM nested_empty)
     VerifyTable(5, "NOT IN an empty subquery should match every outer row", TRUE)
 
     LOCAL invalidArityRejected := FALSE AS LOGIC
     TRY
-        __SqlSelect("SELECT Id FROM nested_parent WHERE Id IN (SELECT Id, Label FROM nested_child)")
+        SELECT Id FROM nested_parent WHERE Id IN (SELECT Id, Label FROM nested_child)
     CATCH ex AS Exception
         invalidArityRejected := ex:Message:Contains("exactly one column")
     END TRY
@@ -774,12 +774,12 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
         THROW Exception{"IN subquery should reject a result with multiple columns"}
     ENDIF
 
-    __SqlSelect("SELECT p.Id FROM nested_parent p WHERE p.Id IN (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id)")
+    SELECT p.Id FROM nested_parent p WHERE p.Id IN (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id)
     VerifyTable(2, "Correlated IN subqueries should evaluate against the current outer row", TRUE, {{2}, {4}})
 
     LOCAL unsupportedCorrelationRejected := FALSE AS LOGIC
     TRY
-        __SqlSelect("SELECT Id FROM nested_parent p WHERE Id IN (SELECT p.Id FROM nested_child c WHERE c.Id > 0)")
+        SELECT Id FROM nested_parent p WHERE Id IN (SELECT p.Id FROM nested_child c WHERE c.Id > 0)
     CATCH ex AS Exception
         unsupportedCorrelationRejected := ex:Message:Contains("immediate outer query")
     END TRY

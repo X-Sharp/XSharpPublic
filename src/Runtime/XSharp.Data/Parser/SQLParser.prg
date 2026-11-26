@@ -702,11 +702,22 @@ PARTIAL CLASS SQLParser
         ENDIF
 
         IF SELF:Expect(XTokenType.INTO)
-            IF !SELF:Expect(XTokenType.CURSOR) .OR. !SELF:Matches(XTokenType.ID)
-                SELF:SetError("Expected cursor name after INTO CURSOR")
+            IF SELF:Expect(XTokenType.CURSOR)
+                IF !SELF:Matches(XTokenType.ID)
+                    SELF:SetError("Expected cursor name after INTO CURSOR")
+                    RETURN FALSE
+                ENDIF
+                stmt:TargetCursor := SELF:ConsumeAndGetText()
+            ELSEIF SELF:Expect("ARRAY")
+                IF !SELF:Matches(XTokenType.ID)
+                    SELF:SetError("Expected array name after INTO ARRAY")
+                    RETURN FALSE
+                ENDIF
+                stmt:TargetArray := SELF:ConsumeAndGetText()
+            ELSE
+                SELF:SetError("Expected CURSOR or ARRAY after INTO")
                 RETURN FALSE
             ENDIF
-            stmt:TargetCursor := SELF:ConsumeAndGetText()
         ENDIF
         IF !SELF:Eos()
             SELF:SetError("Unexpected token after SELECT statement")

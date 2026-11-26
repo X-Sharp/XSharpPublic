@@ -429,6 +429,87 @@ FUNCTION TestSelectFunctionality() AS VOID
 
     RETURN
 
+FUNCTION TestSelectIntoArray() AS VOID
+    CREATE CURSOR sql_array_source (Id I NULL, Label C(10) NULL)
+    INSERT INTO sql_array_source VALUES (1, "One")
+    INSERT INTO sql_array_source VALUES (2, NULL)
+    INSERT INTO sql_array_source VALUES (3, "Three")
+
+    LOCAL arrayResult AS __FoxArray
+    arrayResult := __FoxArray{1, 1}
+    SELECT TOP 2 Id, Label FROM sql_array_source ORDER BY Id DESC INTO ARRAY arrayResult
+    IF ALen(arrayResult, 1) != 2 .OR. ALen(arrayResult, 2) != 2 .OR. ;
+       arrayResult[1, 1] != 3 .OR. arrayResult[1, 2] != "Three" .OR. ;
+       arrayResult[2, 1] != 2 .OR. !IsNull(arrayResult[2, 2])
+        THROW Exception{"SELECT INTO ARRAY should resize and populate a rows-by-columns array after ORDER BY and TOP"}
+    ENDIF
+    IF Alias() != "SQL_ARRAY_SOURCE"
+        THROW Exception{"SELECT INTO ARRAY should restore the source work area"}
+    ENDIF
+
+    LOCAL singleColumnResult AS __FoxArray
+    singleColumnResult := __FoxArray{1}
+    SELECT Id FROM sql_array_source WHERE Id = 1 INTO ARRAY singleColumnResult
+    IF ALen(singleColumnResult, 1) != 1 .OR. ALen(singleColumnResult, 2) != 1 .OR. singleColumnResult[1, 1] != 1
+        THROW Exception{"Single-column SELECT INTO ARRAY should produce a rows-by-one array"}
+    ENDIF
+
+    IF XSharp.MemVar.TryGet("FoxSqlCreatedArrayTarget", OUT VAR _)
+        XSharp.MemVar.Release("FoxSqlCreatedArrayTarget")
+    ENDIF
+    SELECT Id, Label FROM sql_array_source WHERE Id = 3 INTO ARRAY FoxSqlCreatedArrayTarget
+    IF !XSharp.MemVar.TryGet("FoxSqlCreatedArrayTarget", OUT VAR createdArrayValue) .OR. ;
+       !(createdArrayValue IS __FoxArray VAR createdArray) .OR. ;
+       ALen(createdArray, 1) != 1 .OR. ALen(createdArray, 2) != 2 .OR. ;
+       createdArray[1, 1] != 3 .OR. createdArray[1, 2] != "Three"
+        THROW Exception{"Nonempty SELECT INTO ARRAY should create and fill an undefined target"}
+    ENDIF
+    XSharp.MemVar.Release("FoxSqlCreatedArrayTarget")
+
+    LOCAL unionResult AS __FoxArray
+    unionResult := __FoxArray{1, 1}
+    SELECT Id, Label FROM sql_array_source WHERE Id = 1 UNION ALL ;
+        SELECT Id, Label FROM sql_array_source WHERE Id = 3 INTO ARRAY unionResult
+    IF ALen(unionResult, 1) != 2 .OR. ALen(unionResult, 2) != 2 .OR. ;
+       unionResult[1, 1] != 1 .OR. unionResult[2, 1] != 3
+        THROW Exception{"UNION SELECT INTO ARRAY should export the combined result"}
+    ENDIF
+
+    LOCAL unchangedArray AS __FoxArray
+    unchangedArray := __FoxArray{2, 2}
+    unchangedArray[1, 1] := 71
+    unchangedArray[1, 2] := "KEEP"
+    SELECT Id, Label FROM sql_array_source WHERE Id < 0 INTO ARRAY unchangedArray
+    IF ALen(unchangedArray, 1) != 2 .OR. ALen(unchangedArray, 2) != 2 .OR. ;
+       unchangedArray[1, 1] != 71 .OR. unchangedArray[1, 2] != "KEEP"
+        THROW Exception{"Empty SELECT INTO ARRAY should preserve the existing array"}
+    ENDIF
+
+    IF XSharp.MemVar.TryGet("FoxSqlEmptyArrayTarget", OUT VAR _)
+        XSharp.MemVar.Release("FoxSqlEmptyArrayTarget")
+    ENDIF
+    SELECT Id FROM sql_array_source WHERE Id < 0 INTO ARRAY FoxSqlEmptyArrayTarget
+    IF XSharp.MemVar.TryGet("FoxSqlEmptyArrayTarget", OUT VAR _)
+        THROW Exception{"Empty SELECT INTO ARRAY should not create an undefined target"}
+    ENDIF
+
+    LOCAL scalarTarget := 42 AS INT
+    LOCAL scalarTargetRejected := FALSE AS LOGIC
+    TRY
+        SELECT Id FROM sql_array_source WHERE Id = 1 INTO ARRAY scalarTarget
+    CATCH ex AS Exception
+        scalarTargetRejected := ex:Message:Contains("not an array")
+    END TRY
+    IF !scalarTargetRejected
+        THROW Exception{"SELECT INTO ARRAY should reject a scalar target"}
+    ENDIF
+    IF scalarTarget != 42
+        THROW Exception{"Rejected SELECT INTO ARRAY should leave the scalar target unchanged"}
+    ENDIF
+
+    USE IN sql_array_source
+    RETURN
+
 FUNCTION TestCrossJoinFunctionality() AS VOID
     ? "Testing CROSS JOIN functionality..."
 

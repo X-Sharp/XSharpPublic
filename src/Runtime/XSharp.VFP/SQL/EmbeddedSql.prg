@@ -124,12 +124,45 @@ FUNCTION __SqlCreateTable(sCommand as STRING) AS LOGIC
     endif
     THROW Error{"Syntax error in command: "+sCommand}
 
+[NeedsAccessToLocals(TRUE)];
 FUNCTION __SqlSelect(sCommand as STRING) AS VOID
     LOCAL savedArea := VoDbGetSelect() AS DWORD
     TRY
         var oContext := FoxEmbeddedSQL.ParseSqlSelect(sCommand)
         if (oContext != NULL)
-            FoxEmbeddedSQL.ExecuteSelect(oContext)
+            IF !String.IsNullOrEmpty(oContext:TargetArray)
+                LOCAL originalTargetCursor := oContext:TargetCursor AS STRING
+                LOCAL arrayCursor := "SQLARRAY" + System.Guid.NewGuid():ToString("N"):Substring(0, 8) AS STRING
+                LOCAL cursorPath := "" AS STRING
+                TRY
+                    oContext:TargetCursor := arrayCursor
+                    FoxEmbeddedSQL.ExecuteSelect(oContext)
+                    IF !Used(arrayCursor)
+                        THROW Error{"SELECT INTO ARRAY did not produce a result cursor"}
+                    ENDIF
+                    cursorPath := (arrayCursor)->DbInfo(DBI_FULLPATH)
+                    FoxEmbeddedSQL.CopySelectCursorToArray(arrayCursor, oContext:TargetArray)
+                FINALLY
+                    IF Used(arrayCursor)
+                        (arrayCursor)->DbCloseArea()
+                    ENDIF
+                    IF !String.IsNullOrEmpty(cursorPath)
+                        IF File.Exists(cursorPath)
+                            File.Delete(cursorPath)
+                        ENDIF
+                        VAR memoPath := System.IO.Path.ChangeExtension(cursorPath, ".fpt")
+                        IF File.Exists(memoPath)
+                            File.Delete(memoPath)
+                        ENDIF
+                    ENDIF
+                    oContext:TargetCursor := originalTargetCursor
+                    IF savedArea > 0
+                        DbSelectArea(savedArea)
+                    ENDIF
+                END TRY
+            ELSE
+                FoxEmbeddedSQL.ExecuteSelect(oContext)
+            ENDIF
         endif
     CATCH
         IF savedArea > 0

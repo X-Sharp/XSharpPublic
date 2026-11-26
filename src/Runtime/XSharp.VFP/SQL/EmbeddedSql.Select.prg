@@ -3787,6 +3787,44 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         NEXT
         RETURN
 
+    STATIC METHOD CopySelectCursorToArray(cursorName AS STRING, arrayName AS STRING) AS VOID
+        DbSelectArea(cursorName)
+
+        LOCAL rowCount := (LONG)RecCount() AS LONG
+        LOCAL columnCount := (LONG)FCount() AS LONG
+        LOCAL currentValue := NULL AS USUAL
+        LOCAL targetExists := XSharp.MemVar.TryGet(arrayName, OUT currentValue) AS LOGIC
+
+        IF targetExists .AND. !IsArray(currentValue)
+            THROW Error{__VfpStr(VFPErrors.VFP_VARIABLE_NOT_ARRAY, arrayName)}
+        ENDIF
+
+        // VFP leaves both undefined targets and existing arrays untouched when
+        // the SELECT produces no rows.
+        IF rowCount <= 0
+            RETURN
+        ENDIF
+
+        LOCAL targetArray AS __FoxArray
+        IF targetExists
+            targetArray := __FoxRedim(currentValue, (DWORD)rowCount, (DWORD)columnCount)
+        ELSE
+            targetArray := __FoxArray{(DWORD)rowCount, (DWORD)columnCount}
+        ENDIF
+
+        DbGoTop()
+        FOR LOCAL rowIndex := 1 AS LONG TO rowCount
+            FOR LOCAL columnIndex := 1 AS LONG TO columnCount
+                targetArray[rowIndex, columnIndex] := FieldGet((DWORD)columnIndex)
+            NEXT
+            IF rowIndex < rowCount
+                DbSkip(1)
+            ENDIF
+        NEXT
+
+        XSharp.MemVar.Put(arrayName, targetArray)
+        RETURN
+
     STATIC METHOD SqlExpressionToFieldName(expr AS SqlExpressionContext) AS STRING
         // Convert an SQL expression context to a VFP-compatible field name
         // This method handles different types of expressions and generates appropriate field names

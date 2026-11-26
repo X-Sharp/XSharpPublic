@@ -143,6 +143,7 @@ CLASS FoxSelectContext
     PROPERTY JoinList    AS List<STRING> AUTO
     PROPERTY Joins       AS List<FoxSelectJoinContext> AUTO
     PROPERTY TargetCursor AS STRING AUTO  // Property to store the target cursor name for INTO CURSOR
+    PROPERTY TargetArray AS STRING AUTO   // Target variable name for INTO ARRAY
     PROPERTY WhereClause AS SqlExpressionContext AUTO
     PROPERTY GroupByClause AS SqlExpressionContext AUTO
     // GroupByClause remains the first item for callers compiled against the

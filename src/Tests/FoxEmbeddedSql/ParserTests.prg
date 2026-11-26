@@ -75,6 +75,18 @@ FUNCTION TestSelectParsing() AS VOID
         THROW Exception{ "Failed to parse SELECT statement: " + parser:Error }
     ENDIF
 
+    VAR arrayOutputParser := SQLParser{XTokenList{XSqlLexer{"SELECT Id FROM Customers INTO ARRAY CustomerRows"}:AllTokens()}}
+    LOCAL arrayOutputCtx AS FoxSelectContext
+    IF !arrayOutputParser:ParseSelectStatement(OUT arrayOutputCtx) .OR. ;
+       arrayOutputCtx:TargetArray != "CustomerRows" .OR. !String.IsNullOrEmpty(arrayOutputCtx:TargetCursor)
+        THROW Exception{"SELECT INTO ARRAY should retain its target and not set a cursor target: " + arrayOutputParser:Error}
+    ENDIF
+
+    VAR invalidArrayOutputParser := SQLParser{XTokenList{XSqlLexer{"SELECT Id FROM Customers INTO ARRAY"}:AllTokens()}}
+    IF invalidArrayOutputParser:ParseSelectStatement(OUT VAR _)
+        THROW Exception{"SELECT INTO ARRAY without a target should be rejected"}
+    ENDIF
+
     VAR joinLexer := XSqlLexer{"SELECT a.Id FROM TableA a JOIN TableB b ON a.Id = b.Id INNER JOIN TableC c ON b.Id = c.Id"}
     VAR joinParser := SqlParser{XTokenList{joinLexer:AllTokens()}}
     LOCAL joinCtx AS FoxSelectContext

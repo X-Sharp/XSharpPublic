@@ -74,6 +74,7 @@
     <Compile Include="TestItemCode.prg" />
     <Compile Include="TestTemplateHelper.prg" />
     <Compile Include="TestXPorterSCXVCX.prg" />
+    <Compile Include="TestXPorterSettings.prg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Files" />

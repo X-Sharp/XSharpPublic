@@ -83,6 +83,9 @@ INTERNAL STATIC CLASS SqlOptimizationDiagnostics
     INTERNAL STATIC HashJoins AS INT
     INTERNAL STATIC ExistsExecutions AS INT
     INTERNAL STATIC ScalarExecutions AS INT
+    INTERNAL STATIC MembershipBitmaps AS INT
+    INTERNAL STATIC MembershipCandidates AS INT
+    INTERNAL STATIC MembershipScanned AS INT
 END CLASS
 
 // -1 is UNKNOWN, 0 is FALSE and 1 is TRUE.
@@ -997,6 +1000,237 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         ENDIF
         RETURN FALSE
 
+    // Only a positive conjunct can safely discard rows before the full WHERE.
+    PRIVATE STATIC METHOD FindMembershipCandidate(expression AS SqlExpressionContext, ;
+        aliases AS Dictionary<STRING,STRING>, tableName AS STRING) AS SqlInSubqueryExpressionContext
+        IF expression IS SqlParenExpressionContext VAR paren
+            RETURN FindMembershipCandidate(paren:Expr, aliases, tableName)
+        ELSEIF expression IS SqlLogicExpressionContext VAR logicExpression .AND. ;
+               logicExpression:Op:Type == XTokenType.AND
+            VAR candidate := FindMembershipCandidate(logicExpression:Left, aliases, tableName)
+            IF candidate != NULL
+                RETURN candidate
+            ENDIF
+            RETURN FindMembershipCandidate(logicExpression:Right, aliases, tableName)
+        ELSEIF expression IS SqlInSubqueryExpressionContext VAR inExpression
+            IF inExpression:Values == NULL .OR. HasExternalSubqueryReference(inExpression:Subquery) .OR. ;
+               !(inExpression:ValueExpression IS SqlNameExpressionContext VAR field) .OR. ;
+               String.IsNullOrEmpty(field:Table)
+                RETURN NULL
+            ENDIF
+            LOCAL resolved := field:Table AS STRING
+            IF aliases:ContainsKey(field:Table)
+                resolved := aliases[field:Table]
+            ENDIF
+            IF String.Equals(resolved, tableName, StringComparison.OrdinalIgnoreCase)
+                RETURN inExpression
+            ENDIF
+        ENDIF
+        RETURN NULL
+
+    // Pruning must not suppress a scalar cardinality error or a failure opening
+    // a correlated source. Only admit correlated shapes whose execution is
+    // known to be single-row (COUNT) or existence-only and uses open fields.
+    PRIVATE STATIC METHOD IsSafeCorrelatedCandidate(query AS FoxSelectContext, ;
+        outerAliases AS Dictionary<STRING,STRING>, scalar AS LOGIC) AS LOGIC
+        IF query:TableList:Count != 1 .OR. query:SelectList:Count != 1 .OR. ;
+           query:Joins:Count != 0 .OR. query:GroupByItems:Count != 0 .OR. ;
+           query:HavingClause != NULL .OR. query:UnionBranches:Count != 0 .OR. ;
+           query:OrderByClause:Count != 0 .OR. query:IsDistinct .OR. ;
+           !String.IsNullOrEmpty(query:TopCount)
+            RETURN FALSE
+        ENDIF
+        LOCAL innerTable := (STRING)query:TableList[0] AS STRING
+        IF !Used(innerTable)
+            RETURN FALSE
+        ENDIF
+        IF scalar
+            IF !(query:SelectList[0] IS SqlAggregateExpressionContext VAR aggregate) .OR. ;
+               !aggregate:IsStar .OR. ;
+               !(String.Equals(aggregate:FunctionName, "COUNT", StringComparison.OrdinalIgnoreCase) .OR. ;
+                 String.Equals(aggregate:FunctionName, "CNT", StringComparison.OrdinalIgnoreCase))
+                RETURN FALSE
+            ENDIF
+        ELSE
+            IF !(query:SelectList[0] IS SqlNameExpressionContext VAR selected) .OR. ;
+               String.IsNullOrEmpty(selected:Table) .OR. !query:TableAliases:ContainsKey(selected:Table) .OR. ;
+               !String.Equals(query:TableAliases[selected:Table], innerTable, StringComparison.OrdinalIgnoreCase) .OR. ;
+               (innerTable)->FieldPos(selected:Name) == 0 .OR. ;
+               !IsHashJoinFieldType(HashJoinFieldType(innerTable, selected:Name))
+                RETURN FALSE
+            ENDIF
+        ENDIF
+        IF !(query:WhereClause IS SqlCompareExpressionContext VAR comparison) .OR. ;
+           !(comparison:Left IS SqlNameExpressionContext VAR leftField) .OR. ;
+           !(comparison:Right IS SqlNameExpressionContext VAR rightField) .OR. ;
+           comparison:Op:Type != XTokenType.EQ
+            RETURN FALSE
+        ENDIF
+        IF String.IsNullOrEmpty(leftField:Table) .OR. String.IsNullOrEmpty(rightField:Table)
+            RETURN FALSE
+        ENDIF
+        LOCAL innerField AS SqlNameExpressionContext
+        LOCAL outerField AS SqlNameExpressionContext
+        IF query:TableAliases:ContainsKey(leftField:Table) .AND. outerAliases:ContainsKey(rightField:Table)
+            innerField := leftField
+            outerField := rightField
+        ELSEIF query:TableAliases:ContainsKey(rightField:Table) .AND. outerAliases:ContainsKey(leftField:Table)
+            innerField := rightField
+            outerField := leftField
+        ELSE
+            RETURN FALSE
+        ENDIF
+        VAR outerTable := outerAliases[outerField:Table]
+        IF !String.Equals(query:TableAliases[innerField:Table], innerTable, StringComparison.OrdinalIgnoreCase) .OR. ;
+           !Used(outerTable) .OR. (innerTable)->FieldPos(innerField:Name) == 0 .OR. ;
+           (outerTable)->FieldPos(outerField:Name) == 0
+            RETURN FALSE
+        ENDIF
+        VAR innerType := HashJoinFieldType(innerTable, innerField:Name)
+        VAR outerType := HashJoinFieldType(outerTable, outerField:Name)
+        RETURN IsHashJoinFieldType(innerType) .AND. String.Equals(innerType, outerType, StringComparison.OrdinalIgnoreCase)
+
+    PRIVATE STATIC METHOD HasUnsafeCorrelatedCandidate(expression AS SqlExpressionContext, ;
+        outerAliases AS Dictionary<STRING,STRING>) AS LOGIC
+        IF expression IS SqlScalarSubqueryExpressionContext VAR scalarExpression
+            RETURN HasExternalSubqueryReference(scalarExpression:Subquery) .AND. ;
+                   !IsSafeCorrelatedCandidate(scalarExpression:Subquery, outerAliases, TRUE)
+        ELSEIF expression IS SqlExistsSubqueryExpressionContext VAR existsExpression
+            RETURN HasExternalSubqueryReference(existsExpression:Subquery) .AND. ;
+                   !IsSafeCorrelatedCandidate(existsExpression:Subquery, outerAliases, FALSE)
+        ELSEIF expression IS SqlInSubqueryExpressionContext VAR inExpression
+            RETURN HasExternalSubqueryReference(inExpression:Subquery)
+        ELSEIF expression IS SqlParenExpressionContext VAR paren
+            RETURN HasUnsafeCorrelatedCandidate(paren:Expr, outerAliases)
+        ELSEIF expression IS SqlPrefixExpressionContext VAR prefix
+            RETURN HasUnsafeCorrelatedCandidate(prefix:Expr, outerAliases)
+        ELSEIF expression IS SqlBinaryExpressionContext VAR binary
+            RETURN HasUnsafeCorrelatedCandidate(binary:Left, outerAliases) .OR. ;
+                   HasUnsafeCorrelatedCandidate(binary:Right, outerAliases)
+        ELSEIF expression IS SqlCompositeExpressionContext VAR composite
+            FOREACH VAR item IN composite:Exprs
+                IF HasUnsafeCorrelatedCandidate(item, outerAliases)
+                    RETURN TRUE
+                ENDIF
+            NEXT
+        ENDIF
+        RETURN FALSE
+
+    PRIVATE STATIC METHOD IsSafeMembershipOperand(expression AS SqlExpressionContext, ;
+        outerAliases AS Dictionary<STRING,STRING>) AS LOGIC
+        IF expression IS SqlScalarSubqueryExpressionContext VAR scalarExpression
+            RETURN !HasExternalSubqueryReference(scalarExpression:Subquery) .OR. ;
+                   IsSafeCorrelatedCandidate(scalarExpression:Subquery, outerAliases, TRUE)
+        ELSEIF expression IS SqlNameExpressionContext VAR field
+            IF String.IsNullOrEmpty(field:Table) .OR. !outerAliases:ContainsKey(field:Table)
+                RETURN FALSE
+            ENDIF
+            VAR tableName := outerAliases[field:Table]
+            RETURN Used(tableName) .AND. (tableName)->FieldPos(field:Name) > 0
+        ELSEIF expression IS SqlSimpleExpressionContext VAR simple
+            IF simple:Tokens == NULL .OR. simple:Tokens:Count != 1
+                RETURN FALSE
+            ENDIF
+            VAR tokenType := simple:Tokens[0]:Type
+            RETURN tokenType == XTokenType.NUMERIC_CONST .OR. tokenType == XTokenType.STRING_CONST .OR. ;
+                   tokenType == XTokenType.DATE_CONST .OR. tokenType == XTokenType.DATETIME_CONST .OR. ;
+                   tokenType == XTokenType.TRUE_CONST .OR. tokenType == XTokenType.FALSE_CONST
+        ENDIF
+        RETURN FALSE
+
+    PRIVATE STATIC METHOD IsNumericMembershipOperand(expression AS SqlExpressionContext, ;
+        outerAliases AS Dictionary<STRING,STRING>) AS LOGIC
+        IF expression IS SqlScalarSubqueryExpressionContext VAR scalarExpression
+            // Deferred correlated values have not been read yet. Eligibility
+            // already restricts them to COUNT(*), which is numeric.
+            RETURN IsNil(scalarExpression:Value) .OR. scalarExpression:Value:IsNull .OR. scalarExpression:Value:IsNumeric
+        ELSEIF expression IS SqlNameExpressionContext VAR field
+            IF String.IsNullOrEmpty(field:Table) .OR. !outerAliases:ContainsKey(field:Table)
+                RETURN FALSE
+            ENDIF
+            RETURN IsHashJoinFieldType(HashJoinFieldType(outerAliases[field:Table], field:Name))
+        ELSEIF expression IS SqlSimpleExpressionContext VAR simple
+            RETURN simple:Tokens != NULL .AND. simple:Tokens:Count == 1 .AND. ;
+                   simple:Tokens[0]:Type == XTokenType.NUMERIC_CONST
+        ENDIF
+        RETURN FALSE
+
+    // Do not skip evaluation of volatile expressions or expressions that can
+    // fail on rows rejected by the bitmap.
+    PRIVATE STATIC METHOD IsSafeMembershipRemainder(expression AS SqlExpressionContext, ;
+        outerAliases AS Dictionary<STRING,STRING>, hasScalar AS LOGIC) AS LOGIC
+        IF expression IS SqlParenExpressionContext VAR paren
+            RETURN IsSafeMembershipRemainder(paren:Expr, outerAliases, hasScalar)
+        ELSEIF expression IS SqlLogicExpressionContext VAR logicExpression
+            RETURN logicExpression:Op:Type == XTokenType.AND .AND. ;
+                   IsSafeMembershipRemainder(logicExpression:Left, outerAliases, hasScalar) .AND. ;
+                   IsSafeMembershipRemainder(logicExpression:Right, outerAliases, hasScalar)
+        ELSEIF expression IS SqlCompareExpressionContext VAR comparison
+            RETURN IsSafeMembershipOperand(comparison:Left, outerAliases) .AND. ;
+                   IsSafeMembershipOperand(comparison:Right, outerAliases) .AND. ;
+                   (!hasScalar .OR. (IsNumericMembershipOperand(comparison:Left, outerAliases) .AND. ;
+                                     IsNumericMembershipOperand(comparison:Right, outerAliases)))
+        ELSEIF expression IS SqlInSubqueryExpressionContext VAR inExpression
+            RETURN inExpression:Values != NULL .AND. !HasExternalSubqueryReference(inExpression:Subquery) .AND. ;
+                   IsSafeMembershipOperand(inExpression:ValueExpression, outerAliases)
+        ELSEIF expression IS SqlExistsSubqueryExpressionContext VAR existsExpression
+            RETURN !HasExternalSubqueryReference(existsExpression:Subquery) .OR. ;
+                   IsSafeCorrelatedCandidate(existsExpression:Subquery, outerAliases, FALSE)
+        ENDIF
+        RETURN FALSE
+
+    PRIVATE STATIC METHOD BuildMembershipCandidates(expression AS SqlInSubqueryExpressionContext, ;
+        aliases AS Dictionary<STRING,STRING>, tableName AS STRING) AS List<LONG>
+        LOCAL selectedArea := VoDbGetSelect() AS DWORD
+        LOCAL savedRecNo := (LONG)(tableName)->RecNo() AS LONG
+        LOCAL wasBof := (tableName)->Bof() AS LOGIC
+        LOCAL wasEof := (tableName)->Eof() AS LOGIC
+        LOCAL candidates := NULL AS List<LONG>
+        TRY
+            VAR predicate := MCompile(expression:ToResolvedString(aliases))
+            IF predicate == NULL
+                RETURN NULL
+            ENDIF
+            VAR bitmap := RecordBitmap{}
+            bitmap:Length := (LONG)(tableName)->RecCount()
+            VAR visited := List<LONG>{}
+            (tableName)->DbGoTop()
+            DO WHILE !(tableName)->Eof()
+                LOCAL recordNumber := (LONG)(tableName)->RecNo() AS LONG
+                VAR matchValue := (USUAL)predicate:Eval()
+                visited:Add(recordNumber)
+                IF !IsNil(matchValue) .AND. !matchValue:IsNull .AND. (LOGIC)matchValue
+                    bitmap:SetMatchState(recordNumber, RecordBitmap.RecordMatchState.Match)
+                ENDIF
+                (tableName)->DbSkip(1)
+            ENDDO
+            candidates := List<LONG>{}
+            FOREACH VAR recordNumber IN visited
+                IF bitmap:GetMatchState(recordNumber) == RecordBitmap.RecordMatchState.Match
+                    candidates:Add(recordNumber)
+                ENDIF
+            NEXT
+            System.Threading.Interlocked.Increment(REF SqlOptimizationDiagnostics.MembershipBitmaps)
+            System.Threading.Interlocked.Add(REF SqlOptimizationDiagnostics.MembershipCandidates, candidates:Count)
+            System.Threading.Interlocked.Add(REF SqlOptimizationDiagnostics.MembershipScanned, visited:Count)
+        CATCH ex AS Exception
+            candidates := NULL
+        FINALLY
+            IF wasBof .AND. !wasEof
+                (tableName)->DbGoTop()
+                (tableName)->DbSkip(-1)
+            ELSEIF wasEof
+                (tableName)->DbGoBottom()
+                (tableName)->DbSkip(1)
+            ELSE
+                DbGoto(savedRecNo, tableName)
+            ENDIF
+            IF selectedArea > 0
+                DbSelectArea(selectedArea)
+            ENDIF
+        END TRY
+        RETURN candidates
+
     PRIVATE STATIC METHOD BuildThreeValueOperand(expression AS SqlExpressionContext, ;
         aliases AS Dictionary<STRING,STRING>) AS SqlThreeValuePredicate
         VAR operand := SqlThreeValuePredicate{}
@@ -1703,11 +1937,28 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         LOCAL useOptimization AS LOGIC
         LOCAL multiTableCandidates AS Dictionary<STRING,RecordBitmap>
         LOCAL multiTableCandidateRows AS Dictionary<STRING,List<LONG>>
+        LOCAL useMembershipCandidates := FALSE AS LOGIC
         useOptimization := FALSE
         multiTableCandidates := NULL
         multiTableCandidateRows := NULL
 
+        IF SqlOptimizationsEnabled() .AND. hasWhereClause .AND. correlatedInPlan == NULL .AND. ;
+           !HasUnsafeCorrelatedCandidate(selectCtx:WhereClause, selectCtx:TableAliases) .AND. ;
+           IsSafeMembershipRemainder(selectCtx:WhereClause, selectCtx:TableAliases, ContainsScalarSubquery(selectCtx:WhereClause)) .AND. ;
+           tableNames:Count == 1 .AND. selectCtx:Joins:Count == 0
+            VAR membershipCandidate := FindMembershipCandidate(selectCtx:WhereClause, selectCtx:TableAliases, (STRING)tableNames[1])
+            IF membershipCandidate != NULL
+                VAR candidateRows := BuildMembershipCandidates(membershipCandidate, selectCtx:TableAliases, (STRING)tableNames[1])
+                IF candidateRows != NULL
+                    multiTableCandidateRows := Dictionary<STRING,List<LONG>>{StringComparer.OrdinalIgnoreCase}
+                    multiTableCandidateRows[(STRING)tableNames[1]] := candidateRows
+                    useMembershipCandidates := TRUE
+                ENDIF
+            ENDIF
+        ENDIF
+
         IF SqlOptimizationsEnabled() .AND. hasWhereClause .AND. !hasCorrelatedWhere .AND. threeValueWhere == NULL .AND. correlatedInPlan == NULL .AND. ;
+           multiTableCandidateRows == NULL .AND. ;
            tableNames:Count == 1
             // Get the record count for optimization (only single table queries supported)
             LOCAL tableName AS STRING
@@ -1908,6 +2159,8 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                    multiTableCandidateRows:TryGetValue((STRING)tableNames[i], OUT candidateRecNos)
                     IF candidateRecNos:Count > 0
                         DbGoto(candidateRecNos[0], tableNames[i])
+                    ELSEIF useMembershipCandidates
+                        (tableNames[i])->DbGoTop()
                     ENDIF
                 ELSE
                     (tableNames[i])->DbGoTop()
@@ -2145,7 +2398,11 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                         tablePositions[positionIdx] := 1
                         IF multiTableCandidateRows != NULL .AND. ;
                            multiTableCandidateRows:TryGetValue((STRING)tableNames[positionIdx], OUT candidateRecNos)
-                            DbGoto(candidateRecNos[0], tableNames[positionIdx])
+                            IF useMembershipCandidates .AND. ALen(tableNames) == 1
+                                (tableNames[positionIdx])->DbGoTop()
+                            ELSE
+                                DbGoto(candidateRecNos[0], tableNames[positionIdx])
+                            ENDIF
                         ELSE
                             (tableNames[positionIdx])->DbGoTop()
                         ENDIF

@@ -116,10 +116,13 @@ FUNCTION Start(args AS STRING[]) AS VOID STRICT
     RegisterTest("TestLeftOuterJoin [baseline]", { => TestLeftOuterJoin() }, TRUE)
     RegisterTest("TestQueryOptimizer", { => TestQueryOptimizer() })
     RegisterTest("TestOptimizerBitmap", { => TestOptimizerBitmap() })
+    RegisterTest("TestMembershipBitmap [optimized]", { => TestMembershipBitmap() })
+    RegisterTest("TestMembershipBitmap [baseline]", { => TestMembershipBitmap() }, TRUE)
     RegisterTest("TestMultiTableOptimizer [optimized]", { => TestMultiTableOptimizer() })
     RegisterTest("TestMultiTableOptimizer [baseline]", { => TestMultiTableOptimizer() }, TRUE)
     RegisterTest("TestSparseOptimizationBenchmark", { => TestSparseOptimizationBenchmark() })
     RegisterTest("TestCorrelatedInOptimizationBenchmark", { => TestCorrelatedInOptimizationBenchmark() })
+    RegisterTest("TestMembershipBitmapBenchmark", { => TestMembershipBitmapBenchmark() })
 
     LOCAL results := RunTests()
 

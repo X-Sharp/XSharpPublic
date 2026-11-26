@@ -268,6 +268,240 @@ FUNCTION TestMultiTableOptimizer() AS VOID STRICT
     DbCloseAll()
 RETURN
 
+FUNCTION TestMembershipBitmap() AS VOID
+    CREATE CURSOR bitmap_outer (Id I NULL, Flag I)
+    CREATE CURSOR bitmap_inner (Id I NULL)
+    CREATE CURSOR bitmap_empty (Id I NULL)
+    INSERT INTO bitmap_outer VALUES (4, 4)
+    INSERT INTO bitmap_outer VALUES (1, 1)
+    INSERT INTO bitmap_outer VALUES (3, 3)
+    INSERT INTO bitmap_outer VALUES (2, 2)
+    INSERT INTO bitmap_outer VALUES (NULL, 5)
+    INSERT INTO bitmap_inner VALUES (2)
+    INSERT INTO bitmap_inner VALUES (2)
+    INSERT INTO bitmap_inner VALUES (4)
+    INSERT INTO bitmap_inner VALUES (NULL)
+
+    LOCAL oldDeleted := SetDeleted() AS LOGIC
+    LOCAL disabled := FALSE AS LOGIC
+    AppContext.TryGetSwitch("XSharp.VFP.EmbeddedSql.DisableOptimizations", OUT disabled)
+    TRY
+        LOCAL before := SqlOptimizationCount("MembershipBitmaps") AS INT
+        SELECT p.Id FROM bitmap_outer p WHERE p.Id IN (SELECT i.Id FROM bitmap_inner i)
+        VerifySqlOptimization("MembershipBitmaps", before)
+        VerifyTable(2, "Membership bitmap should preserve outer order and duplicate semantics", TRUE, {{4}, {2}})
+        before := SqlOptimizationCount("MembershipBitmaps")
+        SELECT TOP 1 p.Id FROM bitmap_outer p WHERE p.Id IN (SELECT i.Id FROM bitmap_inner i)
+        VerifySqlOptimization("MembershipBitmaps", before)
+        VerifyTable(1, "TOP should retain the first matching candidate", TRUE, {{4}})
+
+        before := SqlOptimizationCount("MembershipBitmaps")
+        SELECT p.Id FROM bitmap_outer p WHERE p.Id NOT IN (SELECT i.Id FROM bitmap_inner i WHERE i.Id > 0)
+        VerifySqlOptimization("MembershipBitmaps", before)
+        VerifyTable(2, "NOT IN candidates should exclude NULL outer values", TRUE, {{1}, {3}})
+        DbSelectArea("bitmap_outer")
+        IF RecNo() != 1
+            THROW Exception{"Membership candidate traversal should leave the same source position as baseline"}
+        ENDIF
+
+        before := SqlOptimizationCount("MembershipBitmaps")
+        SELECT p.Id FROM bitmap_outer p WHERE p.Id NOT IN (SELECT i.Id FROM bitmap_inner i)
+        VerifySqlOptimization("MembershipBitmaps", before)
+        VerifyTable(0, "NOT IN with NULL should have no matching candidates", TRUE)
+
+        before := SqlOptimizationCount("MembershipBitmaps")
+        SELECT p.Id FROM bitmap_outer p WHERE p.Id IN (SELECT i.Id FROM bitmap_empty i)
+        VerifySqlOptimization("MembershipBitmaps", before)
+        VerifyTable(0, "Empty IN should have no candidates", TRUE)
+        DbSelectArea("bitmap_outer")
+        IF RecNo() != 1
+            THROW Exception{"Empty candidates should leave the same source position as baseline"}
+        ENDIF
+        INSERT INTO bitmap_empty VALUES (1)
+        before := SqlOptimizationCount("MembershipBitmaps")
+        SELECT p.Id FROM bitmap_outer p WHERE p.Id IN (SELECT i.Id FROM bitmap_empty i)
+        VerifySqlOptimization("MembershipBitmaps", before)
+        VerifyTable(1, "Membership bitmap should be rebuilt after inner data changes", TRUE, {{1}})
+
+        before := SqlOptimizationCount("MembershipBitmaps")
+        SELECT p.Id FROM bitmap_outer p WHERE p.Id IN (SELECT i.Id FROM bitmap_inner i) AND p.Flag = 3
+        VerifySqlOptimization("MembershipBitmaps", before)
+        VerifyTable(0, "The complete WHERE predicate must filter candidates", TRUE)
+
+        LOCAL existsBefore := SqlOptimizationCount("ExistsExecutions") AS INT
+        before := SqlOptimizationCount("MembershipBitmaps")
+        SELECT p.Id FROM bitmap_outer p WHERE p.Id IN (SELECT i.Id FROM bitmap_inner i) AND EXISTS (SELECT e.Id FROM bitmap_inner e WHERE e.Id = p.Id)
+        VerifySqlOptimization("MembershipBitmaps", before)
+        VerifyTable(2, "Membership bitmap should retain the complete correlated WHERE", TRUE, {{4}, {2}})
+        IF SqlOptimizationCount("ExistsExecutions") - existsBefore != IIF(disabled, 5, 2)
+            THROW Exception{"Membership bitmap should reduce correlated EXISTS executions"}
+        ENDIF
+
+        LOCAL scalarBefore := SqlOptimizationCount("ScalarExecutions") AS INT
+        before := SqlOptimizationCount("MembershipBitmaps")
+        SELECT p.Id FROM bitmap_outer p WHERE p.Id IN (SELECT i.Id FROM bitmap_inner i WHERE i.Id = 4) AND 1 = (SELECT COUNT(*) FROM bitmap_inner e WHERE e.Id = p.Id)
+        VerifySqlOptimization("MembershipBitmaps", before)
+        VerifyTable(1, "Membership candidates should retain the correlated scalar predicate", TRUE, {{4}})
+        IF SqlOptimizationCount("ScalarExecutions") - scalarBefore != IIF(disabled, 5, 1)
+            THROW Exception{"Membership bitmap should reduce correlated scalar executions"}
+        ENDIF
+
+        before := SqlOptimizationCount("MembershipBitmaps")
+        LOCAL cardinalityRejected := FALSE AS LOGIC
+        TRY
+            SELECT p.Id FROM bitmap_outer p WHERE p.Id IN (SELECT i.Id FROM bitmap_inner i WHERE i.Id = 4) AND p.Id = (SELECT e.Id FROM bitmap_inner e WHERE e.Id = p.Id)
+        CATCH ex AS Exception
+            cardinalityRejected := ex:Message:Contains("more than one record")
+        END TRY
+        IF !cardinalityRejected .OR. SqlOptimizationCount("MembershipBitmaps") != before
+            THROW Exception{"Bitmap must not hide correlated scalar cardinality errors"}
+        ENDIF
+
+        before := SqlOptimizationCount("MembershipBitmaps")
+        SELECT p.Id FROM bitmap_outer p WHERE p.Id IN (SELECT i.Id FROM bitmap_inner i) OR p.Flag = 1
+        IF SqlOptimizationCount("MembershipBitmaps") != before
+            THROW Exception{"OR predicates should not build a membership bitmap"}
+        ENDIF
+        VerifyTable(3, "OR fallback should preserve all rows", TRUE, {{4}, {1}, {2}})
+
+        before := SqlOptimizationCount("MembershipBitmaps")
+        SELECT p.Id FROM bitmap_outer p WHERE NOT (p.Id IN (SELECT i.Id FROM bitmap_inner i))
+        IF SqlOptimizationCount("MembershipBitmaps") != before
+            THROW Exception{"NOT around IN should not build a membership bitmap"}
+        ENDIF
+        VerifyTable(0, "NOT IN fallback should preserve NULL semantics", TRUE)
+
+        before := SqlOptimizationCount("MembershipBitmaps")
+        SELECT Id FROM bitmap_outer p WHERE Id IN (SELECT i.Id FROM bitmap_inner i)
+        IF SqlOptimizationCount("MembershipBitmaps") != before
+            THROW Exception{"Unqualified membership values should use the fallback"}
+        ENDIF
+        VerifyTable(2, "Unqualified membership fallback should retain matches", TRUE, {{4}, {2}})
+
+        before := SqlOptimizationCount("MembershipBitmaps")
+        SELECT p.Id FROM bitmap_outer p WHERE (p.Id + 0) IN (SELECT i.Id FROM bitmap_inner i)
+        IF SqlOptimizationCount("MembershipBitmaps") != before
+            THROW Exception{"Membership value expressions should use the fallback"}
+        ENDIF
+        VerifyTable(2, "Membership expression fallback should retain matches", TRUE, {{4}, {2}})
+
+        before := SqlOptimizationCount("MembershipBitmaps")
+        SELECT p.Id FROM bitmap_outer p WHERE p.Id IN (SELECT i.Id FROM bitmap_inner i WHERE i.Id = p.Id AND i.Id = 4)
+        IF SqlOptimizationCount("MembershipBitmaps") != before
+            THROW Exception{"Correlated IN should not use membership candidate bitmaps"}
+        ENDIF
+        VerifyTable(1, "Correlated IN fallback should retain matches", TRUE, {{4}})
+
+        before := SqlOptimizationCount("MembershipBitmaps")
+        SELECT p.Id FROM bitmap_outer p CROSS JOIN bitmap_inner b WHERE p.Id IN (SELECT i.Id FROM bitmap_inner i) AND b.Id > 0
+        IF SqlOptimizationCount("MembershipBitmaps") != before
+            THROW Exception{"Joins should not use single-table membership candidates"}
+        ENDIF
+        VerifyTable(6, "Join fallback should retain row combinations", TRUE)
+
+        DbSelectArea("bitmap_outer")
+        IF !DbCreateOrder("BMFlag",, "Flag")
+            THROW Exception{"Could not create membership bitmap index"}
+        ENDIF
+        OrdSetFocus("BMFlag")
+        DbSetFilter("Id >= 2")
+        before := SqlOptimizationCount("MembershipBitmaps")
+        SELECT p.Id FROM bitmap_outer p WHERE p.Id IN (SELECT i.Id FROM bitmap_inner i)
+        VerifySqlOptimization("MembershipBitmaps", before)
+        VerifyTable(2, "Bitmap candidates should preserve filter and index traversal", TRUE, {{2}, {4}})
+        DbSelectArea("bitmap_outer")
+        IF String.IsNullOrWhiteSpace((STRING)DbInfo(DBI_DBFILTER))
+            THROW Exception{"Membership scan cleared the source filter"}
+        ENDIF
+        DbSetFilter(NULL)
+        OrdSetFocus(0)
+        GO 1
+        __DbDelete()
+        SetDeleted(TRUE)
+        before := SqlOptimizationCount("MembershipBitmaps")
+        SELECT p.Id FROM bitmap_outer p WHERE p.Id IN (SELECT i.Id FROM bitmap_inner i)
+        VerifySqlOptimization("MembershipBitmaps", before)
+        VerifyTable(1, "Membership scan should respect SET DELETED", TRUE, {{2}})
+    FINALLY
+        SetDeleted(oldDeleted)
+        IF Used("bitmap_outer")
+            DbSelectArea("bitmap_outer")
+            DbSetFilter(NULL)
+            USE IN bitmap_outer
+        ENDIF
+        IF Used("bitmap_inner")
+            USE IN bitmap_inner
+        ENDIF
+        IF Used("bitmap_empty")
+            USE IN bitmap_empty
+        ENDIF
+    END TRY
+    RETURN
+
+FUNCTION TestMembershipBitmapBenchmark() AS VOID
+    CREATE CURSOR bm_bench_outer (Id I)
+    CREATE CURSOR bm_bench_inner (Id I)
+    FOR LOCAL rowIndex := 1 AS INT TO 80
+        INSERT INTO bm_bench_outer VALUES (rowIndex)
+    NEXT
+    INSERT INTO bm_bench_inner VALUES (1)
+    INSERT INTO bm_bench_inner VALUES (2)
+    LOCAL switchName := "XSharp.VFP.EmbeddedSql.DisableOptimizations" AS STRING
+    LOCAL previousSwitch := FALSE AS LOGIC
+    LOCAL switchWasSet := AppContext.TryGetSwitch(switchName, OUT previousSwitch) AS LOGIC
+    LOCAL timer := Stopwatch{} AS Stopwatch
+    LOCAL optimizedMilliseconds AS INT64
+    LOCAL baselineMilliseconds AS INT64
+    TRY
+        AppContext.SetSwitch(switchName, FALSE)
+        SELECT COUNT(*) AS Matches FROM bm_bench_outer p WHERE p.Id IN (SELECT i.Id FROM bm_bench_inner i) AND EXISTS (SELECT e.Id FROM bm_bench_inner e WHERE e.Id = p.Id) INTO CURSOR BmBenchResult
+        USE IN BmBenchResult
+        AppContext.SetSwitch(switchName, TRUE)
+        SELECT COUNT(*) AS Matches FROM bm_bench_outer p WHERE p.Id IN (SELECT i.Id FROM bm_bench_inner i) AND EXISTS (SELECT e.Id FROM bm_bench_inner e WHERE e.Id = p.Id) INTO CURSOR BmBenchResult
+        USE IN BmBenchResult
+
+        AppContext.SetSwitch(switchName, FALSE)
+        LOCAL before := SqlOptimizationCount("MembershipBitmaps") AS INT
+        LOCAL candidatesBefore := SqlOptimizationCount("MembershipCandidates") AS INT
+        LOCAL scannedBefore := SqlOptimizationCount("MembershipScanned") AS INT
+        timer:Restart()
+        SELECT COUNT(*) AS Matches FROM bm_bench_outer p WHERE p.Id IN (SELECT i.Id FROM bm_bench_inner i) AND EXISTS (SELECT e.Id FROM bm_bench_inner e WHERE e.Id = p.Id) INTO CURSOR BmBenchResult
+        timer:Stop()
+        optimizedMilliseconds := timer:ElapsedMilliseconds
+        VerifySqlOptimization("MembershipBitmaps", before)
+        GO TOP
+        IF (LONG)FieldGet(1) != 2 .OR. SqlOptimizationCount("MembershipCandidates") - candidatesBefore != 2 .OR. ;
+           SqlOptimizationCount("MembershipScanned") - scannedBefore != 80
+            THROW Exception{"Membership benchmark returned incorrect results or candidate counts"}
+        ENDIF
+        USE IN BmBenchResult
+
+        AppContext.SetSwitch(switchName, TRUE)
+        timer:Restart()
+        SELECT COUNT(*) AS Matches FROM bm_bench_outer p WHERE p.Id IN (SELECT i.Id FROM bm_bench_inner i) AND EXISTS (SELECT e.Id FROM bm_bench_inner e WHERE e.Id = p.Id) INTO CURSOR BmBenchResult
+        timer:Stop()
+        baselineMilliseconds := timer:ElapsedMilliseconds
+        GO TOP
+        IF (LONG)FieldGet(1) != 2
+            THROW Exception{"Baseline membership benchmark returned an incorrect count"}
+        ENDIF
+        IF Verbose
+            ? "Membership bitmap milliseconds (optimized, baseline):", optimizedMilliseconds, baselineMilliseconds, "candidates: 2/80"
+        ENDIF
+    FINALLY
+        AppContext.SetSwitch(switchName, IIF(switchWasSet, previousSwitch, FALSE))
+        IF Used("BmBenchResult")
+            USE IN BmBenchResult
+        ENDIF
+        IF Used("bm_bench_outer")
+            USE IN bm_bench_outer
+        ENDIF
+        IF Used("bm_bench_inner")
+            USE IN bm_bench_inner
+        ENDIF
+    END TRY
+    RETURN
+
 FUNCTION TestSparseOptimizationBenchmark() AS VOID
     CREATE CURSOR sparse_left (Id N(5), MatchFlag N(1))
     CREATE CURSOR sparse_right (Id N(5), MatchFlag N(1))

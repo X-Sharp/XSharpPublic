@@ -189,6 +189,14 @@ FUNCTION __SqlSelect(sCommand as STRING) AS VOID
                 END TRY
             ELSE
                 FoxEmbeddedSQL.ExecuteSelect(oContext)
+                IF !String.IsNullOrEmpty(oContext:TargetCursor) .AND. !oContext:TargetCursorReadWrite
+                    LOCAL cursorPath := (oContext:TargetCursor)->DbInfo(DBI_FULLPATH) AS STRING
+                    DbCloseArea(oContext:TargetCursor)
+                    IF !DbUseArea(TRUE, "DBFVFP", cursorPath, oContext:TargetCursor, TRUE, TRUE)
+                        THROW Error{"Could not reopen SELECT cursor as read-only: " + oContext:TargetCursor}
+                    ENDIF
+                    DbSelectArea(oContext:TargetCursor)
+                ENDIF
             ENDIF
         endif
     CATCH

@@ -708,6 +708,14 @@ PARTIAL CLASS SQLParser
                     RETURN FALSE
                 ENDIF
                 stmt:TargetCursor := SELF:ConsumeAndGetText()
+                IF SELF:Lt1 != NULL .AND. SELF:Lt1:Text:Equals("NOFILTER", StringComparison.OrdinalIgnoreCase)
+                    SELF:Consume()
+                    stmt:TargetCursorNoFilter := TRUE
+                ENDIF
+                IF SELF:Lt1 != NULL .AND. SELF:Lt1:Text:Equals("READWRITE", StringComparison.OrdinalIgnoreCase)
+                    SELF:Consume()
+                    stmt:TargetCursorReadWrite := TRUE
+                ENDIF
             ELSEIF SELF:Expect("ARRAY")
                 IF !SELF:Matches(XTokenType.ID)
                     SELF:SetError("Expected array name after INTO ARRAY")

@@ -111,6 +111,8 @@ FUNCTION Start(args AS STRING[]) AS VOID STRICT
     RegisterTest("TestSelectIntoArray [baseline]", { => TestSelectIntoArray() }, TRUE)
     RegisterTest("TestSelectIntoTable [optimized]", { => TestSelectIntoTable() })
     RegisterTest("TestSelectIntoTable [baseline]", { => TestSelectIntoTable() }, TRUE)
+    RegisterTest("TestSelectCursorOptions [optimized]", { => TestSelectCursorOptions() })
+    RegisterTest("TestSelectCursorOptions [baseline]", { => TestSelectCursorOptions() }, TRUE)
     RegisterTest("TestNestedSubquery [optimized]", { => TestNestedSubqueryFunctionality() })
     RegisterTest("TestNestedSubquery [baseline]", { => TestNestedSubqueryFunctionality() }, TRUE)
     RegisterTest("TestCrossJoinFunctionality [optimized]", { => TestCrossJoinFunctionality() })

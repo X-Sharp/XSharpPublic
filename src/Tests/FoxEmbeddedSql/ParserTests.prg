@@ -95,6 +95,14 @@ FUNCTION TestSelectParsing() AS VOID
         THROW Exception{"SELECT INTO TABLE should retain a persistent table target: " + tableOutputParser:Error}
     ENDIF
 
+    VAR cursorOptionsParser := SQLParser{XTokenList{XSqlLexer{"SELECT Id FROM Customers INTO CURSOR customer_rows NOFILTER READWRITE"}:AllTokens()}}
+    LOCAL cursorOptionsCtx AS FoxSelectContext
+    IF !cursorOptionsParser:ParseSelectStatement(OUT cursorOptionsCtx) .OR. ;
+       cursorOptionsCtx:TargetCursor != "customer_rows" .OR. ;
+       !cursorOptionsCtx:TargetCursorNoFilter .OR. !cursorOptionsCtx:TargetCursorReadWrite
+        THROW Exception{"INTO CURSOR should retain NOFILTER and READWRITE options: " + cursorOptionsParser:Error}
+    ENDIF
+
     VAR joinLexer := XSqlLexer{"SELECT a.Id FROM TableA a JOIN TableB b ON a.Id = b.Id INNER JOIN TableC c ON b.Id = c.Id"}
     VAR joinParser := SqlParser{XTokenList{joinLexer:AllTokens()}}
     LOCAL joinCtx AS FoxSelectContext

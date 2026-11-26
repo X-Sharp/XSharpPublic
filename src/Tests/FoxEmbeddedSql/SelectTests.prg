@@ -575,6 +575,65 @@ FUNCTION TestSelectIntoTable() AS VOID
     END TRY
     RETURN
 
+FUNCTION TestSelectCursorOptions() AS VOID
+    CREATE CURSOR sql_cursor_options_source (Id I)
+    INSERT INTO sql_cursor_options_source VALUES (1)
+
+    SELECT Id FROM sql_cursor_options_source INTO CURSOR SqlCursorDefault
+    DbSelectArea("SqlCursorDefault")
+    IF !(LOGIC)DbInfo(DBI_READONLY) .OR. FieldGet(1) != 1
+        THROW Exception{"Default INTO CURSOR output should be read-only and leave its source unchanged"}
+    ENDIF
+    DbSelectArea("sql_cursor_options_source")
+    IF FieldGet(1) != 1
+        THROW Exception{"Default INTO CURSOR output should not modify its source"}
+    ENDIF
+
+    SELECT Id FROM sql_cursor_options_source INTO CURSOR SqlCursorNoFilter NOFILTER
+    DbSelectArea("SqlCursorNoFilter")
+    IF !(LOGIC)DbInfo(DBI_READONLY) .OR. FieldGet(1) != 1
+        THROW Exception{"NOFILTER should preserve the default read-only cursor behavior"}
+    ENDIF
+
+    SELECT Id FROM sql_cursor_options_source INTO CURSOR SqlCursorReadWrite READWRITE
+    DbSelectArea("SqlCursorReadWrite")
+    IF (LOGIC)DbInfo(DBI_READONLY)
+        THROW Exception{"READWRITE should allow editing the result cursor without changing its source"}
+    ENDIF
+    REPLACE Id WITH 2 IN SqlCursorReadWrite
+    IF FieldGet(1) != 2
+        THROW Exception{"READWRITE cursor should accept updates"}
+    ENDIF
+    DbSelectArea("sql_cursor_options_source")
+    IF FieldGet(1) != 1
+        THROW Exception{"READWRITE cursor updates should not change the source"}
+    ENDIF
+
+    SELECT Id FROM sql_cursor_options_source INTO CURSOR SqlCursorNoFilterReadWrite NOFILTER READWRITE
+    DbSelectArea("SqlCursorNoFilterReadWrite")
+    IF (LOGIC)DbInfo(DBI_READONLY)
+        THROW Exception{"NOFILTER READWRITE should allow editing the result cursor without changing its source"}
+    ENDIF
+    REPLACE Id WITH 3 IN SqlCursorNoFilterReadWrite
+    IF FieldGet(1) != 3
+        THROW Exception{"NOFILTER READWRITE cursor should accept updates"}
+    ENDIF
+
+    IF Used("SqlCursorDefault")
+        DbCloseArea("SqlCursorDefault")
+    ENDIF
+    IF Used("SqlCursorNoFilter")
+        DbCloseArea("SqlCursorNoFilter")
+    ENDIF
+    IF Used("SqlCursorReadWrite")
+        DbCloseArea("SqlCursorReadWrite")
+    ENDIF
+    IF Used("SqlCursorNoFilterReadWrite")
+        DbCloseArea("SqlCursorNoFilterReadWrite")
+    ENDIF
+    USE IN sql_cursor_options_source
+    RETURN
+
 FUNCTION TestCrossJoinFunctionality() AS VOID
     ? "Testing CROSS JOIN functionality..."
 

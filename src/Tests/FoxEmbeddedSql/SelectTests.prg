@@ -728,6 +728,7 @@ FUNCTION TestUnionFunctionality() AS VOID
 
 FUNCTION TestNestedSubqueryFunctionality() AS VOID
     CREATE CURSOR nested_parent (Id N(5) NULL)
+    CREATE CURSOR nested_parent_duplicates (Id N(5) NULL)
     CREATE CURSOR nested_child (Id N(5) NULL, Label C(20))
     CREATE CURSOR nested_empty (Id N(5) NULL)
     INSERT INTO nested_parent VALUES (1)
@@ -735,6 +736,10 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     INSERT INTO nested_parent VALUES (3)
     INSERT INTO nested_parent VALUES (4)
     INSERT INTO nested_parent VALUES (NULL)
+    INSERT INTO nested_parent_duplicates VALUES (2)
+    INSERT INTO nested_parent_duplicates VALUES (2)
+    INSERT INTO nested_parent_duplicates VALUES (4)
+    INSERT INTO nested_parent_duplicates VALUES (NULL)
     INSERT INTO nested_child VALUES (2, "first")
     INSERT INTO nested_child VALUES (2, "duplicate")
     INSERT INTO nested_child VALUES (4, "four")
@@ -777,6 +782,15 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     SELECT p.Id FROM nested_parent p WHERE p.Id IN (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id)
     VerifyTable(2, "Correlated IN subqueries should evaluate against the current outer row", TRUE, {{2}, {4}})
 
+    SELECT p.Id FROM nested_parent p WHERE p.Id IN (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id AND c.Label = "four")
+    VerifyTable(1, "Correlated IN should retain inner-only filters", TRUE, {{4}})
+
+    SELECT p.Id FROM nested_parent p WHERE p.Id NOT IN (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id)
+    VerifyTable(3, "Correlated NOT IN should complement per-row matches, including NULL outer values", TRUE, {{1}, {3}, {NULL}})
+
+    SELECT p.Id FROM nested_parent_duplicates p WHERE p.Id IN (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id)
+    VerifyTable(3, "Correlated IN should preserve outer duplicates without multiplying inner duplicates", TRUE, {{2}, {2}, {4}})
+
     LOCAL unsupportedCorrelationRejected := FALSE AS LOGIC
     TRY
         SELECT Id FROM nested_parent p WHERE Id IN (SELECT p.Id FROM nested_child c WHERE c.Id > 0)
@@ -789,6 +803,9 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
 
     IF Used("nested_parent")
         USE IN nested_parent
+    ENDIF
+    IF Used("nested_parent_duplicates")
+        USE IN nested_parent_duplicates
     ENDIF
     IF Used("nested_child")
         USE IN nested_child

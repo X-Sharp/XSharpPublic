@@ -323,3 +323,68 @@ FUNCTION TestSparseOptimizationBenchmark() AS VOID
     END TRY
     RETURN
 
+FUNCTION TestCorrelatedInOptimizationBenchmark() AS VOID
+    CREATE CURSOR correlated_bench_parent (Id I NULL)
+    CREATE CURSOR correlated_bench_child (Id I NULL)
+    FOR LOCAL rowIndex := 1 AS INT TO 200
+        INSERT INTO correlated_bench_parent VALUES (rowIndex)
+        INSERT INTO correlated_bench_child VALUES (rowIndex)
+    NEXT
+
+    LOCAL query := "SELECT COUNT(*) AS MatchCount FROM correlated_bench_parent p WHERE p.Id IN (SELECT c.Id FROM correlated_bench_child c WHERE c.Id = p.Id) INTO CURSOR CorrelatedBenchResult" AS STRING
+    LOCAL switchName := "XSharp.VFP.EmbeddedSql.DisableOptimizations" AS STRING
+    LOCAL previousSwitch := FALSE AS LOGIC
+    LOCAL switchWasSet := AppContext.TryGetSwitch(switchName, OUT previousSwitch) AS LOGIC
+    LOCAL optimizedMilliseconds AS INT64
+    LOCAL baselineMilliseconds AS INT64
+    LOCAL timer := Stopwatch{} AS Stopwatch
+
+    TRY
+        // Warm both code paths before collecting timings so first-use/JIT costs
+        // do not dominate the comparison.
+        AppContext.SetSwitch(switchName, FALSE)
+        __SqlSelect(query)
+        USE IN CorrelatedBenchResult
+
+        AppContext.SetSwitch(switchName, TRUE)
+        __SqlSelect(query)
+        USE IN CorrelatedBenchResult
+
+        AppContext.SetSwitch(switchName, FALSE)
+        timer:Restart()
+        __SqlSelect(query)
+        timer:Stop()
+        optimizedMilliseconds := timer:ElapsedMilliseconds
+        GO TOP
+        IF (LONG)FieldGet(1) != 200
+            THROW Exception{"Optimized correlated IN returned an incorrect count"}
+        ENDIF
+        USE IN CorrelatedBenchResult
+
+        AppContext.SetSwitch(switchName, TRUE)
+        timer:Restart()
+        __SqlSelect(query)
+        timer:Stop()
+        baselineMilliseconds := timer:ElapsedMilliseconds
+        GO TOP
+        IF (LONG)FieldGet(1) != 200
+            THROW Exception{"Baseline correlated IN returned an incorrect count"}
+        ENDIF
+
+        IF Verbose
+            ? "Correlated IN milliseconds (optimized, baseline):", optimizedMilliseconds, baselineMilliseconds
+        ENDIF
+    FINALLY
+        AppContext.SetSwitch(switchName, IIF(switchWasSet, previousSwitch, FALSE))
+        IF Used("CorrelatedBenchResult")
+            USE IN CorrelatedBenchResult
+        ENDIF
+        IF Used("correlated_bench_parent")
+            USE IN correlated_bench_parent
+        ENDIF
+        IF Used("correlated_bench_child")
+            USE IN correlated_bench_child
+        ENDIF
+    END TRY
+    RETURN
+

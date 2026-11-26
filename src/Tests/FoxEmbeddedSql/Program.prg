@@ -119,6 +119,7 @@ FUNCTION Start(args AS STRING[]) AS VOID STRICT
     RegisterTest("TestMultiTableOptimizer [optimized]", { => TestMultiTableOptimizer() })
     RegisterTest("TestMultiTableOptimizer [baseline]", { => TestMultiTableOptimizer() }, TRUE)
     RegisterTest("TestSparseOptimizationBenchmark", { => TestSparseOptimizationBenchmark() })
+    RegisterTest("TestCorrelatedInOptimizationBenchmark", { => TestCorrelatedInOptimizationBenchmark() })
 
     LOCAL results := RunTests()
 

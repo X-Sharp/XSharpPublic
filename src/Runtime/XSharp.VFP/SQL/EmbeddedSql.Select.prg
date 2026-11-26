@@ -78,6 +78,34 @@ INTERNAL CLASS SqlAggregateGroup
         RETURN
 END CLASS
 
+INTERNAL CLASS SqlCorrelatedInPlan
+    PRIVATE _outerValueCodeBlock AS CODEBLOCK
+    PRIVATE _innerValues AS Dictionary<USUAL,BYTE>
+    PRIVATE _isNegated AS LOGIC
+
+    INTERNAL CONSTRUCTOR(outerValueCodeBlock AS CODEBLOCK, innerValues AS Dictionary<USUAL,BYTE>, ;
+        isNegated AS LOGIC)
+        SELF:_outerValueCodeBlock := outerValueCodeBlock
+        SELF:_innerValues := innerValues
+        SELF:_isNegated := isNegated
+        RETURN
+
+    INTERNAL METHOD Matches() AS LOGIC
+        LOCAL outerValue := (USUAL)SELF:_outerValueCodeBlock:Eval() AS USUAL
+        LOCAL found := FALSE AS LOGIC
+        IF !outerValue:IsNull
+            found := SELF:_innerValues:ContainsKey(outerValue)
+        ENDIF
+        // The supported correlated equality filters the inner rows by this same
+        // value, so NOT IN is the anti-semi-join complement, including NULL outer
+        // values whose correlated subquery is empty.
+        RETURN IIF(SELF:_isNegated, !found, found)
+END CLASS
+
+INTERNAL CLASS SqlCorrelationCounter
+    INTERNAL PROPERTY Count AS INT AUTO
+END CLASS
+
 INTERNAL CLASS SqlHashJoinCursor
     PRIVATE _outerTable AS STRING
     PRIVATE _outerKeyCodeBlock AS CODEBLOCK
@@ -671,6 +699,167 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         NEXT
         RETURN FALSE
 
+    PRIVATE STATIC METHOD TryCreateCorrelatedInPlan(inExpression AS SqlInSubqueryExpressionContext, ;
+        outerTableAliases AS Dictionary<STRING,STRING>, outerTableName AS STRING) AS SqlCorrelatedInPlan
+        VAR subquery := inExpression:Subquery
+        IF !HasExternalSubqueryReference(subquery) .OR. ;
+           HasUnsupportedSubqueryCorrelation(subquery, outerTableAliases) .OR. ;
+           subquery:SelectList:Count != 1 .OR. subquery:TableList:Count != 1 .OR. ;
+           subquery:Joins:Count != 0 .OR. subquery:GroupByItems:Count != 0 .OR. ;
+           subquery:HavingClause != NULL .OR. subquery:OrderByClause:Count != 0 .OR. ;
+           subquery:UnionBranches:Count != 0 .OR. subquery:IsDistinct .OR. ;
+           !String.IsNullOrEmpty(subquery:TopCount)
+            RETURN NULL
+        ENDIF
+
+        IF !(inExpression:ValueExpression IS SqlNameExpressionContext VAR outerValue) .OR. ;
+           !(subquery:SelectList[0] IS SqlNameExpressionContext VAR innerValue) .OR. ;
+           String.IsNullOrEmpty(outerValue:Table) .OR. String.IsNullOrEmpty(innerValue:Table)
+            RETURN NULL
+        ENDIF
+
+        LOCAL resolvedOuterTable := outerValue:Table AS STRING
+        outerTableAliases:TryGetValue(outerValue:Table, OUT resolvedOuterTable)
+        IF !resolvedOuterTable:Equals(outerTableName, StringComparison.OrdinalIgnoreCase)
+            RETURN NULL
+        ENDIF
+        LOCAL resolvedInnerTable := innerValue:Table AS STRING
+        subquery:TableAliases:TryGetValue(innerValue:Table, OUT resolvedInnerTable)
+        IF !resolvedInnerTable:Equals((STRING)subquery:TableList[0], StringComparison.OrdinalIgnoreCase)
+            RETURN NULL
+        ENDIF
+
+        VAR outerType := HashJoinFieldType(resolvedOuterTable, outerValue:Name)
+        VAR innerType := HashJoinFieldType(resolvedInnerTable, innerValue:Name)
+        IF !IsHashJoinFieldType(outerType) .OR. !outerType:Equals(innerType, StringComparison.OrdinalIgnoreCase)
+            RETURN NULL
+        ENDIF
+
+        LOCAL correlationCounter := SqlCorrelationCounter{} AS SqlCorrelationCounter
+        VAR innerOnlyWhere := RemoveCorrelatedEquality( ;
+            subquery:WhereClause, innerValue, outerValue, correlationCounter)
+        IF correlationCounter:Count != 1 .OR. ;
+           (innerOnlyWhere != NULL .AND. ;
+            (HasExternalSubqueryDependency(innerOnlyWhere, subquery:TableAliases) .OR. ;
+             ContainsInSubqueryExpression(innerOnlyWhere)))
+            RETURN NULL
+        ENDIF
+
+        VAR outerValueCodeBlock := MCompile(outerValue:ToResolvedString(outerTableAliases))
+        IF outerValueCodeBlock == NULL
+            RETURN NULL
+        ENDIF
+
+        LOCAL innerAlias := "SQ" + Guid.NewGuid():ToString("N"):Substring(0, 8) AS STRING
+        VAR innerSelect := CopySelectBranch(subquery, innerAlias)
+        innerSelect:WhereClause := innerOnlyWhere
+        LOCAL savedArea := DbSelect() AS DWORD
+        VAR innerValues := Dictionary<USUAL,BYTE>{}
+        TRY
+            ExecuteSelect(innerSelect)
+            IF !Used(innerAlias)
+                RETURN NULL
+            ENDIF
+            (innerAlias)->DbGoTop()
+            DO WHILE !(innerAlias)->Eof()
+                VAR value := (USUAL)(innerAlias)->FieldGet(1)
+                IF !value:IsNull .AND. !innerValues:ContainsKey(value)
+                    innerValues[value] := 0
+                ENDIF
+                (innerAlias)->DbSkip(1)
+            ENDDO
+        FINALLY
+            IF Used(innerAlias)
+                (innerAlias)->DbCloseArea()
+            ENDIF
+            IF savedArea > 0
+                DbSelectArea(savedArea)
+            ENDIF
+        END TRY
+        RETURN SqlCorrelatedInPlan{outerValueCodeBlock, innerValues, inExpression:IsNegated}
+
+    PRIVATE STATIC METHOD RemoveCorrelatedEquality(expression AS SqlExpressionContext, ;
+        innerField AS SqlNameExpressionContext, outerField AS SqlNameExpressionContext, ;
+        counter AS SqlCorrelationCounter) AS SqlExpressionContext
+        RETURN RemoveCorrelatedEqualityCore(expression, innerField, outerField, counter)
+
+    PRIVATE STATIC METHOD RemoveCorrelatedEqualityCore(expression AS SqlExpressionContext, ;
+        innerField AS SqlNameExpressionContext, outerField AS SqlNameExpressionContext, ;
+        counter AS SqlCorrelationCounter) AS SqlExpressionContext
+        IF expression IS SqlParenExpressionContext VAR parenExpression
+            LOCAL oldCount := counter:Count AS INT
+            VAR innerExpression := RemoveCorrelatedEqualityCore( ;
+                parenExpression:Expr, innerField, outerField, counter)
+            IF oldCount == counter:Count
+                RETURN expression
+            ENDIF
+            IF innerExpression == NULL
+                RETURN NULL
+            ENDIF
+            RETURN SqlParenExpressionContext{} { ;
+                Open := parenExpression:Open, Expr := innerExpression, Close := parenExpression:Close }
+        ENDIF
+
+        IF expression IS SqlLogicExpressionContext VAR logicExpression .AND. ;
+           logicExpression:Op:Type == XTokenType.AND
+            LOCAL oldCount := counter:Count AS INT
+            VAR leftExpression := RemoveCorrelatedEqualityCore( ;
+                logicExpression:Left, innerField, outerField, counter)
+            VAR rightExpression := RemoveCorrelatedEqualityCore( ;
+                logicExpression:Right, innerField, outerField, counter)
+            IF oldCount == counter:Count
+                RETURN expression
+            ENDIF
+            IF leftExpression == NULL
+                RETURN rightExpression
+            ELSEIF rightExpression == NULL
+                RETURN leftExpression
+            ENDIF
+            RETURN SqlLogicExpressionContext{} { ;
+                Left := leftExpression, Op := logicExpression:Op, Right := rightExpression }
+        ENDIF
+
+        IF expression IS SqlCompareExpressionContext VAR compareExpression .AND. ;
+           compareExpression:Op:Type == XTokenType.EQ
+            IF (IsSameSqlField(compareExpression:Left, innerField) .AND. ;
+                IsSameSqlField(compareExpression:Right, outerField)) .OR. ;
+               (IsSameSqlField(compareExpression:Right, innerField) .AND. ;
+                IsSameSqlField(compareExpression:Left, outerField))
+                counter:Count++
+                RETURN NULL
+            ENDIF
+        ENDIF
+        RETURN expression
+
+    PRIVATE STATIC METHOD IsSameSqlField(expression AS SqlExpressionContext, field AS SqlNameExpressionContext) AS LOGIC
+        IF expression IS SqlNameExpressionContext VAR nameExpression
+            RETURN String.Equals(nameExpression:Name, field:Name, StringComparison.OrdinalIgnoreCase) .AND. ;
+                   String.Equals(nameExpression:Table, field:Table, StringComparison.OrdinalIgnoreCase)
+        ENDIF
+        RETURN FALSE
+
+    PRIVATE STATIC METHOD ContainsInSubqueryExpression(expression AS SqlExpressionContext) AS LOGIC
+        IF expression == NULL
+            RETURN FALSE
+        ENDIF
+        IF expression IS SqlInSubqueryExpressionContext
+            RETURN TRUE
+        ELSEIF expression IS SqlParenExpressionContext VAR parenExpression
+            RETURN ContainsInSubqueryExpression(parenExpression:Expr)
+        ELSEIF expression IS SqlPrefixExpressionContext VAR prefixExpression
+            RETURN ContainsInSubqueryExpression(prefixExpression:Expr)
+        ELSEIF expression IS SqlBinaryExpressionContext VAR binaryExpression
+            RETURN ContainsInSubqueryExpression(binaryExpression:Left) .OR. ;
+                   ContainsInSubqueryExpression(binaryExpression:Right)
+        ELSEIF expression IS SqlCompositeExpressionContext VAR compositeExpression
+            FOREACH VAR child IN compositeExpression:Exprs
+                IF ContainsInSubqueryExpression(child)
+                    RETURN TRUE
+                ENDIF
+            NEXT
+        ENDIF
+        RETURN FALSE
+
     PRIVATE STATIC METHOD HasExternalSubqueryReference(selectCtx AS FoxSelectContext) AS LOGIC
         FOREACH VAR expression IN selectCtx:SelectList
             IF HasExternalSubqueryDependency(expression, selectCtx:TableAliases)
@@ -993,13 +1182,26 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         LOCAL whereCodeBlock AS CODEBLOCK
         LOCAL hasWhereClause AS LOGIC
         LOCAL hasCorrelatedWhere := FALSE AS LOGIC
+        LOCAL correlatedInPlan AS SqlCorrelatedInPlan
+        correlatedInPlan := NULL
         hasWhereClause := FALSE
         IF selectCtx:WhereClause != NULL
-            hasCorrelatedWhere := HasCorrelatedInSubquery(selectCtx:WhereClause, selectCtx:TableAliases)
-            PrepareSubqueryExpression(selectCtx:WhereClause, selectCtx:TableAliases, hasCorrelatedWhere)
-            whereClause := selectCtx:WhereClause:ToResolvedString(selectCtx:TableAliases)
+            IF SqlOptimizationsEnabled() .AND. tableNames:Count == 1 .AND. selectCtx:Joins:Count == 0 .AND. ;
+               selectCtx:WhereClause IS SqlInSubqueryExpressionContext VAR correlatedInExpression
+                correlatedInPlan := TryCreateCorrelatedInPlan( ;
+                    correlatedInExpression, selectCtx:TableAliases, (STRING)tableNames[1])
+            ENDIF
+            IF correlatedInPlan == NULL
+                hasCorrelatedWhere := HasCorrelatedInSubquery(selectCtx:WhereClause, selectCtx:TableAliases)
+                PrepareSubqueryExpression(selectCtx:WhereClause, selectCtx:TableAliases, hasCorrelatedWhere)
+                whereClause := selectCtx:WhereClause:ToResolvedString(selectCtx:TableAliases)
+                whereCodeBlock := MCompile(whereClause)
+            ELSE
+                // The semi-join plan evaluates the root predicate directly and
+                // does not need a generated INLIST expression.
+                whereClause := ""
+            ENDIF
             hasWhereClause := TRUE
-            whereCodeBlock := MCompile(whereClause)
         ENDIF
 
         LOCAL joinCodeBlocks := List<CODEBLOCK>{} AS List<CODEBLOCK>
@@ -1072,7 +1274,8 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         multiTableCandidates := NULL
         multiTableCandidateRows := NULL
 
-        IF SqlOptimizationsEnabled() .AND. hasWhereClause .AND. tableNames:Count == 1
+        IF SqlOptimizationsEnabled() .AND. hasWhereClause .AND. correlatedInPlan == NULL .AND. ;
+           tableNames:Count == 1
             // Get the record count for optimization (only single table queries supported)
             LOCAL tableName AS STRING
             tableName := tableNames[1]
@@ -1339,7 +1542,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 NEXT
             ENDIF
 
-            IF includeRecord .AND. hasWhereClause .AND. hasCorrelatedWhere
+            IF includeRecord .AND. hasWhereClause .AND. hasCorrelatedWhere .AND. correlatedInPlan == NULL
                 // A correlated subquery depends on the current outer row. Rebuild its
                 // value set and the WHERE codeblock for each row combination.
                 PrepareSubqueryExpression(selectCtx:WhereClause, selectCtx:TableAliases, FALSE)
@@ -1352,7 +1555,9 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
 
             IF includeRecord .AND. hasWhereClause
                 // Use optimized bitmap when available, otherwise evaluate codeblock
-                IF useOptimization .AND. ALen(tableNames) == 1 .AND. recNo > 0
+                IF correlatedInPlan != NULL
+                    includeRecord := correlatedInPlan:Matches()
+                ELSEIF useOptimization .AND. ALen(tableNames) == 1 .AND. recNo > 0
                     // The bitmap is indexed by raw record numbers, but we're traversing in index order
                     // We need to seek to the physical record number from the bitmap
                     LOCAL currentRecNo := (LONG)(tableNames[1])->RecNo() as LONG

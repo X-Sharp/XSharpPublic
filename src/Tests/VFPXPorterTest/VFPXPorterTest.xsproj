@@ -73,6 +73,7 @@
     </Compile>
     <Compile Include="TestItemCode.prg" />
     <Compile Include="TestTemplateHelper.prg" />
+    <Compile Include="TestVSSDKProject.prg" />
     <Compile Include="TestXPorterSCXVCX.prg" />
     <Compile Include="TestXPorterSettings.prg" />
   </ItemGroup>

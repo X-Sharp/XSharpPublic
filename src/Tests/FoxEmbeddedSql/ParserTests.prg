@@ -151,6 +151,32 @@ FUNCTION TestSelectParsing() AS VOID
        !(scalarComparison:Right IS SqlScalarSubqueryExpressionContext)
         THROW Exception{"Scalar comparison should parse into a dedicated subquery expression"}
     ENDIF
+    VAR scalarProjectionParser := SQLParser{XTokenList{XSqlLexer{"SELECT (SELECT b.Id FROM Child b) AS ChildId FROM Parent"}:AllTokens()}}
+    LOCAL scalarProjectionCtx AS FoxSelectContext
+    IF !scalarProjectionParser:ParseSelectStatement(OUT scalarProjectionCtx) .OR. ;
+       scalarProjectionCtx:SelectList:Count != 1 .OR. ;
+       !(scalarProjectionCtx:SelectList[0] IS SqlScalarSubqueryExpressionContext) .OR. ;
+       scalarProjectionCtx:FieldSelectionList[0]:Alias != "ChildId"
+        THROW Exception{"Scalar SELECT-list subquery should parse as a named projection"}
+    ENDIF
+    VAR scalarExpressionParser := SQLParser{XTokenList{XSqlLexer{"SELECT a.Id + (SELECT b.Id FROM Child b) AS Total FROM Parent a"}:AllTokens()}}
+    LOCAL scalarExpressionCtx AS FoxSelectContext
+    IF !scalarExpressionParser:ParseSelectStatement(OUT scalarExpressionCtx) .OR. ;
+       scalarExpressionCtx:SelectList:Count != 1 .OR. ;
+       scalarExpressionCtx:SelectList[0] IS NOT SqlCompositeExpressionContext
+        THROW Exception{"Scalar subqueries should parse inside projection expressions"}
+    ENDIF
+    VAR scalarProjectionExpression := (SqlCompositeExpressionContext)scalarExpressionCtx:SelectList[0]
+    LOCAL projectionHasScalar := FALSE AS LOGIC
+    FOREACH VAR projectionTerm IN scalarProjectionExpression:Exprs
+        IF projectionTerm IS SqlScalarSubqueryExpressionContext
+            projectionHasScalar := TRUE
+            EXIT
+        ENDIF
+    NEXT
+    IF !projectionHasScalar
+        THROW Exception{"Projection expression should retain its scalar subquery node"}
+    ENDIF
     FOREACH VAR quantifier IN <STRING>{"ANY", "SOME", "ALL"}
         VAR quantifiedParser := SQLParser{XTokenList{XSqlLexer{"SELECT a.Id FROM Parent a WHERE a.Id >= " + quantifier + " (SELECT b.Id FROM Child b)"}:AllTokens()}}
         LOCAL quantifiedCtx AS FoxSelectContext

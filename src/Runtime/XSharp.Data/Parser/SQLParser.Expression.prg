@@ -255,10 +255,30 @@ PARTIAL CLASS SQLParser
         ENDIF
         RETURN e
 
+    PRIVATE METHOD ContainsScalarSubqueryExpression(expression AS SqlExpressionContext) AS LOGIC
+        IF expression IS SqlScalarSubqueryExpressionContext
+            RETURN TRUE
+        ELSEIF expression IS SqlParenExpressionContext VAR parenExpression
+            RETURN SELF:ContainsScalarSubqueryExpression(parenExpression:Expr)
+        ELSEIF expression IS SqlPrefixExpressionContext VAR prefixExpression
+            RETURN SELF:ContainsScalarSubqueryExpression(prefixExpression:Expr)
+        ELSEIF expression IS SqlBinaryExpressionContext VAR binaryExpression
+            RETURN SELF:ContainsScalarSubqueryExpression(binaryExpression:Left) .OR. ;
+                   SELF:ContainsScalarSubqueryExpression(binaryExpression:Right)
+        ELSEIF expression IS SqlCompositeExpressionContext VAR compositeExpression
+            FOREACH VAR child IN compositeExpression:Exprs
+                IF SELF:ContainsScalarSubqueryExpression(child)
+                    RETURN TRUE
+                ENDIF
+            NEXT
+        ENDIF
+        RETURN FALSE
+
     PRIVATE METHOD ParseExpressionTerm() AS SqlExpressionContext
         VAR done := FALSE
         VAR hasComplexTerms := FALSE
         VAR hasAggregateTerm := FALSE
+        VAR hasScalarSubqueryTerm := FALSE
         VAR terms := List<SqlExpressionContext>{}
         VAR names := List<SqlNameExpressionContext>{}
         VAR parens := Stack<XTokenType>{}
@@ -295,6 +315,14 @@ PARTIAL CLASS SQLParser
             SWITCH SELF:La1
             CASE XTokenType.LPAREN
                 AddPartialTerm()
+                IF SELF:La2 == XTokenType.SELECT
+                    SELF:Consume() // opening parenthesis
+                    VAR scalarQuery := SELF:ParseSubquery("scalar")
+                    terms:Add(SqlScalarSubqueryExpressionContext{} { Subquery := scalarQuery })
+                    hasComplexTerms := TRUE
+                    hasScalarSubqueryTerm := TRUE
+                    LOOP
+                ENDIF
                 parens:Push(SELF:MatchingParen())
                 VAR o := SELF:ConsumeAndGet()
                 VAR e := SELF:ParseExpressionContext()
@@ -304,6 +332,9 @@ PARTIAL CLASS SQLParser
                 VAR c := SELF:ConsumeAndGet()
                 IF e IS NOT SqlSimpleExpressionContext .AND. e IS NOT SqlCompositeExpressionContext
                     hasComplexTerms := TRUE
+                ENDIF
+                IF SELF:ContainsScalarSubqueryExpression(e)
+                    hasScalarSubqueryTerm := TRUE
                 ENDIF
                 IF e IS SqlCompositeExpressionContext VAR ce
                     names:AddRange(ce:Names)
@@ -388,7 +419,7 @@ PARTIAL CLASS SQLParser
         ENDDO
         AddPartialTerm()
         IF terms:Count > 1
-            IF hasComplexTerms .AND. !hasAggregateTerm
+            IF hasComplexTerms .AND. !hasAggregateTerm .AND. !hasScalarSubqueryTerm
                 THROW ArgumentException{i"Unsupported combine or compare operator within expression term","SQLParser"}
             ENDIF
             RETURN SqlCompositeExpressionContext{} { Exprs := terms, Names := names }
@@ -400,4 +431,3 @@ PARTIAL CLASS SQLParser
 
 END CLASS
 END NAMESPACE
-

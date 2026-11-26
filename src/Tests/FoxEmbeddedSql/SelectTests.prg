@@ -759,6 +759,44 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     INSERT INTO nested_child VALUES (4, "four")
     INSERT INTO nested_child VALUES (NULL, "null")
 
+    LOCAL projectionScalarBefore := SqlOptimizationCount("ScalarExecutions") AS INT
+    SELECT p.Id, (SELECT c.Id FROM nested_child c WHERE c.Label = "four") AS ScalarId ;
+        FROM nested_parent p WHERE p.Id <= 2 ORDER BY p.Id
+    VerifyTable(2, "Uncorrelated scalar projection should repeat its value for outer rows", TRUE, {{1, 4}, {2, 4}})
+    IF SqlOptimizationCount("ScalarExecutions") - projectionScalarBefore != 1
+        THROW Exception{"Uncorrelated projection subquery should execute once per outer SELECT"}
+    ENDIF
+
+    SELECT (SELECT c.Label FROM nested_child c WHERE c.Label = "four") AS LabelValue FROM nested_parent p WHERE p.Id = 1
+    VerifyTable(1, "Character scalar projections should preserve their value", FALSE, {{"four"}})
+    VAR scalarProjectionStruct := DbStruct()
+    IF scalarProjectionStruct[1][2]:ToString():Trim():ToUpperInvariant() != "C"
+        THROW Exception{"Character scalar projection should preserve the subquery field type"}
+    ENDIF
+    USE IN QUERYRESULT
+
+    SELECT (SELECT c.Id FROM nested_empty c) AS MissingValue FROM nested_parent p WHERE p.Id = 1
+    VerifyTable(1, "Empty scalar projection should produce NULL", FALSE, {{NULL}})
+    VAR emptyScalarProjectionStruct := DbStruct()
+    IF emptyScalarProjectionStruct[1][2]:ToString():Trim():ToUpperInvariant() != "N" .OR. ;
+       ((LONG)emptyScalarProjectionStruct[1][6] & (LONG)DBFFieldFlags.Nullable) == 0
+        THROW Exception{"Empty scalar projection should retain numeric type and allow NULL"}
+    ENDIF
+    USE IN QUERYRESULT
+
+    SELECT p.Id + (SELECT c.Id FROM nested_child c WHERE c.Label = "four") AS Total ;
+        FROM nested_parent p WHERE p.Id <= 2 ORDER BY p.Id
+    VerifyTable(2, "Numeric scalar subqueries should work inside projection expressions", TRUE, {{5}, {6}})
+
+    SELECT p.Label + (SELECT c.Label FROM nested_child c WHERE c.Label = "four") AS Joined ;
+        FROM nested_child p WHERE p.Id = 2 ORDER BY p.Label
+    VerifyTable(2, "Character scalar subqueries should work inside concatenation expressions", TRUE, ;
+        {{"duplicate           four                "}, {"first               four                "}})
+
+    SELECT COUNT(*) + (SELECT c.Id FROM nested_child c WHERE c.Label = "four") AS Total ;
+        FROM nested_parent p
+    VerifyTable(1, "Scalar projections should compose with outer aggregates", TRUE, {{9}})
+
     SELECT p.Id FROM nested_parent p WHERE p.Id = ANY (SELECT c.Id FROM nested_child c WHERE c.Id > 0)
     VerifyTable(2, "ANY should match a value occurring in the subquery set", TRUE, {{2}, {4}})
     SELECT p.Id FROM nested_parent p WHERE p.Id == SOME (SELECT c.Id FROM nested_child c WHERE c.Id > 0)
@@ -857,6 +895,16 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     IF !scalarColumnsRejected
         THROW Exception{"Scalar subquery should reject multiple columns"}
     ENDIF
+    LOCAL projectionRowsRejected := FALSE AS LOGIC
+    TRY
+        SELECT p.Id, (SELECT c.Id FROM nested_child c WHERE c.Id = 2) AS ChildId ;
+            FROM nested_parent p
+    CATCH ex AS Exception
+        projectionRowsRejected := ex:Message:Contains("more than one record")
+    END TRY
+    IF !projectionRowsRejected
+        THROW Exception{"Scalar projection should reject multiple result rows"}
+    ENDIF
     LOCAL quantifiedColumnsRejected := FALSE AS LOGIC
     TRY
         SELECT p.Id FROM nested_parent p WHERE p.Id >= ANY (SELECT c.Id, c.Label FROM nested_child c)
@@ -865,6 +913,16 @@ FUNCTION TestNestedSubqueryFunctionality() AS VOID
     END TRY
     IF !quantifiedColumnsRejected
         THROW Exception{"Quantified subqueries should reject multiple columns"}
+    ENDIF
+    LOCAL correlatedProjectionRejected := FALSE AS LOGIC
+    TRY
+        SELECT p.Id, (SELECT c.Id FROM nested_child c WHERE c.Id = p.Id) AS ChildId ;
+            FROM nested_parent p
+    CATCH ex AS Exception
+        correlatedProjectionRejected := ex:Message:Contains("SELECT list")
+    END TRY
+    IF !correlatedProjectionRejected
+        THROW Exception{"Correlated scalar projections should be rejected in this increment"}
     ENDIF
     LOCAL scalarDeepRejected := FALSE AS LOGIC
     TRY

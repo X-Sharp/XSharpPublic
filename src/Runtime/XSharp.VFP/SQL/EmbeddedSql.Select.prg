@@ -751,6 +751,7 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 IF !Used(scalarAlias) .OR. (scalarAlias)->FCount() != 1
                     THROW Error{"Scalar subquery must return exactly one column"}
                 ENDIF
+                scalarExpression:ResultFieldDefinition := (scalarAlias)->DbStruct()[1]
                 (scalarAlias)->DbGoTop()
                 scalarExpression:Value := NULL
                 IF !(scalarAlias)->Eof()
@@ -1445,11 +1446,36 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         RETURN
 
     PRIVATE STATIC METHOD ValidateSelectSubqueries(query AS FoxSelectContext) AS VOID
+        FOREACH VAR expression IN query:SelectList
+            IF HasCorrelatedProjectionSubquery(expression)
+                THROW Error{"Correlated scalar subqueries in the SELECT list are not supported yet"}
+            ENDIF
+            ValidateNestedSubqueries(expression, query:TableAliases)
+        NEXT
         ValidateNestedSubqueries(query:WhereClause, query:TableAliases)
         FOREACH VAR branch IN query:UnionBranches
             ValidateSelectSubqueries(branch)
         NEXT
         RETURN
+
+    PRIVATE STATIC METHOD HasCorrelatedProjectionSubquery(expression AS SqlExpressionContext) AS LOGIC
+        IF expression IS SqlScalarSubqueryExpressionContext VAR scalarExpression
+            RETURN HasExternalSubqueryReference(scalarExpression:Subquery)
+        ELSEIF expression IS SqlParenExpressionContext VAR parenExpression
+            RETURN HasCorrelatedProjectionSubquery(parenExpression:Expr)
+        ELSEIF expression IS SqlPrefixExpressionContext VAR prefixExpression
+            RETURN HasCorrelatedProjectionSubquery(prefixExpression:Expr)
+        ELSEIF expression IS SqlBinaryExpressionContext VAR binaryExpression
+            RETURN HasCorrelatedProjectionSubquery(binaryExpression:Left) .OR. ;
+                   HasCorrelatedProjectionSubquery(binaryExpression:Right)
+        ELSEIF expression IS SqlCompositeExpressionContext VAR compositeExpression
+            FOREACH VAR child IN compositeExpression:Exprs
+                IF HasCorrelatedProjectionSubquery(child)
+                    RETURN TRUE
+                ENDIF
+            NEXT
+        ENDIF
+        RETURN FALSE
 
     PRIVATE STATIC METHOD TryCreateCorrelatedInPlan(inExpression AS SqlInSubqueryExpressionContext, ;
         outerTableAliases AS Dictionary<STRING,STRING>, outerTableName AS STRING) AS SqlCorrelatedInPlan
@@ -1690,6 +1716,114 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         ENDIF
         RETURN FALSE
 
+    PRIVATE STATIC METHOD InferScalarProjectionFieldDefinition(expression AS SqlExpressionContext, ;
+        aliases AS Dictionary<STRING,STRING>) AS ARRAY
+        IF expression IS SqlScalarSubqueryExpressionContext VAR scalarExpression
+            RETURN scalarExpression:ResultFieldDefinition
+        ELSEIF expression IS SqlParenExpressionContext VAR parenExpression
+            RETURN InferScalarProjectionFieldDefinition(parenExpression:Expr, aliases)
+        ELSEIF expression IS SqlNameExpressionContext VAR nameExpression
+            LOCAL sourceTable := nameExpression:Table AS STRING
+            IF String.IsNullOrEmpty(sourceTable)
+                FOREACH VAR tableAlias IN aliases
+                    VAR candidateTable := tableAlias:Value
+                    VAR fieldPosition := (candidateTable)->FieldPos(nameExpression:Name)
+                    IF fieldPosition > 0
+                        sourceTable := candidateTable
+                        EXIT
+                    ENDIF
+                NEXT
+            ELSE
+                aliases:TryGetValue(sourceTable, OUT sourceTable)
+            ENDIF
+            IF !String.IsNullOrEmpty(sourceTable) .AND. Used(sourceTable)
+                VAR fieldPosition := (sourceTable)->FieldPos(nameExpression:Name)
+                IF fieldPosition > 0
+                    RETURN (sourceTable)->DbStruct()[fieldPosition]
+                ENDIF
+            ENDIF
+            RETURN NULL
+        ELSEIF expression IS SqlSimpleExpressionContext VAR simpleExpression
+            IF simpleExpression:Tokens == NULL .OR. simpleExpression:Tokens:Count != 1
+                RETURN NULL
+            ENDIF
+            VAR token := simpleExpression:Tokens[0]
+            SWITCH token:Type
+            CASE XTokenType.NUMERIC_CONST
+                RETURN {NULL, "N", 20, 4, NULL, (LONG)DBFFieldFlags.Nullable}
+            CASE XTokenType.STRING_CONST
+                RETURN {NULL, "C", 254, 0, NULL, (LONG)DBFFieldFlags.Nullable}
+            CASE XTokenType.TRUE_CONST
+            CASE XTokenType.FALSE_CONST
+                RETURN {NULL, "L", 1, 0, NULL, (LONG)DBFFieldFlags.Nullable}
+            CASE XTokenType.DATE_CONST
+                RETURN {NULL, "D", 8, 0, NULL, (LONG)DBFFieldFlags.Nullable}
+            CASE XTokenType.DATETIME_CONST
+                RETURN {NULL, "T", 8, 0, NULL, (LONG)DBFFieldFlags.Nullable}
+            END SWITCH
+            RETURN NULL
+        ELSEIF expression IS SqlAggregateExpressionContext VAR aggregateExpression
+            IF aggregateExpression:FunctionName == "COUNT" .OR. aggregateExpression:FunctionName == "CNT"
+                RETURN {NULL, "N", 10, 0, NULL, (LONG)DBFFieldFlags.Nullable}
+            ELSEIF aggregateExpression:FunctionName == "MIN" .OR. aggregateExpression:FunctionName == "MAX"
+                IF aggregateExpression:Argument IS SqlNameExpressionContext
+                    RETURN InferScalarProjectionFieldDefinition(aggregateExpression:Argument, aliases)
+                ENDIF
+            ELSE
+                RETURN {NULL, "N", 20, 4, NULL, (LONG)DBFFieldFlags.Nullable}
+            ENDIF
+            RETURN NULL
+        ELSEIF expression IS SqlCompareExpressionContext .OR. expression IS SqlLogicExpressionContext
+            RETURN {NULL, "L", 1, 0, NULL, (LONG)DBFFieldFlags.Nullable}
+        ELSEIF expression IS SqlPrefixExpressionContext VAR prefixExpression
+            IF prefixExpression:Op:Type == XTokenType.NOT
+                RETURN {NULL, "L", 1, 0, NULL, (LONG)DBFFieldFlags.Nullable}
+            ENDIF
+            RETURN InferScalarProjectionFieldDefinition(prefixExpression:Expr, aliases)
+        ELSEIF expression IS SqlCompositeExpressionContext VAR compositeExpression
+            LOCAL numericOnly := TRUE AS LOGIC
+            LOCAL characterOnly := TRUE AS LOGIC
+            LOCAL sawOperand := FALSE AS LOGIC
+            LOCAL characterLength := 0 AS INT
+            FOREACH VAR item IN compositeExpression:Exprs
+                IF item IS SqlSimpleExpressionContext VAR operatorExpression .AND. ;
+                   operatorExpression:Tokens != NULL .AND. operatorExpression:Tokens:Count == 1
+                    VAR operatorTokenType := operatorExpression:Tokens[0]:Type
+                    IF operatorTokenType == XTokenType.PLUS .OR. operatorTokenType == XTokenType.MINUS .OR. ;
+                       operatorTokenType == XTokenType.MULT .OR. operatorTokenType == XTokenType.DIV .OR. ;
+                       operatorTokenType == XTokenType.EXP
+                        LOOP
+                    ENDIF
+                ENDIF
+                VAR operandDefinition := InferScalarProjectionFieldDefinition(item, aliases)
+                IF operandDefinition == NULL
+                    RETURN NULL
+                ENDIF
+                sawOperand := TRUE
+                VAR operandType := ((STRING)operandDefinition[2]):ToUpperInvariant()
+                VAR baseType := operandType:Substring(0, 1)
+                IF baseType == "N" .OR. baseType == "I" .OR. baseType == "Y" .OR. ;
+                   baseType == "F" .OR. baseType == "B"
+                    characterOnly := FALSE
+                ELSEIF baseType == "C" .OR. baseType == "V" .OR. baseType == "M"
+                    numericOnly := FALSE
+                    characterLength += (INT)operandDefinition[3]
+                ELSE
+                    numericOnly := FALSE
+                    characterOnly := FALSE
+                ENDIF
+            NEXT
+            IF !sawOperand
+                RETURN NULL
+            ELSEIF numericOnly
+                RETURN {NULL, "N", 20, 4, NULL, (LONG)DBFFieldFlags.Nullable}
+            ELSEIF characterOnly
+                RETURN {NULL, "C", Math.Min(254, Math.Max(1, characterLength)), 0, NULL, (LONG)DBFFieldFlags.Nullable}
+            ENDIF
+            RETURN NULL
+        ENDIF
+        RETURN NULL
+
     STATIC METHOD ExecuteSelect(selectCtx AS FoxSelectContext) AS VOID
         LOCAL savedArea := VoDbGetSelect() AS DWORD
         LOCAL target := IIF(String.IsNullOrEmpty(selectCtx:TargetCursor), "QUERYRESULT", AllTrim(selectCtx:TargetCursor)) AS STRING
@@ -1742,7 +1876,9 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         FOR LOCAL idx := 0 AS INT TO selectCtx:SelectList:Count - 1
             LOCAL expr AS SqlExpressionContext
             expr := selectCtx:SelectList[idx]
-            IF AllTrim(expr:ToString()) == "*"
+            IF expr IS SqlSimpleExpressionContext VAR simpleSelection .AND. ;
+               simpleSelection:Tokens != NULL .AND. simpleSelection:Tokens:Count == 1 .AND. ;
+               simpleSelection:Tokens[0]:Type == XTokenType.MULT
                 hasStarSelection := TRUE
                 EXIT
             ENDIF
@@ -1772,6 +1908,12 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             ENDIF
 
             AAdd(tableNames, tableName)
+        NEXT
+
+        // Projection subqueries are uncorrelated in this increment. Prepare them
+        // once before generating the result schema and evaluating outer rows.
+        FOREACH VAR projectionExpression IN selectCtx:SelectList
+            PrepareSubqueryExpression(projectionExpression)
         NEXT
 
         LOCAL fieldList AS ARRAY
@@ -1894,6 +2036,14 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                     NEXT
                 ENDIF
 
+                IF !fieldFound .AND. ContainsScalarSubquery(expr)
+                    fieldInfo := InferScalarProjectionFieldDefinition(expr, selectCtx:TableAliases)
+                    IF fieldInfo == NULL
+                        THROW Error{"Could not infer the result type of SELECT expression containing a scalar subquery: " + resolvedExprStr}
+                    ENDIF
+                    fieldFound := TRUE
+                ENDIF
+
                 AAdd(selectFieldNames, exprStr)
                 AAdd(selectExpressions, resolvedExprStr)
 
@@ -1905,6 +2055,9 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                             ((LONG)fieldInfo[6]) | (LONG)DBFFieldFlags.Nullable})
                     ELSE
                         LOCAL outputFlags := (LONG)fieldInfo[6] AS LONG
+                        IF ContainsScalarSubquery(expr)
+                            outputFlags := outputFlags | (LONG)DBFFieldFlags.Nullable
+                        ENDIF
                         IF hasLeftOuterJoin
                             outputFlags := outputFlags | (LONG)DBFFieldFlags.Nullable
                         ENDIF

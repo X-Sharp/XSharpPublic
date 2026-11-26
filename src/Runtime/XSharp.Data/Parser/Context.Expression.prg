@@ -331,6 +331,7 @@ END CLASS
 CLASS SqlScalarSubqueryExpressionContext INHERIT SqlExpressionContext
     PROPERTY Subquery AS FoxSelectContext AUTO
     PROPERTY Value AS USUAL AUTO
+    PROPERTY ResultFieldDefinition AS ARRAY AUTO
     PROPERTY IsPrepared AS LOGIC AUTO
 
     OVERRIDE METHOD BuildString(sb AS StringBuilder) AS VOID

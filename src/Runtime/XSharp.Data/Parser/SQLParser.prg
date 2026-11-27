@@ -520,7 +520,7 @@ PARTIAL CLASS SQLParser
                 ENDIF
                 SELF:Expect(XTokenType.COMMA)
             ENDDO
-        ELSEIF SELF:Matches(XTokenType.JOIN)
+        ELSEIF SELF:Expect(XTokenType.JOIN)
             DO WHILE SELF:Matches(XTokenType.ID)
                 IF SELF:ParseTableName( OUT VAR sName)
                     stmt:TableList:Add(sName)

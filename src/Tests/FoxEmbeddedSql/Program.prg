@@ -107,6 +107,8 @@ FUNCTION Start(args AS STRING[]) AS VOID STRICT
     RegisterTest("TestNewSqlFeatures", { => TestNewSqlFeatures() })
     RegisterTest("TestUpdateFrom [optimized]", { => TestUpdateFrom() })
     RegisterTest("TestUpdateFrom [baseline]", { => TestUpdateFrom() }, TRUE)
+    RegisterTest("TestDeleteJoin [optimized]", { => TestDeleteJoin() })
+    RegisterTest("TestDeleteJoin [baseline]", { => TestDeleteJoin() }, TRUE)
     RegisterTest("TestDropTable [optimized]", { => TestDropTable() })
     RegisterTest("TestDropTable [baseline]", { => TestDropTable() }, TRUE)
     RegisterTest("TestInsertFromSelect [optimized]", { => TestInsertFromSelect() })

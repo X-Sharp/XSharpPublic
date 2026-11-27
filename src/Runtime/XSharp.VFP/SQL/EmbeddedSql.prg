@@ -117,6 +117,85 @@ FUNCTION __SqlUpdate(sCommand AS STRING) AS LOGIC
     END TRY
 
 [NeedsAccessToLocals(FALSE)];
+FUNCTION __SqlDelete(sCommand AS STRING) AS LOGIC
+    LOCAL savedArea := VoDbGetSelect() AS DWORD
+    LOCAL deletedCount := 0 AS LONG
+    LOCAL targetAlias := "" AS STRING
+    LOCAL sourceAlias := "" AS STRING
+
+    TRY
+        VAR parser := SQLParser{XTokenList{XSqlLexer{sCommand}:AllTokens()}}
+        IF !parser:ParseDeleteStatement(OUT VAR deleteContext)
+            THROW Error{"Could not parse DELETE command: " + parser:Error}
+        ENDIF
+        IF String.IsNullOrWhiteSpace(deleteContext:TableName) .OR. deleteContext:JoinList:Count != 0
+            THROW Error{"DELETE source-list currently requires an explicit target and comma-separated sources"}
+        ENDIF
+        IF deleteContext:WhereClause == NULL
+            THROW Error{"DELETE source-list requires a WHERE condition"}
+        ENDIF
+
+        targetAlias := AllTrim(deleteContext:TableName)
+        LOCAL sourceCount := 0 AS INT
+        FOREACH VAR tableName IN deleteContext:TableList
+            IF !String.Equals(AllTrim(tableName), targetAlias, StringComparison.OrdinalIgnoreCase)
+                sourceCount++
+                sourceAlias := AllTrim(tableName)
+            ENDIF
+        NEXT
+        IF sourceCount != 1
+            THROW Error{"DELETE source-list currently supports exactly one source table besides the target"}
+        ENDIF
+        IF String.Equals(targetAlias, sourceAlias, StringComparison.OrdinalIgnoreCase)
+            THROW Error{"DELETE target and source must be different work areas"}
+        ENDIF
+        IF !FoxEmbeddedSQL.OpenArea(targetAlias) .OR. !FoxEmbeddedSQL.OpenArea(sourceAlias)
+            THROW Error{"Could not open DELETE target or source table"}
+        ENDIF
+
+        VAR aliases := Dictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
+        aliases[targetAlias] := targetAlias
+        aliases[sourceAlias] := sourceAlias
+        VAR whereExpression := deleteContext:WhereClause:ToResolvedString(aliases)
+        VAR whereBlock := MCompile(whereExpression)
+        IF whereBlock == NULL
+            THROW Error{"Could not compile DELETE WHERE expression: " + whereExpression}
+        ENDIF
+
+        DbSelectArea(targetAlias)
+        LOCAL targetRowCount := (LONG)RecCount() AS LONG
+        FOR LOCAL targetRecord := 1 AS LONG TO targetRowCount
+            DbGoto(targetRecord, targetAlias)
+            DbSelectArea(sourceAlias)
+            LOCAL sourceRowCount := (LONG)RecCount() AS LONG
+            LOCAL matched := FALSE AS LOGIC
+            FOR LOCAL sourceRecord := 1 AS LONG TO sourceRowCount
+                DbGoto(sourceRecord, sourceAlias)
+                VAR matchValue := (USUAL)whereBlock:Eval()
+                IF !IsNil(matchValue) .AND. !matchValue:IsNull .AND. (LOGIC)matchValue
+                    matched := TRUE
+                    EXIT
+                ENDIF
+            NEXT
+
+            IF matched
+                DbSelectArea(targetAlias)
+                DbGoto(targetRecord, targetAlias)
+                __DbDelete()
+                deletedCount++
+            ENDIF
+        NEXT
+
+        RuntimeState.Tally := deletedCount
+        _TALLY := deletedCount
+        RETURN TRUE
+    FINALLY
+        IF savedArea > 0
+            DbSelectArea(savedArea)
+        ENDIF
+    END TRY
+
+[NeedsAccessToLocals(FALSE)];
 FUNCTION __SqlInsertMemVar(sTable as STRING) AS LOGIC
     // FoxPro opens the table when needed and keeps it open
     // FoxPro only writes memvars that exist and also uses locals

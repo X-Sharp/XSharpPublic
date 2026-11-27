@@ -67,8 +67,14 @@
 #command DELETE <*target*> FROM <(a)> [<*clauses*>] => DELETE <clauses> ALL IN <target> ; _TALLY := RuntimeState.Tally
 #command DELETE FROM <(a)> [<*clauses*>] => DELETE <clauses> ALL IN <a> ; _TALLY := RuntimeState.Tally
 
-// Delete with Join or Subselect is not supported
-#command DELETE [<*clauses*>] <s:SELECT,JOIN> <*moreclauses*> => __NOFOXPROSQL__ <(udc)>
+// VFP joins DELETE sources with a comma-separated table list and a WHERE clause.
+#command DELETE <*target*> FROM <(a)> , <*moretables*> WHERE <*whereclause*> => __SqlDelete(<"udc">)
+
+// Explicit JOIN syntax is not accepted by VFP9 for DELETE.
+#command DELETE [<*clauses*>] JOIN <*moreclauses*> => __NOFOXPROSQL__ <(udc)>
+
+// Delete with a subselect is not supported yet.
+#command DELETE [<*clauses*>] <s:SELECT> <*moreclauses*> => __NOFOXPROSQL__ <(udc)>
 
 
 #command UPDATE <(a)> SET <(f1)> = <x1> [, <(fn)> = <xn>]               ;

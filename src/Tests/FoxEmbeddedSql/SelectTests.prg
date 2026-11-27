@@ -845,6 +845,61 @@ FUNCTION TestUpdateFrom() AS VOID
     ENDIF
     RETURN
 
+FUNCTION TestDeleteJoin() AS VOID
+    CREATE CURSOR delete_join_target (Id I, Value C(12))
+    CREATE CURSOR delete_join_source (Id I, Active L)
+    INSERT INTO delete_join_target VALUES (1, "first")
+    INSERT INTO delete_join_target VALUES (2, "second")
+    INSERT INTO delete_join_target VALUES (3, "third")
+    INSERT INTO delete_join_source VALUES (1, TRUE)
+    INSERT INTO delete_join_source VALUES (1, TRUE)
+    INSERT INTO delete_join_source VALUES (3, TRUE)
+    INSERT INTO delete_join_source VALUES (2, FALSE)
+
+    DbSelectArea("delete_join_target")
+    DELETE delete_join_target FROM delete_join_target, delete_join_source ;
+        WHERE delete_join_target.Id = delete_join_source.Id .AND. delete_join_source.Active
+
+    IF _TALLY != 2 .OR. !String.Equals(Alias(), "delete_join_target", StringComparison.OrdinalIgnoreCase)
+        THROW Exception{"DELETE JOIN should tally each matched target once and restore the selected area"}
+    ENDIF
+    DbSelectArea("delete_join_target")
+    DbGoto(1)
+    IF !Deleted()
+        THROW Exception{"DELETE JOIN should delete the first matching target row"}
+    ENDIF
+    DbGoto(2)
+    IF Deleted()
+        THROW Exception{"DELETE JOIN should preserve a target row without an active source match"}
+    ENDIF
+    DbGoto(3)
+    IF !Deleted()
+        THROW Exception{"DELETE JOIN should delete only target rows with a qualifying source match"}
+    ENDIF
+
+    DbSelectArea("delete_join_source")
+    IF RecCount() != 4
+        THROW Exception{"DELETE JOIN must leave source rows unchanged"}
+    ENDIF
+    DbGoTop()
+    IF Deleted()
+        THROW Exception{"DELETE JOIN unexpectedly marked a source row deleted"}
+    ENDIF
+
+    DbSelectArea("delete_join_target")
+    DELETE delete_join_target FROM delete_join_target, delete_join_source WHERE delete_join_target.Id = 99
+    IF _TALLY != 0
+        THROW Exception{"DELETE JOIN should set _TALLY to zero when no target matches"}
+    ENDIF
+
+    IF Used("delete_join_target")
+        DbCloseArea("delete_join_target")
+    ENDIF
+    IF Used("delete_join_source")
+        DbCloseArea("delete_join_source")
+    ENDIF
+    RETURN
+
 FUNCTION ThrowEmbeddedSqlTestError(oError AS OBJECT) AS USUAL
     IF oError IS Exception VAR ex
         THROW ex

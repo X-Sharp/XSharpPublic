@@ -158,26 +158,6 @@ FUNCTION TestValueComparison() AS VOID
     ENDIF
     RETURN
 
-FUNCTION __SqlDelete (sCommand as STRING)
-    VAR lexer := XSqlLexer{sCommand}
-    VAR tokens := lexer:AllTokens()
-    var parser := SqlParser{XTokenList{tokens}}
-    IF Verbose
-        ? sCommand
-        IF ! parser:ParseDeleteStatement(out var table)
-            ? parser:Error
-        ENDIF
-        ? table:TableName
-        foreach var t in table:TableList
-            ? t
-        next
-        foreach var j in table:JoinList
-            ? j
-        next
-        ? table:WhereClause
-    ENDIF
-    RETURN
-
 FUNCTION Title(title AS STRING) AS VOID
     IF Verbose
         ? ""

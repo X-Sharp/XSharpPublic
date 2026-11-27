@@ -178,63 +178,6 @@ FUNCTION __SqlDelete (sCommand as STRING)
     ENDIF
     RETURN
 
-FUNCTION __SqlUpdate (sCommand as STRING)
-    VAR lexer := XSqlLexer{sCommand}
-    VAR tokens := lexer:AllTokens()
-    var parser := SqlParser{XTokenList{tokens}}
-    VAR result := parser:ParseUpdateStatement(out var table)
-    IF Verbose
-        ? sCommand
-        IF ! result
-            ? parser:Error
-        ENDIF
-        ? "TableName", table:TableName
-        foreach var c in table:ColumnList
-            ? "Column", c
-        next
-        foreach var t in table:ValueList
-            ? "Value", t:ToString()
-        next
-        foreach var t in table:TableList
-            ? "From Table", t
-        next
-        foreach var j in table:JoinList
-            ? "Join Table", j
-        next
-        ? "Where", table:WhereClause:ToString()
-    ENDIF
-
-    VAR o := XSharp.MacroCompiler.MacroOptions.FoxPro
-    o:AllowOldStyleAssignments := False
-    VAR mc := XSharp.Runtime.MacroCompiler{o}
-    // VAR mc := XSharp.Runtime.MacroCompiler.GetScriptCompiler(XSharpDialect.FoxPro)
-    VAR cbWhere := mc:CompileCodeblock(table:WhereClause:ToString())
-    //VAR res := (OBJECT) cb:Eval(args)
-
-    VAR values := Dictionary<STRING,CODEBLOCK>{}
-    FOR VAR i := 0 TO table:ColumnList:Count-1
-        values[table:ColumnList[i]] := mc:CompileCodeblock(table:ValueList[i]:ToString())
-    NEXT
-
-    LOCAL FUNCTION UpdateRow() AS VOID
-        FOREACH VAR item IN values
-            __FieldSet(item:key, item:value:Eval())
-        NEXT
-    END FUNCTION
-
-    LOCAL FUNCTION FilterRow() AS LOGIC
-        FOREACH VAR t IN table:TableList
-            IF (t)->DbLocate( cbWhere )
-                RETURN TRUE
-            ENDIF
-        NEXT
-        RETURN FALSE
-    END FUNCTION
-
-    (table:TableName)->(DbEval( {||DbAutoLock(), UpdateRow(), DbAutoUnLock()}, {||FilterRow()} ))
-
-    RETURN
-
 FUNCTION Title(title AS STRING) AS VOID
     IF Verbose
         ? ""

@@ -77,6 +77,9 @@
                  {||DbAutoLock(), __FieldSet(<(f1)>,<x1>) [, __FieldSet(<(fn)>, <xn>)], DbAutoUnLock()},    ;
                  <{lfor}>))
 
+// Single-source UPDATE ... FROM, handled by the embedded SQL runtime.
+#command UPDATE <*tableName*> SET <*setclauses*> FROM <*fromclause*> [WHERE <*whereclause*>] => __SqlUpdate(<"udc">)
+
 // Update with Join or Subselect is not supported
 #command UPDATE [<*clauses*>] <x:SELECT,JOIN> <*moreclauses*> => __NOFOXPROSQL__ <(udc)>
 

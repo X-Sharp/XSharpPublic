@@ -105,6 +105,8 @@ FUNCTION Start(args AS STRING[]) AS VOID STRICT
     RegisterTest("TestFieldResolution", { => TestFieldResolution() })
     RegisterTest("TestTableResolution", { => TestTableResolution() })
     RegisterTest("TestNewSqlFeatures", { => TestNewSqlFeatures() })
+    RegisterTest("TestUpdateFrom [optimized]", { => TestUpdateFrom() })
+    RegisterTest("TestUpdateFrom [baseline]", { => TestUpdateFrom() }, TRUE)
     RegisterTest("TestDropTable [optimized]", { => TestDropTable() })
     RegisterTest("TestDropTable [baseline]", { => TestDropTable() }, TRUE)
     RegisterTest("TestInsertFromSelect [optimized]", { => TestInsertFromSelect() })

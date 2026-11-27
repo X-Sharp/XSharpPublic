@@ -801,6 +801,50 @@ FUNCTION TestDropTable() AS VOID
     END TRY
     RETURN
 
+FUNCTION TestUpdateFrom() AS VOID
+    CREATE CURSOR update_from_target (Id I, Value I, Label C(12))
+    CREATE CURSOR update_from_source (Id I, Delta I, NewLabel C(12))
+    INSERT INTO update_from_target VALUES (1, 10, "one")
+    INSERT INTO update_from_target VALUES (2, 20, "two")
+    INSERT INTO update_from_target VALUES (3, 30, "three")
+    INSERT INTO update_from_source VALUES (1, 5, "ONE")
+    INSERT INTO update_from_source VALUES (2, 7, "TWO")
+
+    UPDATE update_from_target SET Value = update_from_target.Value + update_from_source.Delta, ;
+        Label = update_from_source.NewLabel FROM update_from_source ;
+        WHERE update_from_target.Id = update_from_source.Id
+    IF _TALLY != 2
+        THROW Exception{"UPDATE FROM should set _TALLY to the number of matching target rows"}
+    ENDIF
+
+    DbSelectArea("update_from_target")
+    DbGoTop()
+    IF update_from_target->Value != 15 .OR. AllTrim(update_from_target->Label) != "ONE"
+        THROW Exception{"UPDATE FROM should evaluate assignments using both target and source fields"}
+    ENDIF
+    DbSkip(1)
+    IF update_from_target->Value != 27 .OR. AllTrim(update_from_target->Label) != "TWO"
+        THROW Exception{"UPDATE FROM should update each matching target row"}
+    ENDIF
+    DbSkip(1)
+    IF update_from_target->Value != 30 .OR. AllTrim(update_from_target->Label) != "three"
+        THROW Exception{"UPDATE FROM should leave unmatched target rows unchanged"}
+    ENDIF
+
+    DbSelectArea("update_from_source")
+    DbGoTop()
+    IF update_from_source->Delta != 5 .OR. AllTrim(update_from_source->NewLabel) != "ONE"
+        THROW Exception{"UPDATE FROM must not modify source rows"}
+    ENDIF
+
+    IF Used("update_from_target")
+        DbCloseArea("update_from_target")
+    ENDIF
+    IF Used("update_from_source")
+        DbCloseArea("update_from_source")
+    ENDIF
+    RETURN
+
 FUNCTION ThrowEmbeddedSqlTestError(oError AS OBJECT) AS USUAL
     IF oError IS Exception VAR ex
         THROW ex

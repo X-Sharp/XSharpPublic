@@ -1,7 +1,3 @@
 // Experimental embedded SQL commands used only by this test program.
 // Runtime-tested commands are defined in src/Common/FoxProSql.xh.
 #include "FoxProSql.xh"
-
-// Multi-table UPDATE ... FROM is experimental and belongs to this test only.
-#command UPDATE <*tableName*> SET <*setclauses*> FROM <*fromclause*> ;
-  [JOIN <*joinclause*>] [WHERE <*whereclause*>] => __SqlUpdate(<"udc">)

@@ -34,6 +34,89 @@ FUNCTION __SqlDropTable(sTable AS STRING) AS LOGIC
     END TRY
 
 [NeedsAccessToLocals(FALSE)];
+FUNCTION __SqlUpdate(sCommand AS STRING) AS LOGIC
+    LOCAL savedArea := VoDbGetSelect() AS DWORD
+    LOCAL updatedCount := 0 AS LONG
+    LOCAL targetAlias := "" AS STRING
+    LOCAL sourceAlias := "" AS STRING
+
+    TRY
+        VAR parser := SQLParser{XTokenList{XSqlLexer{sCommand}:AllTokens()}}
+        IF !parser:ParseUpdateStatement(OUT VAR updateContext)
+            THROW Error{"Could not parse UPDATE command: " + parser:Error}
+        ENDIF
+        IF updateContext:TableList:Count != 1 .OR. updateContext:JoinList:Count != 0
+            THROW Error{"UPDATE FROM currently supports exactly one source table"}
+        ENDIF
+        IF updateContext:WhereClause == NULL
+            THROW Error{"UPDATE FROM requires a WHERE join condition"}
+        ENDIF
+
+        targetAlias := AllTrim(updateContext:TableName)
+        sourceAlias := AllTrim(updateContext:TableList[0])
+        IF String.Equals(targetAlias, sourceAlias, StringComparison.OrdinalIgnoreCase)
+            THROW Error{"UPDATE target and source must be different work areas"}
+        ENDIF
+        IF !FoxEmbeddedSQL.OpenArea(targetAlias) .OR. !FoxEmbeddedSQL.OpenArea(sourceAlias)
+            THROW Error{"Could not open UPDATE target or source table"}
+        ENDIF
+
+        VAR aliases := Dictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
+        aliases[targetAlias] := targetAlias
+        aliases[sourceAlias] := sourceAlias
+        VAR whereExpression := updateContext:WhereClause:ToResolvedString(aliases)
+        VAR whereBlock := MCompile(whereExpression)
+        IF whereBlock == NULL
+            THROW Error{"Could not compile UPDATE WHERE expression: " + whereExpression}
+        ENDIF
+        VAR assignments := Dictionary<STRING, CODEBLOCK>{StringComparer.OrdinalIgnoreCase}
+        FOR LOCAL assignmentIndex := 0 AS INT TO updateContext:ColumnList:Count - 1
+            VAR columnName := updateContext:ColumnList[assignmentIndex]
+            IF (targetAlias)->FieldPos(columnName) == 0
+                THROW Error{"UPDATE target column not found: " + columnName}
+            ENDIF
+            VAR assignmentExpression := updateContext:ValueList[assignmentIndex]:ToResolvedString(aliases)
+            VAR assignmentBlock := MCompile(assignmentExpression)
+            IF assignmentBlock == NULL
+                THROW Error{"Could not compile UPDATE assignment: " + assignmentExpression}
+            ENDIF
+            assignments[columnName] := assignmentBlock
+        NEXT
+
+        DbSelectArea(targetAlias)
+        LOCAL targetRowCount := (LONG)RecCount() AS LONG
+        IF targetRowCount > 0
+            DbGoTop()
+            FOR LOCAL rowIndex := 1 AS LONG TO targetRowCount
+                DbSelectArea(sourceAlias)
+                DbGoTop()
+                IF DbLocate(whereBlock)
+                    DbSelectArea(targetAlias)
+                    DbAutoLock()
+                    FOREACH VAR assignment IN assignments
+                        __FieldSet(assignment:Key, assignment:Value:Eval())
+                    NEXT
+                    DbAutoUnLock()
+                    updatedCount++
+                ELSE
+                    DbSelectArea(targetAlias)
+                ENDIF
+                IF rowIndex < targetRowCount
+                    DbSkip(1)
+                ENDIF
+            NEXT
+        ENDIF
+
+        RuntimeState.Tally := updatedCount
+        _TALLY := updatedCount
+        RETURN TRUE
+    FINALLY
+        IF savedArea > 0
+            DbSelectArea(savedArea)
+        ENDIF
+    END TRY
+
+[NeedsAccessToLocals(FALSE)];
 FUNCTION __SqlInsertMemVar(sTable as STRING) AS LOGIC
     // FoxPro opens the table when needed and keeps it open
     // FoxPro only writes memvars that exist and also uses locals

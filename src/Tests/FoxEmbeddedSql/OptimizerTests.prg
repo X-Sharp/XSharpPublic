@@ -246,7 +246,7 @@ FUNCTION TestIndexedEqualityOptimizer() AS VOID
         VerifyIndexEqualitySeek(before, optimizationsEnabled)
         before := QueryOptimizerIndexSeekCount()
         SELECT Id FROM indexed_equality_table WHERE Age = 30 INTO CURSOR DescendingEqualityResult
-        VerifyTable(3, "Descending equality must include duplicate keys", TRUE)
+        VerifyTable(3, "Descending equality must include duplicate keys", TRUE, {{6}, {4}, {1}})
         VerifyIndexEqualitySeek(before, optimizationsEnabled)
         DbSelectArea("indexed_equality_table")
         OrdDescend("AgeOrder",, FALSE)

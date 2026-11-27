@@ -532,14 +532,29 @@ PRIVATE STATIC METHOD EvaluatePrefixExpression(prefixExpr AS SqlPrefixExpression
             IF (LONG)CoreDb.Recno() != firstRecNo
                 RETURN NULL
             ENDIF
-            DO WHILE !CoreDb.Eof()
+            // DbSkip(1) always advances to the next entry in the active order,
+            // including when that order is descending. The key direction only
+            // changes how ranges are traversed; it must not reverse a duplicate
+            // run walk between the first and last seek results.
+            LOCAL traversed AS LONG
+            traversed := 0
+            LOCAL reachedLast AS LOGIC
+            reachedLast := FALSE
+            DO WHILE traversed < recordCount .AND. !CoreDb.Eof() .AND. !CoreDb.Bof()
                 VAR physicalRecNo := (LONG)CoreDb.Recno()
                 result:SetMatchState(physicalRecNo, RecordBitmap.RecordMatchState.Match)
                 IF physicalRecNo == lastRecNo
+                    reachedLast := TRUE
                     EXIT
                 ENDIF
-                CoreDb.Skip(IIF(descending, -1, 1))
+                CoreDb.Skip(1)
+                traversed++
             ENDDO
+            // Do not return a partial bitmap if the index navigation did not
+            // reach the endpoint. The caller will use the safe scan fallback.
+            IF !reachedLast
+                RETURN NULL
+            ENDIF
             RETURN result
         ENDIF
 

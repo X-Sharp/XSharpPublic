@@ -429,6 +429,88 @@ FUNCTION TestSelectFunctionality() AS VOID
 
     RETURN
 
+FUNCTION TestMixedWildcardProjection() AS VOID
+    CREATE CURSOR wildcard_projection_source (Id I, Label C(10))
+    CREATE CURSOR wildcard_projection_details (Id I, Detail C(8))
+    TRY
+        INSERT INTO wildcard_projection_source VALUES (1, "one")
+        INSERT INTO wildcard_projection_source VALUES (2, "two")
+        INSERT INTO wildcard_projection_details VALUES (1, "first")
+        INSERT INTO wildcard_projection_details VALUES (2, "second")
+
+        SELECT p.Id + 10 AS PlusTen, p.*, p.Label + '!' AS Decorated ;
+            FROM wildcard_projection_source p INTO CURSOR MixedWildcardCursor
+        VerifyTable(2, "Mixed projection should preserve wildcard position and expression values", FALSE, ;
+            {{11, 1, "one", "one       !"}, {12, 2, "two", "two       !"}})
+        VAR mixedStruct := DbStruct()
+        IF FCount() != 4 .OR. FieldName(1) != "PLUSTEN" .OR. FieldName(2) != "ID" .OR. ;
+           FieldName(3) != "LABEL" .OR. FieldName(4) != "DECORATED" .OR. ;
+           mixedStruct[1][2] != "N" .OR. mixedStruct[1][3] != 12 .OR. mixedStruct[1][4] != 0 .OR. ;
+           mixedStruct[2][2] != "I" .OR. mixedStruct[3][2] != "C" .OR. mixedStruct[3][3] != 10 .OR. ;
+           mixedStruct[4][2] != "C" .OR. mixedStruct[4][3] != 11
+            THROW Exception{"Mixed projection schema should match the VFP reference"}
+        ENDIF
+        USE IN MixedWildcardCursor
+
+        SELECT *, Id AS Id FROM wildcard_projection_source INTO CURSOR DuplicateWildcardCursor
+        IF FCount() != 3 .OR. FieldName(1) != "ID_A" .OR. FieldName(2) != "LABEL" .OR. ;
+           FieldName(3) != "ID_B"
+            THROW Exception{"VFP duplicate output names should receive alphabetic suffixes"}
+        ENDIF
+        VerifyTable(2, "Duplicate wildcard names should preserve both projected values", TRUE, ;
+            {{1, "one", 1}, {2, "two", 2}})
+
+        SELECT * FROM wildcard_projection_source a ;
+            INNER JOIN wildcard_projection_details b ON a.Id = b.Id ;
+            INTO CURSOR JoinedWildcardCursor
+        IF FCount() != 4 .OR. FieldName(1) != "ID_A" .OR. FieldName(2) != "LABEL" .OR. ;
+           FieldName(3) != "ID_B" .OR. FieldName(4) != "DETAIL"
+            THROW Exception{"Bare wildcard across joined sources should expand in FROM order"}
+        ENDIF
+        VerifyTable(2, "Joined wildcard projection should retain both sources", TRUE, ;
+            {{1, "one", 1, "first"}, {2, "two", 2, "second"}})
+
+        SELECT d.Id + 10 AS PlusTen, d.Decorated FROM ;
+            (SELECT *, Label + '!' AS Decorated FROM wildcard_projection_source) d ;
+            INTO CURSOR DerivedWildcardCursor
+        VerifyTable(2, "Derived SELECT should expose fields from a mixed wildcard projection", FALSE, ;
+            {{11, "one       !"}, {12, "two       !"}})
+        VAR derivedStruct := DbStruct()
+        IF derivedStruct[1][2] != "N" .OR. derivedStruct[1][3] != 12 .OR. ;
+           derivedStruct[2][2] != "C" .OR. derivedStruct[2][3] != 11
+            THROW Exception{"Derived wildcard expression metadata should use the expanded source schema"}
+        ENDIF
+        USE IN DerivedWildcardCursor
+
+        SELECT TOP 1 p.Id + 10 AS PlusTen, p.*, p.Label + '!' AS Decorated ;
+            FROM wildcard_projection_source p ORDER BY p.Id DESC INTO CURSOR MixedWildcardTop
+        VerifyTable(1, "TOP should apply after ORDER BY to mixed wildcard projections", TRUE, ;
+            {{12, 2, "two", "two       !"}})
+    FINALLY
+        IF Used("MixedWildcardCursor")
+            USE IN MixedWildcardCursor
+        ENDIF
+        IF Used("DuplicateWildcardCursor")
+            USE IN DuplicateWildcardCursor
+        ENDIF
+        IF Used("JoinedWildcardCursor")
+            USE IN JoinedWildcardCursor
+        ENDIF
+        IF Used("DerivedWildcardCursor")
+            USE IN DerivedWildcardCursor
+        ENDIF
+        IF Used("MixedWildcardTop")
+            USE IN MixedWildcardTop
+        ENDIF
+        IF Used("wildcard_projection_source")
+            USE IN wildcard_projection_source
+        ENDIF
+        IF Used("wildcard_projection_details")
+            USE IN wildcard_projection_details
+        ENDIF
+    END TRY
+    RETURN
+
 FUNCTION TestSelectIntoArray() AS VOID
     CREATE CURSOR sql_array_source (Id I NULL, Label C(10) NULL)
     INSERT INTO sql_array_source VALUES (1, "One")

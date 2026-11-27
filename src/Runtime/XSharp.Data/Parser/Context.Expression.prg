@@ -48,6 +48,21 @@ CLASS SqlSimpleExpressionContext INHERIT SqlExpressionContext
         NEXT
 END CLASS
 
+CLASS SqlWildcardExpressionContext INHERIT SqlExpressionContext
+    // An optional table alias restricts expansion to that FROM source.
+    PROPERTY Table AS STRING AUTO
+    CONSTRUCTOR()
+        RETURN
+    OVERRIDE METHOD BuildString(sb AS StringBuilder) AS VOID
+        IF !String.IsNullOrEmpty(Table)
+            sb:Append(Table)
+            sb:Append(".")
+        ENDIF
+        sb:Append("*")
+    OVERRIDE METHOD BuildStringWithFieldResolution(sb AS StringBuilder, tableAliases AS IDictionary<STRING,STRING>) AS VOID
+        SELF:BuildString(sb)
+END CLASS
+
 CLASS SqlNameExpressionContext INHERIT SqlSimpleExpressionContext
     PROPERTY Table AS STRING AUTO
     PROPERTY Name AS STRING AUTO

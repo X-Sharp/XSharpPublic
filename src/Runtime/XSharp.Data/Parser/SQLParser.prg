@@ -771,11 +771,14 @@ PARTIAL CLASS SQLParser
             LOCAL aliasName := NULL AS STRING
 
             IF SELF:Matches(XTokenType.MULT)
-                var multToken := SELF:ConsumeAndGet()
-                // Create a simple expression context for the '*' wildcard
-                var tokenList := List<XToken>{}
-                tokenList:Add(multToken)
-                expr := SqlSimpleExpressionContext{} { Tokens := tokenList }
+                SELF:Consume()
+                expr := SqlWildcardExpressionContext{}
+            ELSEIF SELF:Matches(XTokenType.ID) .AND. SELF:La2 == XTokenType.DOT .AND. ;
+                   SELF:La3 == XTokenType.MULT
+                LOCAL wildcardTable := SELF:ConsumeAndGetText() AS STRING
+                SELF:Consume() // dot
+                SELF:Consume() // wildcard
+                expr := SqlWildcardExpressionContext{} { Table := wildcardTable }
             ELSE
                 expr := SELF:ParseExpressionContext()
             ENDIF

@@ -75,6 +75,29 @@ FUNCTION TestSelectParsing() AS VOID
         THROW Exception{ "Failed to parse SELECT statement: " + parser:Error }
     ENDIF
 
+    VAR mixedWildcardParser := SQLParser{XTokenList{XSqlLexer{"SELECT Id, source.*, Label + '!' AS Decorated FROM source"}:AllTokens()}}
+    LOCAL mixedWildcardCtx AS FoxSelectContext
+    IF !mixedWildcardParser:ParseSelectStatement(OUT mixedWildcardCtx) .OR. ;
+       mixedWildcardCtx:SelectList:Count != 3 .OR. ;
+       !(mixedWildcardCtx:SelectList[1] IS SqlWildcardExpressionContext VAR qualifiedWildcard) .OR. ;
+       qualifiedWildcard:Table != "source"
+        THROW Exception{"SELECT should parse a qualified wildcard in the middle of a mixed projection: " + mixedWildcardParser:Error}
+    ENDIF
+
+    VAR bareWildcardParser := SQLParser{XTokenList{XSqlLexer{"SELECT *, Id, Label FROM source"}:AllTokens()}}
+    LOCAL bareWildcardCtx AS FoxSelectContext
+    IF !bareWildcardParser:ParseSelectStatement(OUT bareWildcardCtx) .OR. ;
+       !(bareWildcardCtx:SelectList[0] IS SqlWildcardExpressionContext)
+        THROW Exception{"SELECT should parse a bare wildcard before named projection items: " + bareWildcardParser:Error}
+    ENDIF
+
+    VAR trailingWildcardParser := SQLParser{XTokenList{XSqlLexer{"SELECT Id, * FROM source"}:AllTokens()}}
+    LOCAL trailingWildcardCtx AS FoxSelectContext
+    IF !trailingWildcardParser:ParseSelectStatement(OUT trailingWildcardCtx) .OR. ;
+       !(trailingWildcardCtx:SelectList[1] IS SqlWildcardExpressionContext)
+        THROW Exception{"SELECT should parse a bare wildcard after named projection items: " + trailingWildcardParser:Error}
+    ENDIF
+
     VAR arrayOutputParser := SQLParser{XTokenList{XSqlLexer{"SELECT Id FROM Customers INTO ARRAY CustomerRows"}:AllTokens()}}
     LOCAL arrayOutputCtx AS FoxSelectContext
     IF !arrayOutputParser:ParseSelectStatement(OUT arrayOutputCtx) .OR. ;

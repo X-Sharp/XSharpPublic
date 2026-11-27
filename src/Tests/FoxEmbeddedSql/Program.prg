@@ -121,6 +121,8 @@ FUNCTION Start(args AS STRING[]) AS VOID STRICT
     RegisterTest("TestInsertFromSelect [baseline]", { => TestInsertFromSelect() }, TRUE)
     RegisterTest("TestSelectFunctionality [optimized]", { => TestSelectFunctionality() })
     RegisterTest("TestSelectFunctionality [baseline]", { => TestSelectFunctionality() }, TRUE)
+    RegisterTest("TestMixedWildcardProjection [optimized]", { => TestMixedWildcardProjection() })
+    RegisterTest("TestMixedWildcardProjection [baseline]", { => TestMixedWildcardProjection() }, TRUE)
     RegisterTest("TestSelectIntoArray [optimized]", { => TestSelectIntoArray() })
     RegisterTest("TestSelectIntoArray [baseline]", { => TestSelectIntoArray() }, TRUE)
     RegisterTest("TestSelectIntoTable [optimized]", { => TestSelectIntoTable() })

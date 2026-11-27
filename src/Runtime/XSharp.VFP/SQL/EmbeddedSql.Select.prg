@@ -2144,6 +2144,18 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             LOCAL derivedQuery AS FoxSelectContext
             IF derivedTables != NULL .AND. !String.IsNullOrEmpty(nameExpression:Table) .AND. ;
                derivedTables:TryGetValue(nameExpression:Table, OUT derivedQuery)
+                // During parent SELECT execution the materialized derived
+                // source is open and carries the authoritative expanded schema.
+                LOCAL derivedSource := nameExpression:Table AS STRING
+                IF !aliases:TryGetValue(nameExpression:Table, OUT derivedSource)
+                    derivedSource := nameExpression:Table
+                ENDIF
+                IF Used(derivedSource)
+                    VAR derivedFieldPosition := (derivedSource)->FieldPos(nameExpression:Name)
+                    IF derivedFieldPosition > 0
+                        RETURN (derivedSource)->DbStruct()[derivedFieldPosition]
+                    ENDIF
+                ENDIF
                 RETURN InferDerivedTableFieldDefinition(derivedQuery, nameExpression:Name)
             ENDIF
             LOCAL sourceTable := nameExpression:Table AS STRING
@@ -2173,6 +2185,9 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             LOCAL literalType := NULL AS STRING
             LOCAL literalCount := 0 AS INT
             LOCAL nonPlusOperator := FALSE AS LOGIC
+            LOCAL numericWidth := 0 AS INT
+            LOCAL numericDecimals := 0 AS INT
+            LOCAL characterLength := 0 AS INT
             FOREACH VAR token IN simpleExpression:Tokens
                 SWITCH token:Type
                 CASE XTokenType.PLUS
@@ -2190,12 +2205,27 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                     ENDIF
                     literalType := "N"
                     literalCount++
+                    VAR numberText := token:Text:Trim()
+                    VAR decimalPoint := numberText:IndexOf(".")
+                    IF decimalPoint >= 0
+                        numericDecimals := Math.Max(numericDecimals, numberText:Length - decimalPoint - 1)
+                        numericWidth := Math.Max(numericWidth, numberText:Length - 1)
+                    ELSE
+                        numericWidth := Math.Max(numericWidth, numberText:Length)
+                    ENDIF
                 CASE XTokenType.STRING_CONST
                     IF literalType != NULL .AND. literalType != "C"
                         RETURN NULL
                     ENDIF
                     literalType := "C"
                     literalCount++
+                    VAR stringText := token:Text
+                    IF stringText:Length >= 2 .AND. ;
+                       ((stringText:StartsWith("'") .AND. stringText:EndsWith("'")) .OR. ;
+                        (stringText:StartsWith(Chr(34)) .AND. stringText:EndsWith(Chr(34))))
+                        stringText := stringText:Substring(1, stringText:Length - 2)
+                    ENDIF
+                    characterLength += stringText:Replace("''", "'"):Length
                 CASE XTokenType.TRUE_CONST
                 CASE XTokenType.FALSE_CONST
                     IF literalType != NULL .AND. literalType != "L"
@@ -2225,9 +2255,9 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             ENDIF
             SWITCH literalType
             CASE "N"
-                RETURN {NULL, "N", 20, 4, NULL, (LONG)DBFFieldFlags.Nullable}
+                RETURN {NULL, "N", Math.Max(1, numericWidth), numericDecimals, NULL, (LONG)DBFFieldFlags.Nullable}
             CASE "C"
-                RETURN {NULL, "C", Math.Min(254, 254 * literalCount), 0, NULL, ;
+                RETURN {NULL, "C", Math.Min(254, Math.Max(1, characterLength)), 0, NULL, ;
                     (LONG)DBFFieldFlags.Nullable}
             CASE "L"
                 RETURN {NULL, "L", 1, 0, NULL, (LONG)DBFFieldFlags.Nullable}
@@ -2259,14 +2289,21 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             LOCAL numericOnly := TRUE AS LOGIC
             LOCAL characterOnly := TRUE AS LOGIC
             LOCAL sawOperand := FALSE AS LOGIC
+            LOCAL operandCount := 0 AS INT
             LOCAL characterLength := 0 AS INT
+            LOCAL numericWidth := 0 AS INT
+            LOCAL numericDecimals := 0 AS INT
+            LOCAL additiveNumericExpression := TRUE AS LOGIC
+            LOCAL supportedNumericWidth := TRUE AS LOGIC
             FOREACH VAR item IN compositeExpression:Exprs
                 IF item IS SqlSimpleExpressionContext VAR operatorExpression .AND. ;
                    operatorExpression:Tokens != NULL .AND. operatorExpression:Tokens:Count == 1
                     VAR operatorTokenType := operatorExpression:Tokens[0]:Type
-                    IF operatorTokenType == XTokenType.PLUS .OR. operatorTokenType == XTokenType.MINUS .OR. ;
-                       operatorTokenType == XTokenType.MULT .OR. operatorTokenType == XTokenType.DIV .OR. ;
+                    IF operatorTokenType == XTokenType.MULT .OR. operatorTokenType == XTokenType.DIV .OR. ;
                        operatorTokenType == XTokenType.EXP
+                        additiveNumericExpression := FALSE
+                        LOOP
+                    ELSEIF operatorTokenType == XTokenType.PLUS .OR. operatorTokenType == XTokenType.MINUS
                         LOOP
                     ENDIF
                 ENDIF
@@ -2275,11 +2312,24 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                     RETURN NULL
                 ENDIF
                 sawOperand := TRUE
+                operandCount++
                 VAR operandType := ((STRING)operandDefinition[2]):ToUpperInvariant()
                 VAR baseType := operandType:Substring(0, 1)
                 IF baseType == "N" .OR. baseType == "I" .OR. baseType == "Y" .OR. ;
                    baseType == "F" .OR. baseType == "B"
                     characterOnly := FALSE
+                    LOCAL operandWidth := (INT)operandDefinition[3] AS INT
+                    IF baseType == "I"
+                        // VFP materializes integer arithmetic as a numeric
+                        // field with room for the integer value and carry.
+                        operandWidth := 11
+                    ELSEIF baseType != "N"
+                        // Currency and floating types need dedicated VFP
+                        // precision rules; keep their established fallback.
+                        supportedNumericWidth := FALSE
+                    ENDIF
+                    numericWidth := Math.Max(numericWidth, operandWidth)
+                    numericDecimals := Math.Max(numericDecimals, (INT)operandDefinition[4])
                 ELSEIF baseType == "C" .OR. baseType == "V" .OR. baseType == "M"
                     numericOnly := FALSE
                     characterLength += (INT)operandDefinition[3]
@@ -2291,7 +2341,14 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             IF !sawOperand
                 RETURN NULL
             ELSEIF numericOnly
-                RETURN {NULL, "N", 20, 4, NULL, (LONG)DBFFieldFlags.Nullable}
+                IF !supportedNumericWidth
+                    RETURN {NULL, "N", 20, 4, NULL, (LONG)DBFFieldFlags.Nullable}
+                ENDIF
+                IF additiveNumericExpression .AND. operandCount > 1
+                    numericWidth++
+                ENDIF
+                numericWidth := Math.Min(20, Math.Max(numericDecimals + 1, numericWidth))
+                RETURN {NULL, "N", numericWidth, numericDecimals, NULL, (LONG)DBFFieldFlags.Nullable}
             ELSEIF characterOnly
                 RETURN {NULL, "C", Math.Min(254, Math.Max(1, characterLength)), 0, NULL, (LONG)DBFFieldFlags.Nullable}
             ENDIF
@@ -2300,22 +2357,28 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         RETURN NULL
 
     PRIVATE STATIC METHOD InferDerivedTableFieldDefinition(query AS FoxSelectContext, fieldName AS STRING) AS ARRAY
-        IF query == NULL .OR. query:SelectList == NULL .OR. query:SelectList:Count == 0 .OR. ;
-           (query:SelectList:Count == 1 .AND. query:SelectList[0] IS SqlSimpleExpressionContext VAR star .AND. ;
-            star:Tokens != NULL .AND. star:Tokens:Count == 1 .AND. star:Tokens[0]:Type == XTokenType.MULT)
+        IF query == NULL .OR. query:SelectList == NULL .OR. query:SelectList:Count == 0
             RETURN NULL
         ENDIF
-        LOCAL existingNames := List<STRING>{} AS List<STRING>
+        FOREACH VAR projection IN query:SelectList
+            IF projection IS SqlWildcardExpressionContext
+                // The actual derived cursor has the expanded schema. Without
+                // that source context, a wildcard cannot be inferred here.
+                RETURN NULL
+            ENDIF
+        NEXT
+        LOCAL projectionAliases := List<STRING>{} AS List<STRING>
         FOR LOCAL i := 0 AS INT TO query:SelectList:Count - 1
-            LOCAL outputName := NULL AS STRING
             IF query:FieldSelectionList != NULL .AND. i < query:FieldSelectionList:Count .AND. ;
                !String.IsNullOrWhiteSpace(query:FieldSelectionList[i]:Alias)
-                outputName := query:FieldSelectionList[i]:Alias
+                projectionAliases:Add(query:FieldSelectionList[i]:Alias)
             ELSE
-                outputName := SqlExpressionToFieldName(query:SelectList[i])
+                projectionAliases:Add(NULL)
             ENDIF
-            outputName := ResolveConflictingFieldName(outputName, existingNames)
-            existingNames:Add(outputName:ToUpperInvariant())
+        NEXT
+        VAR outputNames := ResolveSelectProjectionNames(query:SelectList, projectionAliases)
+        FOR LOCAL i := 0 AS INT TO query:SelectList:Count - 1
+            VAR outputName := outputNames[i]
             IF outputName:Equals(fieldName, StringComparison.OrdinalIgnoreCase)
                 RETURN InferScalarProjectionFieldDefinition(query:SelectList[i], ;
                     query:TableAliases, query:DerivedTables)
@@ -2472,15 +2535,12 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             THROW Error{"No tables specified in SELECT statement"}
         ENDIF
 
-        // Check if any expression in the select list is '*' (TODO: what if we have both '*' and named fields?)
+        // Remember whether the list contains a wildcard. Aggregate SELECTs
+        // continue to reject wildcard projections below.
         LOCAL hasStarSelection AS LOGIC
         hasStarSelection := FALSE
         FOR LOCAL idx := 0 AS INT TO selectCtx:SelectList:Count - 1
-            LOCAL expr AS SqlExpressionContext
-            expr := selectCtx:SelectList[idx]
-            IF expr IS SqlSimpleExpressionContext VAR simpleSelection .AND. ;
-               simpleSelection:Tokens != NULL .AND. simpleSelection:Tokens:Count == 1 .AND. ;
-               simpleSelection:Tokens[0]:Type == XTokenType.MULT
+            IF selectCtx:SelectList[idx] IS SqlWildcardExpressionContext
                 hasStarSelection := TRUE
                 EXIT
             ENDIF
@@ -2523,169 +2583,161 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         LOCAL fieldList AS ARRAY
         LOCAL selectFieldNames AS ARRAY
         LOCAL selectExpressions AS ARRAY
+        LOCAL projectionExpressions := List<SqlExpressionContext>{} AS List<SqlExpressionContext>
+        LOCAL projectionAliases := List<STRING>{} AS List<STRING>
+        LOCAL projectionFieldDefinitions := List<ARRAY>{} AS List<ARRAY>
 
-        // Process the SELECT list to determine which fields to include
-        LOCAL allFieldNames AS List<STRING>
-        allFieldNames := List<STRING>{}
-
-        IF selectCtx:SelectList:Count == 0 .OR. hasStarSelection
-            // If no specific fields are mentioned or if we have '*', select all fields
-            fieldList := {}
-            selectFieldNames := {}
-            selectExpressions := {}
-
-            // Loop through all tables to get all fields
-            FOR LOCAL tableIdx := 1 AS DWORD TO ALen(tableNames)
-                LOCAL currentTable AS STRING
-                currentTable := tableNames[tableIdx]
-
-                LOCAL struct AS ARRAY
-                struct := (currentTable)->DbStruct()
-
-                FOR LOCAL i := 1 AS DWORD TO ALen(struct)
-                    LOCAL fieldInfo AS ARRAY
-                    fieldInfo := struct[i]
-                    LOCAL fieldName AS STRING
-                    fieldName := fieldInfo[1]
-
-                    // Resolve any conflicts with existing field names
-                    fieldName := ResolveConflictingFieldName(fieldName, allFieldNames)
-                    allFieldNames:Add(fieldName:ToUpper())
-
-                    AAdd(selectFieldNames, fieldName)  // Field name
-                    AAdd(selectExpressions, currentTable + "->" + fieldName)  // Expression
-
-                    // Create field definition for result table
-                    LOCAL outputFlags := (LONG)fieldInfo[6] AS LONG
-                    IF hasLeftOuterJoin
-                        outputFlags := outputFlags | (LONG)DBFFieldFlags.Nullable
+        // Normalize wildcards into ordinary field projections, retaining their
+        // position relative to named and computed items.
+        IF selectCtx:SelectList:Count == 0
+            THROW Error{"No columns specified in SELECT list"}
+        ENDIF
+        FOR LOCAL itemIndex := 0 AS INT TO selectCtx:SelectList:Count - 1
+            VAR selection := selectCtx:SelectList[itemIndex]
+            IF selection IS SqlWildcardExpressionContext VAR wildcard
+                LOCAL firstSource := 1 AS DWORD
+                LOCAL lastSource := ALen(tableNames) AS DWORD
+                IF !String.IsNullOrWhiteSpace(wildcard:Table)
+                    LOCAL wildcardSource := NULL AS STRING
+                    IF !selectCtx:TableAliases:TryGetValue(wildcard:Table, OUT wildcardSource)
+                        THROW Error{"Invalid alias specification: " + wildcard:Table}
                     ENDIF
-                    AAdd(fieldList, {fieldName, fieldInfo[2], fieldInfo[3], fieldInfo[4], fieldName, outputFlags})
+                    LOCAL foundSource := FALSE AS LOGIC
+                    FOR LOCAL sourceIndex := 1 AS DWORD TO ALen(tableNames)
+                        IF ((STRING)tableNames[sourceIndex]):Equals(wildcardSource, StringComparison.OrdinalIgnoreCase)
+                            firstSource := sourceIndex
+                            lastSource := sourceIndex
+                            foundSource := TRUE
+                            EXIT
+                        ENDIF
+                    NEXT
+                    IF !foundSource
+                        THROW Error{"Invalid alias specification: " + wildcard:Table}
+                    ENDIF
+                ENDIF
+
+                FOR LOCAL sourceIndex := firstSource AS DWORD TO lastSource
+                    LOCAL currentTable := (STRING)tableNames[sourceIndex] AS STRING
+                    VAR sourceStruct := (currentTable)->DbStruct()
+                    FOR LOCAL fieldIndex := 1 AS DWORD TO ALen(sourceStruct)
+                        LOCAL fieldInfo := sourceStruct[fieldIndex] AS ARRAY
+                        LOCAL fieldName := (STRING)fieldInfo[1] AS STRING
+                        LOCAL fieldExpression := SqlNameExpressionContext{} { ;
+                            Table := currentTable, Name := fieldName, Tokens := List<XToken>{} } AS SqlNameExpressionContext
+                        projectionExpressions:Add(fieldExpression)
+                        projectionAliases:Add(NULL)
+                        projectionFieldDefinitions:Add(fieldInfo)
+                    NEXT
                 NEXT
-            NEXT
-        ELSE
-            // Check if we have field selections with aliases (new functionality)
-            LOCAL hasFieldSelections AS LOGIC
-            hasFieldSelections := selectCtx:FieldSelectionList != NULL .AND. selectCtx:FieldSelectionList:Count > 0
-
-            // Process specific fields in the SELECT list (no '*' involved)
-            fieldList := {}
-            selectFieldNames := {}
-            selectExpressions := {}
-
-            FOR LOCAL i := 0 AS INT TO selectCtx:SelectList:Count - 1
-                LOCAL expr AS SqlExpressionContext
-                expr := selectCtx:SelectList[i]
-
-                LOCAL fieldAlias AS STRING
-                fieldAlias := NULL
-
-                // Use alias if available from the new field selection list
-                IF hasFieldSelections .AND. i < selectCtx:FieldSelectionList:Count
-                    fieldAlias := selectCtx:FieldSelectionList[i]:Alias
+            ELSE
+                projectionExpressions:Add(selection)
+                LOCAL projectionAlias := NULL AS STRING
+                IF selectCtx:FieldSelectionList != NULL .AND. itemIndex < selectCtx:FieldSelectionList:Count
+                    projectionAlias := selectCtx:FieldSelectionList[itemIndex]:Alias
                 ENDIF
+                projectionAliases:Add(projectionAlias)
+                projectionFieldDefinitions:Add(NULL)
+            ENDIF
+        NEXT
 
-                // Apply field resolution to the expression
-                LOCAL exprStr, resolvedExprStr AS STRING
-                resolvedExprStr := expr:ToResolvedString(selectCtx:TableAliases)
+        LOCAL outputNames := ResolveSelectProjectionNames(projectionExpressions, projectionAliases) AS List<STRING>
+        fieldList := {}
+        selectFieldNames := {}
+        selectExpressions := {}
 
-                // Use the alias if provided, otherwise generate a field name from the expression
-                IF fieldAlias != NULL .AND. fieldAlias:Trim():Length > 0
-                    exprStr := fieldAlias
-                ELSE
-                    exprStr := SqlExpressionToFieldName(expr)  // Use the new method to get VFP-compatible field name
+        FOR LOCAL projectionIndex := 0 AS INT TO projectionExpressions:Count - 1
+            VAR expr := projectionExpressions[projectionIndex]
+            VAR exprStr := outputNames[projectionIndex]
+            VAR resolvedExprStr := expr:ToResolvedString(selectCtx:TableAliases)
+            LOCAL fieldInfo := projectionFieldDefinitions[projectionIndex] AS ARRAY
+            LOCAL fieldFound := fieldInfo != NULL AS LOGIC
+
+            // Resolve the source schema for named fields and infer metadata for
+            // computed projections through the shared expression inference path.
+            LOCAL exprTable := NULL AS STRING
+            LOCAL exprField := NULL AS STRING
+            IF expr IS SqlNameExpressionContext VAR nameCtx
+                exprTable := nameCtx:Table
+                exprField := nameCtx:Name
+            ELSEIF expr IS SqlAggregateExpressionContext VAR schemaAggregate .AND. ;
+                   (schemaAggregate:FunctionName == "MIN" .OR. schemaAggregate:FunctionName == "MAX") .AND. ;
+                   schemaAggregate:Argument IS SqlNameExpressionContext VAR schemaName
+                exprTable := schemaName:Table
+                exprField := schemaName:Name
+            ENDIF
+
+            IF !fieldFound .AND. !String.IsNullOrEmpty(exprTable)
+                LOCAL sourceTable := exprTable AS STRING
+                IF !selectCtx:TableAliases:TryGetValue(exprTable, OUT sourceTable)
+                    sourceTable := exprTable
                 ENDIF
-
-                // Resolve any conflicts with existing field names
-                exprStr := ResolveConflictingFieldName(exprStr, allFieldNames)
-                allFieldNames:Add(exprStr:ToUpper())
-
-                // Find the field in the source tables to get its type
-                LOCAL fieldFound AS LOGIC
-                fieldFound := FALSE
-                LOCAL fieldInfo := NULL AS ARRAY
-
-                LOCAL exprTable := NULL AS STRING
-                LOCAL exprField := NULL AS STRING
-                IF expr IS SqlNameExpressionContext VAR nameCtx
-                    exprTable := nameCtx:Table
-                    exprField := nameCtx:Name
-                ELSEIF expr IS SqlAggregateExpressionContext VAR schemaAggregate .AND. ;
-                       (schemaAggregate:FunctionName == "MIN" .OR. schemaAggregate:FunctionName == "MAX") .AND. ;
-                       schemaAggregate:Argument IS SqlNameExpressionContext VAR schemaName
-                    exprTable := schemaName:Table
-                    exprField := schemaName:Name
-                ENDIF
-
-                IF ! System.String.IsNullOrEmpty(exprTable)
-                    LOCAL sourceTable := exprTable AS STRING
-                    selectCtx:TableAliases:TryGetValue(exprTable, OUT sourceTable)
+                IF Used(sourceTable)
                     VAR fieldPos := (sourceTable)->FieldPos(exprField)
                     IF fieldPos > 0
                         fieldFound := TRUE
                         fieldInfo := (sourceTable)->DbStruct()[fieldPos]
                     ENDIF
-                ELSEIF ! System.String.IsNullOrEmpty(exprField)
-                    // Loop through all tables to find the field
-                    FOR LOCAL tableIdx := 1 AS DWORD TO ALen(tableNames)
-                        LOCAL currentTable AS STRING
-                        currentTable := tableNames[tableIdx]
-
-                        VAR fieldPos := (currentTable)->FieldPos(exprField)
-                        IF fieldPos > 0
-                            fieldFound := TRUE
-                            fieldInfo := (currentTable)->DbStruct()[fieldPos]
-                            EXIT
-                        ENDIF
-                    NEXT
                 ENDIF
-
-                IF !fieldFound .AND. ContainsScalarSubquery(expr)
-                    fieldInfo := InferScalarProjectionFieldDefinition(expr, selectCtx:TableAliases, ;
-                        selectCtx:DerivedTables)
-                    IF fieldInfo == NULL
-                        THROW Error{"Could not infer the result type of SELECT expression containing a scalar subquery: " + resolvedExprStr}
+            ELSEIF !fieldFound .AND. !String.IsNullOrEmpty(exprField)
+                FOR LOCAL tableIdx := 1 AS DWORD TO ALen(tableNames)
+                    LOCAL currentTable := (STRING)tableNames[tableIdx] AS STRING
+                    VAR fieldPos := (currentTable)->FieldPos(exprField)
+                    IF fieldPos > 0
+                        fieldFound := TRUE
+                        fieldInfo := (currentTable)->DbStruct()[fieldPos]
+                        EXIT
                     ENDIF
-                    fieldFound := TRUE
+                NEXT
+            ENDIF
+
+            IF !fieldFound .AND. ContainsScalarSubquery(expr)
+                fieldInfo := InferScalarProjectionFieldDefinition(expr, selectCtx:TableAliases, ;
+                    selectCtx:DerivedTables)
+                IF fieldInfo == NULL
+                    THROW Error{"Could not infer the result type of SELECT expression containing a scalar subquery: " + resolvedExprStr}
                 ENDIF
+                fieldFound := TRUE
+            ELSEIF !fieldFound
+                fieldInfo := InferScalarProjectionFieldDefinition(expr, selectCtx:TableAliases, ;
+                    selectCtx:DerivedTables)
+                fieldFound := fieldInfo != NULL
+            ENDIF
 
-                AAdd(selectFieldNames, exprStr)
-                AAdd(selectExpressions, resolvedExprStr)
+            AAdd(selectFieldNames, exprStr)
+            AAdd(selectExpressions, resolvedExprStr)
 
-                IF fieldFound .AND. fieldInfo != NULL
-                    LOCAL expressionAggregates := List<SqlAggregateExpressionContext>{} AS List<SqlAggregateExpressionContext>
-                    CollectAggregates(expr, expressionAggregates)
-                    IF expressionAggregates:Count > 0
-                        AAdd(fieldList, {exprStr, fieldInfo[2], fieldInfo[3], fieldInfo[4], exprStr, ;
-                            ((LONG)fieldInfo[6]) | (LONG)DBFFieldFlags.Nullable})
+            IF fieldFound .AND. fieldInfo != NULL
+                LOCAL expressionAggregates := List<SqlAggregateExpressionContext>{} AS List<SqlAggregateExpressionContext>
+                CollectAggregates(expr, expressionAggregates)
+                IF expressionAggregates:Count > 0
+                    AAdd(fieldList, {exprStr, fieldInfo[2], fieldInfo[3], fieldInfo[4], exprStr, ;
+                        ((LONG)fieldInfo[6]) | (LONG)DBFFieldFlags.Nullable})
+                ELSE
+                    LOCAL outputFlags := (LONG)fieldInfo[6] AS LONG
+                    IF ContainsScalarSubquery(expr)
+                        outputFlags := outputFlags | (LONG)DBFFieldFlags.Nullable
+                    ENDIF
+                    IF hasLeftOuterJoin
+                        outputFlags := outputFlags | (LONG)DBFFieldFlags.Nullable
+                    ENDIF
+                    AAdd(fieldList, {exprStr, fieldInfo[2], fieldInfo[3], fieldInfo[4], exprStr, outputFlags})
+                ENDIF
+            ELSE
+                LOCAL expressionAggregates := List<SqlAggregateExpressionContext>{} AS List<SqlAggregateExpressionContext>
+                CollectAggregates(expr, expressionAggregates)
+                IF expressionAggregates:Count > 0
+                    LOCAL aggregateFunction := expressionAggregates[0]:FunctionName AS STRING
+                    IF aggregateFunction == "COUNT" .OR. aggregateFunction == "CNT"
+                        AAdd(fieldList, {exprStr, "N", 10, 0, exprStr, (LONG)DBFFieldFlags.Nullable})
                     ELSE
-                        LOCAL outputFlags := (LONG)fieldInfo[6] AS LONG
-                        IF ContainsScalarSubquery(expr)
-                            outputFlags := outputFlags | (LONG)DBFFieldFlags.Nullable
-                        ENDIF
-                        IF hasLeftOuterJoin
-                            outputFlags := outputFlags | (LONG)DBFFieldFlags.Nullable
-                        ENDIF
-                        AAdd(fieldList, {exprStr, fieldInfo[2], fieldInfo[3], fieldInfo[4], exprStr, outputFlags})
+                        AAdd(fieldList, {exprStr, "N", 20, 4, exprStr, (LONG)DBFFieldFlags.Nullable})
                     ENDIF
                 ELSE
-                    LOCAL expressionAggregates := List<SqlAggregateExpressionContext>{} AS List<SqlAggregateExpressionContext>
-                    CollectAggregates(expr, expressionAggregates)
-                    IF expressionAggregates:Count > 0
-                        LOCAL aggregateFunction := expressionAggregates[0]:FunctionName AS STRING
-                        IF aggregateFunction == "COUNT" .OR. aggregateFunction == "CNT"
-                            AAdd(fieldList, {exprStr, "N", 10, 0, exprStr, (LONG)DBFFieldFlags.Nullable})
-                        ELSE
-                            AAdd(fieldList, {exprStr, "N", 20, 4, exprStr, (LONG)DBFFieldFlags.Nullable})
-                        ENDIF
-                    ELSE
-                        // If field doesn't exist in source, assume it's an expression.
-                        AAdd(fieldList, {exprStr, "C", 50, 0, exprStr, ;
-                            IIF(hasLeftOuterJoin, (LONG)DBFFieldFlags.Nullable, 0)})
-                    ENDIF
+                    AAdd(fieldList, {exprStr, "C", 50, 0, exprStr, ;
+                        IIF(hasLeftOuterJoin, (LONG)DBFFieldFlags.Nullable, 0)})
                 ENDIF
-            NEXT
-        ENDIF
+            ENDIF
+        NEXT
 
         // Determine the result table name - use target cursor if specified
         VAR resultTable := "QUERYRESULT" // Default table name for SELECT results
@@ -3191,11 +3243,10 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
                 LOCAL sourceValues AS USUAL[]
                 sourceValues := USUAL[]{ALen(selectFieldNames)}
                 FOR LOCAL i := 1 AS DWORD TO ALen(selectFieldNames)
-                    IF selectCtx:SelectList:Count == ALen(selectFieldNames) .AND. ;
-                       HasCorrelatedProjectionSubquery(selectCtx:SelectList[(INT)i - 1])
-                        PrepareSubqueryExpression(selectCtx:SelectList[(INT)i - 1], ;
+                    IF HasCorrelatedProjectionSubquery(projectionExpressions[(INT)i - 1])
+                        PrepareSubqueryExpression(projectionExpressions[(INT)i - 1], ;
                             selectCtx:TableAliases, FALSE, TRUE, scalarMemos)
-                        selectExpressions[i] := selectCtx:SelectList[(INT)i - 1]:ToResolvedString(selectCtx:TableAliases)
+                        selectExpressions[i] := projectionExpressions[(INT)i - 1]:ToResolvedString(selectCtx:TableAliases)
                     ENDIF
                     sourceValues[i] := &(selectExpressions[i])
                 NEXT
@@ -4034,49 +4085,71 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
 
         RETURN result
 
-    STATIC METHOD ResolveConflictingFieldName(newName AS STRING, existingNames AS List<STRING>) AS STRING
-        // Resolve conflicting field names the same way as VFP
-        // If the newName already exists in existingNames, append a number to make it unique
-
-        LOCAL result AS STRING
-        result := newName
-
-        // VFP field names are limited to 10 characters, so we need to account for this
-        LOCAL baseName AS STRING
-        baseName := result
-
-        // Truncate to 10 characters
-        IF baseName:Length > 10
-            baseName := baseName:Substring(0, 10)
-        ENDIF
-
-        LOCAL counter AS DWORD
-        counter := 1
-        LOCAL testName AS STRING
-        testName := baseName
-
-        // Check if the name already exists in the list of existing names
-        WHILE existingNames:Contains(testName:ToUpper())
-            testName := baseName + counter:ToString()
-            // Ensure the name doesn't exceed VFP's field name length limit
-            IF testName:Length > 10
-                // If the name with counter exceeds 10 chars, truncate the base name further
-                LOCAL availableChars AS INT
-                availableChars := 10 - counter:ToString():Length
-                IF availableChars < 1
-                    // If counter is too large, use a standard format
-                    testName := "FIELD" + counter:ToString()
-                    IF testName:Length > 10
-                        testName := testName:Substring(0, 10)
-                    ENDIF
-                    EXIT
-                ENDIF
-                testName := baseName:Substring(0, availableChars) + counter:ToString()
+    PRIVATE STATIC METHOD ResolveSelectProjectionNames(expressions AS IList<SqlExpressionContext>, ;
+        aliases AS IList<STRING>) AS List<STRING>
+        LOCAL baseNames := List<STRING>{} AS List<STRING>
+        LOCAL occurrenceCounts := Dictionary<STRING,INT>{StringComparer.OrdinalIgnoreCase} ;
+            AS Dictionary<STRING,INT>
+        FOR LOCAL i := 0 AS INT TO expressions:Count - 1
+            LOCAL baseName AS STRING
+            IF i < aliases:Count .AND. !String.IsNullOrWhiteSpace(aliases[i])
+                baseName := aliases[i]:Trim()
+            ELSE
+                baseName := SqlExpressionToFieldName(expressions[i])
             ENDIF
-            counter++
-        END WHILE
+            IF baseName:Length > 10
+                baseName := baseName:Substring(0, 10)
+            ENDIF
+            baseNames:Add(baseName)
+            LOCAL occurrenceCount := 0 AS INT
+            IF occurrenceCounts:TryGetValue(baseName, OUT occurrenceCount)
+                occurrenceCounts[baseName] := occurrenceCount + 1
+            ELSE
+                occurrenceCounts[baseName] := 1
+            ENDIF
+        NEXT
 
-        RETURN testName
+        // Reserve unique names first so a generated duplicate suffix cannot
+        // collide with a separate projection that already has that name.
+        LOCAL usedNames := HashSet<STRING>{StringComparer.OrdinalIgnoreCase} AS HashSet<STRING>
+        FOREACH VAR baseName IN baseNames
+            IF occurrenceCounts[baseName] == 1
+                usedNames:Add(baseName)
+            ENDIF
+        NEXT
+        LOCAL duplicateOrdinals := Dictionary<STRING,INT>{StringComparer.OrdinalIgnoreCase} ;
+            AS Dictionary<STRING,INT>
+        LOCAL result := List<STRING>{} AS List<STRING>
+        FOREACH VAR baseName IN baseNames
+            IF occurrenceCounts[baseName] == 1
+                result:Add(baseName)
+                LOOP
+            ENDIF
+            LOCAL ordinal := 0 AS INT
+            duplicateOrdinals:TryGetValue(baseName, OUT ordinal)
+            LOCAL candidate := SelectDuplicateProjectionName(baseName, ordinal) AS STRING
+            DO WHILE usedNames:Contains(candidate)
+                ordinal++
+                candidate := SelectDuplicateProjectionName(baseName, ordinal)
+            ENDDO
+            duplicateOrdinals[baseName] := ordinal + 1
+            usedNames:Add(candidate)
+            result:Add(candidate)
+        NEXT
+        RETURN result
+
+    PRIVATE STATIC METHOD SelectDuplicateProjectionName(baseName AS STRING, ordinal AS INT) AS STRING
+        LOCAL suffixLetters := "ABCDEFGHIJKLMNOPQRSTUVWXYZ" AS STRING
+        LOCAL value := ordinal AS INT
+        LOCAL alphaSuffix := "" AS STRING
+        DO WHILE value >= 0
+            VAR remainder := value % 26
+            alphaSuffix := suffixLetters:Substring(remainder, 1) + alphaSuffix
+            value := (INT)(value / 26) - 1
+        ENDDO
+        VAR suffix := "_" + alphaSuffix
+        VAR prefixLength := Math.Max(0, 10 - suffix:Length)
+        RETURN baseName:Substring(0, Math.Min(baseName:Length, prefixLength)) + suffix
 
 END CLASS
 

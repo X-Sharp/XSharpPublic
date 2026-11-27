@@ -20,24 +20,29 @@ BEGIN NAMESPACE VFPXPorterLib
 /// <remarks>
 /// Independent of the project format: classic and SDK-style .xsproj files can both be listed.
 /// Debug and Release are the default configurations of an .slnx, so no Configurations element is
-/// written. When appending to an existing .slnx, the projects read by <see cref="Load" /> keep
+/// written. When appending to an existing .slnx, unchanged projects read by <see cref="Load" /> keep
 /// their Type and solution folder.
 /// </remarks>
 CLASS VSSlnxSolution INHERIT VSSolution
 
     /// <summary>
-    /// Project type of .xsproj files, as written in the Type attribute.
+    /// Project type of classic .xsproj files, as written in the Type attribute.
     /// </summary>
     PUBLIC CONST XSharpProjectType := "aa6c8d78-22ff-423a-9c7c-5f2393824e04" AS STRING
 
-    // Type and solution folder of the projects read from an existing .slnx, by normalized path
-    PRIVATE _loadedTypes   AS Dictionary<STRING, STRING>
+    /// <summary>
+    /// Project type of SDK-style .xsproj files, as written in the Type attribute.
+    /// </summary>
+    PUBLIC CONST SdkXSharpProjectType := "ab494dce-a11b-4583-851e-d4a86775b3f0" AS STRING
+
+    // Projects loaded from an existing .slnx and their solution folders
+    PRIVATE _loadedProjects AS HashSet<VSProject>
     PRIVATE _loadedFolders AS Dictionary<STRING, STRING>
     PRIVATE _loadedDocument AS XmlDocument
 
     PUBLIC CONSTRUCTOR()
         SUPER()
-        SELF:_loadedTypes   := Dictionary<STRING, STRING>{ StringComparer.OrdinalIgnoreCase }
+        SELF:_loadedProjects := HashSet<VSProject>{}
         SELF:_loadedFolders := Dictionary<STRING, STRING>{ StringComparer.OrdinalIgnoreCase }
         RETURN
 
@@ -71,11 +76,24 @@ CLASS VSSlnxSolution INHERIT VSSolution
             VAR path := VSSlnxSolution.ToSlnxPath( SELF:GetProjectPath( xsProj ) )
             IF SELF:_loadedDocument != NULL
                 IF existingPaths:Contains( path )
+                    IF !SELF:_loadedProjects:Contains( xsProj )
+                        FOREACH prjNode AS XmlElement IN doc:SelectNodes( "//Project" )
+                            IF String.Equals( VSSlnxSolution.ToSlnxPath( prjNode:GetAttribute( "Path" ) ), path, StringComparison.OrdinalIgnoreCase )
+                                VAR projType := SELF:GetProjectType( xsProj, path )
+                                IF String.IsNullOrEmpty( projType )
+                                    prjNode:RemoveAttribute( "Type" )
+                                ELSE
+                                    prjNode:SetAttribute( "Type", projType )
+                                ENDIF
+                                EXIT
+                            ENDIF
+                        NEXT
+                    ENDIF
                     LOOP
                 ENDIF
                 VAR prj := doc:CreateElement( "Project" )
                 prj:SetAttribute( "Path", path )
-                VAR projType := SELF:GetProjectType( path )
+                VAR projType := SELF:GetProjectType( xsProj, path )
                 IF !String.IsNullOrEmpty( projType )
                     prj:SetAttribute( "Type", projType )
                 ENDIF
@@ -95,7 +113,7 @@ CLASS VSSlnxSolution INHERIT VSSolution
             ENDIF
             VAR prj := doc:CreateElement( "Project" )
             prj:SetAttribute( "Path", path )
-            VAR projType := SELF:GetProjectType( path )
+            VAR projType := SELF:GetProjectType( xsProj, path )
             IF !String.IsNullOrEmpty( projType )
                 prj:SetAttribute( "Type", projType )
             ENDIF
@@ -136,9 +154,7 @@ CLASS VSSlnxSolution INHERIT VSSolution
                 VAR p := VSProject{ projName }
                 p:RelativePath := path:Replace( "/", "\" )
                 SELF:Projects:Add( p )
-                IF prjNode:HasAttribute( "Type" )
-                    SELF:_loadedTypes[path] := prjNode:GetAttribute( "Type" )
-                ENDIF
+                SELF:_loadedProjects:Add( p )
                 VAR folderNode := prjNode:ParentNode ASTYPE XmlElement
                 IF folderNode != NULL .AND. folderNode:Name == "Folder"
                     SELF:_loadedFolders[path] := folderNode:GetAttribute( "Name" )
@@ -161,10 +177,10 @@ CLASS VSSlnxSolution INHERIT VSSolution
     PRIVATE METHOD GetProjectPath( xsProj AS VSProject ) AS STRING
         RETURN IIF( String.IsNullOrEmpty( xsProj:RelativePath ), xsProj:Name + ".xsproj", xsProj:RelativePath )
 
-    // Type read from the existing .slnx, else the X# type for .xsproj, else none (VS infers it)
-    PRIVATE METHOD GetProjectType( path AS STRING ) AS STRING
-        IF SELF:_loadedTypes:TryGetValue( path, OUT VAR known )
-            RETURN known
+    // Use the project format for new projects; unchanged loaded projects retain their XML Type.
+    PRIVATE METHOD GetProjectType( xsProj AS VSProject, path AS STRING ) AS STRING
+        IF xsProj IS VSSDKProject
+            RETURN VSSlnxSolution.SdkXSharpProjectType
         ENDIF
         IF path:EndsWith( ".xsproj", StringComparison.OrdinalIgnoreCase )
             RETURN VSSlnxSolution.XSharpProjectType

@@ -52,6 +52,18 @@ BEGIN NAMESPACE VFPXPorterTest
             Assert.AreEqual( VSSlnxSolution.XSharpProjectType, ((XmlElement) projects[1]):GetAttribute( "Type" ) )
 
         [TestMethod];
+        METHOD WritesSdkProjectsWithSdkType() AS VOID
+            VAR sln := VSSlnxSolution{}
+            VAR project := VSSDKProject{ "SdkApp", "net472", XSharpReferenceMode.NuGet, "1.0.0" }
+            project:RelativePath := "SdkApp.xsproj"
+            sln:Projects:Add( project )
+            VAR slnFile := Path.Combine( SELF:folder, "SdkApp.slnx" )
+            sln:Save( slnFile )
+            VAR doc := SELF:Reload( slnFile )
+            VAR sdkProject := (XmlElement) doc:SelectSingleNode( "/Solution/Project" )
+            Assert.AreEqual( VSSlnxSolution.SdkXSharpProjectType, sdkProject:GetAttribute( "Type" ) )
+
+        [TestMethod];
         METHOD AppendKeepsExistingTypesAndFolders() AS VOID
             VAR slnFile := Path.Combine( SELF:folder, "Existing.slnx" )
             File.WriteAllText( slnFile, ;
@@ -86,6 +98,22 @@ BEGIN NAMESPACE VFPXPorterTest
             Assert.IsNotNull( mine )
             Assert.AreEqual( VSSlnxSolution.XSharpProjectType, mine:GetAttribute( "Type" ) )
             Assert.AreEqual( 3, doc:SelectNodes( "//Project" ):Count )
+
+        [TestMethod];
+        METHOD AppendReplacementUsesNewProjectType() AS VOID
+            VAR slnFile := Path.Combine( SELF:folder, "Existing.slnx" )
+            File.WriteAllText( slnFile, ;
+                "<Solution><Project Path=""MyApp.xsproj"" Type=""" + VSSlnxSolution.SdkXSharpProjectType + """ /></Solution>" )
+            VAR sln := VSSlnxSolution{}
+            Assert.IsTrue( sln:Load( slnFile ) )
+            sln:Projects:Remove( sln:Projects[0] )
+            VAR replacement := VSProject{ "MyApp" }
+            replacement:RelativePath := "MyApp.xsproj"
+            sln:Projects:Add( replacement )
+            sln:Save( slnFile )
+            VAR doc := SELF:Reload( slnFile )
+            VAR project := (XmlElement) doc:SelectSingleNode( "/Solution/Project" )
+            Assert.AreEqual( VSSlnxSolution.XSharpProjectType, project:GetAttribute( "Type" ) )
 
         [TestMethod];
         METHOD LoadMissingOrInvalidFile() AS VOID

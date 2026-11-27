@@ -15,6 +15,10 @@ USING XSharp.RDD.Support
 
 BEGIN NAMESPACE XSharp.Data.Query
 
+INTERNAL STATIC CLASS QueryOptimizerDiagnostics
+    INTERNAL STATIC IndexEqualitySeeks AS INT
+END CLASS
+
 PUBLIC CLASS QueryOptimizer
 
     PUBLIC STATIC METHOD OptimizeQuery(query AS SqlExpressionContext, recordCount AS LONG, tableAliases AS Dictionary<STRING, STRING>) AS RecordBitmap
@@ -264,6 +268,7 @@ PUBLIC CLASS QueryOptimizer
         LOCAL savedFilterActive := FALSE AS LOGIC
         LOCAL savedFilterBlock := NULL AS ICodeblock
         LOCAL savedFilterText := "" AS STRING
+        LOCAL savedRecordNumber := (LONG)(tableName)->RecNo() AS LONG
         VAR rddObject := DbInfo(DBI_RDD_OBJECT)
         IF rddObject IS Workarea VAR workarea
             IF workarea:FilterInfo != NULL
@@ -274,6 +279,12 @@ PUBLIC CLASS QueryOptimizer
         ENDIF
 
         TRY
+            // Match the scan fallback below: candidate generation evaluates
+            // the SQL predicate over the full table, independent of a
+            // pre-existing workarea filter. The original filter is restored
+            // in FINALLY after candidate construction.
+            (tableName)->DbSetFilter(NULL)
+
             // Check if there are any orders/indexes available for optimization
             LOCAL orderCount := DbOrderInfo(DBOI_ORDERCOUNT, 0, 0) as LONG
 
@@ -376,6 +387,10 @@ PUBLIC CLASS QueryOptimizer
                 (tableName)->DbSetFilter(NULL)
             ENDIF
 
+            IF savedRecordNumber > 0
+                (tableName)->DbGoto(savedRecordNumber)
+            ENDIF
+
             // Restore workarea
             IF savedArea > 0
                 DbSelectArea(savedArea)
@@ -422,22 +437,27 @@ PRIVATE STATIC METHOD EvaluatePrefixExpression(prefixExpr AS SqlPrefixExpression
         // Determine which side is the field (table-dependent) and which is invariant value
         LOCAL opText := compareExpr:Op:Type as XTokenType
 
-        // Only optimize for equality (=), range operators (<, <=, >, >=)
-        IF opText != XTokenType.EQ .AND. opText != XTokenType.LT .AND. opText != XTokenType.GT .AND. opText != XTokenType.LTE .AND. opText != XTokenType.GTE
-            RETURN NULL  // Fall back to filter approach for other operators like <>
+        IF opText != XTokenType.EQ .AND. opText != XTokenType.LT .AND. ;
+           opText != XTokenType.LTE .AND. opText != XTokenType.GT .AND. opText != XTokenType.GTE
+            RETURN NULL
         ENDIF
-
         LOCAL invariantValue := NULL AS OBJECT
         LOCAL fieldName := "" AS STRING
+        LOCAL fieldOnRight := FALSE AS LOGIC
 
         IF leftDeps:Count == 0 .AND. rightDeps:Count > 0
             // Right side is the field, left side is the value
             IF compareExpr:Left IS SqlSimpleExpressionContext VAR simpleLeft
-                fieldName := compareExpr:Right:ToString()
+                IF compareExpr:Right IS SqlNameExpressionContext VAR rightName
+                    fieldName := rightName:Name
+                ELSE
+                    RETURN NULL
+                ENDIF
+                fieldOnRight := TRUE
                 TRY
-                    VAR cb := MCompile(compareExpr:Left:ToString())
-                    IF cb != NULL
-                        invariantValue := (OBJECT)cb:Eval(NULL)
+                    invariantValue := TryEvaluateIndexInvariant(compareExpr:Left)
+                    IF invariantValue == NULL
+                        RETURN NULL
                     ENDIF
                 CATCH AS Exception
                     RETURN NULL  // Fall back to filter approach
@@ -448,11 +468,15 @@ PRIVATE STATIC METHOD EvaluatePrefixExpression(prefixExpr AS SqlPrefixExpression
         ELSEIF rightDeps:Count == 0 .AND. leftDeps:Count > 0
             // Left side is the field, right side is the value
             IF compareExpr:Right IS SqlSimpleExpressionContext VAR simpleRight
-                fieldName := compareExpr:Left:ToString()
+                IF compareExpr:Left IS SqlNameExpressionContext VAR leftName
+                    fieldName := leftName:Name
+                ELSE
+                    RETURN NULL
+                ENDIF
                 TRY
-                    VAR cb := MCompile(compareExpr:Right:ToString())
-                    IF cb != NULL
-                        invariantValue := (OBJECT)cb:Eval(NULL)
+                    invariantValue := TryEvaluateIndexInvariant(compareExpr:Right)
+                    IF invariantValue == NULL
+                        RETURN NULL
                     ENDIF
                 CATCH AS Exception
                     RETURN NULL  // Fall back to filter approach
@@ -464,106 +488,129 @@ PRIVATE STATIC METHOD EvaluatePrefixExpression(prefixExpr AS SqlPrefixExpression
             RETURN NULL  // Both sides depend on table or neither does - can't optimize
         ENDIF
 
-        IF invariantValue == NULL .OR. String.IsNullOrEmpty(fieldName)
+        IF invariantValue == NULL
+            RETURN NULL
+        ENDIF
+        IF String.IsNullOrEmpty(fieldName)
             RETURN NULL
         ENDIF
 
-        // Try to use CoreDb.Seek with the index
-        LOCAL lSoftSeek := FALSE AS LOGIC
-        LOCAL lLast := FALSE AS LOGIC
-
-        SWITCH opText
-        CASE XTokenType.EQ
-            lSoftSeek := FALSE
-            lLast := FALSE
-        CASE XTokenType.LT
-            lSoftSeek := TRUE
-            lLast := FALSE
-        CASE XTokenType.LTE
-            lSoftSeek := TRUE
-            lLast := TRUE
-        CASE XTokenType.GT
-            lSoftSeek := TRUE
-            lLast := FALSE
-        CASE XTokenType.GTE
-            lSoftSeek := TRUE
-            lLast := FALSE
-        END SWITCH
-
-        LOCAL success := CoreDb.Seek(invariantValue, lSoftSeek, lLast) as LOGIC
-
-        IF !success
-            // Seek failed (record not found or other issue)
-            // For soft seek with LT/GTE operators, we might still have positioned somewhere
-            // Let's check if we're at EOF or BOF
-            IF CoreDb.Eof() .OR. CoreDb.Bof()
-                RETURN result  // Empty bitmap
-            ENDIF
+        IF fieldOnRight
+            SWITCH opText
+            CASE XTokenType.LT; opText := XTokenType.GT
+            CASE XTokenType.GT; opText := XTokenType.LT
+            CASE XTokenType.LTE; opText := XTokenType.GTE
+            CASE XTokenType.GTE; opText := XTokenType.LTE
+            END SWITCH
         ENDIF
 
-        // Build the bitmap by traversing from current position based on operator
+        // A seek uses the currently selected order. Do not use it unless that
+        // order is a plain, unfiltered key on this exact field; a different,
+        // composite, expression, or conditional order could produce false
+        // negatives in the candidate bitmap.
+        IF !IsActiveSimpleFieldOrder(tableName, fieldName)
+            RETURN NULL
+        ENDIF
+        System.Threading.Interlocked.Increment(REF QueryOptimizerDiagnostics.IndexEqualitySeeks)
+
+        LOCAL descending := (LOGIC)(tableName)->DbOrderInfo(DBOI_ISDESC, "", NIL) AS LOGIC
+
+        IF opText == XTokenType.EQ
+            // Seek both ends of the duplicate run. The bitmap remains keyed by
+            // physical RecNo so results from different index orders compose.
+            CoreDb.Seek(invariantValue, FALSE, FALSE)
+            IF !CoreDb.Found()
+                RETURN result
+            ENDIF
+            LOCAL firstRecNo := (LONG)CoreDb.Recno() AS LONG
+            CoreDb.Seek(invariantValue, FALSE, TRUE)
+            IF !CoreDb.Found()
+                RETURN NULL
+            ENDIF
+            LOCAL lastRecNo := (LONG)CoreDb.Recno() AS LONG
+            CoreDb.Seek(invariantValue, FALSE, FALSE)
+            IF (LONG)CoreDb.Recno() != firstRecNo
+                RETURN NULL
+            ENDIF
+            DO WHILE !CoreDb.Eof()
+                VAR physicalRecNo := (LONG)CoreDb.Recno()
+                result:SetMatchState(physicalRecNo, RecordBitmap.RecordMatchState.Match)
+                IF physicalRecNo == lastRecNo
+                    EXIT
+                ENDIF
+                CoreDb.Skip(IIF(descending, -1, 1))
+            ENDDO
+            RETURN result
+        ENDIF
+
+        LOCAL skipDirection := 1 AS LONG
+        LOCAL seekLast := FALSE AS LOGIC
         SWITCH opText
-        CASE XTokenType.EQ
-            // For equality: only mark the record we seeked to (if found)
-            IF success .AND. !CoreDb.Eof()
-                VAR recNo := (LONG)CoreDb.Recno()
-                result:SetMatchState(recNo, RecordBitmap.RecordMatchState.Match)
-            ENDIF
-
         CASE XTokenType.LT
-            // For less than: mark all records from BOF up to (but not including) current position
-            IF !CoreDb.Bof() .AND. !CoreDb.Eof()
-                VAR currentPosition := CoreDb.Recno()
-                CoreDb.GoTop()
-                DO WHILE !CoreDb.Eof() .AND. CoreDb.Recno() < currentPosition .AND. CoreDb.Recno() <= result:Length
-                    VAR recNo := (LONG)CoreDb.Recno()
-                    result:SetMatchState(recNo, RecordBitmap.RecordMatchState.Match)
-                    CoreDb.Skip(1)
-                ENDDO
-            ELSEIF CoreDb.Eof()
-                // All records match (cursor at EOF means all records are less than value)
-                DO WHILE !CoreDb.Bof()
-                    VAR recNo := (LONG)CoreDb.Recno()
-                    result:SetMatchState(recNo, RecordBitmap.RecordMatchState.Match)
-                    CoreDb.Skip(-1)
-                ENDDO
-            ENDIF
-
+            seekLast := FALSE
+            skipDirection := -1
         CASE XTokenType.LTE
-            // For less than or equal: mark all records from BOF up to current position (inclusive)
-            IF !CoreDb.Bof()
-                VAR currentPosition := CoreDb.Recno()
-                CoreDb.GoTop()
-                DO WHILE !CoreDb.Eof() .AND. CoreDb.Recno() <= currentPosition .AND. CoreDb.Recno() <= result:Length
-                    VAR recNo := (LONG)CoreDb.Recno()
-                    result:SetMatchState(recNo, RecordBitmap.RecordMatchState.Match)
-                    CoreDb.Skip(1)
-                ENDDO
-            ENDIF
-
+            seekLast := TRUE
+            skipDirection := -1
         CASE XTokenType.GT
-            // For greater than: skip past current position first, then mark all records to EOF
-            IF !CoreDb.Eof()
-                CoreDb.Skip(1)  // Skip the record we're currently on (might be == value)
-                DO WHILE !CoreDb.Eof() .AND. CoreDb.Recno() <= result:Length
-                    VAR recNo := (LONG)CoreDb.Recno()
-                    result:SetMatchState(recNo, RecordBitmap.RecordMatchState.Match)
-                    CoreDb.Skip(1)
-                ENDDO
-            ENDIF
-
+            seekLast := TRUE
+            skipDirection := 1
         CASE XTokenType.GTE
-            // For greater than or equal: mark all records from current position to EOF (inclusive)
-            IF !CoreDb.Eof()
-                DO WHILE !CoreDb.Eof() .AND. CoreDb.Recno() <= result:Length
-                    VAR recNo := (LONG)CoreDb.Recno()
-                    result:SetMatchState(recNo, RecordBitmap.RecordMatchState.Match)
-                    CoreDb.Skip(1)
-                ENDDO
-            ENDIF
+            seekLast := FALSE
+            skipDirection := 1
         END SWITCH
+        CoreDb.Seek(invariantValue, TRUE, seekLast)
+        IF descending
+            seekLast := !seekLast
+            skipDirection := -skipDirection
+        ENDIF
+        IF opText == XTokenType.LT .OR. opText == XTokenType.GT
+            CoreDb.Skip(skipDirection)
+        ENDIF
+        DO WHILE !CoreDb.Eof() .AND. !CoreDb.Bof()
+            VAR physicalRecNo := (LONG)CoreDb.Recno()
+            result:SetMatchState(physicalRecNo, RecordBitmap.RecordMatchState.Match)
+            CoreDb.Skip(skipDirection)
+        ENDDO
 
         RETURN result
+
+    PRIVATE STATIC METHOD TryEvaluateIndexInvariant(expression AS SqlExpressionContext) AS OBJECT
+        IF expression IS NOT SqlSimpleExpressionContext
+            RETURN NULL
+        ENDIF
+        TRY
+            VAR evaluated := Evaluate(expression:ToString())
+            IF IsNil(evaluated) .OR. ((USUAL)evaluated):IsNull
+                RETURN NULL
+            ENDIF
+            RETURN (OBJECT)evaluated
+        CATCH AS Exception
+            RETURN NULL
+        END TRY
+
+    PRIVATE STATIC METHOD IsActiveSimpleFieldOrder(tableName AS STRING, fieldName AS STRING) AS LOGIC
+        TRY
+            VAR orderNumber := (LONG)(tableName)->DbOrderInfo(DBOI_NUMBER, "", NIL)
+            IF orderNumber <= 0
+                RETURN FALSE
+            ENDIF
+            VAR keyExpression := (USUAL)(tableName)->DbOrderInfo(DBOI_EXPRESSION, "", orderNumber)
+            VAR condition := (USUAL)(tableName)->DbOrderInfo(DBOI_CONDITION, "", orderNumber)
+            IF keyExpression:IsNull
+                RETURN FALSE
+            ENDIF
+            IF !condition:IsNull .AND. !String.IsNullOrWhiteSpace(condition:ToString())
+                RETURN FALSE
+            ENDIF
+            LOCAL matchesField := String.Equals(keyExpression:ToString():Trim(), fieldName:Trim(), StringComparison.OrdinalIgnoreCase) AS LOGIC
+            IF !matchesField
+                RETURN FALSE
+            ENDIF
+            RETURN TRUE
+        CATCH AS Exception
+            RETURN FALSE
+        END TRY
 
 END CLASS
 

@@ -107,6 +107,199 @@ FUNCTION TestQueryOptimizer() AS VOID
 
     RETURN
 
+FUNCTION QueryOptimizerIndexSeekCount() AS INT
+    RETURN QueryOptimizerDiagnostic("IndexEqualitySeeks")
+
+FUNCTION QueryOptimizerDiagnostic(name AS STRING) AS INT
+    VAR diagnostics := System.Reflection.Assembly.Load("XSharp.Data"):GetType( ;
+        "XSharp.Data.Query.QueryOptimizerDiagnostics", TRUE)
+    VAR counter := diagnostics:GetField(name, ;
+        System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
+    RETURN (INT)counter:GetValue(NULL)
+
+FUNCTION VerifyIndexEqualitySeek(previous AS INT, expected AS LOGIC) AS VOID
+    IF (QueryOptimizerIndexSeekCount() > previous) != expected
+        THROW Exception{"Indexed equality seek activation did not match expectation; seeks=" + ;
+            previous:ToString() + "->" + QueryOptimizerIndexSeekCount():ToString()}
+    ENDIF
+    RETURN
+
+FUNCTION TestIndexedEqualityOptimizer() AS VOID
+    LOCAL optimizationsEnabled := EmbeddedSqlRuntimeOptions.OptimizationsEnabled() AS LOGIC
+    CREATE CURSOR indexed_equality_table (Id I, Age I, Label C(10))
+    TRY
+        INSERT INTO indexed_equality_table VALUES (1, 30, "Alpha")
+        INSERT INTO indexed_equality_table VALUES (2, 25, "Beta")
+        INSERT INTO indexed_equality_table VALUES (3, 40, "Gamma")
+        INSERT INTO indexed_equality_table VALUES (4, 30, "Alpha")
+        INSERT INTO indexed_equality_table VALUES (5, 20, "Delta")
+        INSERT INTO indexed_equality_table VALUES (6, 30, "Alpha")
+
+        DbSelectArea("indexed_equality_table")
+        IF !DbCreateOrder("AgeOrder",, "Age") .OR. !DbCreateOrder("IdOrder",, "Id") .OR. ;
+           !DbCreateOrder("LabelOrder",, "Label")
+            THROW Exception{"Could not create indexed equality test orders"}
+        ENDIF
+        OrdSetFocus("AgeOrder")
+
+        // Exercise the candidate bitmap directly with a filter and a non-top
+        // record position. Candidate generation must match the scan fallback
+        // and include all predicate matches, then restore the caller's state.
+        IF optimizationsEnabled
+            DbSetFilter("Id > 1")
+            DbGoto(3)
+            LOCAL savedRecord := (LONG)RecNo() AS LONG
+            LOCAL savedOrder := (LONG)DbOrderInfo(DBOI_NUMBER) AS LONG
+            LOCAL savedFilter := (STRING)DbInfo(DBI_DBFILTER) AS STRING
+            LOCAL aliases := Dictionary<STRING,STRING>{StringComparer.OrdinalIgnoreCase} AS Dictionary<STRING,STRING>
+            aliases["indexed_equality_table"] := "indexed_equality_table"
+            LOCAL previousSeeks := QueryOptimizerIndexSeekCount() AS INT
+            VAR candidates := QueryOptimizer.OptimizeQuery( ;
+                ParseSqlExpressionForTest("indexed_equality_table.Age = 30"), 6, aliases)
+            VerifyIndexEqualitySeek(previousSeeks, TRUE)
+            IF candidates:GetMatchState(1) != RecordBitmap.RecordMatchState.Match .OR. ;
+               candidates:GetMatchState(4) != RecordBitmap.RecordMatchState.Match .OR. ;
+               candidates:GetMatchState(6) != RecordBitmap.RecordMatchState.Match .OR. ;
+               candidates:CountMatches() != 3
+                THROW Exception{"Indexed equality bitmap omitted duplicate physical rows"}
+            ENDIF
+            IF RecNo() != savedRecord .OR. (LONG)DbOrderInfo(DBOI_NUMBER) != savedOrder .OR. ;
+               !String.Equals((STRING)DbInfo(DBI_DBFILTER), savedFilter, StringComparison.OrdinalIgnoreCase)
+                THROW Exception{"Indexed equality candidate construction changed work-area state"}
+            ENDIF
+            DbSetFilter(NULL)
+
+            // Candidate bits from different key orders must address the same
+            // physical rows before bitmap operations combine them.
+            VAR ageCandidates := QueryOptimizer.OptimizeQuery( ;
+                ParseSqlExpressionForTest("indexed_equality_table.Age <= 30"), 6, aliases)
+            OrdSetFocus("LabelOrder")
+            VAR labelCandidates := QueryOptimizer.OptimizeQuery( ;
+                ParseSqlExpressionForTest("indexed_equality_table.Label = 'Beta'"), 6, aliases)
+            ageCandidates:And(labelCandidates)
+            IF ageCandidates:CountMatches() != 1 .OR. ;
+               ageCandidates:GetMatchState(2) != RecordBitmap.RecordMatchState.Match
+                THROW Exception{"Bitmaps from different indexes did not combine by physical record number"}
+            ENDIF
+            OrdSetFocus("AgeOrder")
+        ENDIF
+
+        LOCAL before := QueryOptimizerIndexSeekCount() AS INT
+        SELECT Id FROM indexed_equality_table WHERE Age = 30 INTO CURSOR IndexedEqualityResult
+        VerifyTable(3, "Indexed equality must return all duplicate key rows", TRUE, {{1}, {4}, {6}})
+        VerifyIndexEqualitySeek(before, optimizationsEnabled)
+
+        DbSelectArea("indexed_equality_table")
+        OrdSetFocus("LabelOrder")
+        before := QueryOptimizerIndexSeekCount()
+        SELECT Id FROM indexed_equality_table WHERE Label = 'Alpha' INTO CURSOR IndexedCharacterResult
+        VerifyTable(3, "Character indexed equality must return duplicate key rows", TRUE, {{1}, {4}, {6}})
+        VerifyIndexEqualitySeek(before, optimizationsEnabled)
+
+        // An unrelated active order must not be used for an Age predicate.
+        DbSelectArea("indexed_equality_table")
+        OrdSetFocus("IdOrder")
+        before := QueryOptimizerIndexSeekCount()
+        SELECT Id FROM indexed_equality_table WHERE Age = 30 INTO CURSOR MismatchedOrderResult
+        VerifyTable(3, "Mismatched active order must preserve equality results", TRUE, {{1}, {4}, {6}})
+        VerifyIndexEqualitySeek(before, FALSE)
+
+        // Range membership follows index key order; bitmap bits still use
+        // physical record numbers so other index predicates can combine.
+        DbSelectArea("indexed_equality_table")
+        OrdSetFocus("AgeOrder")
+        before := QueryOptimizerIndexSeekCount()
+        SELECT Id FROM indexed_equality_table WHERE Age > 25 INTO CURSOR RangeFallbackResult
+        VerifyTable(4, "Range fallback must preserve matches", TRUE)
+        VerifyIndexEqualitySeek(before, optimizationsEnabled)
+
+        before := QueryOptimizerIndexSeekCount()
+        SELECT Id FROM indexed_equality_table WHERE 25 < Age INTO CURSOR ConstantLeftRangeResult
+        VerifyTable(4, "Constant-left range must reverse its comparison", TRUE)
+        VerifyIndexEqualitySeek(before, optimizationsEnabled)
+
+        before := QueryOptimizerIndexSeekCount()
+        SELECT Id FROM indexed_equality_table WHERE Age < 30 INTO CURSOR LessThanRangeResult
+        VerifyTable(2, "Less-than range must stop before the boundary", TRUE)
+        VerifyIndexEqualitySeek(before, optimizationsEnabled)
+
+        before := QueryOptimizerIndexSeekCount()
+        SELECT Id FROM indexed_equality_table WHERE Age <= 30 INTO CURSOR InclusiveRangeResult
+        VerifyTable(5, "Inclusive range must include all duplicates", TRUE)
+        VerifyIndexEqualitySeek(before, optimizationsEnabled)
+
+        before := QueryOptimizerIndexSeekCount()
+        SELECT Id FROM indexed_equality_table WHERE Age >= 30 INTO CURSOR GreaterEqualRangeResult
+        VerifyTable(4, "Greater-or-equal range must include boundary duplicates", TRUE)
+        VerifyIndexEqualitySeek(before, optimizationsEnabled)
+
+        before := QueryOptimizerIndexSeekCount()
+        SELECT Id FROM indexed_equality_table WHERE Age > 35 INTO CURSOR MissingBoundaryRangeResult
+        VerifyTable(1, "Strict range must handle a missing boundary key", TRUE)
+        VerifyIndexEqualitySeek(before, optimizationsEnabled)
+
+        DbSelectArea("indexed_equality_table")
+        OrdDescend("AgeOrder",, TRUE)
+        before := QueryOptimizerIndexSeekCount()
+        SELECT Id FROM indexed_equality_table WHERE Age > 25 INTO CURSOR DescendingRangeResult
+        VerifyTable(4, "Descending index range must preserve greater-than matches", TRUE)
+        VerifyIndexEqualitySeek(before, optimizationsEnabled)
+        before := QueryOptimizerIndexSeekCount()
+        SELECT Id FROM indexed_equality_table WHERE Age = 30 INTO CURSOR DescendingEqualityResult
+        VerifyTable(3, "Descending equality must include duplicate keys", TRUE)
+        VerifyIndexEqualitySeek(before, optimizationsEnabled)
+        DbSelectArea("indexed_equality_table")
+        OrdDescend("AgeOrder",, FALSE)
+
+        before := QueryOptimizerIndexSeekCount()
+        SELECT Id FROM indexed_equality_table WHERE Age = 999 INTO CURSOR MissingKeyResult
+        VerifyTable(0, "Indexed equality with no matching key must return no rows", TRUE)
+        VerifyIndexEqualitySeek(before, optimizationsEnabled)
+    FINALLY
+        IF Used("IndexedEqualityResult")
+            USE IN IndexedEqualityResult
+        ENDIF
+        IF Used("MismatchedOrderResult")
+            USE IN MismatchedOrderResult
+        ENDIF
+        IF Used("IndexedCharacterResult")
+            USE IN IndexedCharacterResult
+        ENDIF
+        IF Used("RangeFallbackResult")
+            USE IN RangeFallbackResult
+        ENDIF
+        IF Used("ConstantLeftRangeResult")
+            USE IN ConstantLeftRangeResult
+        ENDIF
+        IF Used("LessThanRangeResult")
+            USE IN LessThanRangeResult
+        ENDIF
+        IF Used("InclusiveRangeResult")
+            USE IN InclusiveRangeResult
+        ENDIF
+        IF Used("GreaterEqualRangeResult")
+            USE IN GreaterEqualRangeResult
+        ENDIF
+        IF Used("MissingBoundaryRangeResult")
+            USE IN MissingBoundaryRangeResult
+        ENDIF
+        IF Used("DescendingRangeResult")
+            USE IN DescendingRangeResult
+        ENDIF
+        IF Used("DescendingEqualityResult")
+            USE IN DescendingEqualityResult
+        ENDIF
+        IF Used("MissingKeyResult")
+            USE IN MissingKeyResult
+        ENDIF
+        IF Used("indexed_equality_table")
+            DbSelectArea("indexed_equality_table")
+            DbSetFilter(NULL)
+            USE IN indexed_equality_table
+        ENDIF
+    END TRY
+    RETURN
+
 FUNCTION TestOptimizerBitmap() AS VOID
     CREATE CURSOR optimizer_bitmap_table (Age N(3), City C(20))
     INSERT INTO optimizer_bitmap_table VALUES (30, "New York")

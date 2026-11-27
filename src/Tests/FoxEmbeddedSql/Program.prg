@@ -140,6 +140,8 @@ FUNCTION Start(args AS STRING[]) AS VOID STRICT
     RegisterTest("TestLeftOuterJoin [optimized]", { => TestLeftOuterJoin() })
     RegisterTest("TestLeftOuterJoin [baseline]", { => TestLeftOuterJoin() }, TRUE)
     RegisterTest("TestQueryOptimizer", { => TestQueryOptimizer() })
+    RegisterTest("TestIndexedEqualityOptimizer [optimized]", { => TestIndexedEqualityOptimizer() })
+    RegisterTest("TestIndexedEqualityOptimizer [baseline]", { => TestIndexedEqualityOptimizer() }, TRUE)
     RegisterTest("TestOptimizerBitmap", { => TestOptimizerBitmap() })
     RegisterTest("TestMembershipBitmap [optimized]", { => TestMembershipBitmap() })
     RegisterTest("TestMembershipBitmap [baseline]", { => TestMembershipBitmap() }, TRUE)

@@ -622,6 +622,68 @@ BEGIN NAMESPACE XSharp.RT.Tests
 		RETURN
 
 
+		[Fact, Trait("Category", "DBF")];
+		METHOD ReadOnlyMutations_Test() AS VOID
+			LOCAL cDbf AS STRING
+			LOCAL oOldErrorBlock AS CODEBLOCK
+			LOCAL dbfBefore AS BYTE[]
+			LOCAL fptBefore AS BYTE[]
+			LOCAL FUNCTION _CheckReadOnlyRddError() AS VOID
+				IF RuntimeState.LastRddError IS XSharp.Error VAR readOnlyError
+					IF readOnlyError:Gencode != XSharp.Gencode.EG_READONLY
+						THROW Exception{"Expected EG_READONLY"}
+					ENDIF
+				ELSE
+					THROW Exception{"Expected an RDD readonly error"}
+				ENDIF
+				RuntimeState.LastRddError := NULL
+			END FUNCTION
+
+			RddSetDefault("DBFFPT")
+			cDbf := DbfTests.GetTempFileName()
+			DbfTests.CreateDatabase(cDbf, { {"ID", "C", 12, 0}, {"NOTE", "M", 10, 0} }, {"original"})
+			FieldPut(2, "memo-original")
+			DbCloseArea()
+			dbfBefore := System.IO.File.ReadAllBytes(cDbf + ".DBF")
+			fptBefore := System.IO.File.ReadAllBytes(cDbf + ".FPT")
+
+			// Shared APPEND used to overwrite the readonly failure with AppendLock's result.
+			Assert.True(DbUseArea(TRUE, "DBFFPT", cDbf, "ro_shared", TRUE, TRUE))
+			oOldErrorBlock := ErrorBlock({|oError| NIL})
+			TRY
+				Assert.False(DbAppend())
+				_CheckReadOnlyRddError()
+				DbGoTop()
+				Assert.False(DbDelete())
+				_CheckReadOnlyRddError()
+				Assert.False(DbRecall())
+				_CheckReadOnlyRddError()
+				FieldPut(1, "changed")
+				_CheckReadOnlyRddError()
+				FieldPut(2, "memo-changed")
+				_CheckReadOnlyRddError()
+				Assert.False(VoDbRecordPut(VoDbRecordGet()))
+				_CheckReadOnlyRddError()
+				Assert.False(DbPack())
+				_CheckReadOnlyRddError()
+				Assert.False(DbZap())
+				_CheckReadOnlyRddError()
+				Assert.Equal(1U, RecCount())
+				Assert.False(Deleted())
+				Assert.Equal("original", AllTrim((STRING)FieldGet(1)))
+				Assert.Equal("memo-original", (STRING)FieldGet(2))
+				Assert.True(DbCommit())
+			FINALLY
+				ErrorBlock(oOldErrorBlock)
+				RuntimeState.LastRddError := NULL
+				DbCloseArea("ro_shared")
+			END TRY
+
+			Assert.Equal(Convert.ToBase64String(dbfBefore), Convert.ToBase64String(System.IO.File.ReadAllBytes(cDbf + ".DBF")))
+			Assert.Equal(Convert.ToBase64String(fptBefore), Convert.ToBase64String(System.IO.File.ReadAllBytes(cDbf + ".FPT")))
+		RETURN
+
+
 
 
 		// TECH-P956TFHW74, Cannot use fields in macro exceptions when they are named after a function

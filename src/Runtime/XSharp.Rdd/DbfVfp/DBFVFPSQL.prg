@@ -99,6 +99,9 @@ BEGIN NAMESPACE XSharp.RDD
 
          OVERRIDE METHOD PutValue(nFldPos AS INT, oValue AS OBJECT) AS LOGIC
             // nFldPos is 1 based, the RDD compiles with /az+
+            IF !SELF:_CheckReadOnlyWrite()
+                RETURN FALSE
+            ENDIF
             var result := FALSE
             IF nFldPos > 0 .AND. nFldPos <= SELF:FieldCount
                 var row := _table:Rows[(INT) SELF:_RecNo -1]

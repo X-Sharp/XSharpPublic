@@ -179,6 +179,44 @@ BEGIN NAMESPACE XSharp.RT.Tests
 			Assert.True( alias2->DbCloseArea() )
 			Assert.True( alias3->DbCloseArea() )
 
+
+        [Fact, Trait("Category", "DBF")];
+		METHOD DBFVFP_ReadOnlyMutations() AS VOID
+			LOCAL cFileName AS STRING
+			LOCAL oOldErrorBlock AS CODEBLOCK
+			cFileName := DbfTests.GetTempFileName()
+
+			DbCreate(cFileName, {{"ID", "I:+", 6, 0}, {"NOTE", "M", 10, 0}}, "DBFVFP")
+			DbUseArea(TRUE, "DBFVFP", cFileName, "writer", FALSE, FALSE)
+			DbAppend()
+			Assert.Equal(1, (INT)FieldGet(1))
+			FieldPut(2, "memo-original")
+			DbCloseArea()
+
+			Assert.True(DbUseArea(TRUE, "DBFVFP", cFileName, "readonly", TRUE, TRUE))
+			oOldErrorBlock := ErrorBlock({|oError| NIL})
+			TRY
+				Assert.False(DbAppend())
+				Assert.Equal(1U, RecCount())
+				Assert.Equal(2, (INT)DbFieldInfo(DBS_COUNTER, 1))
+				DbFieldInfo(DBS_COUNTER, 1, 99)
+				Assert.Equal(2, (INT)DbFieldInfo(DBS_COUNTER, 1))
+				FieldPut(2, "memo-changed")
+				Assert.Equal("memo-original", (STRING)FieldGet(2))
+			FINALLY
+				ErrorBlock(oOldErrorBlock)
+				RuntimeState.LastRddError := NULL
+				Assert.True(DbCloseArea())
+			END TRY
+
+			DbUseArea(TRUE, "DBFVFP", cFileName, "verify", FALSE, FALSE)
+			Assert.Equal(1U, RecCount())
+			Assert.Equal(2, (INT)DbFieldInfo(DBS_COUNTER, 1))
+			Assert.Equal("memo-original", (STRING)FieldGet(2))
+			DbAppend()
+			Assert.Equal(2, (INT)FieldGet(1))
+			DbCloseArea()
+
         [Fact, Trait("Category", "DBF")];
 		METHOD DBFVFP_VARCHAR_fields() AS VOID
 			// https://github.com/X-Sharp/XSharpPublic/issues/1796

@@ -94,6 +94,13 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
             SELF:_SetEOF(TRUE)
         ENDIF
 
+    INTERNAL METHOD _CheckReadOnlyWrite() AS LOGIC
+        IF SELF:_ReadOnly
+            SELF:_dbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY )
+            RETURN FALSE
+        ENDIF
+        RETURN TRUE
+
 
     INTERNAL METHOD _SetBOF(lNewValue AS LOGIC) AS VOID
         IF lNewValue != SELF:BoF
@@ -316,16 +323,13 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
     OVERRIDE METHOD Append(lReleaseLock AS LOGIC) AS LOGIC
         LOCAL isOK := FALSE AS LOGIC
         IF SELF:IsOpen
+            IF !SELF:_CheckReadOnlyWrite()
+                RETURN FALSE
+            ENDIF
             BEGIN LOCK SELF
                 // Validate
                 isOK := SELF:GoCold()
                 IF isOK
-                    //
-                    IF SELF:_ReadOnly
-                        // Error !! Cannot be written !
-                        SELF:_dbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY ,FALSE)
-                        isOK := FALSE
-                    ENDIF
                     IF  SELF:Shared
                         IF  SELF:_Locks:Count > 0  .AND. lReleaseLock
                             SELF:UnLock( 0 ) // Unlock All Records
@@ -336,32 +340,39 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
                     ENDIF
                     IF isOK
                         VAR nCount := SELF:_calculateRecCount()+1
-                        SELF:_UpdateRecCount(nCount)      // writes the reccount to the header as well
-                        SELF:_RecNo         := nCount
-                        Array.Copy(SELF:_BlankBuffer, SELF:_RecordBuffer, SELF:_RecordLength)
-                        FOREACH oFld AS RddFieldInfo IN _Fields
-                            IF oFld IS DbfColumn VAR column
-                                column:NewRecord(SELF:_RecordBuffer)
-                            ENDIF
-                        NEXT
-                        SELF:_writeRecord()
-                        IF SELF:_Shared
-                            SELF:_putEndOfFileMarker()
+                        isOK := SELF:_UpdateRecCount(nCount) // writes the reccount to the header as well
+                        IF isOK
+                            SELF:_RecNo         := nCount
+                            Array.Copy(SELF:_BlankBuffer, SELF:_RecordBuffer, SELF:_RecordLength)
+                            FOREACH oFld AS RddFieldInfo IN _Fields
+                                IF oFld IS DbfColumn VAR column
+                                    column:NewRecord(SELF:_RecordBuffer)
+                                ENDIF
+                            NEXT
+                            isOK := SELF:_writeRecord()
                         ENDIF
-                        // Now, update state
-                        SELF:_SetEOF(FALSE)
-                        SELF:BoF            := FALSE
-                        SELF:_Deleted       := FALSE
-                        SELF:_BufferValid   := TRUE
-                        SELF:_isValid       := TRUE
-                        SELF:_NewRecord     := TRUE
-                        SELF:_wasChanged    := TRUE
-                        // Mark RecordBuffer as Hot
-                        SELF:_Hot           := TRUE
-                        // Now, Save
+                        IF isOK .AND. SELF:_Shared
+                            isOK := SELF:_putEndOfFileMarker()
+                        ENDIF
+                        IF isOK
+                            // Now, update state
+                            SELF:_SetEOF(FALSE)
+                            SELF:BoF            := FALSE
+                            SELF:_Deleted       := FALSE
+                            SELF:_BufferValid   := TRUE
+                            SELF:_isValid       := TRUE
+                            SELF:_NewRecord     := TRUE
+                            SELF:_wasChanged    := TRUE
+                            // Mark RecordBuffer as Hot
+                            SELF:_Hot           := TRUE
+                        ENDIF
+                        // Release the header lock even if a write failed.
                         IF SELF:_HeaderLocked
-                            SELF:GoCold()
-                            isOK := SELF:AppendLock( DbLockMode.UnLock ) // unlocks just header
+                            IF isOK
+                                isOK := SELF:GoCold()
+                            ENDIF
+                            VAR unlockOk := SELF:AppendLock( DbLockMode.UnLock )
+                            isOK := isOK .AND. unlockOk
                         ENDIF
                     ENDIF
                 ENDIF
@@ -371,11 +382,13 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
         RETURN isOK
 
     PRIVATE METHOD _UpdateRecCount(nCount AS DWORD) AS LOGIC
+        IF !SELF:_CheckReadOnlyWrite()
+            RETURN FALSE
+        ENDIF
         SELF:_RecCount          := nCount
         SELF:_Header:RecCount   := nCount
         SELF:_wasChanged        := TRUE
-        SELF:_writeHeader()
-        RETURN TRUE
+        RETURN SELF:_writeHeader()
 
 
     /// <inheritdoc />
@@ -709,14 +722,19 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
     /// <inheritdoc />
     OVERRIDE METHOD Recall() AS LOGIC
         LOCAL isOK AS LOGIC
+        IF !SELF:_CheckReadOnlyWrite()
+            RETURN FALSE
+        ENDIF
         SELF:ForceRel()
         isOK := SELF:_readRecord()
         IF isOK
             IF ! SELF:_Hot
-                SELF:GoHot()
+                isOK := SELF:GoHot()
             ENDIF
-            SELF:_RecordBuffer[ 0 ] := (BYTE)' '
-            SELF:_Deleted := FALSE
+            IF isOK
+                SELF:_RecordBuffer[ 0 ] := (BYTE)' '
+                SELF:_Deleted := FALSE
+            ENDIF
         ELSE
             SELF:_dbfError( ERDD.READ, XSharp.Gencode.EG_READ )
         ENDIF
@@ -726,16 +744,21 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
     /// <inheritdoc />
     OVERRIDE METHOD Delete() AS LOGIC
         LOCAL isOK AS LOGIC
+        IF !SELF:_CheckReadOnlyWrite()
+            RETURN FALSE
+        ENDIF
         SELF:ForceRel()
         BEGIN LOCK SELF
             isOK := SELF:_readRecord()
             IF isOK
                 IF SELF:_isValid
                     IF ! SELF:_Hot
-                        SELF:GoHot()
+                        isOK := SELF:GoHot()
                     ENDIF
-                    SELF:_RecordBuffer[ 0 ] := (BYTE)'*'
-                    SELF:_Deleted := TRUE
+                    IF isOK
+                        SELF:_RecordBuffer[ 0 ] := (BYTE)'*'
+                        SELF:_Deleted := TRUE
+                    ENDIF
                     //
                 ENDIF
             ELSE
@@ -764,6 +787,9 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
     /// <inheritdoc />
     OVERRIDE METHOD PutRec(aRec AS BYTE[]) AS LOGIC
         LOCAL isOK := FALSE AS LOGIC
+        IF !SELF:_CheckReadOnlyWrite()
+            RETURN FALSE
+        ENDIF
         // First, Check the Size
         IF aRec:Length == SELF:_RecordLength
             IF SELF:_readRecord()
@@ -772,7 +798,9 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
                 ELSE
                     isOK := TRUE
                 ENDIF
-                Array.Copy(aRec, SELF:_RecordBuffer, SELF:_RecordLength)
+                IF isOK
+                    Array.Copy(aRec, SELF:_RecordBuffer, SELF:_RecordLength)
+                ENDIF
             ENDIF
         ELSE
             SELF:_dbfError( ERDD.DATAWIDTH, XSharp.Gencode.EG_DATAWIDTH )
@@ -787,9 +815,7 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
             RETURN FALSE
         ENDIF
 
-        IF SELF:_ReadOnly
-            // Error !! Cannot be written !
-            SELF:_dbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY )
+        IF !SELF:_CheckReadOnlyWrite()
             RETURN FALSE
         ENDIF
         //
@@ -848,8 +874,7 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
             RETURN FALSE
         ENDIF
 
-        IF SELF:_ReadOnly
-            SELF:_dbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY )
+        IF !SELF:_CheckReadOnlyWrite()
             RETURN FALSE
         ENDIF
         IF SELF:_Shared
@@ -1144,7 +1169,14 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
             isOK := SELF:_readFieldsHeader()
             IF SELF:Shared
                 VAR nRecs := SELF:_calculateRecCount()
-                SELF:_UpdateRecCount(nRecs)
+                IF SELF:_ReadOnly
+                    // Shared read-only workareas may refresh their in-memory
+                    // count, but must not try to repair the file header.
+                    SELF:_RecCount := nRecs
+                    SELF:_Header:RecCount := nRecs
+                ELSE
+                    SELF:_UpdateRecCount(nRecs)
+                ENDIF
             ENDIF
         ENDIF
         RETURN isOK
@@ -1241,9 +1273,7 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
         LOCAL ret := TRUE AS LOGIC
         // Really ?
         IF SELF:_Header:isHot
-            IF SELF:_ReadOnly
-                // Error !! Cannot be written !
-                SELF:_dbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY )
+            IF !SELF:_CheckReadOnlyWrite()
                 RETURN FALSE
             ENDIF
             // Update the number of records
@@ -1335,6 +1365,9 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
                                 dbfac:Read()
                                 oResult := dbfac:Counter
                                 IF oNewValue != NULL
+                                    IF !SELF:_CheckReadOnlyWrite()
+                                        RETURN oResult
+                                    ENDIF
                                     // update counter
                                     LOCAL iNewValue AS Int32
                                     iNewValue := Convert.ToInt32(oNewValue)
@@ -1350,6 +1383,9 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
                                 dbfac:Read()
                                 oResult := dbfac:IncrStep
                                 IF oNewValue != NULL
+                                    IF !SELF:_CheckReadOnlyWrite()
+                                        RETURN oResult
+                                    ENDIF
                                     // update step
                                     LOCAL iNewValue AS Int32
                                     iNewValue := Convert.ToInt32(oNewValue)
@@ -1411,9 +1447,7 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
         //
         IF isOK
             //
-            IF SELF:_ReadOnly
-                // Error !! Cannot be written !
-                SELF:_dbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY )
+            IF !SELF:_CheckReadOnlyWrite()
                 isOK := FALSE
             ELSE
                 SELF:_wasChanged := TRUE
@@ -1565,6 +1599,16 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
         IF ! SELF:IsOpen
             RETURN FALSE
         ENDIF
+        // Flush is a no-op on read-only workareas. In particular, do not
+        // write an EOF marker or header after a failed/ignored mutation.
+        IF SELF:_ReadOnly
+            IF SELF:_Hot .OR. SELF:_wasChanged .OR. SELF:_Header:isHot
+                IF !SELF:_CheckReadOnlyWrite()
+                    RETURN FALSE
+                ENDIF
+            ENDIF
+            RETURN TRUE
+        ENDIF
         isOK := SELF:GoCold()
 
         IF isOK .and. SELF:_wasChanged
@@ -1628,9 +1672,11 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
         IF SELF:_Hot
             BEGIN LOCK SELF
                 //? CurrentThreadId, "GoCold Recno", SELF:RecNo
-                SELF:_writeRecord()
-                SELF:_NewRecord := FALSE
-                SELF:_Hot := FALSE
+                ret := SELF:_writeRecord()
+                IF ret
+                    SELF:_NewRecord := FALSE
+                    SELF:_Hot := FALSE
+                ENDIF
             END LOCK
         ENDIF
         RETURN ret
@@ -1646,11 +1692,9 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
                     SELF:_dbfError( ERDD.UNLOCKED, XSharp.Gencode.EG_UNLOCKED )
                     ret := FALSE
                 ENDIF
-                IF SELF:_ReadOnly
-                    // Error !! Cannot be written !
-                    SELF:_dbfError( ERDD.READONLY, XSharp.Gencode.EG_READONLY )
+                IF !SELF:_CheckReadOnlyWrite()
                     ret := FALSE
-                ELSE
+                ELSEIF ret
                     SELF:_Hot := TRUE
                 ENDIF
             END LOCK
@@ -1670,9 +1714,7 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
     /// <inheritdoc />
     OVERRIDE METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
         LOCAL ret := FALSE AS LOGIC
-        IF SELF:_ReadOnly
-            SELF:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY )
-            // Error handlers may return. Do not continue to modify the record buffer.
+        IF !SELF:_CheckReadOnlyWrite()
             RETURN FALSE
         ENDIF
         IF SELF:EoF
@@ -1683,7 +1725,10 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
             // GoHot() must be called first because this saves the current index values
             ret := TRUE
             IF ! SELF:_Hot
-                SELF:GoHot()
+                ret := SELF:GoHot()
+            ENDIF
+            IF !ret
+                RETURN FALSE
             ENDIF
             VAR oColumn := SELF:_GetColumn(nFldPos) ASTYPE DbfColumn
             IF oColumn != NULL
@@ -1711,9 +1756,7 @@ PARTIAL CLASS DBF INHERIT Workarea IMPLEMENTS IRddSortWriter
 
     /// <inheritdoc />
     OVERRIDE METHOD PutValueFile(nFldPos AS LONG, fileName AS STRING) AS LOGIC
-        IF SELF:_ReadOnly
-            SELF:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY )
-            // Error handlers may return. Do not continue to modify the record buffer.
+        IF !SELF:_CheckReadOnlyWrite()
             RETURN FALSE
         ENDIF
         IF SELF:EoF

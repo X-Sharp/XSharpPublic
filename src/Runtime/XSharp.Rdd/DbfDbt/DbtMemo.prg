@@ -117,6 +117,9 @@ BEGIN NAMESPACE XSharp.RDD
             IF !SELF:IsOpen
                 RETURN FALSE
             ENDIF
+            IF !_oRdd:_CheckReadOnlyWrite()
+                RETURN FALSE
+            ENDIF
             //
             objType := oValue:GetType()
             objTypeCode := Type.GetTypeCode( objType )
@@ -330,6 +333,9 @@ BEGIN NAMESPACE XSharp.RDD
 
         OVERRIDE METHOD Zap() AS LOGIC
             IF SELF:IsOpen
+                IF !_oRdd:_CheckReadOnlyWrite()
+                    RETURN FALSE
+                ENDIF
                 IF SELF:Shared
                     SELF:Error(FException(), Subcodes.ERDD_SHARED, Gencode.EG_LOCK, "DBTMemo.Zap")
                 ENDIF

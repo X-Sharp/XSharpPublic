@@ -77,8 +77,8 @@ BEGIN NAMESPACE XSharp.RDD
             RETURN SUPER:GetValue(nFldPos)
 
         OVERRIDE METHOD PutValue(nFldPos AS LONG, oValue AS OBJECT) AS LOGIC
-            IF SELF:_ReadOnly
-                SELF:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY )
+            IF !SELF:_CheckReadOnlyWrite()
+                RETURN FALSE
             ENDIF
             IF SELF:EoF
                RETURN TRUE
@@ -87,7 +87,9 @@ BEGIN NAMESPACE XSharp.RDD
             IF SELF:_readRecord()
                 // GoHot() must be called first because this saves the current index values
                 IF ! SELF:_Hot
-                    SELF:GoHot()
+                    IF !SELF:GoHot()
+                        RETURN FALSE
+                    ENDIF
                 ENDIF
                 VAR oColumn := SELF:_GetColumn(nFldPos) ASTYPE DbfColumn
                 IF oColumn != NULL
@@ -249,14 +251,16 @@ BEGIN NAMESPACE XSharp.RDD
 
             /// <inheritdoc />
         OVERRIDE METHOD PutValueFile(nFldPos AS INT, fileName AS STRING) AS LOGIC
-           IF SELF:_ReadOnly
-                SELF:_dbfError(ERDD.READONLY, XSharp.Gencode.EG_READONLY )
+           IF !SELF:_CheckReadOnlyWrite()
+                RETURN FALSE
             ENDIF
             SELF:ForceRel()
             IF SELF:_readRecord()
                 // GoHot() must be called first because this saves the current index values
                 IF ! SELF:IsHot
-                    SELF:GoHot()
+                    IF !SELF:GoHot()
+                        RETURN FALSE
+                    ENDIF
                 ENDIF
                 RETURN SELF:oFlexMemo:PutValueFile(nFldPos, fileName)
             ENDIF

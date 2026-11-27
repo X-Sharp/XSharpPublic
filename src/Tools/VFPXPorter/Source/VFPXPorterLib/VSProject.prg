@@ -78,8 +78,8 @@ CLASS VSProject
         SELF:ProjectReferenceList := List<VSProject>{}
         SELF:IsLibrary := FALSE
         SELF:ProjectType := ProjectType.WindowsExe
-        // TODO : set the Framework version as a Setting ??
-        SELF:FrameworkVersion := "4.7.2"
+        // Default value; XPorterProject.CreateVSProject() sets it from XPorterSettings.FrameworkVersion
+        SELF:FrameworkVersion := XPorterSettings.DefaultFrameworkVersion
         RETURN
 
     /// <summary>
@@ -130,11 +130,47 @@ CLASS VSProject
         SELF:ReferenceList:Add( refer )
 
     /// <summary>
+    /// Add the references every exported project needs: the .NET Framework assemblies used by the
+    /// generated code, and the X# runtime (including XSharp.VFP.UI).
+    /// </summary>
+    /// <remarks>Overridden by project formats that reference these differently (e.g. NuGet packages).</remarks>
+    PUBLIC VIRTUAL METHOD AddStandardReferences() AS VOID
+        SELF:AddReference( "mscorlib" )
+        SELF:AddReference( "System" )
+        SELF:AddReference( "System.Core" )
+        SELF:AddReference( "System.Data" )
+        SELF:AddReference( "System.Data.DataSetExtensions" )
+        SELF:AddReference( "System.Xml" )
+        SELF:AddReference( "System.Xml.Linq" )
+        SELF:AddReference( "System.Drawing" )
+        SELF:AddReference( "System.Windows.Forms" )
+        SELF:AddReference( "XSharp.Core", TRUE )
+        SELF:AddReference( "XSharp.RT", TRUE )
+        SELF:AddReference( "XSharp.RDD", TRUE )
+        SELF:AddReference( "XSharp.Data", TRUE )
+        SELF:AddReference( "XSharp.VFP", TRUE )
+        // XSharp.VFP.UI is no longer copied from Data/Templates/Tools, so it MUST be referenced here
+        SELF:AddReference( "XSharp.VFP.UI", TRUE )
+        RETURN
+
+    /// <summary>
+    /// Build the value of the StandardDefs property, pointing to the VFPXPorter header file.
+    /// </summary>
+    /// <param name="headerFullPath">Full path of the VFPXPorter.xh header (empty if none).</param>
+    /// <param name="projectFolder">Folder of the project file; the header path is made relative to it.</param>
+    /// <returns>The StandardDefs value, or an empty string when there is no header.</returns>
+    PUBLIC VIRTUAL METHOD FormatStandardDefs( headerFullPath AS STRING, projectFolder AS STRING ) AS STRING
+        IF String.IsNullOrEmpty( headerFullPath )
+            RETURN ""
+        ENDIF
+        RETURN "$(projectdir)" + GetRelativePath( projectFolder, headerFullPath )
+
+    /// <summary>
     /// Save the XML document to the given path, using the project name and the standard definitions
     /// </summary>
     /// <param name="projectFileNameFullPath">The full path to the project file.</param>
     /// <param name="stdDef">The standard definitions to use.</param>
-    PUBLIC METHOD Save( projectFileNameFullPath AS STRING, stdDef AS STRING ) AS VOID
+    PUBLIC VIRTUAL METHOD Save( projectFileNameFullPath AS STRING, stdDef AS STRING ) AS VOID
         XmlDoc := XmlDocument{}
         //
         VAR xsProj := SELF:CreateElement(XmlDoc,"Project")
@@ -206,7 +242,7 @@ CLASS VSProject
         RETURN
 
 
-    PRIVATE METHOD AddConfigCommon(parent AS XmlElement) AS VOID
+    PROTECTED METHOD AddConfigCommon(parent AS XmlElement) AS VOID
         SELF:CreateElement( parent, "PlatformTarget","AnyCPU")
         SELF:CreateElement( parent, "ErrorReport", "prompt")
         SELF:CreateElement( parent, "WarningLevel", "4")
@@ -214,7 +250,7 @@ CLASS VSProject
         SELF:CreateElement(parent, "OutputPath", "bin\$(Configuration)\")
 
 
-    PRIVATE METHOD AddConfigRelease(parent AS XmlElement ) AS VOID
+    PROTECTED METHOD AddConfigRelease(parent AS XmlElement ) AS VOID
         LOCAL configAttr AS XmlAttribute
         configAttr := XmlDoc:CreateAttribute( "Condition" )
         configAttr:Value := "'$(Configuration)|$(Platform)' == 'Release|AnyCPU'"
@@ -227,7 +263,7 @@ CLASS VSProject
         SELF:AddConfigCommon(parent)
 
 
-    PRIVATE METHOD AddConfigDebug(parent AS XmlElement ) AS VOID
+    PROTECTED METHOD AddConfigDebug(parent AS XmlElement ) AS VOID
         LOCAL configAttr AS XmlAttribute
         configAttr := XmlDoc:CreateAttribute( "Condition" )
         configAttr:Value := "'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'"
@@ -239,7 +275,7 @@ CLASS VSProject
         SELF:CreateElement(parent, "DefineConstants","VFP2XS;DEBUG;TRACE")
         SELF:AddConfigCommon(parent)
 
-    PRIVATE METHOD CreateElement(parent AS XmlNode, name as STRING, strValue := NULL as STRING) AS XmlElement
+    PROTECTED METHOD CreateElement(parent AS XmlNode, name as STRING, strValue := NULL as STRING) AS XmlElement
         LOCAL node AS XmlElement
         node := SELF:XmlDoc:CreateElement(name)
         if ! String.IsNullOrEmpty(strValue)
@@ -247,58 +283,78 @@ CLASS VSProject
         endif
         parent:AppendChild( node )
         RETURN node
-    PRIVATE METHOD AddCompileSettings(parent AS XmlElement, name AS STRING, stdDef AS STRING ) AS VOID
+    PROTECTED METHOD AddCompileSettings(parent AS XmlElement, name AS STRING, stdDef AS STRING ) AS VOID
         //dummy := xmlDoc:CreateElement("XSharpProjectExtensionsPath")
         //dummy:InnerText := "$(MSBuildExtensionsPath)\XSharp\"
         //parent:AppendChild( dummy )
         SELF:CreateElement(parent, "Name", name + "App")
         SELF:CreateElement(parent, "ProjectGuid", SELF:GUID)
-        // Mapping MSBuild project types
-        LOCAL outputTypeStr AS STRING
-        SWITCH SELF:ProjectType
-        CASE ProjectType.ClassLibrary
-            outputTypeStr := "Library"
-
-        CASE ProjectType.Console
-            outputTypeStr := "Exe"
-
-        OTHERWISE
-            outputTypeStr := "WinExe"
-        END SWITCH
-        SELF:CreateElement(parent, "OutputType", outputTypeStr)
+        SELF:CreateElement(parent, "OutputType", SELF:GetOutputTypeName())
 
         SELF:CreateElement(parent, "AppDesignerFolder","Properties")
         SELF:CreateElement(parent, "RootNamespace", name)
 
-        // Assembly name according to type
-        LOCAL assemblyName AS STRING
-        SWITCH SELF:ProjectType
-        CASE ProjectType.ClassLibrary
-            assemblyName := Name + "Lib"
-        CASE ProjectType.Console
-            assemblyName := Name + "Console"
-        OTHERWISE
-            assemblyName := Name + "App"
-        END SWITCH
-        SELF:CreateElement(parent, "AssemblyName", assemblyName)
+        SELF:CreateElement(parent, "AssemblyName", SELF:GetAssemblyName( name ))
 
         SELF:CreateElement(parent, "TargetFrameworkVersion", SELF:FrameworkVersion)
         SELF:CreateElement(parent, "NoLogo", "true")
         SELF:CreateElement(parent, "GenerateFullPaths", "true")
-        SELF:CreateElement(parent, "Dialect", "FoxPro")
-        SELF:CreateElement(parent, "AllowOldStyleAssignments", "True")
-        SELF:CreateElement(parent, "LB", "true")
-        SELF:CreateElement(parent, "OutputName", name)
-        SELF:CreateElement(parent, "Undeclared", "true")
-        SELF:CreateElement(parent, "MemVar", "true")
-        SELF:CreateElement(parent, "AllowOldStyleAssignments", "true")
-        SELF:CreateElement(parent, "Allowdot", "true")
-        SELF:CreateElement(parent, "Vo9", "true")
-        SELF:CreateElement(parent, "Vo15", "true")
-        SELF:CreateElement(parent, "Ins", "true")
+        FOREACH VAR switch IN SELF:GetCompilerSwitches( name )
+            SELF:CreateElement(parent, switch:Key, switch:Value)
+        NEXT
         IF !String.IsNullOrEmpty( stdDef )
             SELF:CreateElement( parent, "StandardDefs", stdDef)
         ENDIF
+
+    /// <summary>
+    /// The X# compiler settings of an exported project (dialect and compatibility switches), in the
+    /// order they are written. Shared by every project format.
+    /// </summary>
+    /// <param name="name">Project name (used for OutputName).</param>
+    /// <remarks>
+    /// The classic format writes AllowOldStyleAssignments twice; it is kept so existing exports stay
+    /// byte-identical. Writers that must not repeat a property should skip keys already written.
+    /// </remarks>
+    /// <summary>
+    /// MSBuild OutputType for the <see cref="ProjectType" />: Library, Exe or WinExe.
+    /// </summary>
+    PROTECTED METHOD GetOutputTypeName() AS STRING
+        SWITCH SELF:ProjectType
+        CASE ProjectType.ClassLibrary
+            RETURN "Library"
+        CASE ProjectType.Console
+            RETURN "Exe"
+        OTHERWISE
+            RETURN "WinExe"
+        END SWITCH
+
+    /// <summary>
+    /// Assembly name for the <see cref="ProjectType" />: name + "Lib", "Console" or "App".
+    /// </summary>
+    PROTECTED METHOD GetAssemblyName( name AS STRING ) AS STRING
+        SWITCH SELF:ProjectType
+        CASE ProjectType.ClassLibrary
+            RETURN name + "Lib"
+        CASE ProjectType.Console
+            RETURN name + "Console"
+        OTHERWISE
+            RETURN name + "App"
+        END SWITCH
+
+    PROTECTED VIRTUAL METHOD GetCompilerSwitches( name AS STRING ) AS List<KeyValuePair<STRING, STRING>>
+        VAR switches := List<KeyValuePair<STRING, STRING>>{}
+        switches:Add( KeyValuePair<STRING, STRING>{ "Dialect", "FoxPro" } )
+        switches:Add( KeyValuePair<STRING, STRING>{ "AllowOldStyleAssignments", "True" } )
+        switches:Add( KeyValuePair<STRING, STRING>{ "LB", "true" } )
+        switches:Add( KeyValuePair<STRING, STRING>{ "OutputName", name } )
+        switches:Add( KeyValuePair<STRING, STRING>{ "Undeclared", "true" } )
+        switches:Add( KeyValuePair<STRING, STRING>{ "MemVar", "true" } )
+        switches:Add( KeyValuePair<STRING, STRING>{ "AllowOldStyleAssignments", "true" } )
+        switches:Add( KeyValuePair<STRING, STRING>{ "Allowdot", "true" } )
+        switches:Add( KeyValuePair<STRING, STRING>{ "Vo9", "true" } )
+        switches:Add( KeyValuePair<STRING, STRING>{ "Vo15", "true" } )
+        switches:Add( KeyValuePair<STRING, STRING>{ "Ins", "true" } )
+        RETURN switches
 
 END CLASS
 
@@ -462,6 +518,33 @@ CLASS Reference
                 dummy:InnerText := SELF:Include
             ENDIF
             refer:AppendChild( dummy )
+        ENDIF
+
+    /// <summary>
+    /// Write this reference for an SDK-style project: only Include, plus a HintPath for a local
+    /// DLL or an X# assembly. Framework assemblies need nothing else in SDK projects.
+    /// </summary>
+    /// <param name="parent">The ItemGroup to add to.</param>
+    /// <param name="xsharpAssembliesFolder">Folder of the installed X# assemblies (used when IsXSharp).</param>
+    METHOD AppendToSdk( parent AS XmlElement, xsharpAssembliesFolder AS STRING ) AS VOID
+        VAR xmlDoc := parent:OwnerDocument
+        VAR refer := xmlDoc:CreateElement("Reference")
+        parent:AppendChild(refer)
+        VAR referInfo := xmlDoc:CreateAttribute( "Include" )
+        IF SELF:Include:EndsWith(".dll", StringComparison.OrdinalIgnoreCase)
+            referInfo:Value := Path.GetFileNameWithoutExtension(SELF:Include)
+        ELSE
+            referInfo:Value := Path.GetFileName(SELF:Include)
+        ENDIF
+        refer:Attributes:Append( referInfo )
+        IF SELF:IsXSharp .OR. SELF:IsLocal
+            VAR hint := xmlDoc:CreateElement("HintPath")
+            IF SELF:IsXSharp
+                hint:InnerText := Path.Combine( xsharpAssembliesFolder, referInfo:Value + ".dll" )
+            ELSE
+                hint:InnerText := SELF:Include
+            ENDIF
+            refer:AppendChild( hint )
         ENDIF
 END CLASS
 

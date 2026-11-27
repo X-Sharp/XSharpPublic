@@ -58,6 +58,12 @@ BEGIN NAMESPACE VFPXPorter
 			SELF:KeepFolderStructure := source:KeepFolderStructure
 			SELF:EmptyFolder := source:EmptyFolder
 			SELF:ExpandWithEndWith := source:ExpandWithEndWith
+			SELF:ProjectFormat := source:ProjectFormat
+			SELF:TargetFramework := source:TargetFramework
+			SELF:FrameworkVersion := source:FrameworkVersion
+			SELF:XSharpReferences := source:XSharpReferences
+			SELF:XSharpPackageVersion := source:XSharpPackageVersion
+			SELF:SolutionFormat := source:SolutionFormat
 			SELF:ClassNamePrefix := XPorterSettings.ClassNamePrefix
 			SELF:RessourcesFolder := XPorterSettings.DataFolder
 			RETURN
@@ -140,6 +146,31 @@ BEGIN NAMESPACE VFPXPorter
 		PROPERTY ExpandWithEndWith AS LOGIC GET SELF:iniSettings:ReadValue( "Items", "ExpandWithEndWith", TRUE ) ;
 			SET SELF:iniSettings:WriteValue( "Items", "ExpandWithEndWith", VALUE )
 
+		// ── Project file format (stored as names, so the settings file stays readable) ──
+		PROPERTY ProjectFormat AS ProjectFormat ;
+			GET ParseEnum<ProjectFormat>( SELF:iniSettings:ReadValue( "Project", "ProjectFormat", "Classic" ), ProjectFormat.Classic ) ;
+			SET SELF:iniSettings:WriteValue( "Project", "ProjectFormat", VALUE:ToString() )
+		PROPERTY TargetFramework AS STRING GET SELF:iniSettings:ReadValue( "Project", "TargetFramework", XPorterSettings.DefaultTargetFramework ) ;
+			SET SELF:iniSettings:WriteValue( "Project", "TargetFramework", VALUE )
+		PROPERTY FrameworkVersion AS STRING GET SELF:iniSettings:ReadValue( "Project", "FrameworkVersion", XPorterSettings.DefaultFrameworkVersion ) ;
+			SET SELF:iniSettings:WriteValue( "Project", "FrameworkVersion", VALUE )
+		PROPERTY XSharpReferences AS XSharpReferenceMode ;
+			GET ParseEnum<XSharpReferenceMode>( SELF:iniSettings:ReadValue( "Project", "XSharpReferences", "NuGet" ), XSharpReferenceMode.NuGet ) ;
+			SET SELF:iniSettings:WriteValue( "Project", "XSharpReferences", VALUE:ToString() )
+		/// <summary>Empty = version of the X# installation.</summary>
+		PROPERTY XSharpPackageVersion AS STRING GET SELF:iniSettings:ReadValue( "Project", "XSharpPackageVersion", "" ) ;
+			SET SELF:iniSettings:WriteValue( "Project", "XSharpPackageVersion", VALUE )
+		PROPERTY SolutionFormat AS SolutionFormat ;
+			GET ParseEnum<SolutionFormat>( SELF:iniSettings:ReadValue( "Project", "SolutionFormat", "Sln" ), SolutionFormat.Sln ) ;
+			SET SELF:iniSettings:WriteValue( "Project", "SolutionFormat", VALUE:ToString() )
+
+		// Enum stored by name; an unknown or empty value gives the default
+		PRIVATE STATIC METHOD ParseEnum<T>( text AS STRING, defValue AS T ) AS T WHERE T IS STRUCT
+			IF !String.IsNullOrEmpty( text ) .AND. Enum.TryParse<T>( text, TRUE, OUT VAR result ) .AND. Enum.IsDefined( TYPEOF(T), result )
+				RETURN result
+			ENDIF
+			RETURN defValue
+
 		PROPERTY ClassNamePrefix AS STRING GET SELF:iniSettings:ReadValue( "Items", "ClassNamePrefix", "" ) ;
 			SET SELF:iniSettings:WriteValue( "Items", "ClassNamePrefix", VALUE )
 
@@ -150,6 +181,7 @@ BEGIN NAMESPACE VFPXPorter
 			LOCAL settings AS XPorterSettings
 			//
 			settings := XPorterSettings{}
+			settings:ConvertStatement := SELF:ConvertStatement
 			settings:ConvertStatementOnlyIfLast := SELF:ConvertStatementOnlyIfLast
 			settings:ConvertThisObject := SELF:ConvertThisObject
 			settings:EmptyFolder	:= SELF:EmptyFolder
@@ -174,6 +206,14 @@ BEGIN NAMESPACE VFPXPorter
             settings:SeparateLibraryProjects := SELF:SeparateLibraryProjects
             settings:PlaceSolutionInSameDirectory := SELF:PlaceSolutionInSameDirectory
             settings:ExpandWithEndWith := SELF:ExpandWithEndWith
+
+            settings:ProjectFormat := SELF:ProjectFormat
+            settings:TargetFramework := SELF:TargetFramework
+            settings:FrameworkVersion := SELF:FrameworkVersion
+            settings:XSharpReferences := SELF:XSharpReferences
+            settings:XSharpPackageVersion := SELF:XSharpPackageVersion
+            settings:SolutionFormat := SELF:SolutionFormat
+
             XPorterSettings.ClassNamePrefix := SELF:ClassNamePrefix
 			//
 			XPorterSettings.DataFolder := SELF:RessourcesFolder

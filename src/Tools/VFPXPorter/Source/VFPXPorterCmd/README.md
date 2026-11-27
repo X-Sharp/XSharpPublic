@@ -43,9 +43,29 @@ All boolean flags accept a `-no` prefix to invert them (e.g. `-noStoreInFolders`
 | `-storeInFolders` | **on** | Organize output into Forms / Libs / Menus / Code subfolders (only used when `-noKeepFolderStructure` is set). |
 | `-emptyFolder` | on | Empty the output folder before exporting. |
 | `-libInSubFolder` | on | Place library files in a subfolder of the output. |
+| `-separateLibraryProjects` | on | One `.xsproj` per class library (VCX), referenced by the main project. When off, all libraries go into a single `ClassLibraries.xsproj`. |
 | `-addLibraryNamespace` | on | Add the library namespace to `VFPXPorter.xh`. |
+| `-typedThisFormSet` | off | Type `ThisFormSet` with the exported FormSet class. |
 | `-ignoreErrors` | on | Keep exporting after non-fatal errors. |
 | `-folderNames:"<map>"` | `Forms=Forms;Libs=Libs;...` | Custom subfolder name mapping. |
+
+### Project file options
+
+Format of the generated `.xsproj` and solution files. An invalid value prints a warning and keeps the default.
+
+| Argument | Default | Description |
+|----------|---------|-------------|
+| `-projectFormat:<format>` | `Classic` | `Classic` (MSBuild 2003 format) or `Sdk` (SDK-style `<Project Sdk="Microsoft.NET.Sdk">`). |
+| `-targetFramework:"<tfm>"` | `net472` | SDK projects only. Target framework, written as-is (e.g. `net472`, `net48`, `net8.0-windows`). |
+| `-frameworkVersion:"<x.y.z>"` | `4.7.2` | Classic projects only. `TargetFrameworkVersion` value. |
+| `-xsharpReferences:<mode>` | `NuGet` | SDK projects only. `NuGet` (X# packages) or `InstalledAssemblies` (HintPath to the X# installation). |
+| `-xsharpVersion:"<x.y.z>"` | *(installed X#)* | SDK projects only. Version of the X# packages. By default, the version of the installed X# (highest `XSharp.VFP` package in `<X# folder>\Nuget`); `*` if X# is not found. |
+| `-solutionFormat:<format>` | `Sln` | `Sln` or `Slnx` (XML solution, Visual Studio 2022 17.13 and later). Works with both project formats. When appending to an existing `.slnx`, its other projects keep their type and solution folder. |
+
+> SDK projects reference the single `XSharp.VFP` package (it contains `XSharp.VFP.UI` and brings
+> `XSharp.RT` / `XSharp.Core` as dependencies). `InstalledAssemblies` only works for .NET Framework
+> targets: the X# installation has no .NET 8 runtime assemblies, so the package is used instead.
+> Building an exported SDK project requires X# to be installed (it provides the compiler).
 
 ### Code conversion options
 
@@ -60,6 +80,7 @@ All boolean flags accept a `-no` prefix to invert them (e.g. `-noStoreInFolders`
 | `-keepFoxProEventName` | on | Keep the FoxPro event name in generated event handlers. |
 | `-generateOnlyHandledEvent` | **on** | Only emit event handlers listed in `EventRules.json`. |
 | `-removeSet` | on | Remove the `Set_` prefix from event handler names. |
+| `-expandWithEndWith` | off | Expand `WITH ... ENDWITH` blocks (fix for nested `WITH`). |
 | `-nameUDF` | off | Use the XPorter-built name for user-defined methods. |
 | `-modifier:<mod>` | `PUBLIC` | Access modifier for generated fields: `PUBLIC`, `PROTECTED`, or `PRIVATE`. |
 | `-classNamePrefix:<prefix>` | *(empty)* | Prefix added to every exported class name, to avoid collisions between VFP class names and cursor aliases (e.g. `Vfp_Customers`). |
@@ -86,6 +107,11 @@ VFPXPorterCmd -f:"C:\MyApp\myform.scx" -o:"C:\Output"
 Convert several standalone files in one run:
 ```
 VFPXPorterCmd -f:"forms\customer.scx" -f:"libs\common.vcx" -o:"C:\Output"
+```
+
+Convert a full project to SDK-style projects for .NET 8, with an `.slnx` solution:
+```
+VFPXPorterCmd -p:"C:\MyApp\myapp.pjx" -o:"C:\Output" -projectFormat:Sdk -targetFramework:"net8.0-windows" -solutionFormat:Slnx
 ```
 
 ---

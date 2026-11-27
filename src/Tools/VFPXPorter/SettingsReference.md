@@ -1,7 +1,8 @@
 # VFPXPorter Settings Reference
 
 The **Exporter Settings** dialog (`SettingsDialog.prg`) is organized into three tabs:
-**Folders**, **Export**, and **Project**. Every checkbox/field is backed by a property on
+**Folders**, **Export**, and **Project**. The per-export choices of the **Export Project**
+window are described at the end. Every checkbox/field is backed by a property on
 `ExporterSettings` (which persists it to the `.ini`-as-JSON settings file) and is copied at
 export time onto `XPorterSettings` (`ExporterSettings:ToXPorterSettings()`), the object the
 export engine actually reads from.
@@ -32,7 +33,7 @@ settings file in Explorer.
 | Class name prefix | `ClassNamePrefix` (static `XPorterSettings.ClassNamePrefix`) | *(empty)* | Prepended to **every** generated class name (forms, libraries, FormSet sub-forms, Pages, menu container, …) to avoid collisions between VFP class names and cursor aliases sharing the same name (e.g. a class and a work area both named `Customers`). Also emitted as `#define VFPX_CLASS_PREFIX` in `VFPXPorter.xh` for use by `DO FORM`/`CreateObject` UDCs at runtime. Empty means no prefix, fully backward-compatible. |
 | **Code Conversion** group | | | |
 | Convert VFP Elements to WinForms (This⇒thisObject, Parent⇒_Parent, …) | `ConvertThisObject` | Checked (`TRUE`) | Applies the ThisObject code converter to every method body, rewriting VFP self/parent-style references to their WinForms equivalents. |
-| Convert Statement to Call: Release ⇒ Release(), … | `ConvertStatement` | Checked (`TRUE`) | Rewrites VFP command-style statements (e.g. `RELEASE`, `DO`, `WAIT`) listed in `Statements.json` into equivalent method calls, driven by `CodeConverter`. |
+| Convert Statement to Call: Release ⇒ Release(), … | `ConvertStatement` | Checked (`TRUE`) | Adds `()` to the method calls listed in `Statements.json` (`.Refresh`, `.Release`, `.Click`, `.SetFocus`, `.Hide`, `NODEFAULT`, `DODEFAULT`) when VFP calls them without parentheses, e.g. `luResult = this.Refresh` ⇒ `this.Refresh()`. Applied by `CodeConverter` to form/class code and loose `.prg` files; menu code always gets it. |
 | &nbsp;&nbsp;↳ Convert only if last item on line | `ConvertStatementOnlyIfLast` | Checked (`TRUE`) | Restricts the above conversion to only the last statement of a `;`-continued/multi-statement line, rather than every matching occurrence on the line. |
 | Fullname for User-defined Methods | `NameUDF` | Unchecked (`FALSE`) | Unchecked: user-defined methods keep their original short VFP name. Checked: they get the same fully-qualified/built name used for regular event handlers. |
 | Keep original code in Comment | `KeepOriginal` | Checked (`TRUE`) | Inserts the original VFP source line as a comment immediately above any line the converter modified — the main "show your work" safety net for reviewing conversions. |
@@ -59,6 +60,31 @@ settings file in Explorer.
 | Add each Library in is own project | `SeparateLibraryProjects` | Checked (`TRUE`) | Each VCX dependency is exported as its own `.xsproj` (ClassLibrary), with proper `ProjectReference` entries wired up for cross-library dependencies. Unchecked: all library classes are combined into a single monolithic `ClassLibraries.xsproj`. Works best combined with *Each ClassLibrary is in a SubFolder*. |
 | Place solution and project in the same directory | `PlaceSolutionInSameDirectory` | Unchecked (`FALSE`) | See **"Export folder layout"** in `README.md`. Checked: the main project's own files sit directly alongside the `.sln`. Unchecked: they go one level deeper, in a subfolder named after the project/solution. |
 | Add each ClassLibrary namespace in the common Header file | `AddLibraryNamespace` | Checked (`TRUE`) | Controls whether the `USING <namespace>` lines for each library, appended to the shared `VFPXPorter.xh` header, are emitted as live statements or left commented out. |
+| **Project file format** group | | | Format of the generated `.xsproj` and solution files. See **"Choosing the project format"** in `ExportAdvices.md`. Controls that don't apply to the selected format are disabled. |
+| Project format | `ProjectFormat` | `Classic` | `Classic`: MSBuild 2003 project (`ToolsVersion="4.0"`, explicit framework references, `TargetFrameworkVersion`). `SDK-style`: `<Project Sdk="Microsoft.NET.Sdk">` (`VSSDKProject.prg`). Can be overridden for one export in the Export Project window. |
+| Target framework | `TargetFramework` | `net472` | SDK-style only. Editable list (`net472`, `net48`, `net481`, `net8.0-windows`, `net9.0-windows`); any other value is written as-is, without validation. Use the `-windows` form for .NET 5+ (WinForms). Can be overridden for one export. |
+| Framework version | `FrameworkVersion` | `4.7.2` | Classic only. Written as `TargetFrameworkVersion`. |
+| X# references | `XSharpReferences` | `NuGet package` | SDK-style only. *NuGet package*: one `PackageReference` to `XSharp.VFP` (it contains `XSharp.VFP.UI` and brings `XSharp.RT` / `XSharp.Core` as dependencies). *Installed assemblies*: `Reference` + `HintPath` to `<X# folder>\Assemblies`; only possible for .NET Framework targets — for any other target the package is used and a Warning is logged. |
+| X# package version | `XSharpPackageVersion` | *(empty)* | SDK-style with the package only. Empty: the version of the installed X# (highest `XSharp.VFP.<version>.nupkg` in `<X# folder>\Nuget`, X# folder read from the registry), shown under the field; `*` if X# is not found (a Warning is logged: a floating version can pick an older package from nuget.org). Any other value is written as-is. |
+| Solution format | `SolutionFormat` | `.sln` | `.sln` or `.slnx` (XML solution, Visual Studio 2022 17.13 and later). Independent of the project format. *Append to existing Solution* looks for a solution file with the selected extension. |
+
+---
+
+## Export Project window
+
+Per-export choices: they are not saved, and start from the Settings values each time the window
+opens.
+
+| Control | Setting | Default | Effect on export |
+|---|---|---|---|
+| Project Type | `OutputType` | Windows EXE | `OutputType` of the main project: Windows EXE (`WinExe`), Class Library (`Library`) or Console App (`Exe`). Library projects are always `Library`. |
+| Append to existing Solution | `AppendToSolution` | Unchecked | Adds the exported projects to an existing solution named after *Solution Name* (with the extension of the *Solution format* setting) instead of creating a new one. Projects already in the solution are kept, including, for `.slnx`, their type and solution folder. |
+| Solution Name | `SolutionName` | the `.pjx` name | Name of the solution file, and of the project subfolder (see *Place solution and project in the same directory*). |
+| Place solution and project in the same directory | `PlaceSolutionInSameDirectory` | from Settings | Same as the Project tab setting, for this export. |
+| Also save in XIDE Format | `SaveAsXIDE` | Unchecked | Also writes an XIDE project (`.xiproj`) next to the solution, from the same project list. |
+| Project format | `ProjectFormat` | from Settings | Overrides the Settings value for this export. |
+| Target framework | `TargetFramework` | from Settings | Overrides the Settings value for this export (SDK-style only). |
+| *Solution: .sln / .slnx* | `SolutionFormat` | from Settings | Read-only reminder of the solution format that will be written. |
 
 ---
 
@@ -78,7 +104,10 @@ settings file in Explorer.
 - `AliasTypeCollisions.json` is a flat list of cursor/alias names known to collide with a
   resolvable .NET/X# type (e.g. `Currency`, which collides with a Currency type), so an
   expression like `Currency.theField` would otherwise bind to that type's member instead of
-  the DBF field. For every name in the list, `CodeConverter` rewrites `Name.` to `Name->` in
-  generated code (`ChangeAliasTypeCollisions()`), which is unambiguous alias-field syntax in
-  X#. Always applied — not gated by a checkbox. Add a cursor/alias name to this file if it
-  turns out to collide with some other type.
+  the DBF field. For every name in the list, `CodeConverter.ChangeAliasTypeCollisions()`
+  rewrites `Name.` to `Name->` (unambiguous alias-field syntax in X#). **Currently suspended**:
+  the calls are commented out in `CodeConverter` ("side effects on generated code", 2026-07-27),
+  so the file is loaded but has no effect on the output.
+- The six *Project file format* settings can also be set from the command line
+  (`-projectFormat`, `-targetFramework`, `-frameworkVersion`, `-xsharpReferences`,
+  `-xsharpVersion`, `-solutionFormat`); see `Source\VFPXPorterCmd\README.md`.

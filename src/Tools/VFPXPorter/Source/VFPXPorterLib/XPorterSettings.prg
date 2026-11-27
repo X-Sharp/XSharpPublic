@@ -33,6 +33,48 @@ ENUM ProjectType
 END ENUM
 
 /// <summary>
+/// Format of the generated .xsproj project files. Classic or SDK
+/// </summary>
+ENUM ProjectFormat
+    /// <summary>
+    /// Classic MSBuild 2003 project (ToolsVersion 4.0, explicit framework references).
+    /// </summary>
+    MEMBER Classic := 0
+    /// <summary>
+    /// SDK-style project (&lt;Project Sdk="Microsoft.NET.Sdk"&gt;).
+    /// </summary>
+    MEMBER Sdk := 1
+END ENUM
+
+/// <summary>
+/// How an SDK-style project references the X# runtime : NuGet or References ?
+/// </summary>
+ENUM XSharpReferenceMode
+    /// <summary>
+    /// PackageReference to the X# NuGet packages (XSharp.Core, XSharp.RT, XSharp.VFP).
+    /// </summary>
+    MEMBER NuGet := 0
+    /// <summary>
+    /// Reference with a HintPath to the assemblies of the X# installation.
+    /// </summary>
+    MEMBER InstalledAssemblies := 1
+END ENUM
+
+/// <summary>
+/// Format of the generated solution file. Sln or Slnx ?
+/// </summary>
+ENUM SolutionFormat
+    /// <summary>
+    /// Text solution file (.sln).
+    /// </summary>
+    MEMBER Sln := 0
+    /// <summary>
+    /// XML solution file (.slnx, Visual Studio 2022 17.13 and later).
+    /// </summary>
+    MEMBER Slnx := 1
+END ENUM
+
+/// <summary>
 /// The XPorterSettings class.
 /// </summary>
 CLASS XPorterSettings
@@ -147,6 +189,38 @@ CLASS XPorterSettings
     /// </summary>
     PROPERTY SolutionName AS STRING AUTO
 
+    /// <summary>
+    /// Format of the generated .xsproj files. Classic by default.
+    /// </summary>
+    PROPERTY ProjectFormat AS ProjectFormat AUTO
+
+    /// <summary>
+    /// Target framework moniker of SDK-style projects (e.g. "net472", "net8.0-windows").
+    /// Written as-is, without validation (It is XPorter responsability) . Not used by classic projects.
+    /// </summary>
+    PROPERTY TargetFramework AS STRING AUTO
+
+    /// <summary>
+    /// TargetFrameworkVersion of classic projects (e.g. "4.7.2"). Not used by SDK-style projects.
+    /// </summary>
+    PROPERTY FrameworkVersion AS STRING AUTO
+
+    /// <summary>
+    /// How SDK-style projects reference the X# runtime. Not used by classic projects.
+    /// </summary>
+    PROPERTY XSharpReferences AS XSharpReferenceMode AUTO
+
+    /// <summary>
+    /// Version written on the X# PackageReferences of SDK-style projects.
+    /// Empty = the version of the X# installation (see <see cref="ResolveXSharpPackageVersion" />).
+    /// </summary>
+    PROPERTY XSharpPackageVersion AS STRING AUTO
+
+    /// <summary>
+    /// Format of the generated solution file. .sln by default.
+    /// </summary>
+    PROPERTY SolutionFormat AS SolutionFormat AUTO
+
 	CONSTRUCTOR()
 
 		SELF:OutputPath := ""
@@ -176,7 +250,87 @@ CLASS XPorterSettings
         SELF:SeparateLibraryProjects := TRUE // Separate ClassLibrary projects by default
         SELF:ExpandWithEndWith := FALSE
         SELF:SolutionName := ""
+        SELF:ProjectFormat := ProjectFormat.Classic
+        SELF:TargetFramework := XPorterSettings.DefaultTargetFramework
+        SELF:FrameworkVersion := XPorterSettings.DefaultFrameworkVersion
+        SELF:XSharpReferences := XSharpReferenceMode.NuGet
+        SELF:XSharpPackageVersion := ""
+        SELF:SolutionFormat := SolutionFormat.Sln
 		RETURN
+
+    /// <summary>Default <see cref="TargetFramework" /> of SDK-style projects.</summary>
+    PUBLIC CONST DefaultTargetFramework := "net472" AS STRING
+    /// <summary>Default <see cref="FrameworkVersion" /> of classic projects.</summary>
+    PUBLIC CONST DefaultFrameworkVersion := "4.7.2" AS STRING
+
+    /// <summary>
+    /// The X# package version to write in SDK-style projects:
+    /// <see cref="XSharpPackageVersion" /> when set, otherwise the version of the X# installation,
+    /// otherwise "*" (with a Warning: a floating version may resolve to an older nuget.org package).
+    /// </summary>
+    PUBLIC METHOD ResolveXSharpPackageVersion() AS STRING
+        IF !String.IsNullOrWhiteSpace( SELF:XSharpPackageVersion )
+            RETURN SELF:XSharpPackageVersion:Trim()
+        ENDIF
+        VAR installFolder := XPorterSettings.XSharpInstallFolder
+        VAR version := ""
+        IF !String.IsNullOrEmpty( installFolder )
+            version := XPorterSettings.FindXSharpPackageVersion( System.IO.Path.Combine( installFolder, "Nuget" ) )
+        ENDIF
+        IF String.IsNullOrEmpty( version )
+            XPorterLogger.Instance:Warning( "ResolveXSharpPackageVersion: no XSharp.VFP package found in the X# installation; " + ;
+                "using Version=""*"", which may resolve to an older package from nuget.org." )
+            RETURN "*"
+        ENDIF
+        RETURN version
+
+    /// <summary>
+    /// Folder of the X# installation, read from the registry (the key the X# MSBuild support uses).
+    /// Empty when X# is not installed.
+    /// </summary>
+    PUBLIC STATIC PROPERTY XSharpInstallFolder AS STRING
+        GET
+            TRY
+                // 32-bit view: HKLM\SOFTWARE\WOW6432Node\XSharpBV\XSharp from a 64-bit process
+                BEGIN USING VAR hklm := Microsoft.Win32.RegistryKey.OpenBaseKey( Microsoft.Win32.RegistryHive.LocalMachine, Microsoft.Win32.RegistryView.Registry32 )
+                    BEGIN USING VAR key := hklm:OpenSubKey( "SOFTWARE\XSharpBV\XSharp" )
+                        IF key != NULL
+                            VAR path := key:GetValue( "XSharpPath" ) ASTYPE STRING
+                            IF !String.IsNullOrEmpty( path )
+                                RETURN path
+                            ENDIF
+                        ENDIF
+                    END USING
+                END USING
+            CATCH e AS Exception
+                XPorterLogger.Instance:Warning( "XSharpInstallFolder: cannot read the registry: " + e:Message )
+            END TRY
+            RETURN ""
+        END GET
+    END PROPERTY
+
+    /// <summary>
+    /// Highest version among the XSharp.VFP.&lt;version&gt;.nupkg files of a folder (e.g. "3.1.0").
+    /// XSharp.VFP is used because it is the package that contains XSharp.VFP.UI.
+    /// </summary>
+    /// <param name="nugetFolder">Folder holding the X# offline packages.</param>
+    /// <returns>The version as written in the file name, or an empty string if none is found.</returns>
+    PUBLIC STATIC METHOD FindXSharpPackageVersion( nugetFolder AS STRING ) AS STRING
+        IF String.IsNullOrEmpty( nugetFolder ) .OR. !System.IO.Directory.Exists( nugetFolder )
+            RETURN ""
+        ENDIF
+        LOCAL best := NULL AS System.Version
+        LOCAL bestText := "" AS STRING
+        LOCAL prefix := "XSharp.VFP." AS STRING
+        FOREACH VAR file IN System.IO.Directory.GetFiles( nugetFolder, prefix + "*.nupkg" )
+            VAR text := System.IO.Path.GetFileNameWithoutExtension( file ):Substring( prefix:Length )
+            // "XSharp.VFP.UI.x.nupkg" or pre-release suffixes do not parse: ignored
+            IF System.Version.TryParse( text, OUT VAR current ) .AND. ( best == NULL .OR. current > best )
+                best := current
+                bestText := text
+            ENDIF
+        NEXT
+        RETURN bestText
 
 	/// <summary>
 	/// Output Folder

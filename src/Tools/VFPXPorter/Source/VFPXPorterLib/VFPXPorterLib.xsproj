@@ -142,6 +142,8 @@
     <Compile Include="SCXVCXItem.prg" />
     <Compile Include="SerializableDictionary.prg" />
     <Compile Include="VSProject.prg" />
+    <Compile Include="VSSDKProject.prg" />
+    <Compile Include="VSSlnxSolution.prg" />
     <Compile Include="VSSolution.prg" />
     <Compile Include="XmlExportForm.prg" />
     <Compile Include="XmlExportMenu.prg" />

@@ -25,7 +25,12 @@ BEGIN NAMESPACE VFPXPorterLib
 			SELF:Projects := List<VSProject>{}
 		SELF:GUID := System.Guid.NewGuid().ToString("B"):ToUpper()
 
-		PUBLIC METHOD Save( solutionPath AS STRING ) AS VOID
+		/// <summary>
+		/// The file extension written by <see cref="Save" /> (".sln").
+		/// </summary>
+		PUBLIC VIRTUAL PROPERTY FileExtension AS STRING GET ".sln"
+
+		PUBLIC VIRTUAL METHOD Save( solutionPath AS STRING ) AS VOID
 			VAR sb := StringBuilder{}
 
 			sb:AppendLine("Microsoft Visual Studio Solution File, Format Version 12.00")
@@ -85,7 +90,7 @@ BEGIN NAMESPACE VFPXPorterLib
         /// <summary>
         /// Try loading projects from an existing solution.
         /// </summary>
-        PUBLIC METHOD Load( solutionPath AS STRING ) AS LOGIC
+        PUBLIC VIRTUAL METHOD Load( solutionPath AS STRING ) AS LOGIC
             IF !System.IO.File.Exists( solutionPath )
                 RETURN FALSE
             ENDIF

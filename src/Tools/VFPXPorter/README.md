@@ -18,6 +18,8 @@ The goal is to ease the move of your VFP Application in .NET, using a language y
 3. Export VFP Projects, and create VisualStudio projects with Libraries, Forms, ...
    - xsproj file is now created, with Forms & .designer.prg in it
    - Injection of Tools Prg in order to provide some features that are not in the Runtime currently 
+   - Classic or SDK-style `.xsproj` (SDK-style can target .NET 8: `net8.0-windows`), and `.sln` or
+     `.slnx` solution — see **"Choosing the project format"** in **ExportAdvices.md**
 4. Export VFP Libraries source, and convert to external PRG Files
    - each element is saved into a separate .prg file
 5. Added User-Defined elements in export : Fields, Field-Arrays, Methods
@@ -31,7 +33,7 @@ The goal is to ease the move of your VFP Application in .NET, using a language y
 #### Export folder layout (GUI)
 When you pick a `.pjx` file, the **Output** field is auto-filled as
 `<OutputDir from Settings>\<ProjectName>` — this combined path is the *main* folder, and
-it is always where the generated `.sln` is written.
+it is always where the generated `.sln` (or `.slnx`) is written.
 - If **"Place solution and project in the same directory"** is checked, the project's own
   files (`.xsproj`, source, `Forms`/`Libs`/... subfolders) are written directly into that
   same main folder, alongside the `.sln`.

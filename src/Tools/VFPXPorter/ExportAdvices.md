@@ -13,7 +13,44 @@ This means that you can already prepare your VFP code to XSharp using code const
     #endif
 ~~~ 
 
+### Choosing the project format (Classic / SDK)
 
+The **Project format** setting (Settings, *Project* tab, or `-projectFormat:` on the command line)
+decides how the `.xsproj` files are written. Both formats contain the same files, references and
+compiler options; the converted code is identical.
+
+| | Classic (default) | SDK-style |
+|---|---|---|
+| Project file | MSBuild 2003 format (`ToolsVersion="4.0"`) | `<Project Sdk="Microsoft.NET.Sdk">` |
+| Target | .NET Framework (`Framework version`, default 4.7.2) | any target framework: `net472`, `net48`, `net8.0-windows`, … |
+| X# runtime | `Reference` + `HintPath` to `C:\Program Files (x86)\XSharp\Assemblies` | the `XSharp.VFP` NuGet package (or the installed assemblies, .NET Framework targets only) |
+| .NET 8 | no | yes (`net8.0-windows`) |
+
+Things to know about SDK-style projects:
+
+- **X# must be installed** on every machine that builds the exported solution. The X# installer
+  registers its MSBuild support (`XSharp.BeforeCommon.Props` in the MSBuild *ImportBefore* folders),
+  and that is how an SDK project finds the X# compiler. Nothing in the generated project does it.
+- **The X# packages come from the X# installation.** By default the package version is the one
+  installed (`C:\Program Files (x86)\XSharp\Nuget`, registered as the *XSharp Offline Packages*
+  NuGet source). One package, `XSharp.VFP`, is enough: it contains `XSharp.VFP.UI` and brings
+  `XSharp.RT` and `XSharp.Core`. If the X# installation is not found, `Version="*"` is written
+  instead: on a machine without the offline source, that can pick an older package from nuget.org
+  (2.24, which has no .NET 8 build).
+- **Files are listed explicitly**, as in a classic project: the project sets
+  `EnableDefaultItems=false`, so **a file you add to the folder is not compiled until you add it
+  to the project** (in Visual Studio: *Include in Project*). This keeps the `Backup` folder and the
+  library subfolders out of the main project.
+- The project starts with an `ItemGroup` labelled *"Remove the items added by the X# SDK props"*
+  (`<Compile Remove="@(Compile)" />`, …). **Keep it**: the X# SDK props add every
+  `*.designer.prg`, `*.resx`, `*.rc` and header file of the folder tree even when default items
+  are disabled, which would duplicate the listed files (error MSB3105).
+- **.NET 8**: use `net8.0-windows` (WinForms needs the `-windows` target). Code that compiles for
+  .NET Framework may still need changes for .NET 8 (removed APIs, different behaviours); the
+  exporter does not check this.
+
+The **Solution format** setting is independent: `.sln`, or `.slnx` for Visual Studio 2022 17.13
+and later. Both work with both project formats.
 
 ### Converting from VFP
 #### Common troubles

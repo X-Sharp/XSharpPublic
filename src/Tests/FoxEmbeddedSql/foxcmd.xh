@@ -2,10 +2,6 @@
 // Runtime-tested commands are defined in src/Common/FoxProSql.xh.
 #include "FoxProSql.xh"
 
-// INSERT ... SELECT is currently a test stub; keep it out of the common include.
-#command INSERT INTO <(table)> [( <(f1)> [, <(fn)> ] )] <s:SELECT> <*moreclauses*> => ;
-    __SqlInsertFromSQL(<"udc">, <"table">, { <"f1"> [, <"fn"> ] }, <"s">+" "+<"moreclauses"> )
-
 // Multi-table UPDATE ... FROM is experimental and belongs to this test only.
 #command UPDATE <*tableName*> SET <*setclauses*> FROM <*fromclause*> ;
   [JOIN <*joinclause*>] [WHERE <*whereclause*>] => __SqlUpdate(<"udc">)

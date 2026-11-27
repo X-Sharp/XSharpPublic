@@ -665,6 +665,58 @@ FUNCTION TestSelectCursorOptions() AS VOID
     USE IN sql_cursor_options_source
     RETURN
 
+FUNCTION TestInsertFromSelect() AS VOID
+    LOCAL previousErrorBlock := ErrorBlock() AS USUAL
+    LOCAL mismatchErrorCaught := FALSE AS LOGIC
+    CREATE CURSOR insert_select_source (Id I, Label C(12), Amount N(8,2))
+    INSERT INTO insert_select_source VALUES (1, "one", 1.25)
+    INSERT INTO insert_select_source VALUES (2, "two", 2.50)
+    INSERT INTO insert_select_source VALUES (2, "two-copy", 3.75)
+
+    CREATE CURSOR insert_select_target (Id I, Label C(12), Amount N(8,2))
+    INSERT INTO insert_select_target (Label, Id, Amount) ;
+        SELECT Label, Id, Amount FROM insert_select_source WHERE Id = 1
+    IF RecCount("insert_select_target") != 1 .OR. _TALLY != 1
+        THROW Exception{"INSERT SELECT with a field list should insert one row and set _TALLY"}
+    ENDIF
+    IF insert_select_target->Id != 1 .OR. AllTrim(insert_select_target->Label) != "one" .OR. insert_select_target->Amount != 1.25
+        THROW Exception{"INSERT SELECT should map SELECT expressions to listed target fields by position"}
+    ENDIF
+
+    INSERT INTO insert_select_target SELECT Id, Label, Amount FROM insert_select_source WHERE Id = 2
+    IF RecCount("insert_select_target") != 3 .OR. _TALLY != 2
+        THROW Exception{"INSERT SELECT should preserve duplicate source rows and report the inserted count"}
+    ENDIF
+
+    INSERT INTO insert_select_target SELECT Id, Label, Amount FROM insert_select_source WHERE Id < 0
+    IF RecCount("insert_select_target") != 3 .OR. _TALLY != 0
+        THROW Exception{"An empty INSERT SELECT should insert zero rows and set _TALLY to zero"}
+    ENDIF
+
+    DbSelectArea("insert_select_source")
+    ErrorBlock({|oError| ThrowEmbeddedSqlTestError(oError)})
+    TRY
+        INSERT INTO insert_select_target (Id, Label) SELECT Id, Label, Amount FROM insert_select_source
+    CATCH
+        mismatchErrorCaught := TRUE
+    FINALLY
+        ErrorBlock(previousErrorBlock)
+    END TRY
+    IF !mismatchErrorCaught .OR. RecCount("insert_select_target") != 3
+        THROW Exception{"A source/target column-count mismatch should fail before inserting rows"}
+    ENDIF
+    IF Alias() != "INSERT_SELECT_SOURCE"
+        THROW Exception{"INSERT SELECT should restore the previously selected work area"}
+    ENDIF
+
+    IF Used("insert_select_target")
+        DbCloseArea("insert_select_target")
+    ENDIF
+    IF Used("insert_select_source")
+        DbCloseArea("insert_select_source")
+    ENDIF
+    RETURN
+
 FUNCTION ThrowEmbeddedSqlTestError(oError AS OBJECT) AS USUAL
     IF oError IS Exception VAR ex
         THROW ex

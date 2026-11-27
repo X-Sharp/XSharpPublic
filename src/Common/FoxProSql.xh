@@ -54,7 +54,7 @@
     __SqlInsertFromObject(<"table"> , <ObjectName> )
 
 #command INSERT INTO <(table)> [( <(f1)> [, <(fn)> ] )] <s:SELECT> <*moreclauses*>   => ;
-    __NOFOXPROSQL__ "SELECT Clause not yet available for INSERT command"`  // __SqlInsertFromSQL(<"udc">, <"table"> , { <"f1"> [, <"fn"> ] },  <"s">+" "+<"moreclauses"> )
+    __SqlInsertFromSQL(<"udc">, <"table"> , { <"f1"> [, <"fn"> ] },  <"s">+" "+<"moreclauses"> )
 
 // SQL Delete, mapped to normal delete. DELETE - SQL always works on the whole
 // table, so the scope is ALL: without the WHERE clause every record is deleted,

@@ -100,6 +100,93 @@ FUNCTION __SqlInsertValues(sTable as STRING, aFields as ARRAY, aValues as ARRAY)
     RETURN TRUE
 
 [NeedsAccessToLocals(FALSE)];
+FUNCTION __SqlInsertFromSQL(cUdc AS STRING, sTable AS STRING, aFields AS ARRAY, sSelect AS STRING) AS LOGIC
+    LOCAL savedArea := VoDbGetSelect() AS DWORD
+    LOCAL resultAlias := "SQLINSERT" + Guid.NewGuid():ToString("N"):Substring(0, 8) AS STRING
+    LOCAL resultPath := "" AS STRING
+    LOCAL insertedCount := 0 AS LONG
+
+    TRY
+        VAR selectContext := FoxEmbeddedSQL.ParseSqlSelect(sSelect)
+        IF selectContext == NULL
+            THROW Error{"Invalid SELECT clause in INSERT command: " + sSelect}
+        ENDIF
+        selectContext:TargetCursor := resultAlias
+        FoxEmbeddedSQL.ExecuteSelect(selectContext)
+        IF !Used(resultAlias)
+            THROW Error{"INSERT SELECT did not produce a result cursor"}
+        ENDIF
+        resultPath := (resultAlias)->DbInfo(DBI_FULLPATH)
+
+        IF !FoxEmbeddedSQL.OpenArea(sTable)
+            THROW Error{"Could not open INSERT target: " + sTable}
+        ENDIF
+
+        LOCAL resultColumnCount := (resultAlias)->FCount() AS DWORD
+        LOCAL targetColumnCount := IIF(ALen(aFields) > 0, ALen(aFields), FCount()) AS DWORD
+        IF resultColumnCount != targetColumnCount
+            THROW Error{"The number of SELECT values doesn't match the number of INSERT columns"}
+        ENDIF
+
+        LOCAL targetPositions := DWORD[]{targetColumnCount} AS DWORD[]
+        FOR LOCAL columnIndex := 1 AS DWORD TO targetColumnCount
+            LOCAL fieldName := IIF(ALen(aFields) > 0, (STRING)aFields[columnIndex], FieldName(columnIndex)) AS STRING
+            targetPositions[columnIndex] := FieldPos(fieldName)
+            IF targetPositions[columnIndex] == 0
+                THROW Error{"INSERT target column not found: " + fieldName}
+            ENDIF
+        NEXT
+
+        LOCAL rowCount := (LONG)(resultAlias)->RecCount() AS LONG
+        IF rowCount > 0
+            (resultAlias)->DbGoTop()
+            FOR LOCAL rowIndex := 1 AS LONG TO rowCount
+                LOCAL values := USUAL[]{resultColumnCount} AS USUAL[]
+                FOR LOCAL columnIndex := 1 AS DWORD TO resultColumnCount
+                    values[columnIndex] := (resultAlias)->FieldGet(columnIndex)
+                NEXT
+
+                DbSelectArea(sTable)
+                DbAppend()
+                FOR LOCAL columnIndex := 1 AS DWORD TO resultColumnCount
+                    LOCAL targetPosition := targetPositions[columnIndex] AS DWORD
+                    LOCAL targetValue := FieldGet(targetPosition) AS USUAL
+                    LOCAL sourceValue := values[columnIndex] AS USUAL
+                    IF sourceValue:IsNull
+                        FieldPut(targetPosition, NULL)
+                    ELSE
+                        FieldPut(targetPosition, FoxEmbeddedSQL.Convert(targetValue, sourceValue))
+                    ENDIF
+                NEXT
+                DbUnLock()
+                insertedCount++
+
+                IF rowIndex < rowCount
+                    (resultAlias)->DbSkip(1)
+                ENDIF
+            NEXT
+        ENDIF
+        RuntimeState.Tally := insertedCount
+        _TALLY := insertedCount
+        RETURN TRUE
+    FINALLY
+        IF Used(resultAlias)
+            DbCloseArea(resultAlias)
+        ENDIF
+        IF !String.IsNullOrEmpty(resultPath)
+            FOREACH VAR extension IN <STRING>{".DBF", ".FPT", ".CDX"}
+                VAR filePath := Path.ChangeExtension(resultPath, extension)
+                IF File.Exists(filePath)
+                    File.Delete(filePath)
+                ENDIF
+            NEXT
+        ENDIF
+        IF savedArea > 0
+            DbSelectArea(savedArea)
+        ENDIF
+    END TRY
+
+[NeedsAccessToLocals(FALSE)];
 FUNCTION __SqlAlterTable(sCommand as STRING) AS LOGIC
     var oContext := FoxEmbeddedSQL.ParseSqlAlter(sCommand)
     if (oContext != NULL)

@@ -235,33 +235,6 @@ FUNCTION __SqlUpdate (sCommand as STRING)
 
     RETURN
 
-FUNCTION __SqlInsertFromSQL( cUdc AS STRING, cTable AS STRING, aFields AS STRING[], cSelect AS STRING ) AS VOID
-    IF Verbose
-        ? "Executing INSERT FROM SQL:", cUdc
-        ? "Target table:", cTable
-        ? "Fields:", Atoa(aFields)
-        ? "Source SQL:", cSelect
-    ENDIF
-
-    // This would normally execute the SELECT statement and insert the results
-    // For now, we'll just show the parsed information
-    RETURN
-
-FUNCTION Atoa(a AS ARRAY) AS STRING
-    LOCAL sb AS StringBuilder
-    LOCAL i AS DWORD
-    sb := StringBuilder{}
-    sb:Append("[")
-    FOR i := 0 UPTO a:Count-1
-        IF i > 0
-            sb:Append(", ")
-        ENDIF
-        sb:Append(a[i]:ToString())
-    NEXT
-    sb:Append("]")
-    RETURN sb:ToString()
-
-
 FUNCTION Title(title AS STRING) AS VOID
     IF Verbose
         ? ""

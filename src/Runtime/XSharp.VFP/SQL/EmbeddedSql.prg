@@ -681,85 +681,264 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         RETURN NIL
 
 STATIC METHOD SqlAlterTable(table as FoxAlterTableContext) AS LOGIC
-    IF ! FoxEmbeddedSQL.OpenArea(table:Name)
-        RETURN FALSE
+    LOCAL savedArea := VoDbGetSelect() AS DWORD
+    IF table == NULL
+        THROW Error{"Invalid ALTER TABLE command"}
     ENDIF
-    var area := RuntimeState.Workareas:FindAlias(table:Name)
-    if area == 0
-        Throw Error{"Table "+table:Name+" not found"}
+    IF table:Mode == FoxAlterMode.AlterTable .OR. table:ColumnInfo == NULL
+        THROW Error{"ALTER TABLE table rules are not supported yet: " + table:TableRules}
     ENDIF
-    var oRdd := RuntimeState.Workareas:GetRDD(area)
-    local fields := NULL as RddFieldInfo[]
-    if oRdd is XSharp.RDD.Workarea var oWA
-        fields := oWA:_Fields
-    endif
-    var column := table:ColumnInfo
-    var index  := oRdd:FieldIndex(column:Name)
-    local aStruct := DbStruct() as ARRAY
-    switch table:Mode
-    case FoxAlterMode.AddColumn
-        if index > 0
-            Throw Error{"Column "+column:Name+" already exists"}
-        endif
-        AAdd(aStruct, {column:Name, column:FieldTypeStr, column:Length, column:Decimals, column:Alias, column:Flags})
+    IF !FoxEmbeddedSQL.OpenArea(table:Name)
+        THROW Error{"Table " + table:Name + " not found"}
+    ENDIF
 
-    case FoxAlterMode.DropColumn
-        if index == 0
-            Throw Error{"Column "+column:Name+" does not exist"}
-        endif
-        ADel(aStruct, (DWORD) index)
-        ASize(aStruct, ALen(aStruct)-1)
-    case FoxAlterMode.AlterColumn
-        if index == 0
-            Throw Error{"Column "+column:Name+" does not exist"}
-        endif
-        aStruct[index] := { column:Name, column:FieldTypeStr, column:Length, column:Decimals, column:Alias, column:Flags}
-    end switch
+    LOCAL area := RuntimeState.Workareas:FindAlias(table:Name) AS DWORD
+    IF area == 0
+        THROW Error{"Table " + table:Name + " not found"}
+    ENDIF
+    LOCAL oRdd := RuntimeState.Workareas:GetRDD(area) AS IRdd
+    LOCAL column := table:ColumnInfo AS FoxColumnContext
+    LOCAL index := oRdd:FieldIndex(column:Name) AS LONG
+    LOCAL oldStruct := DbStruct() AS ARRAY
+    LOCAL newStruct := AClone(oldStruct) AS ARRAY
+    LOCAL oldFields := NULL AS RddFieldInfo[]
+    IF oRdd IS XSharp.RDD.Workarea VAR oldWorkarea
+        oldFields := oldWorkarea:_Fields
+    ENDIF
 
-    var oldFile  := (String) oRdd:Info(DBI_FULLPATH,null)
-    var memoExt  := (String) oRdd:Info(DBI_MEMOEXT, null)
-    var dbfExt   := Path.GetExtension(oldFile)
-    var oldMemo  := Path.ChangeExtension(oldFile, memoExt)
-    var rand     := Path.GetRandomFileName()
-    var newFile  := Path.Combine(Path.GetDirectoryName(oldFile), Path.GetFileNameWithoutExtension(rand))
-    newFile      := Path.ChangeExtension(newFile, dbfExt)
-    var newMemo  := Path.ChangeExtension(newFile, memoExt)
-    DbCloseArea()
-    IF !DbCreate(newFile, aStruct)
-        RETURN FALSE
+    SWITCH table:Mode
+    CASE FoxAlterMode.AddColumn
+        IF index > 0
+            THROW Error{"Column " + column:Name + " already exists"}
+        ENDIF
+        AAdd(newStruct, {column:Name, column:FieldTypeStr, column:Length, column:Decimals, column:Alias, column:Flags})
+    CASE FoxAlterMode.DropColumn
+        IF index == 0
+            THROW Error{"Column " + column:Name + " does not exist"}
+        ENDIF
+        IF FoxEmbeddedSQL.IndexReferencesField(column:Name, column:Alias)
+            THROW Error{"The table changes cannot be performed because an index or filter expression uses column " + column:Name}
+        ENDIF
+        ADel(newStruct, (DWORD)index)
+        ASize(newStruct, ALen(newStruct) - 1)
+    CASE FoxAlterMode.AlterColumn
+        IF index == 0
+            THROW Error{"Column " + column:Name + " does not exist"}
+        ENDIF
+        newStruct[index] := {column:Name, column:FieldTypeStr, column:Length, column:Decimals, column:Alias, column:Flags}
+    OTHERWISE
+        THROW Error{"Unsupported ALTER TABLE operation"}
+    END SWITCH
+
+    LOCAL oldFile := (STRING)oRdd:Info(DBI_FULLPATH, NULL) AS STRING
+    LOCAL memoExt := (STRING)oRdd:Info(DBI_MEMOEXT, NULL) AS STRING
+    LOCAL oldMemo := Path.ChangeExtension(oldFile, memoExt) AS STRING
+    LOCAL oldCdx := Path.ChangeExtension(oldFile, ".CDX") AS STRING
+    LOCAL directory := Path.GetDirectoryName(oldFile) AS STRING
+    LOCAL uniquePart := Guid.NewGuid():ToString("N") AS STRING
+    LOCAL tempBase := Path.Combine(directory, "_SQLALT" + uniquePart) AS STRING
+    LOCAL newFile := Path.ChangeExtension(tempBase, Path.GetExtension(oldFile)) AS STRING
+    LOCAL newMemo := Path.ChangeExtension(tempBase, memoExt) AS STRING
+    LOCAL newCdx := Path.ChangeExtension(tempBase, ".CDX") AS STRING
+    LOCAL backupBase := Path.Combine(directory, "_SQLBAK" + uniquePart) AS STRING
+    LOCAL backupFile := Path.ChangeExtension(backupBase, Path.GetExtension(oldFile)) AS STRING
+    LOCAL backupMemo := Path.ChangeExtension(backupBase, memoExt) AS STRING
+    LOCAL backupCdx := Path.ChangeExtension(backupBase, ".CDX") AS STRING
+    LOCAL linkedDbc := "" AS STRING
+    LOCAL linkedVfp AS XSharp.RDD.IVfpLinked
+    LOCAL tableWasClosed := FALSE AS LOGIC
+    LOCAL originalMoved := FALSE AS LOGIC
+    LOCAL memoMoved := FALSE AS LOGIC
+    LOCAL cdxMoved := FALSE AS LOGIC
+    LOCAL replacementInstalled := FALSE AS LOGIC
+    LOCAL committed := FALSE AS LOGIC
+    LOCAL tempAlias := "SQLALT" + uniquePart:Substring(0, 8) AS STRING
+
+    IF oRdd IS XSharp.RDD.IVfpLinked VAR linkedTable
+        linkedVfp := linkedTable
+        linkedDbc := linkedVfp:DbcName
     ENDIF
-    IF ! DbUseArea(TRUE, "DBFVFP", newFile, table:Name, FALSE, FALSE)
-        RETURN FALSE
+    IF !String.IsNullOrEmpty(linkedDbc)
+        LOCAL activeDbc := XSharp.RDD.DbcManager.ActiveDatabase AS XSharp.RDD.DbcDatabase
+        IF activeDbc == NULL_OBJECT .OR. ;
+           String.Compare(Path.GetFullPath(activeDbc:FileName), Path.GetFullPath(linkedDbc), TRUE) != 0
+            THROW Error{"ALTER TABLE requires the linked DBC to be active: " + linkedDbc}
+        ENDIF
     ENDIF
-    IF ! DbApp(oldFile)
-        RETURN FALSE
+
+    TRY
+        DbCloseArea(table:Name)
+        tableWasClosed := TRUE
+        IF !DbCreate(newFile, newStruct)
+            THROW Error{"Could not create staged table for ALTER TABLE: " + newFile}
+        ENDIF
+        IF !DbUseArea(TRUE, "DBFVFP", newFile, tempAlias, FALSE, FALSE)
+            THROW Error{"Could not open staged table for ALTER TABLE: " + newFile}
+        ENDIF
+        IF !DbApp(oldFile)
+            THROW Error{"Could not copy records while altering table: " + table:Name}
+        ENDIF
+        DbCloseArea(tempAlias)
+
+        // The DBF record numbers are unchanged by DbApp, so an unaffected structural
+        // CDX remains valid when copied beside the staged DBF.
+        IF File.Exists(oldCdx)
+            File.Copy(oldCdx, newCdx)
+            IF !DbUseArea(TRUE, "DBFVFP", newFile, tempAlias, FALSE, FALSE)
+                THROW Error{"Could not open staged CDX for rebuild: " + newFile}
+            ENDIF
+            IF !OrdListRebuild()
+                THROW Error{"Could not rebuild indexes for altered table: " + table:Name}
+            ENDIF
+            DbCloseArea(tempAlias)
+        ENDIF
+
+        File.Move(oldFile, backupFile)
+        originalMoved := TRUE
+        IF File.Exists(oldMemo)
+            File.Move(oldMemo, backupMemo)
+            memoMoved := TRUE
+        ENDIF
+        IF File.Exists(oldCdx)
+            File.Move(oldCdx, backupCdx)
+            cdxMoved := TRUE
+        ENDIF
+        File.Move(newFile, oldFile)
+        replacementInstalled := TRUE
+        IF File.Exists(newMemo)
+            File.Move(newMemo, oldMemo)
+        ENDIF
+        IF File.Exists(newCdx)
+            File.Move(newCdx, oldCdx)
+        ENDIF
+        IF !DbUseArea(TRUE, "DBFVFP", oldFile, table:Name, FALSE, FALSE)
+            THROW Error{"Could not reopen altered table: " + table:Name}
+        ENDIF
+        IF !String.IsNullOrEmpty(linkedDbc)
+            LOCAL reopenedArea := RuntimeState.Workareas:FindAlias(table:Name) AS DWORD
+            LOCAL reopenedRdd := RuntimeState.Workareas:GetRDD(reopenedArea) AS IRdd
+            IF !(reopenedRdd IS XSharp.RDD.IVfpLinked VAR newLinkedTable)
+                THROW Error{"The altered table driver cannot restore its DBC backlink"}
+            ENDIF
+            newLinkedTable:WriteBacklink(linkedDbc)
+            reopenedRdd:Flush()
+        ENDIF
+
+        IF !String.IsNullOrEmpty(linkedDbc)
+            IF table:Mode == FoxAlterMode.AddColumn .AND. ;
+               !XSharp.RDD.DbcManager.AddTableField(table:Name, column:Alias)
+                THROW Error{"Could not update DBC metadata for added field " + column:Alias}
+            ELSEIF table:Mode == FoxAlterMode.DropColumn .AND. ;
+                   !XSharp.RDD.DbcManager.RemoveTableField(table:Name, (INT)index)
+                THROW Error{"Could not update DBC metadata for dropped field " + column:Name}
+            ENDIF
+        ENDIF
+
+        DbCloseArea(table:Name)
+        IF !DbUseArea(TRUE, "DBFVFP", oldFile, table:Name, FALSE, FALSE)
+            THROW Error{"Could not reopen altered table with updated metadata: " + table:Name}
+        ENDIF
+        area := RuntimeState.Workareas:FindAlias(table:Name)
+        oRdd := RuntimeState.Workareas:GetRDD(area)
+        IF oldFields != NULL .AND. oRdd IS XSharp.RDD.Workarea VAR newWorkarea
+            FOREACH VAR field IN newWorkarea:_Fields
+                LOCAL oldField := oldFields:FirstOrDefault({f => String.Equals(f:Name, field:Name, StringComparison.OrdinalIgnoreCase)}) AS RddFieldInfo
+                IF oldField != NULL
+                    field:Caption := oldField:Caption
+                ELSEIF table:Mode == FoxAlterMode.AddColumn
+                    field:Caption := column:Caption
+                ENDIF
+            NEXT
+        ENDIF
+
+        committed := TRUE
+        TRY
+            File.Delete(backupFile)
+        CATCH
+            NOP
+        END TRY
+        IF memoMoved .AND. File.Exists(backupMemo)
+            TRY
+                File.Delete(backupMemo)
+            CATCH
+                NOP
+            END TRY
+        ENDIF
+        IF cdxMoved .AND. File.Exists(backupCdx)
+            TRY
+                File.Delete(backupCdx)
+            CATCH
+                NOP
+            END TRY
+        ENDIF
+        RETURN TRUE
+    CATCH
+        IF committed
+            THROW
+        ENDIF
+        IF Used(tempAlias)
+            DbCloseArea(tempAlias)
+        ENDIF
+        IF Used(table:Name)
+            DbCloseArea(table:Name)
+        ENDIF
+        IF replacementInstalled
+            IF File.Exists(oldFile)
+                File.Delete(oldFile)
+            ENDIF
+            IF File.Exists(oldMemo)
+                File.Delete(oldMemo)
+            ENDIF
+            IF File.Exists(oldCdx)
+                File.Delete(oldCdx)
+            ENDIF
+        ENDIF
+        IF originalMoved .AND. File.Exists(backupFile)
+            File.Move(backupFile, oldFile)
+        ENDIF
+        IF memoMoved .AND. File.Exists(backupMemo)
+            File.Move(backupMemo, oldMemo)
+        ENDIF
+        IF cdxMoved .AND. File.Exists(backupCdx)
+            File.Move(backupCdx, oldCdx)
+        ENDIF
+        THROW
+    FINALLY
+        FOREACH VAR tempFile IN <STRING>{newFile, newMemo, newCdx}
+            IF File.Exists(tempFile)
+                File.Delete(tempFile)
+            ENDIF
+        NEXT
+        IF tableWasClosed .AND. File.Exists(oldFile) .AND. !Used(table:Name)
+            DbUseArea(TRUE, "DBFVFP", oldFile, table:Name, FALSE, FALSE)
+        ENDIF
+        IF savedArea > 0
+            DbSelectArea(savedArea)
+        ENDIF
+    END TRY
+
+PRIVATE STATIC METHOD IndexReferencesField(cFieldName AS STRING, cFieldAlias AS STRING) AS LOGIC
+    LOCAL count := (LONG)OrdCount() AS LONG
+    FOR LOCAL orderIndex := 1 AS LONG TO count
+        LOCAL keyExpression := OrdKey(orderIndex):ToString() AS STRING
+        LOCAL filterExpression := OrdFor(orderIndex):ToString() AS STRING
+        IF FoxEmbeddedSQL.ExpressionReferencesField(keyExpression, cFieldName, cFieldAlias) .OR. ;
+           FoxEmbeddedSQL.ExpressionReferencesField(filterExpression, cFieldName, cFieldAlias)
+            RETURN TRUE
+        ENDIF
+    NEXT
+    RETURN FALSE
+
+PRIVATE STATIC METHOD ExpressionReferencesField(expression AS STRING, cFieldName AS STRING, cFieldAlias AS STRING) AS LOGIC
+    IF !String.IsNullOrEmpty(cFieldName) .AND. ;
+       Regex.IsMatch(expression, "(?i)(?<![A-Za-z0-9_])" + Regex.Escape(cFieldName) + "(?![A-Za-z0-9_])")
+        RETURN TRUE
     ENDIF
-    DbCloseArea()
-    var cBak := Path.ChangeExtension(oldFile, "bak")
-    FErase(cBak)
-    FRename(oldFile, cBak)
-    IF File(oldMemo)
-        cBak := Path.ChangeExtension(oldFile, "tbk")
-        FErase(cBak)
-        FRename(oldMemo, cBak)
+    IF !String.IsNullOrEmpty(cFieldAlias) .AND. ;
+       !String.Equals(cFieldAlias, cFieldName, StringComparison.OrdinalIgnoreCase) .AND. ;
+       Regex.IsMatch(expression, "(?i)(?<![A-Za-z0-9_])" + Regex.Escape(cFieldAlias) + "(?![A-Za-z0-9_])")
+        RETURN TRUE
     ENDIF
-    FRename(newFile, oldFile)
-    IF File(newMemo)
-        FRename(newMemo, oldMemo)
-    ENDIF
-    DbUseArea(TRUE, "DBFVFP", oldFile, table:Name, FALSE, FALSE)
-    area := RuntimeState.Workareas:FindAlias(table:Name)
-    oRdd := RuntimeState.Workareas:GetRDD(area)
-    if fields != NULL .and. oRdd is XSharp.RDD.Workarea var oWANew
-        foreach var fld in oWANew:_Fields
-            var oldFld := fields:FirstOrDefault({f => f:Name == fld:Name})
-            if oldFld != NULL
-                fld:Caption := oldFld:Caption
-            else // Must be the new column
-                fld:Caption := column:Caption
-            endif
-        next
-    endif
-    RETURN TRUE
+    RETURN FALSE
 END CLASS
 

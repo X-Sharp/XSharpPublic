@@ -801,6 +801,177 @@ FUNCTION TestDropTable() AS VOID
     END TRY
     RETURN
 
+FUNCTION TestAlterTableColumns() AS VOID
+    LOCAL databaseDirectory := System.IO.Path.Combine(System.IO.Path.GetTempPath(), "FoxSqlAlter" + Guid.NewGuid():ToString("N")) AS STRING
+    LOCAL databasePath := System.IO.Path.Combine(databaseDirectory, "AlterTest") AS STRING
+    LOCAL databaseName := System.IO.Path.GetFileName(databasePath):ToUpper() AS STRING
+    LOCAL previousDatabase := XSharp.RDD.Dbc.GetCurrent() AS XSharp.RDD.DbcDatabase
+    LOCAL previousDefault := SetDefault() AS STRING
+    LOCAL previousErrorBlock := ErrorBlock() AS USUAL
+    LOCAL linkedTablePath := "" AS STRING
+    LOCAL freeTablePath := "" AS STRING
+    LOCAL missingColumnErrorCaught := FALSE AS LOGIC
+
+    TRY
+        System.IO.Directory.CreateDirectory(databaseDirectory)
+        SetDefault(databaseDirectory)
+        IF !XSharp.RDD.Dbc.Create(databasePath) .OR. !XSharp.RDD.Dbc.Open(databasePath, FALSE, FALSE, FALSE)
+            THROW Exception{"Could not create a temporary database for ALTER TABLE tests"}
+        ENDIF
+        XSharp.RDD.Dbc.Select(databaseName)
+
+        CREATE TABLE AlterTarget (Id I, Label C(12), Notes M)
+        linkedTablePath := ("AlterTarget")->DbInfo(DBI_FULLPATH)
+        INDEX ON Id TAG IdTag
+        INDEX ON Label TAG LabelTag
+        INSERT INTO AlterTarget VALUES (1, "first", "memo one")
+        INSERT INTO AlterTarget VALUES (2, "second", "memo two")
+
+        ALTER TABLE AlterTarget ADD COLUMN AddedColumnName C(8)
+        IF FieldPos("AddedColumnName") == 0 .OR. RecCount() != 2 .OR. OrdCount() != 2
+            THROW Exception{"ALTER TABLE ADD should preserve rows and existing indexes"}
+        ENDIF
+        LOCAL linkedTable := XSharp.RDD.DbcManager.ActiveDatabase:FindTable("AlterTarget") AS XSharp.RDD.DbcTable
+        IF linkedTable == NULL_OBJECT .OR. linkedTable:Fields:Count != 4 .OR. ;
+                linkedTable:Fields[3]:ObjectName != "AddedColumnName"
+            THROW Exception{"ALTER TABLE ADD should synchronize linked DBC field metadata"}
+        ENDIF
+
+        ALTER TABLE AlterTarget ALTER COLUMN Label C(20)
+        IF DbStruct()[2][3] != 20 .OR. RecCount() != 2 .OR. OrdCount() != 2
+            THROW Exception{"ALTER TABLE ALTER should change the field width and preserve rows and indexes"}
+        ENDIF
+        SET ORDER TO TAG LabelTag
+        IF !DbSeek("second")
+            THROW Exception{"ALTER TABLE ALTER should rebuild an index over the altered column"}
+        ENDIF
+        SET ORDER TO TAG IdTag
+
+        ALTER TABLE AlterTarget DROP COLUMN AddedColumnName
+        IF FieldPos("AddedColumnName") != 0 .OR. RecCount() != 2 .OR. OrdCount() != 2
+            THROW Exception{"ALTER TABLE DROP should remove the field and preserve rows and indexes"}
+        ENDIF
+        linkedTable := XSharp.RDD.DbcManager.ActiveDatabase:FindTable("AlterTarget")
+        IF linkedTable == NULL_OBJECT .OR. linkedTable:Fields:Count != 3
+            THROW Exception{"ALTER TABLE DROP should synchronize linked DBC field metadata"}
+        ENDIF
+        DbGoTop()
+        IF AlterTarget->Label != "first" .OR. AlterTarget->Notes != "memo one"
+            THROW Exception{"ALTER TABLE should preserve character and memo values"}
+        ENDIF
+        DbSelectArea("AlterTarget")
+        DbGoBottom()
+        IF AlterTarget->Id != 2 .OR. AlterTarget->Label != "second" .OR. AlterTarget->Notes != "memo two"
+            THROW Exception{"ALTER TABLE should preserve the final source record"}
+        ENDIF
+
+        ErrorBlock({|oError| ThrowEmbeddedSqlTestError(oError)})
+        TRY
+            ALTER TABLE AlterTarget DROP COLUMN MissingAlterColumn
+        CATCH
+            missingColumnErrorCaught := TRUE
+        FINALLY
+            ErrorBlock(previousErrorBlock)
+        END TRY
+        IF !missingColumnErrorCaught .OR. FieldPos("Label") == 0 .OR. RecCount() != 2
+            THROW Exception{"A failed ALTER TABLE should leave the linked table unchanged"}
+        ENDIF
+
+        LOCAL indexedDropErrorCaught := FALSE AS LOGIC
+        ErrorBlock({|oError| ThrowEmbeddedSqlTestError(oError)})
+        TRY
+            ALTER TABLE AlterTarget DROP COLUMN Label
+        CATCH
+            indexedDropErrorCaught := TRUE
+        FINALLY
+            ErrorBlock(previousErrorBlock)
+        END TRY
+        IF !indexedDropErrorCaught .OR. FieldPos("Label") == 0 .OR. ;
+                XSharp.RDD.DbcManager.ActiveDatabase:FindTable("AlterTarget"):Fields:Count != 3
+            THROW Exception{"DROP COLUMN must reject an indexed field and preserve linked schema"}
+        ENDIF
+
+        LOCAL unsupportedTableRuleErrorCaught := FALSE AS LOGIC
+        ErrorBlock({|oError| ThrowEmbeddedSqlTestError(oError)})
+        TRY
+            ALTER TABLE AlterTarget SET CHECK Id > 0
+        CATCH
+            unsupportedTableRuleErrorCaught := TRUE
+        FINALLY
+            ErrorBlock(previousErrorBlock)
+        END TRY
+        IF !unsupportedTableRuleErrorCaught .OR. RecCount() != 2 .OR. FieldPos("Label") == 0
+            THROW Exception{"Unsupported table-rule ALTER syntax must fail without rebuilding the table"}
+        ENDIF
+
+        DROP TABLE AlterTarget
+        CREATE TABLE AlterTarget FREE (Id I, Label C(12), Notes M)
+        freeTablePath := ("AlterTarget")->DbInfo(DBI_FULLPATH)
+        INDEX ON Id TAG IdTag
+        INDEX ON Label TAG LabelTag
+        INSERT INTO AlterTarget VALUES (1, "free one", "free memo one")
+        INSERT INTO AlterTarget VALUES (2, "free two", "free memo two")
+
+        ALTER TABLE AlterTarget ADD COLUMN Added C(8)
+        ALTER TABLE AlterTarget ALTER COLUMN Label C(20)
+        ALTER TABLE AlterTarget DROP COLUMN Added
+        IF FieldPos("Added") != 0 .OR. DbStruct()[2][3] != 20 .OR. ;
+                RecCount() != 2 .OR. OrdCount() != 2
+            THROW Exception{"Free-table ADD, ALTER, and DROP should preserve schema, rows, and indexes"}
+        ENDIF
+        SET ORDER TO TAG LabelTag
+        IF !DbSeek("free two")
+            THROW Exception{"Free-table ALTER should rebuild an index over the altered column"}
+        ENDIF
+        SET ORDER TO TAG IdTag
+        DbGoTop()
+        IF AlterTarget->Label != "free one" .OR. AlterTarget->Notes != "free memo one"
+            THROW Exception{"Free-table ALTER TABLE should preserve character and memo values"}
+        ENDIF
+
+        IF XSharp.RDD.DbcManager.ActiveDatabase:FindTable("AlterTarget") != NULL_OBJECT
+            THROW Exception{"Free-table ALTER TABLE should not add a table to the active DBC"}
+        ENDIF
+        IF System.IO.Directory.GetFiles(databaseDirectory, "_SQLALT*").Length != 0 .OR. ;
+                System.IO.Directory.GetFiles(databaseDirectory, "_SQLBAK*").Length != 0
+            THROW Exception{"ALTER TABLE should remove staged DBF, memo, CDX, and backup files"}
+        ENDIF
+    FINALLY
+        IF Used("AlterTarget")
+            DbCloseArea("AlterTarget")
+        ENDIF
+        XSharp.RDD.Dbc.Close(databaseName)
+        SetDefault(previousDefault)
+        IF previousDatabase == NULL_OBJECT
+            XSharp.RDD.Dbc.Select()
+        ELSE
+            XSharp.RDD.Dbc.Select(previousDatabase:Name)
+        ENDIF
+        FOREACH VAR extension IN <STRING>{".DBC", ".DCT", ".DCX"}
+            VAR databaseFile := databasePath + extension
+            IF System.IO.File.Exists(databaseFile)
+                System.IO.File.Delete(databaseFile)
+            ENDIF
+        NEXT
+        FOREACH VAR tablePath IN <STRING>{linkedTablePath, freeTablePath}
+            IF !String.IsNullOrEmpty(tablePath)
+                FOREACH VAR extension IN <STRING>{".DBF", ".FPT", ".CDX"}
+                    VAR tableFile := System.IO.Path.ChangeExtension(tablePath, extension)
+                    IF System.IO.File.Exists(tableFile)
+                        System.IO.File.Delete(tableFile)
+                    ENDIF
+                NEXT
+            ENDIF
+        NEXT
+        IF System.IO.Directory.Exists(databaseDirectory)
+            FOREACH VAR leftover IN System.IO.Directory.GetFiles(databaseDirectory)
+                System.IO.File.Delete(leftover)
+            NEXT
+            System.IO.Directory.Delete(databaseDirectory)
+        ENDIF
+    END TRY
+    RETURN
+
 FUNCTION TestViewLifecycle() AS VOID
     LOCAL databaseDirectory := System.IO.Path.Combine(System.IO.Path.GetTempPath(), "FoxSqlView" + Guid.NewGuid():ToString("N")) AS STRING
     LOCAL databasePath := System.IO.Path.Combine(databaseDirectory, "ViewTest") AS STRING

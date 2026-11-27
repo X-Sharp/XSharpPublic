@@ -113,6 +113,8 @@ FUNCTION Start(args AS STRING[]) AS VOID STRICT
     RegisterTest("TestDeleteInSubquery [baseline]", { => TestDeleteInSubquery() }, TRUE)
     RegisterTest("TestDropTable [optimized]", { => TestDropTable() })
     RegisterTest("TestDropTable [baseline]", { => TestDropTable() }, TRUE)
+    RegisterTest("TestAlterTableColumns [optimized]", { => TestAlterTableColumns() })
+    RegisterTest("TestAlterTableColumns [baseline]", { => TestAlterTableColumns() }, TRUE)
     RegisterTest("TestViewLifecycle [optimized]", { => TestViewLifecycle() })
     RegisterTest("TestViewLifecycle [baseline]", { => TestViewLifecycle() }, TRUE)
     RegisterTest("TestInsertFromSelect [optimized]", { => TestInsertFromSelect() })

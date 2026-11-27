@@ -296,6 +296,54 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN TRUE
                 })
 
+        /// <summary>Adds the DBC field child record for a column appended to a linked table.</summary>
+        PUBLIC STATIC METHOD AddTableField(cTableName AS STRING, cFieldName AS STRING) AS LOGIC
+            LOCAL oActiveDbc := DbcManager.ActiveDatabase AS DbcDatabase
+            IF oActiveDbc == NULL_OBJECT
+                Fail(Error{"ALTER TABLE: no active database for linked table"})
+                RETURN FALSE
+            ENDIF
+            LOCAL oTable := oActiveDbc:FindTable(cTableName) AS DbcTable
+            IF oTable == NULL_OBJECT
+                Fail(Error{"ALTER TABLE: linked table '" + cTableName + "' is missing from the active database"})
+                RETURN FALSE
+            ENDIF
+            RETURN DbcManager.DoForDatabase({ =>
+                LOCAL nOld AS DWORD
+                CoreDb.Select(oActiveDbc:Area, OUT nOld)
+                CoreDb.GoBottom()
+                LOCAL nNextId := 1 AS INT
+                IF !CoreDb.Eof()
+                    LOCAL oIdVal := NULL AS OBJECT
+                    CoreDb.FieldGet(DbcObject.POS_OBJECTID, REF oIdVal)
+                    nNextId := ((INT)oIdVal) + 1
+                ENDIF
+                _writeRecord(<OBJECT>{nNextId, (INT)oTable:ObjectID, DbcObject.NAME_FIELD, cFieldName})
+                CoreDb.Commit()
+                CoreDb.Select(nOld, OUT NULL)
+                oActiveDbc:Reload()
+                RETURN TRUE
+                })
+
+        /// <summary>Removes one positional DBC field record after a linked table column is dropped.</summary>
+        PUBLIC STATIC METHOD RemoveTableField(cTableName AS STRING, nFieldPosition AS INT) AS LOGIC
+            LOCAL oActiveDbc := DbcManager.ActiveDatabase AS DbcDatabase
+            IF oActiveDbc == NULL_OBJECT
+                Fail(Error{"ALTER TABLE: no active database for linked table"})
+                RETURN FALSE
+            ENDIF
+            LOCAL oTable := oActiveDbc:FindTable(cTableName) AS DbcTable
+            IF oTable == NULL_OBJECT .OR. nFieldPosition < 1 .OR. nFieldPosition > oTable:Fields:Count
+                Fail(Error{"ALTER TABLE: invalid DBC field position for table '" + cTableName + "'"})
+                RETURN FALSE
+            ENDIF
+            LOCAL nFieldId := (INT)oTable:Fields[nFieldPosition - 1]:ObjectID AS INT
+            LOCAL lOk := DbcManager._RemoveObjectRecords(oActiveDbc, nFieldId) AS LOGIC
+            IF lOk
+                oActiveDbc:Reload()
+            ENDIF
+            RETURN lOk
+
         /// <summary>Registers a local SQL view and its projected field names in the active DBC.</summary>
         PUBLIC STATIC METHOD AddView(cName AS STRING, sSelect AS STRING, aFieldNames AS List<STRING>) AS LOGIC
             LOCAL oActiveDbc := DbcManager.ActiveDatabase AS DbcDatabase

@@ -296,6 +296,87 @@ BEGIN NAMESPACE XSharp.RDD
                 RETURN TRUE
                 })
 
+        /// <summary>Registers a local SQL view and its projected field names in the active DBC.</summary>
+        PUBLIC STATIC METHOD AddView(cName AS STRING, sSelect AS STRING, aFieldNames AS List<STRING>) AS LOGIC
+            LOCAL oActiveDbc := DbcManager.ActiveDatabase AS DbcDatabase
+            IF oActiveDbc == NULL_OBJECT
+                Fail(Error{"CREATE VIEW: no active database (use SET DATABASE TO first)"})
+                RETURN FALSE
+            ENDIF
+            IF String.IsNullOrWhiteSpace(cName) .OR. String.IsNullOrWhiteSpace(sSelect)
+                Fail(Error{"CREATE VIEW: view name and SELECT statement are required"})
+                RETURN FALSE
+            ENDIF
+            IF oActiveDbc:FindView(cName) != NULL_OBJECT .OR. oActiveDbc:FindTable(cName) != NULL_OBJECT
+                Fail(Error{"CREATE VIEW: object '" + cName + "' already exists in active database"})
+                RETURN FALSE
+            ENDIF
+
+            RETURN DbcManager.DoForDatabase({ =>
+                LOCAL nOld AS DWORD
+                CoreDb.Select(oActiveDbc:Area, OUT nOld)
+                CoreDb.GoBottom()
+                LOCAL nNextId := 1 AS INT
+                IF !CoreDb.Eof()
+                    LOCAL oIdVal := NULL AS OBJECT
+                    CoreDb.FieldGet(DbcObject.POS_OBJECTID, REF oIdVal)
+                    nNextId := ((INT)oIdVal) + 1
+                ENDIF
+                LOCAL nViewId := nNextId AS INT
+                _writeRecord(<OBJECT>{nViewId, 1, DbcObject.NAME_VIEW, cName})
+                LOCAL props := DatabasePropertyCollection{} AS DatabasePropertyCollection
+                props:Add(DatabasePropertyType.SQL, sSelect)
+                CoreDb.FieldPutBytes(DbcObject.POS_PROPERTY, props:SaveToMemo())
+                IF aFieldNames != NULL
+                    FOREACH VAR fieldName IN aFieldNames
+                        nNextId++
+                        _writeRecord(<OBJECT>{nNextId, nViewId, DbcObject.NAME_FIELD, fieldName})
+                    NEXT
+                ENDIF
+                CoreDb.Commit()
+                CoreDb.Select(nOld, OUT NULL)
+                oActiveDbc:Reload()
+                RETURN TRUE
+                })
+
+        /// <summary>Removes a view's catalog record and child field records without touching source tables.</summary>
+        PUBLIC STATIC METHOD RemoveView(cName AS STRING) AS LOGIC
+            LOCAL oActiveDbc := DbcManager.ActiveDatabase AS DbcDatabase
+            IF oActiveDbc == NULL_OBJECT
+                Fail(Error{"DROP VIEW: no active database (use SET DATABASE TO first)"})
+                RETURN FALSE
+            ENDIF
+            LOCAL oView := oActiveDbc:FindView(cName) AS DbcView
+            IF oView == NULL_OBJECT
+                Fail(Error{"DROP VIEW: view '" + cName + "' not found in active database"})
+                RETURN FALSE
+            ENDIF
+            IF ! DbcManager._RemoveObjectRecords(oActiveDbc, (INT)oView:ObjectID)
+                RETURN FALSE
+            ENDIF
+            oActiveDbc:Reload()
+            RETURN TRUE
+
+        PRIVATE STATIC METHOD _RemoveObjectRecords(oDatabase AS DbcDatabase, nObjectId AS INT) AS LOGIC
+            RETURN DbcManager.DoForDatabase({ =>
+                LOCAL nOld AS DWORD
+                CoreDb.Select(oDatabase:Area, OUT nOld)
+                CoreDb.GoTop()
+                DO WHILE !CoreDb.Eof()
+                    LOCAL oId := NULL AS OBJECT
+                    LOCAL oParent := NULL AS OBJECT
+                    CoreDb.FieldGet(DbcObject.POS_OBJECTID, REF oId)
+                    CoreDb.FieldGet(DbcObject.POS_PARENTID, REF oParent)
+                    IF (INT)oId == nObjectId .OR. (INT)oParent == nObjectId
+                        CoreDb.Delete()
+                    ENDIF
+                    CoreDb.Skip(1)
+                ENDDO
+                CoreDb.Commit()
+                CoreDb.Select(nOld, OUT NULL)
+                RETURN TRUE
+                })
+
         /// <summary>
         /// Compute a relative path from <paramref name="cFromFile"/> to <paramref name="cToFile"/>.
         /// Returns just the filename when both files share the same directory;
@@ -352,24 +433,7 @@ BEGIN NAMESPACE XSharp.RDD
             cDbfPath := System.IO.Path.GetFullPath(cDbfPath)
 
             // ── Remove Table + all child records from the DBC ──────────────────
-            LOCAL lOk := DbcManager.DoForDatabase({ =>
-                LOCAL nOld AS DWORD
-                CoreDb.Select(oActiveDbc:Area, OUT nOld)
-                CoreDb.GoTop()
-                DO WHILE ! CoreDb.Eof()
-                    LOCAL oId     := NULL AS OBJECT
-                    LOCAL oParent := NULL AS OBJECT
-                    CoreDb.FieldGet(DbcObject.POS_OBJECTID,   REF oId)
-                    CoreDb.FieldGet(DbcObject.POS_PARENTID,   REF oParent)
-                    IF (INT) oId == nTableId .OR. (INT) oParent == nTableId
-                        CoreDb.Delete()
-                    ENDIF
-                    CoreDb.Skip(1)
-                ENDDO
-                CoreDb.Commit()
-                CoreDb.Select(nOld, OUT NULL)
-                RETURN TRUE
-                }) AS LOGIC
+            LOCAL lOk := DbcManager._RemoveObjectRecords(oActiveDbc, nTableId) AS LOGIC
 
             IF lOk
                 // ── Zero the backlink in the DBF header ────────────────────────
@@ -1063,6 +1127,15 @@ STATIC CLASS XSharp.RDD.Dbc
         RETURN oDb
 
     STATIC METHOD CreateView(cName as STRING, cConnection := "" as STRING, lRemote := FALSE as LOGIC, lShared := FALSE as LOGIC, sSelect := "" as STRING) AS VOID
+        IF lRemote .OR. lShared .OR. !String.IsNullOrEmpty(cConnection)
+            THROW Error{"CREATE VIEW currently supports local, non-shared views only"}
+        ENDIF
+        IF String.IsNullOrWhiteSpace(sSelect)
+            THROW Error{"CREATE VIEW requires an AS SELECT statement"}
+        ENDIF
+        IF !DbcManager.AddView(cName, sSelect, NULL)
+            THROW Error{"Could not create view: " + cName}
+        ENDIF
         RETURN
     /// <include file="XSharp.Core.Docs.xml" path="doc/Dbc.Create/*" />
     STATIC METHOD Create(cFileName as STRING) AS LOGIC

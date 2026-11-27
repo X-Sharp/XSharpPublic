@@ -1,4 +1,4 @@
-﻿// SelectTests.prg
+// SelectTests.prg
 USING System
 USING System.Diagnostics
 USING System.Collections.Generic
@@ -795,6 +795,148 @@ FUNCTION TestDropTable() AS VOID
                 NEXT
             ENDIF
         NEXT
+        IF System.IO.Directory.Exists(databaseDirectory)
+            System.IO.Directory.Delete(databaseDirectory)
+        ENDIF
+    END TRY
+    RETURN
+
+FUNCTION TestViewLifecycle() AS VOID
+    LOCAL databaseDirectory := System.IO.Path.Combine(System.IO.Path.GetTempPath(), "FoxSqlView" + Guid.NewGuid():ToString("N")) AS STRING
+    LOCAL databasePath := System.IO.Path.Combine(databaseDirectory, "ViewTest") AS STRING
+    LOCAL databaseName := System.IO.Path.GetFileName(databasePath):ToUpper() AS STRING
+    LOCAL previousDatabase := XSharp.RDD.Dbc.GetCurrent() AS XSharp.RDD.DbcDatabase
+    LOCAL previousDefault := SetDefault() AS STRING
+    LOCAL previousErrorBlock := ErrorBlock() AS USUAL
+    LOCAL sourcePath := "" AS STRING
+
+    TRY
+        System.IO.Directory.CreateDirectory(databaseDirectory)
+        SetDefault(databaseDirectory)
+        IF !XSharp.RDD.Dbc.Create(databasePath) .OR. !XSharp.RDD.Dbc.Open(databasePath, FALSE, FALSE, FALSE)
+            THROW Exception{"Could not create a temporary database for CREATE VIEW tests"}
+        ENDIF
+        XSharp.RDD.Dbc.Select(databaseName)
+
+        CREATE TABLE ViewSource (Id I, Label C(20))
+        sourcePath := ("ViewSource")->DbInfo(DBI_FULLPATH)
+        INSERT INTO ViewSource VALUES (1, "hidden")
+        INSERT INTO ViewSource VALUES (2, "visible")
+        INSERT INTO ViewSource VALUES (3, "also visible")
+
+        CREATE SQL VIEW LocalView AS SELECT Id, Label AS DispLabel FROM ViewSource WHERE Id > 1
+        LOCAL createdView := XSharp.RDD.DbcManager.ActiveDatabase:FindView("LocalView") AS XSharp.RDD.DbcView
+        IF createdView == NULL_OBJECT
+            THROW Exception{"CREATE VIEW should register the view in the active DBC"}
+        ENDIF
+        IF createdView:Properties:GetValue<STRING>(XSharp.RDD.DatabasePropertyType.SQL) != ;
+                "SELECT Id, Label AS DispLabel FROM ViewSource WHERE Id > 1"
+            THROW Exception{"CREATE VIEW should persist its SELECT definition; got: " + ;
+                createdView:Properties:GetValue<STRING>(XSharp.RDD.DatabasePropertyType.SQL)}
+        ENDIF
+        IF createdView:Fields:Count != 2 .OR. createdView:Fields[0]:ObjectName != "Id" .OR. ;
+                createdView:Fields[1]:ObjectName != "DispLabel"
+            THROW Exception{"CREATE VIEW should persist projected field names and aliases"}
+        ENDIF
+
+        SELECT LocalView.DispLabel FROM LocalView INTO CURSOR view_result
+        VerifyTable(2, "Selecting from a DBC view should evaluate its stored SELECT", TRUE, ;
+            {{"visible"}, {"also visible"}})
+        IF Used("view_result")
+            DbCloseArea("view_result")
+        ENDIF
+
+        DROP VIEW LocalView
+        IF XSharp.RDD.DbcManager.ActiveDatabase:FindView("LocalView") != NULL_OBJECT
+            THROW Exception{"DROP VIEW should remove the DBC view catalog entry"}
+        ENDIF
+        IF !System.IO.File.Exists(sourcePath)
+            THROW Exception{"DROP VIEW must not delete the source table"}
+        ENDIF
+
+        LOCAL duplicateErrorCaught := FALSE AS LOGIC
+        CREATE SQL VIEW LocalView AS SELECT Id FROM ViewSource
+        ErrorBlock({|oError| ThrowEmbeddedSqlTestError(oError)})
+        TRY
+            CREATE SQL VIEW LocalView AS SELECT Id FROM ViewSource
+        CATCH
+            duplicateErrorCaught := TRUE
+        FINALLY
+            ErrorBlock(previousErrorBlock)
+        END TRY
+        IF !duplicateErrorCaught
+            THROW Exception{"CREATE VIEW should reject duplicate object names"}
+        ENDIF
+        DROP VIEW LocalView
+
+        LOCAL unsupportedOptionErrorCaught := FALSE AS LOGIC
+        ErrorBlock({|oError| ThrowEmbeddedSqlTestError(oError)})
+        TRY
+            CREATE SQL VIEW RemoteView REMOTE AS SELECT Id FROM ViewSource
+        CATCH
+            unsupportedOptionErrorCaught := TRUE
+        FINALLY
+            ErrorBlock(previousErrorBlock)
+        END TRY
+        IF !unsupportedOptionErrorCaught
+            THROW Exception{"CREATE VIEW should reject unsupported REMOTE views"}
+        ENDIF
+
+        XSharp.RDD.Dbc.Select()
+        LOCAL noDatabaseErrorCaught := FALSE AS LOGIC
+        ErrorBlock({|oError| ThrowEmbeddedSqlTestError(oError)})
+        TRY
+            CREATE SQL VIEW NoDatabaseView AS SELECT Id FROM ViewSource
+        CATCH
+            noDatabaseErrorCaught := TRUE
+        FINALLY
+            ErrorBlock(previousErrorBlock)
+            XSharp.RDD.Dbc.Select(databaseName)
+        END TRY
+        IF !noDatabaseErrorCaught
+            THROW Exception{"CREATE VIEW should require an active DBC"}
+        ENDIF
+
+        LOCAL missingErrorCaught := FALSE AS LOGIC
+        ErrorBlock({|oError| ThrowEmbeddedSqlTestError(oError)})
+        TRY
+            DROP VIEW MissingView
+        CATCH
+            missingErrorCaught := TRUE
+        FINALLY
+            ErrorBlock(previousErrorBlock)
+        END TRY
+        IF !missingErrorCaught
+            THROW Exception{"DROP VIEW should report a missing view"}
+        ENDIF
+    FINALLY
+        IF Used("view_result")
+            DbCloseArea("view_result")
+        ENDIF
+        IF Used("ViewSource")
+            DbCloseArea("ViewSource")
+        ENDIF
+        XSharp.RDD.Dbc.Close(databaseName)
+        SetDefault(previousDefault)
+        IF previousDatabase == NULL_OBJECT
+            XSharp.RDD.Dbc.Select()
+        ELSE
+            XSharp.RDD.Dbc.Select(previousDatabase:Name)
+        ENDIF
+        FOREACH VAR extension IN <STRING>{".DBC", ".DCT", ".DCX"}
+            VAR databaseFile := databasePath + extension
+            IF System.IO.File.Exists(databaseFile)
+                System.IO.File.Delete(databaseFile)
+            ENDIF
+        NEXT
+        IF !String.IsNullOrEmpty(sourcePath)
+            FOREACH VAR extension IN <STRING>{".DBF", ".FPT", ".CDX"}
+                VAR sourceFile := System.IO.Path.ChangeExtension(sourcePath, extension)
+                IF System.IO.File.Exists(sourceFile)
+                    System.IO.File.Delete(sourceFile)
+                ENDIF
+            NEXT
+        ENDIF
         IF System.IO.Directory.Exists(databaseDirectory)
             System.IO.Directory.Delete(databaseDirectory)
         ENDIF

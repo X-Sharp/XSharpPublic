@@ -853,6 +853,11 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         RETURN EmbeddedSqlRuntimeOptions.OptimizationsEnabled()
 
     STATIC METHOD ParseSqlSelect(sCommand as STRING) AS FoxSelectContext
+        LOCAL selectCtx := ParseSqlSelectDefinition(sCommand) AS FoxSelectContext
+        ExpandDatabaseViews(selectCtx, HashSet<STRING>{StringComparer.OrdinalIgnoreCase})
+        RETURN selectCtx
+
+    PRIVATE STATIC METHOD ParseSqlSelectDefinition(sCommand AS STRING) AS FoxSelectContext
         VAR lexer := XSqlLexer{sCommand}
         VAR tokens := lexer:AllTokens()
         var parser := SQLParser{XTokenList{tokens}}
@@ -861,6 +866,53 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             THROW Error{"Syntax error in SELECT command: "+parser:Error+CRLF+sCommand}
         ENDIF
         RETURN selectCtx
+
+    PRIVATE STATIC METHOD ExpandDatabaseViews(selectCtx AS FoxSelectContext, viewStack AS HashSet<STRING>) AS VOID
+        LOCAL database := XSharp.RDD.DbcManager.ActiveDatabase AS XSharp.RDD.DbcDatabase
+        IF database == NULL .OR. selectCtx == NULL
+            RETURN
+        ENDIF
+        FOR LOCAL tableIndex := 0 AS INT TO selectCtx:TableList:Count - 1
+            LOCAL sourceName := (STRING)selectCtx:TableList[tableIndex] AS STRING
+            LOCAL view := database:FindView(sourceName) AS XSharp.RDD.DbcView
+            IF view == NULL
+                LOOP
+            ENDIF
+            LOCAL viewAlias := sourceName AS STRING
+            FOREACH VAR aliasEntry IN selectCtx:TableAliases
+                IF String.Equals(aliasEntry:Value, sourceName, StringComparison.OrdinalIgnoreCase)
+                    viewAlias := aliasEntry:Key
+                    EXIT
+                ENDIF
+            NEXT
+            LOCAL viewSql := view:Properties:GetValue<STRING>(XSharp.RDD.DatabasePropertyType.SQL) AS STRING
+            IF String.IsNullOrWhiteSpace(viewSql)
+                THROW Error{"View has no stored SELECT definition: " + sourceName}
+            ENDIF
+            IF !viewStack:Add(sourceName)
+                THROW Error{"Circular view reference detected: " + sourceName}
+            ENDIF
+            LOCAL viewContext := ParseSqlSelectDefinition(viewSql) AS FoxSelectContext
+            ExpandDatabaseViews(viewContext, viewStack)
+            viewStack:Remove(sourceName)
+            selectCtx:TableList[tableIndex] := viewAlias
+            selectCtx:TableAliases[viewAlias] := viewAlias
+            selectCtx:DerivedTables[viewAlias] := viewContext
+            IF tableIndex > 0 .AND. tableIndex - 1 < selectCtx:Joins:Count
+                selectCtx:Joins[tableIndex - 1]:TableName := viewAlias
+            ENDIF
+        NEXT
+        IF selectCtx:UnionBranches != NULL
+            FOREACH VAR branch IN selectCtx:UnionBranches
+                ExpandDatabaseViews(branch, viewStack)
+            NEXT
+        ENDIF
+        IF selectCtx:DerivedTables != NULL
+            FOREACH VAR derived IN selectCtx:DerivedTables:Values
+                ExpandDatabaseViews(derived, viewStack)
+            NEXT
+        ENDIF
+        RETURN
 
     // Prepare the subset of SQL predicates currently supported by DELETE.
     // Keeping subquery execution and membership pruning here reuses SELECT's

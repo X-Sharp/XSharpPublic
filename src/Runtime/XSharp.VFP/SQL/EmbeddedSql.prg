@@ -34,6 +34,57 @@ FUNCTION __SqlDropTable(sTable AS STRING) AS LOGIC
     END TRY
 
 [NeedsAccessToLocals(FALSE)];
+FUNCTION __SqlCreateView(sCommand AS STRING) AS LOGIC
+    LOCAL pattern := "^\s*CREATE\s+(?:SQL\s+)?VIEW\s+(?<name>[A-Za-z_][A-Za-z0-9_]*)\s*(?<options>[\s\S]*?)\bAS\s+(?<select>SELECT\b[\s\S]*)$" AS STRING
+    LOCAL regexResult AS System.Text.RegularExpressions.Match
+    regexResult := System.Text.RegularExpressions.Regex.Match(sCommand, pattern, RegexOptions.IgnoreCase)
+    IF !regexResult:Success
+        THROW Error{"Invalid CREATE VIEW command: " + sCommand}
+    ENDIF
+    LOCAL options := regexResult:Groups["options"]:Value AS STRING
+    IF Regex.IsMatch(options, "\b(REMOTE|CONNECTION|SHARE)\b", RegexOptions.IgnoreCase)
+        THROW Error{"CREATE VIEW currently supports local views without REMOTE, CONNECTION, or SHARE options"}
+    ENDIF
+    LOCAL viewName := regexResult:Groups["name"]:Value AS STRING
+    LOCAL selectSql := regexResult:Groups["select"]:Value:Trim() AS STRING
+    VAR context := FoxEmbeddedSQL.ParseSqlSelect(selectSql)
+    LOCAL fields := List<STRING>{} AS List<STRING>
+    IF context:FieldSelectionList != NULL
+        FOREACH VAR selection IN context:FieldSelectionList
+            IF !String.IsNullOrWhiteSpace(selection:Alias)
+                fields:Add(selection:Alias)
+            ELSEIF selection:Expression IS SqlNameExpressionContext VAR nameExpression .AND. ;
+                   !String.IsNullOrWhiteSpace(nameExpression:Name) .AND. nameExpression:Name != "*"
+                fields:Add(nameExpression:Name)
+            ELSE
+                fields:Add(FoxEmbeddedSQL.SqlExpressionToFieldName(selection:Expression))
+            ENDIF
+        NEXT
+    ENDIF
+    IF !XSharp.RDD.DbcManager.AddView(viewName, selectSql, fields)
+        THROW Error{"Could not create view: " + viewName}
+    ENDIF
+    RETURN TRUE
+
+[NeedsAccessToLocals(FALSE)];
+FUNCTION __SqlDropView(sView AS STRING) AS LOGIC
+    LOCAL savedArea := VoDbGetSelect() AS DWORD
+    LOCAL viewAlias := AllTrim(sView) AS STRING
+    TRY
+        IF Used(viewAlias)
+            DbCloseArea(viewAlias)
+        ENDIF
+        IF !XSharp.RDD.DbcManager.RemoveView(viewAlias)
+            THROW Error{"Could not drop view: " + viewAlias}
+        ENDIF
+        RETURN TRUE
+    FINALLY
+        IF savedArea > 0
+            DbSelectArea(savedArea)
+        ENDIF
+    END TRY
+
+[NeedsAccessToLocals(FALSE)];
 FUNCTION __SqlUpdate(sCommand AS STRING) AS LOGIC
     LOCAL savedArea := VoDbGetSelect() AS DWORD
     LOCAL updatedCount := 0 AS LONG

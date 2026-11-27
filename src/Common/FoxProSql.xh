@@ -25,13 +25,11 @@
 // SQL Create Commands
 #command CREATE <tbl:TABLE,DBF> <*clauses*>                 => __SqlCreateTable(<"udc">)
 #command CREATE CURSOR <*clauses*>                          => __SqlCreateCursor(<"udc">)
-#command CREATE [SQL] VIEW <(cView)> [<remote:REMOTE>] ;
-    [CONNECTION <(cConn)>] [<share:SHARE>] ;
-    [AS  <*sqlstatement*>]                                  => __NOFOXPROSQL__ <(udc)> //  XSharp.RDD.Dbc.CreateView( <(cView)>, <cConn>, <.remote.>, <.share.>, <(sqlstatement)>)
+#command CREATE [SQL] VIEW <*clauses*>                     => __SqlCreateView(<"udc">)
 
 // SQL Drop Commands
 #command DROP TABLE <(table)>                               => __SqlDropTable(<"table">)
-#command DROP VIEW <*clauses*>                              => __NOFOXPROSQL__ <(udc)> // __SqlDropView(<"udc">)
+#command DROP VIEW <(view)>                                => __SqlDropView(<"view">)
 
 
 // DML Commands

@@ -964,10 +964,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
             return GenerateSimpleName(fieldInfo.FullName);
         }
 
+        public override void EnterNameExpression([NotNull] NameExpressionContext context)
+        {
+            var name = context.Name.GetText();
+            RegisterParamAccess(name);
+            base.EnterNameExpression(context);
+        }
+
         public override void ExitNameExpression([NotNull] XP.NameExpressionContext context)
         {
             // Check to see if the name is a field or Memvar, registered with the FIELD or MemVar statement
             string Name = context.Name.GetText();
+
             ExpressionSyntax expr = context.Name.Get<NameSyntax>();
             // SomeVar(1,2) Can also be a FoxPro array access
 
@@ -1942,6 +1950,18 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 if (info != null && info.IsParameter)
                 {
                     CurrentMember.Data.ParameterAssign = true;
+                    info.IsWritten = true;
+                }
+            }
+        }
+        protected void RegisterParamAccess(string name)
+        {
+            if (CurrentMember != null)
+            {
+                var info = CurrentMember.Data.GetField(name);
+                if (info != null && info.IsParameter)
+                {
+                    CurrentMember.Data.ParameterAccess = true;
                     info.IsWritten = true;
                 }
             }
@@ -3264,6 +3284,32 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
         #endregion
 
         #region Method Calls and special methods
+        public override void EnterMethodCall([NotNull] XP.MethodCallContext context)
+        {
+            base.EnterMethodCall(context);
+            var name = context.Expr.GetText().ToUpperInvariant();
+            switch (name)
+            {
+                case "MEXEC":
+                case "MEMVARGET":
+                case "MEMVARPUT":
+                case "VARPUT":
+                case "VARGET":
+                case "__MEMVARPUT":
+                case "__MEMVARGET":
+                case "__VARPUT":
+                case "__VARGET":
+                    if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions) && CurrentMember != null)
+                    {
+                        CurrentMember.Data.HasMemVars = true;
+                    }
+                    break;
+                case XSharpIntrinsicNames.ClipperArgs:
+                    CurrentMember.Data.UsesArgs = true;
+                    break;
+            }
+        }
+
         public override void ExitMethodCall([NotNull] XP.MethodCallContext context)
         {
             var expr = context.Expr.Get<ExpressionSyntax>();
@@ -3292,20 +3338,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                 name = ins.Identifier.Text.ToUpperInvariant();
                 switch (name)
                 {
-                    case "MEXEC":
-                    case "MEMVARGET":
-                    case "MEMVARPUT":
-                    case "VARPUT":
-                    case "VARGET":
-                    case "__MEMVARPUT":
-                    case "__MEMVARGET":
-                    case "__VARPUT":
-                    case "__VARGET":
-                        if (_options.HasOption(CompilerOption.MemVars, context, PragmaOptions) && CurrentMember != null)
-                        {
-                            CurrentMember.Data.HasMemVars = true;
-                        }
-                        break;
+
                     case XSharpIntrinsicNames.PCall:
                     case XSharpIntrinsicNames.CCall:
                         if (GeneratePCCall(context, name == XSharpIntrinsicNames.PCall))
@@ -3698,17 +3731,20 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // We use an IF statetement and not a conditional assignment
                     // because that saves an extra assignment.
                     var clipperArgs = GenerateSimpleName(XSharpSpecialNames.ClipperArgs);
-                    var condition = _syntaxFactory.BinaryExpression(SyntaxKind.EqualsExpression, clipperArgs,
-                            SyntaxFactory.MakeToken(SyntaxKind.EqualsEqualsToken), GenerateLiteralNull());
+                    if (context.Data.ParameterUsed)
+                    {
+                        var condition = _syntaxFactory.BinaryExpression(SyntaxKind.EqualsExpression, clipperArgs,
+                                SyntaxFactory.MakeToken(SyntaxKind.EqualsEqualsToken), GenerateLiteralNull());
 
-                    var args = MakeSeparatedList<ExpressionSyntax>();
-                    var initializer = CreateArrayInitializer();
+                        var args = MakeSeparatedList<ExpressionSyntax>();
+                        var initializer = CreateArrayInitializer();
 
-                    var expr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword), ArrayOfUsual, initializer);
-                    var assignmentExpression = MakeSimpleAssignment(clipperArgs, expr);
+                        var expr = _syntaxFactory.ArrayCreationExpression(SyntaxFactory.MakeToken(SyntaxKind.NewKeyword), ArrayOfUsual, initializer);
+                        var assignmentExpression = MakeSimpleAssignment(clipperArgs, expr);
 
-                    var ifStatement = GenerateIfStatement(condition, GenerateExpressionStatement(assignmentExpression, (XSharpParserRuleContext)context, true));
-                    stmts.Add(ifStatement);
+                        var ifStatement = GenerateIfStatement(condition, GenerateExpressionStatement(assignmentExpression, (XSharpParserRuleContext)context, true));
+                        stmts.Add(ifStatement);
+                    }
                     // create PCount variable
                     var argLen = MakeSimpleMemberAccess(clipperArgs, GenerateSimpleName("Length"));
                     var decl = GenerateLocalDecl(XSharpSpecialNames.ClipperPCount, IntType, argLen);
@@ -3717,7 +3753,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Syntax.InternalSyntax
                     // Now Change argument to X$Args PARAMS USUAL[]
                     var newparameters = GetClipperParameters();
                     // do not generate locals for parameters declared with the PARAMETERS statement
-                    if (context.Data.HasFormalParameters || context.Data.HasLParametersStmt)
+                    if ((context.Data.HasFormalParameters || context.Data.HasLParametersStmt) && context.Data.ParameterUsed)
                     {
                         for (int i = 0; i < parameternames.Count; i++)
                         {

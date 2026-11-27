@@ -397,6 +397,9 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             IsProperty = 1 << 23,
             HasThisForm = 1 << 24,
             HasThisInCodeBlock = 1 << 25,
+            UsesArgs = 1 << 26,
+            ParameterAccess = 1 << 27
+
         }
         #endregion
 
@@ -558,6 +561,13 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
                 get { return flags.HasFlag(MemberFlags.ParameterAssign); }
                 set { setFlags(MemberFlags.ParameterAssign, value); }
             }
+            public bool ParameterAccess
+            {
+                get { return flags.HasFlag(MemberFlags.ParameterAccess); }
+                set { setFlags(MemberFlags.ParameterAccess, value); }
+            }
+
+            public bool ParameterUsed => ParameterAssign || ParameterAccess;
             public bool HasExplicitOverride
             {
                 get { return flags.HasFlag(MemberFlags.HasExplicitOverride); }
@@ -578,6 +588,11 @@ namespace LanguageService.CodeAnalysis.XSharp.SyntaxParser
             {
                 get { return flags.HasFlag(MemberFlags.HasThisInCodeBlock); }
                 set { setFlags(MemberFlags.HasThisInCodeBlock, value); }
+            }
+            public bool UsesArgs
+            {
+                get { return flags.HasFlag(MemberFlags.UsesArgs); }
+                set { setFlags(MemberFlags.UsesArgs, value); }
             }
 
             #endregion

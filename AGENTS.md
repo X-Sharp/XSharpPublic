@@ -88,7 +88,7 @@ Always take source from the **`dev`** branch. Do not use `master` or any other b
 - **CI entry point**: Run `ContinuousIntegrationBuild.cmd` from the repository root. This bootstraps Roslyn and builds the compiler.
 - **Individual subsystems**: Use scripts in `src/` — `buildcompiler.cmd`, `buildrt.cmd`, `buildvs2022.cmd`, etc.
 - **Platform**: The CI runs on `windows-2022` with .NET 9 SDK. VS Integration projects target .NET Framework and require a Windows Visual Studio environment.
-- **Build output**: Goes to `Artifacts/` at the repository root.
+- **Build output**: Goes to `Artifacts/` at the repository root, including intermediate files (these go to Artifacts/Obj/)
 
 ## Testing
 
@@ -110,6 +110,8 @@ Always take source from the **`dev`** branch. Do not use `master` or any other b
 The primary workflow is `.github/workflows/continuous-integration.yml`:
 - Triggers: nightly schedule (2:00 UTC), pull requests, and manual dispatch.
 - Builds the compiler, runs tests, and uploads artifacts (zips, logs, shared DLLs).
+- There is no need to run this GitHub Action when you change the VS integration or Tools
+- If you change the runtime, make sure you update the runtime files in the src\CompilerTests\Runtime folders
 
 ## Key Technical Notes
 

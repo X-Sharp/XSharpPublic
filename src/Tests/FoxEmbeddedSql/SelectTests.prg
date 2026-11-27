@@ -665,6 +665,69 @@ FUNCTION TestSelectCursorOptions() AS VOID
     USE IN sql_cursor_options_source
     RETURN
 
+FUNCTION TestSelectCursorReuse() AS VOID
+    LOCAL previousErrorBlock := ErrorBlock() AS USUAL
+    LOCAL queryErrorCaught := FALSE AS LOGIC
+    CREATE CURSOR sql_cursor_reuse_source (Id I, Label C(12))
+    INSERT INTO sql_cursor_reuse_source VALUES (1, "one")
+    INSERT INTO sql_cursor_reuse_source VALUES (2, "two")
+
+    ErrorBlock({|oError| ThrowEmbeddedSqlTestError(oError)})
+    TRY
+        SELECT Label AS OldValue FROM sql_cursor_reuse_source WHERE Id = 1 INTO CURSOR SqlCursorReuse
+        DbSelectArea("SqlCursorReuse")
+        LOCAL targetArea := (DWORD)Select() AS DWORD
+        DbSetFilter("OldValue = 'one'")
+        IF String.IsNullOrWhiteSpace((STRING)DbInfo(DBI_DBFILTER))
+            THROW Exception{"Could not establish the old target filter for cursor reuse test"}
+        ENDIF
+
+        SELECT Label FROM sql_cursor_reuse_source WHERE Id = 2 INTO CURSOR SqlCursorReuse
+        IF Alias() != "SQLCURSORREUSE" .OR. (DWORD)Select() != targetArea
+            THROW Exception{"SELECT INTO CURSOR should reuse the target alias and its work area"}
+        ENDIF
+        IF FCount() != 1 .OR. FieldName(1) != "LABEL" .OR. RecCount() != 1 .OR. ;
+           AllTrim((STRING)FieldGet(1)) != "two"
+            THROW Exception{"Replacing an INTO CURSOR target should replace its schema and rows"}
+        ENDIF
+        IF !String.IsNullOrWhiteSpace((STRING)DbInfo(DBI_DBFILTER))
+            THROW Exception{"Replacing an INTO CURSOR target should clear its old filter"}
+        ENDIF
+        IF !(LOGIC)DbInfo(DBI_READONLY)
+            THROW Exception{"A replacement INTO CURSOR should apply the new query's default read-only setting"}
+        ENDIF
+
+        // A source-open/preflight error occurs before VFP starts replacing the
+        // target, so the existing cursor and its work area must remain intact.
+        LOCAL queryErrorBlock := ErrorBlock() AS USUAL
+        ErrorBlock({|oError| ThrowEmbeddedSqlTestError(oError)})
+        TRY
+            SELECT Label FROM missing_cursor_reuse_source INTO CURSOR SqlCursorReuse
+        CATCH AS Exception
+            queryErrorCaught := TRUE
+        FINALLY
+            ErrorBlock(queryErrorBlock)
+        END TRY
+        IF !queryErrorCaught .OR. !Used("SqlCursorReuse") .OR. ;
+           (DWORD)Select("SqlCursorReuse") != targetArea
+            THROW Exception{"A preflight SELECT failure should preserve the existing INTO CURSOR target"}
+        ENDIF
+        DbSelectArea("SqlCursorReuse")
+        IF FCount() != 1 .OR. FieldName(1) != "LABEL" .OR. RecCount() != 1 .OR. ;
+           AllTrim((STRING)FieldGet(1)) != "two"
+            THROW Exception{"A preflight SELECT failure changed the existing target cursor"}
+        ENDIF
+    FINALLY
+        ErrorBlock(previousErrorBlock)
+        IF Used("SqlCursorReuse")
+            DbCloseArea("SqlCursorReuse")
+        ENDIF
+        IF Used("sql_cursor_reuse_source")
+            DbCloseArea("sql_cursor_reuse_source")
+        ENDIF
+    END TRY
+    RETURN
+
 FUNCTION TestInsertFromSelect() AS VOID
     LOCAL previousErrorBlock := ErrorBlock() AS USUAL
     LOCAL mismatchErrorCaught := FALSE AS LOGIC

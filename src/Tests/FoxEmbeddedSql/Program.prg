@@ -127,6 +127,8 @@ FUNCTION Start(args AS STRING[]) AS VOID STRICT
     RegisterTest("TestSelectIntoTable [baseline]", { => TestSelectIntoTable() }, TRUE)
     RegisterTest("TestSelectCursorOptions [optimized]", { => TestSelectCursorOptions() })
     RegisterTest("TestSelectCursorOptions [baseline]", { => TestSelectCursorOptions() }, TRUE)
+    RegisterTest("TestSelectCursorReuse [optimized]", { => TestSelectCursorReuse() })
+    RegisterTest("TestSelectCursorReuse [baseline]", { => TestSelectCursorReuse() }, TRUE)
     RegisterTest("TestNestedSubquery [optimized]", { => TestNestedSubqueryFunctionality() })
     RegisterTest("TestNestedSubquery [baseline]", { => TestNestedSubqueryFunctionality() }, TRUE)
     RegisterTest("TestCrossJoinFunctionality [optimized]", { => TestCrossJoinFunctionality() })

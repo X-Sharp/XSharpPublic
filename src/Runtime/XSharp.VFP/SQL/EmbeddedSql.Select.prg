@@ -2693,10 +2693,13 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
             resultTable := AllTrim(selectCtx:TargetCursor)
         ENDIF
 
-        // Close any existing work area with this alias to avoid "Alias already defined" error
-        // TODO: This differs from the VFP behavior that reuses the same area.
+        // VFP replaces an INTO CURSOR target in its existing work area. Keep
+        // that area number so the new result has the same observable identity.
+        LOCAL existingResultArea := 0 AS DWORD
         IF Used(resultTable)
+            existingResultArea := (DWORD)Select(resultTable)
             (resultTable)->DbCloseArea()
+            DbSelectArea(existingResultArea)
         ENDIF
 
         // Create the result table
@@ -2704,7 +2707,8 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         tempPath := System.IO.Path.Combine(System.IO.Path.GetTempPath(), ;
             System.Guid.NewGuid():ToString("N") + ".dbf")
 
-        IF ! DbCreate(tempPath, fieldList, "DBFVFP", TRUE, resultTable)
+        TRY
+        IF ! DbCreate(tempPath, fieldList, "DBFVFP", existingResultArea == 0, resultTable)
             THROW Error{"Could not create result table: " + resultTable}
         ENDIF
 
@@ -3381,6 +3385,20 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
 
         // Set the result table as the current work area
         DbSelectArea(resultTable)
+        CATCH AS Exception
+            // VFP closes an INTO CURSOR target when execution fails after
+            // replacement has started. Also remove the partial result files.
+            IF Used(resultTable)
+                (resultTable)->DbCloseArea()
+            ENDIF
+            FOREACH VAR extension IN <STRING>{".DBF", ".FPT", ".CDX"}
+                VAR resultFile := System.IO.Path.ChangeExtension(tempPath, extension)
+                IF System.IO.File.Exists(resultFile)
+                    System.IO.File.Delete(resultFile)
+                ENDIF
+            NEXT
+            THROW
+        END TRY
 
         RETURN
 

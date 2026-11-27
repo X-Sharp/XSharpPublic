@@ -30,7 +30,7 @@
     [AS  <*sqlstatement*>]                                  => __NOFOXPROSQL__ <(udc)> //  XSharp.RDD.Dbc.CreateView( <(cView)>, <cConn>, <.remote.>, <.share.>, <(sqlstatement)>)
 
 // SQL Drop Commands
-#command DROP TABLE <*clauses*>                             => __NOFOXPROSQL__ <(udc)> // __SqlDropTable(<"udc">)
+#command DROP TABLE <(table)>                               => __SqlDropTable(<"table">)
 #command DROP VIEW <*clauses*>                              => __NOFOXPROSQL__ <(udc)> // __SqlDropView(<"udc">)
 
 

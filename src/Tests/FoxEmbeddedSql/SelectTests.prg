@@ -717,6 +717,90 @@ FUNCTION TestInsertFromSelect() AS VOID
     ENDIF
     RETURN
 
+FUNCTION TestDropTable() AS VOID
+    LOCAL databaseDirectory := System.IO.Path.Combine(System.IO.Path.GetTempPath(), "FoxSqlDrop" + Guid.NewGuid():ToString("N")) AS STRING
+    LOCAL databasePath := System.IO.Path.Combine(databaseDirectory, "DropTest") AS STRING
+    LOCAL databaseName := System.IO.Path.GetFileName(databasePath):ToUpper() AS STRING
+    LOCAL previousDatabase := XSharp.RDD.Dbc.GetCurrent() AS XSharp.RDD.DbcDatabase
+    LOCAL previousDefault := SetDefault() AS STRING
+    LOCAL previousErrorBlock := ErrorBlock() AS USUAL
+    LOCAL openTablePath := "" AS STRING
+    LOCAL closedTablePath := "" AS STRING
+    LOCAL missingTableErrorCaught := FALSE AS LOGIC
+
+    TRY
+        System.IO.Directory.CreateDirectory(databaseDirectory)
+        SetDefault(databaseDirectory)
+        IF !XSharp.RDD.Dbc.Create(databasePath) .OR. !XSharp.RDD.Dbc.Open(databasePath, FALSE, FALSE, FALSE)
+            THROW Exception{"Could not create a temporary database for DROP TABLE tests"}
+        ENDIF
+        XSharp.RDD.Dbc.Select(databaseName)
+
+        CREATE TABLE DropOpenTable (Id I)
+        openTablePath := ("DropOpenTable")->DbInfo(DBI_FULLPATH)
+        DROP TABLE DropOpenTable
+        IF Used("DropOpenTable")
+            THROW Exception{"DROP TABLE should close the open target"}
+        ENDIF
+        IF System.IO.File.Exists(openTablePath)
+            THROW Exception{"DROP TABLE should delete the DBF file: " + openTablePath}
+        ENDIF
+
+        CREATE TABLE DropClosedTable (Id I)
+        closedTablePath := ("DropClosedTable")->DbInfo(DBI_FULLPATH)
+        DbCloseArea("DropClosedTable")
+        DROP TABLE DropClosedTable
+        IF System.IO.File.Exists(closedTablePath)
+            THROW Exception{"DROP TABLE should delete an unopened table's DBF file"}
+        ENDIF
+
+        ErrorBlock({|oError| ThrowEmbeddedSqlTestError(oError)})
+        TRY
+            DROP TABLE MissingDropTable
+        CATCH
+            missingTableErrorCaught := TRUE
+        FINALLY
+            ErrorBlock(previousErrorBlock)
+        END TRY
+        IF !missingTableErrorCaught
+            THROW Exception{"DROP TABLE should report an error when the target is not in the active database"}
+        ENDIF
+    FINALLY
+        IF Used("DropOpenTable")
+            DbCloseArea("DropOpenTable")
+        ENDIF
+        IF Used("DropClosedTable")
+            DbCloseArea("DropClosedTable")
+        ENDIF
+        XSharp.RDD.Dbc.Close(databaseName)
+        SetDefault(previousDefault)
+        IF previousDatabase == NULL_OBJECT
+            XSharp.RDD.Dbc.Select()
+        ELSE
+            XSharp.RDD.Dbc.Select(previousDatabase:Name)
+        ENDIF
+        FOREACH VAR extension IN <STRING>{".DBC", ".DCT", ".DCX"}
+            VAR databaseFile := databasePath + extension
+            IF System.IO.File.Exists(databaseFile)
+                System.IO.File.Delete(databaseFile)
+            ENDIF
+        NEXT
+        FOREACH VAR tablePath IN <STRING>{openTablePath, closedTablePath}
+            IF !String.IsNullOrEmpty(tablePath)
+                FOREACH VAR extension IN <STRING>{".DBF", ".FPT", ".CDX"}
+                    VAR tableFile := System.IO.Path.ChangeExtension(tablePath, extension)
+                    IF System.IO.File.Exists(tableFile)
+                        System.IO.File.Delete(tableFile)
+                    ENDIF
+                NEXT
+            ENDIF
+        NEXT
+        IF System.IO.Directory.Exists(databaseDirectory)
+            System.IO.Directory.Delete(databaseDirectory)
+        ENDIF
+    END TRY
+    RETURN
+
 FUNCTION ThrowEmbeddedSqlTestError(oError AS OBJECT) AS USUAL
     IF oError IS Exception VAR ex
         THROW ex

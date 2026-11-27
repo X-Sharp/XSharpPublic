@@ -16,6 +16,24 @@ using System.Linq
 using System.Text
 using System.Text.RegularExpressions
 [NeedsAccessToLocals(FALSE)];
+FUNCTION __SqlDropTable(sTable AS STRING) AS LOGIC
+    LOCAL savedArea := VoDbGetSelect() AS DWORD
+    LOCAL tableAlias := System.IO.Path.GetFileNameWithoutExtension(AllTrim(sTable)) AS STRING
+    TRY
+        IF Used(tableAlias)
+            DbCloseArea(tableAlias)
+        ENDIF
+        IF !XSharp.RDD.DbcManager.RemoveTable(AllTrim(sTable), TRUE, FALSE)
+            THROW Error{"Could not drop table: " + sTable}
+        ENDIF
+        RETURN TRUE
+    FINALLY
+        IF savedArea > 0
+            DbSelectArea(savedArea)
+        ENDIF
+    END TRY
+
+[NeedsAccessToLocals(FALSE)];
 FUNCTION __SqlInsertMemVar(sTable as STRING) AS LOGIC
     // FoxPro opens the table when needed and keeps it open
     // FoxPro only writes memvars that exist and also uses locals

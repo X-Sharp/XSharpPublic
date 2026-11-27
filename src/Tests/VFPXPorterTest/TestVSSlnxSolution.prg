@@ -56,7 +56,10 @@ BEGIN NAMESPACE VFPXPorterTest
             VAR slnFile := Path.Combine( SELF:folder, "Existing.slnx" )
             File.WriteAllText( slnFile, ;
                 "<Solution>" + ;
+                "  <Configurations><ProjectType Name=""XSharp"" TypeId=""" + VSSlnxSolution.XSharpProjectType + """ Extension="".xsproj"" /></Configurations>" + ;
                 "  <Folder Name=""/Tools/"">" + ;
+                "    <File Path=""Tools/readme.txt"" />" + ;
+                "    <Folder Name=""/Tools/Nested/""><File Path=""Tools/Nested/item.txt"" /></Folder>" + ;
                 "    <Project Path=""Tools/Helper/Helper.csproj"" />" + ;
                 "  </Folder>" + ;
                 "  <Project Path=""Old/Old.xsproj"" Type=""" + VSSlnxSolution.XSharpProjectType + """ />" + ;
@@ -75,6 +78,9 @@ BEGIN NAMESPACE VFPXPorterTest
             Assert.IsNotNull( helper )
             Assert.AreEqual( "Tools/Helper/Helper.csproj", helper:GetAttribute( "Path" ) )
             Assert.IsFalse( helper:HasAttribute( "Type" ) )
+            Assert.IsNotNull( doc:SelectSingleNode( "/Solution/Configurations/ProjectType[@Name='XSharp']" ) )
+            Assert.IsNotNull( doc:SelectSingleNode( "/Solution/Folder[@Name='/Tools/']/File[@Path='Tools/readme.txt']" ) )
+            Assert.IsNotNull( doc:SelectSingleNode( "/Solution/Folder[@Name='/Tools/']/Folder[@Name='/Tools/Nested/']/File[@Path='Tools/Nested/item.txt']" ) )
             // The new project is at the root, with the X# Type
             VAR mine := (XmlElement) doc:SelectSingleNode( "/Solution/Project[@Path='MyApp/MyApp.xsproj']" )
             Assert.IsNotNull( mine )

@@ -33,6 +33,7 @@ CLASS VSSlnxSolution INHERIT VSSolution
     // Type and solution folder of the projects read from an existing .slnx, by normalized path
     PRIVATE _loadedTypes   AS Dictionary<STRING, STRING>
     PRIVATE _loadedFolders AS Dictionary<STRING, STRING>
+    PRIVATE _loadedDocument AS XmlDocument
 
     PUBLIC CONSTRUCTOR()
         SUPER()
@@ -47,12 +48,41 @@ CLASS VSSlnxSolution INHERIT VSSolution
     /// read from an existing solution in one.
     /// </summary>
     PUBLIC OVERRIDE METHOD Save( solutionPath AS STRING ) AS VOID
-        VAR doc := XmlDocument{}
-        VAR root := doc:CreateElement( "Solution" )
-        doc:AppendChild( root )
+        VAR doc := SELF:_loadedDocument
+        LOCAL root AS XmlElement
+        IF doc == NULL
+            doc := XmlDocument{}
+            root := doc:CreateElement( "Solution" )
+            doc:AppendChild( root )
+        ELSE
+            root := doc:DocumentElement
+        ENDIF
         VAR folders := Dictionary<STRING, XmlElement>{ StringComparer.OrdinalIgnoreCase }
+        VAR existingPaths := HashSet<STRING>{ StringComparer.OrdinalIgnoreCase }
+        IF SELF:_loadedDocument != NULL
+            FOREACH prjNode AS XmlElement IN doc:SelectNodes( "//Project" )
+                VAR existingPath := prjNode:GetAttribute( "Path" )
+                IF !String.IsNullOrEmpty( existingPath )
+                    existingPaths:Add( VSSlnxSolution.ToSlnxPath( existingPath ) )
+                ENDIF
+            NEXT
+        ENDIF
         FOREACH xsProj AS VSProject IN SELF:Projects
             VAR path := VSSlnxSolution.ToSlnxPath( SELF:GetProjectPath( xsProj ) )
+            IF SELF:_loadedDocument != NULL
+                IF existingPaths:Contains( path )
+                    LOOP
+                ENDIF
+                VAR prj := doc:CreateElement( "Project" )
+                prj:SetAttribute( "Path", path )
+                VAR projType := SELF:GetProjectType( path )
+                IF !String.IsNullOrEmpty( projType )
+                    prj:SetAttribute( "Type", projType )
+                ENDIF
+                root:AppendChild( prj )
+                existingPaths:Add( path )
+                LOOP
+            ENDIF
             LOCAL parent := root AS XmlElement
             IF SELF:_loadedFolders:TryGetValue( path, OUT VAR folderName )
                 IF !folders:TryGetValue( folderName, OUT VAR folder )
@@ -114,6 +144,7 @@ CLASS VSSlnxSolution INHERIT VSSolution
                     SELF:_loadedFolders[path] := folderNode:GetAttribute( "Name" )
                 ENDIF
             NEXT
+            SELF:_loadedDocument := doc
         CATCH e AS Exception
             XPorterLogger.Instance:Warning( "VSSlnxSolution: cannot read '" + solutionPath + "': " + e:Message )
             RETURN FALSE

@@ -47,21 +47,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="Resources\PresentationStyleMods-en-US.xml" />
-		<None Remove="Resources\PresentationStyleMods.css" />
+	  <Compile Remove="Resources\**" />
+	  <EmbeddedResource Remove="Resources\**" />
+	  <None Remove="Resources\**" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Compile Include="..\..\..\Common\Constants.cs" Link="Constants.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Content Include="Resources\PresentationStyleMods-en-US.xml">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Resources\PresentationStyleMods.css">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
 	</ItemGroup>
 
 	<ItemGroup>

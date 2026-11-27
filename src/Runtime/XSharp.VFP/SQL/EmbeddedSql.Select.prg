@@ -862,6 +862,29 @@ PARTIAL STATIC CLASS FoxEmbeddedSQL
         ENDIF
         RETURN selectCtx
 
+    // Prepare the subset of SQL predicates currently supported by DELETE.
+    // Keeping subquery execution and membership pruning here reuses SELECT's
+    // semantics and optimizer rather than adding a second IN implementation.
+    INTERNAL STATIC METHOD PrepareDeleteInPredicate(expression AS SqlExpressionContext, ;
+        aliases AS Dictionary<STRING,STRING>, tableName AS STRING, candidateRows OUT List<LONG>) AS SqlThreeValuePredicate
+        candidateRows := NULL
+        IF ! (expression IS SqlInSubqueryExpressionContext VAR inExpression) .OR. inExpression:IsNegated
+            THROW Error{"DELETE currently supports only a positive IN (SELECT ...) predicate"}
+        ENDIF
+        IF HasExternalSubqueryReference(inExpression:Subquery)
+            THROW Error{"Correlated DELETE IN subqueries are not supported yet"}
+        ENDIF
+
+        PrepareSubqueryExpression(expression, aliases)
+        VAR predicate := BuildThreeValuePredicate(expression, aliases)
+        IF SqlOptimizationsEnabled() .AND. IsSafeMembershipRemainder(expression, aliases, FALSE)
+            VAR candidate := FindMembershipCandidate(expression, aliases, tableName)
+            IF candidate != NULL
+                candidateRows := BuildMembershipCandidates(candidate, aliases, tableName)
+            ENDIF
+        ENDIF
+        RETURN predicate
+
     PRIVATE STATIC METHOD PrepareSubqueryExpression(expression AS SqlExpressionContext, ;
         outerTableAliases := NULL AS Dictionary<STRING,STRING>, deferCorrelated := FALSE AS LOGIC, ;
         refreshCorrelated := FALSE AS LOGIC, ;

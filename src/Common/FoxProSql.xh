@@ -70,12 +70,11 @@
 // VFP joins DELETE sources with a comma-separated table list and a WHERE clause.
 #command DELETE <*target*> FROM <(a)> , <*moretables*> WHERE <*whereclause*> => __SqlDelete(<"udc">)
 
+// DELETE predicates with subqueries use the embedded SQL evaluator.
+#command DELETE [<*clauses*>] <s:SELECT> <*moreclauses*> => __SqlDelete(<"udc">)
+
 // Explicit JOIN syntax is not accepted by VFP9 for DELETE.
 #command DELETE [<*clauses*>] JOIN <*moreclauses*> => __NOFOXPROSQL__ <(udc)>
-
-// Delete with a subselect is not supported yet.
-#command DELETE [<*clauses*>] <s:SELECT> <*moreclauses*> => __NOFOXPROSQL__ <(udc)>
-
 
 #command UPDATE <(a)> SET <(f1)> = <x1> [, <(fn)> = <xn>]               ;
          [WHERE <lfor>]                                                   ;

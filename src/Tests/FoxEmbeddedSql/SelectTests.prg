@@ -900,6 +900,87 @@ FUNCTION TestDeleteJoin() AS VOID
     ENDIF
     RETURN
 
+FUNCTION TestDeleteInSubquery() AS VOID
+    CREATE CURSOR delete_in_target (Id I, Value C(12))
+    CREATE CURSOR delete_in_source (Id I)
+    INSERT INTO delete_in_target VALUES (1, "one")
+    INSERT INTO delete_in_target VALUES (2, "two")
+    INSERT INTO delete_in_target VALUES (3, "three")
+    INSERT INTO delete_in_target VALUES (4, "four")
+    INSERT INTO delete_in_source VALUES (1)
+    INSERT INTO delete_in_source VALUES (1)
+    INSERT INTO delete_in_source VALUES (3)
+
+    LOCAL membershipBitmapsBefore := SqlOptimizationCount("MembershipBitmaps") AS INT
+    DbSelectArea("delete_in_target")
+    DELETE FROM delete_in_target WHERE delete_in_target.Id IN (SELECT Id FROM delete_in_source WHERE Id > 0)
+    VerifySqlOptimization("MembershipBitmaps", membershipBitmapsBefore)
+    IF _TALLY != 2 .OR. !String.Equals(Alias(), "delete_in_target", StringComparison.OrdinalIgnoreCase)
+        THROW Exception{"DELETE IN should tally matching target rows once and restore the selected area"}
+    ENDIF
+    DbGoto(1)
+    IF !Deleted()
+        THROW Exception{"DELETE IN should delete a target row present in the subquery"}
+    ENDIF
+    DbGoto(2)
+    IF Deleted()
+        THROW Exception{"DELETE IN should preserve a target row absent from the subquery"}
+    ENDIF
+    DbGoto(3)
+    IF !Deleted()
+        THROW Exception{"DELETE IN should delete every matching target row"}
+    ENDIF
+    DbGoto(4)
+    IF Deleted()
+        THROW Exception{"DELETE IN should preserve a target row absent from the subquery"}
+    ENDIF
+
+    DbSelectArea("delete_in_source")
+    IF RecCount() != 3
+        THROW Exception{"DELETE IN must leave subquery source rows unchanged"}
+    ENDIF
+    DbGoTop()
+    DO WHILE !Eof()
+        IF Deleted()
+            THROW Exception{"DELETE IN unexpectedly marked a subquery source row deleted"}
+        ENDIF
+        DbSkip(1)
+    ENDDO
+
+    membershipBitmapsBefore := SqlOptimizationCount("MembershipBitmaps")
+    DbSelectArea("delete_in_target")
+    DELETE FROM delete_in_target WHERE delete_in_target.Id IN (SELECT Id FROM delete_in_source WHERE Id = 99)
+    VerifySqlOptimization("MembershipBitmaps", membershipBitmapsBefore)
+    IF _TALLY != 0
+        THROW Exception{"DELETE IN should set _TALLY to zero for an empty subquery result"}
+    ENDIF
+    DbGoto(2)
+    IF Deleted()
+        THROW Exception{"DELETE IN with an empty result must preserve unmatched target rows"}
+    ENDIF
+    DbGoto(4)
+    IF Deleted()
+        THROW Exception{"DELETE IN with an empty result must preserve all unmatched target rows"}
+    ENDIF
+
+    LOCAL unsupportedNotInRejected := FALSE AS LOGIC
+    TRY
+        DELETE FROM delete_in_target WHERE Id NOT IN (SELECT Id FROM delete_in_source)
+    CATCH ex AS Exception
+        unsupportedNotInRejected := ex:Message:Contains("positive IN")
+    END TRY
+    IF !unsupportedNotInRejected
+        THROW Exception{"DELETE NOT IN should fail clearly until it is implemented"}
+    ENDIF
+
+    IF Used("delete_in_target")
+        DbCloseArea("delete_in_target")
+    ENDIF
+    IF Used("delete_in_source")
+        DbCloseArea("delete_in_source")
+    ENDIF
+    RETURN
+
 FUNCTION ThrowEmbeddedSqlTestError(oError AS OBJECT) AS USUAL
     IF oError IS Exception VAR ex
         THROW ex

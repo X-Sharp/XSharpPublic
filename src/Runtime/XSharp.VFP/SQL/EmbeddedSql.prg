@@ -122,61 +122,89 @@ FUNCTION __SqlDelete(sCommand AS STRING) AS LOGIC
     LOCAL deletedCount := 0 AS LONG
     LOCAL targetAlias := "" AS STRING
     LOCAL sourceAlias := "" AS STRING
+    LOCAL isSubqueryDelete := FALSE AS LOGIC
+    LOCAL deletePredicate := NULL AS SqlThreeValuePredicate
+    LOCAL candidateRows AS List<LONG>
+    LOCAL whereBlock := NULL AS CODEBLOCK
 
     TRY
         VAR parser := SQLParser{XTokenList{XSqlLexer{sCommand}:AllTokens()}}
         IF !parser:ParseDeleteStatement(OUT VAR deleteContext)
             THROW Error{"Could not parse DELETE command: " + parser:Error}
         ENDIF
-        IF String.IsNullOrWhiteSpace(deleteContext:TableName) .OR. deleteContext:JoinList:Count != 0
-            THROW Error{"DELETE source-list currently requires an explicit target and comma-separated sources"}
-        ENDIF
         IF deleteContext:WhereClause == NULL
-            THROW Error{"DELETE source-list requires a WHERE condition"}
-        ENDIF
-
-        targetAlias := AllTrim(deleteContext:TableName)
-        LOCAL sourceCount := 0 AS INT
-        FOREACH VAR tableName IN deleteContext:TableList
-            IF !String.Equals(AllTrim(tableName), targetAlias, StringComparison.OrdinalIgnoreCase)
-                sourceCount++
-                sourceAlias := AllTrim(tableName)
-            ENDIF
-        NEXT
-        IF sourceCount != 1
-            THROW Error{"DELETE source-list currently supports exactly one source table besides the target"}
-        ENDIF
-        IF String.Equals(targetAlias, sourceAlias, StringComparison.OrdinalIgnoreCase)
-            THROW Error{"DELETE target and source must be different work areas"}
-        ENDIF
-        IF !FoxEmbeddedSQL.OpenArea(targetAlias) .OR. !FoxEmbeddedSQL.OpenArea(sourceAlias)
-            THROW Error{"Could not open DELETE target or source table"}
+            THROW Error{"DELETE requires a WHERE condition"}
         ENDIF
 
         VAR aliases := Dictionary<STRING, STRING>{StringComparer.OrdinalIgnoreCase}
-        aliases[targetAlias] := targetAlias
-        aliases[sourceAlias] := sourceAlias
-        VAR whereExpression := deleteContext:WhereClause:ToResolvedString(aliases)
-        VAR whereBlock := MCompile(whereExpression)
-        IF whereBlock == NULL
-            THROW Error{"Could not compile DELETE WHERE expression: " + whereExpression}
+        candidateRows := NULL
+        IF String.IsNullOrWhiteSpace(deleteContext:TableName)
+            IF deleteContext:TableList:Count != 1 .OR. deleteContext:JoinList:Count != 0
+                THROW Error{"DELETE subquery currently supports one target table"}
+            ENDIF
+            isSubqueryDelete := TRUE
+            targetAlias := AllTrim(deleteContext:TableList[0])
+            IF !FoxEmbeddedSQL.OpenArea(targetAlias)
+                THROW Error{"Could not open DELETE target table: " + targetAlias}
+            ENDIF
+            aliases[targetAlias] := targetAlias
+            deletePredicate := FoxEmbeddedSQL.PrepareDeleteInPredicate( ;
+                deleteContext:WhereClause, aliases, targetAlias, OUT candidateRows)
+        ELSE
+            IF deleteContext:JoinList:Count != 0
+                THROW Error{"DELETE source-list currently requires comma-separated sources"}
+            ENDIF
+            targetAlias := AllTrim(deleteContext:TableName)
+            LOCAL sourceCount := 0 AS INT
+            FOREACH VAR tableName IN deleteContext:TableList
+                IF !String.Equals(AllTrim(tableName), targetAlias, StringComparison.OrdinalIgnoreCase)
+                    sourceCount++
+                    sourceAlias := AllTrim(tableName)
+                ENDIF
+            NEXT
+            IF sourceCount != 1
+                THROW Error{"DELETE source-list currently supports exactly one source table besides the target"}
+            ENDIF
+            IF String.Equals(targetAlias, sourceAlias, StringComparison.OrdinalIgnoreCase)
+                THROW Error{"DELETE target and source must be different work areas"}
+            ENDIF
+            IF !FoxEmbeddedSQL.OpenArea(targetAlias) .OR. !FoxEmbeddedSQL.OpenArea(sourceAlias)
+                THROW Error{"Could not open DELETE target or source table"}
+            ENDIF
+
+            aliases[targetAlias] := targetAlias
+            aliases[sourceAlias] := sourceAlias
+            VAR whereExpression := deleteContext:WhereClause:ToResolvedString(aliases)
+            whereBlock := MCompile(whereExpression)
+            IF whereBlock == NULL
+                THROW Error{"Could not compile DELETE WHERE expression: " + whereExpression}
+            ENDIF
         ENDIF
 
         DbSelectArea(targetAlias)
         LOCAL targetRowCount := (LONG)RecCount() AS LONG
-        FOR LOCAL targetRecord := 1 AS LONG TO targetRowCount
+        LOCAL targetIterationCount := targetRowCount AS LONG
+        IF candidateRows != NULL
+            targetIterationCount := candidateRows:Count
+        ENDIF
+        FOR LOCAL targetIndex := 0 AS LONG TO targetIterationCount - 1
+            LOCAL targetRecord := IIF(candidateRows != NULL, candidateRows[targetIndex], targetIndex + 1) AS LONG
             DbGoto(targetRecord, targetAlias)
-            DbSelectArea(sourceAlias)
-            LOCAL sourceRowCount := (LONG)RecCount() AS LONG
             LOCAL matched := FALSE AS LOGIC
-            FOR LOCAL sourceRecord := 1 AS LONG TO sourceRowCount
-                DbGoto(sourceRecord, sourceAlias)
-                VAR matchValue := (USUAL)whereBlock:Eval()
-                IF !IsNil(matchValue) .AND. !matchValue:IsNull .AND. (LOGIC)matchValue
-                    matched := TRUE
-                    EXIT
-                ENDIF
-            NEXT
+            IF isSubqueryDelete
+                matched := deletePredicate:Evaluate() == 1
+            ELSE
+                DbSelectArea(sourceAlias)
+                LOCAL sourceRowCount := (LONG)RecCount() AS LONG
+                FOR LOCAL sourceRecord := 1 AS LONG TO sourceRowCount
+                    DbGoto(sourceRecord, sourceAlias)
+                    VAR matchValue := (USUAL)whereBlock:Eval()
+                    IF !IsNil(matchValue) .AND. !matchValue:IsNull .AND. (LOGIC)matchValue
+                        matched := TRUE
+                        EXIT
+                    ENDIF
+                NEXT
+            ENDIF
 
             IF matched
                 DbSelectArea(targetAlias)

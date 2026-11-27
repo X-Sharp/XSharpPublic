@@ -98,10 +98,10 @@ CLASS VSSlnxSolution INHERIT VSSolution
                     LOOP
                 ENDIF
                 path := VSSlnxSolution.ToSlnxPath( path )
-                VAR projName := Path.GetFileNameWithoutExtension( path )
-                IF SELF:Projects:Any( { p => String.Compare( p:Name, projName, TRUE ) == 0 } )
+                IF SELF:Projects:Any( { p => String.Equals( VSSlnxSolution.ToSlnxPath( SELF:GetProjectPath( p ) ), path, StringComparison.OrdinalIgnoreCase ) } )
                     LOOP
                 ENDIF
+                VAR projName := Path.GetFileNameWithoutExtension( path )
                 // Project proxy: name and path only (.slnx has no project GUIDs)
                 VAR p := VSProject{ projName }
                 p:RelativePath := path:Replace( "/", "\" )

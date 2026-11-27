@@ -215,6 +215,8 @@ INTERNAL FUNCTION __DbFieldListHelper(aFieldList AS ARRAY, cIncludedFields AS ST
     ENDIF
     return selected
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcopy/*" />
+[NeedsAccessToLocals(FALSE)];
 FUNCTION DbCopyFox(cTargetFile, cType, aFields, cbForCondition, ;
         cbWhileCondition, nNext,nRecord, lRest, nCodePage, cDbName, cLongTableName, lCdx, lNoOptimize)   AS LOGIC CLIPPER
     local cOutPutType as STRING
@@ -260,6 +262,8 @@ FUNCTION DbCopyFox(cTargetFile, cType, aFields, cbForCondition, ;
     END TRY
     return result
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcopydelim/*" />
+[NeedsAccessToLocals(FALSE)];
 FUNCTION DbCopyDelimFox (cTargetFile, cDelim, cChar, aFields,  ;
         cbForCondition, cbWhileCondition, nNext,nRecord, lRest, nCodePage, lNoOptimize) ;
         AS LOGIC CLIPPER
@@ -286,6 +290,7 @@ FUNCTION DbCopyDelimFox (cTargetFile, cDelim, cChar, aFields,  ;
         __DbPopOptimize(lNoOptimize, lOldOpt)
     END TRY
 
+[NeedsAccessToLocals(FALSE)];
 [FoxArrayInputParameter(1)];
 FUNCTION DbCopyToArray(uSource AS USUAL, aFieldList := NIL AS USUAL, cbForCondition := NIL AS USUAL, cbWhileCondition := NIL AS USUAL, nNext := NIL AS USUAL,nRecord := NIL AS USUAL, lRest := NIL AS USUAL, lNoOptimize := NIL AS USUAL) AS ARRAY strict
     // COPY TO ARRAY doed not have a MEMO keyword, so automatically include memo fields
@@ -378,6 +383,7 @@ INTERNAL FUNCTION DbCopyToArraySingleRecord(aFields as IList<string> ) AS ARRAY
     NEXT
     RETURN result
 
+[NeedsAccessToLocals(FALSE)];
 FUNCTION DbAppendFromArray(aValues, aFieldList, cbForCondition) AS LOGIC CLIPPER
     IF ! IsArray(aValues)
         THROW Error.ArgumentError(__FUNCTION__ , nameof(aValues), __VfpStr(VFPErrors.VFP_MULTI_DIM_EXPECTED,nameof(aValues))  , 1, {aValues})
@@ -421,6 +427,8 @@ FUNCTION DbAppendFromArray(aValues, aFieldList, cbForCondition) AS LOGIC CLIPPER
     ENDIF
     RETURN TRUE
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbapp/*" />
+[NeedsAccessToLocals(FALSE)];
 FUNCTION DbAppFox(cSourceFile, cType, aFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, cSheet, nCodePage, lNoOptimize) AS USUAL CLIPPER
     local cInPutType as STRING
     LOCAL result as LOGIC
@@ -453,7 +461,8 @@ FUNCTION DbAppFox(cSourceFile, cType, aFields, cbForCondition, cbWhileCondition,
         RuntimeState.DelimRDD   := cDelim
     END TRY
     return result
-
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbappdelim/*" />
+[NeedsAccessToLocals(FALSE)];
 FUNCTION DbAppDelimFox (cTargetFile, cDelim, cChar, aFields, cbForCondition, cbWhileCondition, nNext,nRecord, lRest, nCodePage, lNoOptimize)   AS LOGIC CLIPPER
     IF IsString(cDelim)
         VAR sDelim := Upper(cDelim)
@@ -527,6 +536,7 @@ FUNCTION DbUseAreaFox(uArea, cDataFile, cAlias, lShared, lReadOnly, ;
     ENDIF
     RETURN DbUseArea(FALSE, cDriver, cDataFile, cAlias, lShared, lReadOnly)
 
+/// <include file="VFPDocs.xml" path="Runtimefunctions/seek/*" />
 FUNCTION DbSeekFox(uExpr, uOrder, cBagName, lDescend) AS LOGIC CLIPPER
     local currentOrder := NIL AS USUAL
     local bagName      := "" AS STRING
@@ -577,6 +587,8 @@ FUNCTION IsMemoFetched( uField AS USUAL, uArea := NIL AS USUAL) AS USUAL
     ENDIF
     RETURN TRUE
 
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcopystruct/*" />
 FUNCTION DbCopyStructFox(cTargetFile, aFields, lCdx) AS LOGIC CLIPPER
     local acStruct as ARRAY
     IF IsArray(aFields)
@@ -598,5 +610,59 @@ FUNCTION DbCopyStructFox(cTargetFile, aFields, lCdx) AS LOGIC CLIPPER
     VoDbSetSelect((INT) siFrom)
     return result
 
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbcopyxstruct/*" />
 FUNCTION DbCopyXStructFox(cTargetFile AS STRING) AS LOGIC
     return DbCopyXStruct(cTargetFile)
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dblocate/*" />
+/// <seealso cref="NeedsAccessToLocalsAttribute" />
+[NeedsAccessToLocals(FALSE)];
+FUNCTION DbLocate(cbForCondition, cbWhileCondition, nNext, nRecord, lRest, lNoOpt ) AS LOGIC CLIPPER
+    ? cbForCondition
+    RETURN XSharp.RT.Functions.DbLocate(_Args())
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbeval/*" />
+/// <seealso cref="NeedsAccessToLocalsAttribute" />
+[NeedsAccessToLocals(FALSE)];
+FUNCTION DbEval(cbExecute, cbForCondition, cbWhileCondition, nNext, nRecord, lRest, lNoOpt) AS LOGIC CLIPPER
+    RETURN XSharp.RT.Functions.DbEval(_Args())
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbtotal/*" />
+/// <seealso cref="NeedsAccessToLocalsAttribute" />
+[NeedsAccessToLocals(FALSE)];
+FUNCTION DbTotal(cTargetFile, cbKey, acFields,  cbForCondition, cbWhileCondition, ;
+        nNext, nRecord, lRest, lNoOpt ) 	AS LOGIC CLIPPER
+    RETURN XSharp.RT.Functions.DbTotal(_Args())
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbsetordercondition/*" />
+/// <seealso cref="NeedsAccessToLocalsAttribute" />
+[NeedsAccessToLocals(FALSE)];
+FUNCTION DbSetOrderCondition(  cForCondition, cbForCondition, lAll, cbWhileCondition, ;
+cbEval, nInterval, nStart, nNext, nRecord, lRest, lDescend, lAdditive, lCurrent, lCustom, ;
+    lNoOptimize,lBinary,cCollation,lCandidate, lCompact) AS LOGIC CLIPPER
+    RETURN XSharp.RT.Functions.DbSetOrderCondition(_Args())
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/ordcondset/*" />
+/// <seealso cref="NeedsAccessToLocalsAttribute" />
+[NeedsAccessToLocals(FALSE)];
+FUNCTION OrdCondSet(cForCondition, cbForCondition, lAll, cbWhileCondition, cbEval, nInterval, nStart,     ;
+                    nNext, nRecord,lRest,lDescend,lAdditive,lCurrent, lCustom, lNoOptimize,;
+                        lBinary,cCollation,lCandidate, lCompact     ) AS LOGIC CLIPPER
+    RETURN XSharp.RT.Functions.DbSetOrderCondition(_Args())
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbtrans/*" />
+/// <seealso cref="NeedsAccessToLocalsAttribute" />
+[NeedsAccessToLocals(FALSE)];
+FUNCTION DbTrans(wTarget, aStruct, cbForCondition, cbWhileCondition, nNext, nRecord, lRest) AS LOGIC CLIPPER
+    RETURN XSharp.RT.Functions.DbTrans(_Args())
+
+
+/// <include file="VoFunctionDocs.xml" path="Runtimefunctions/dbjoin/*" />
+/// <seealso cref="NeedsAccessToLocalsAttribute" />
+[NeedsAccessToLocals(FALSE)];
+FUNCTION DbJoin(cAlias, cTargetFile, acFields, cbForCondition, lNoOpt) AS LOGIC CLIPPER
+    RETURN XSharp.RT.Functions.DbJoin(_Args())
+

@@ -9,6 +9,7 @@ USING XSharp.Internal
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/massign/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
+/// <seealso cref="NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals(TRUE)];
 FUNCTION MAssign(cExp AS STRING,uValue AS USUAL) AS USUAL
     RETURN MemVarPutSym(cExp, uValue)
@@ -22,10 +23,13 @@ FUNCTION MemVarBlock(cMemvarName AS STRING) AS OBJECT
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memvarget/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
+/// <seealso cref="NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals(FALSE)];
 FUNCTION MemVarGet(cVarName AS STRING) AS USUAL
     RETURN XSharp.MemVar.Get(cVarName)
 
+/// <inheritdoc cref='MemVarGet' />
+/// <seealso cref="NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals(FALSE)];
 FUNCTION MemVarTryGet(cVarName AS STRING, uValue OUT USUAL) AS LOGIC
     RETURN XSharp.MemVar.TryGet(cVarName, OUT uValue)
@@ -34,6 +38,7 @@ FUNCTION MemVarTryGet(cVarName AS STRING, uValue OUT USUAL) AS LOGIC
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/memvarput/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
+/// <seealso cref="NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals(TRUE)];
 FUNCTION MemVarPut(cVarName AS STRING,uValue AS USUAL) AS USUAL
     RETURN XSharp.MemVar.Put(cVarName, uValue)
@@ -41,6 +46,7 @@ FUNCTION MemVarPut(cVarName AS STRING,uValue AS USUAL) AS USUAL
 
 
 /// <include file="XSharp.RT.Docs.xml" path="doc/MemVarClear/*" />
+/// <seealso cref="NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals(TRUE)];
 FUNCTION MemVarClear(symVar AS STRING) AS VOID
 	XSharp.MemVar.Put(symVar, NIL)
@@ -48,6 +54,7 @@ FUNCTION MemVarClear(symVar AS STRING) AS VOID
 
 
 /// <include file="XSharp.RT.Docs.xml" path="doc/MemVarRelease/*" />
+/// <seealso cref="NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals(TRUE)];
 FUNCTION MemVarRelease(symVar AS STRING) AS VOID
 	XSharp.MemVar.Release(symVar)
@@ -56,6 +63,7 @@ FUNCTION MemVarRelease(symVar AS STRING) AS VOID
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/varget/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
+/// <seealso cref="NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals(FALSE)];
 FUNCTION VarGet(cVarName AS STRING) AS USUAL
     RETURN __VarGet(cVarName)
@@ -63,6 +71,7 @@ FUNCTION VarGet(cVarName AS STRING) AS USUAL
 
 /// <include file="VoFunctionDocs.xml" path="Runtimefunctions/varput/*" />
 /// <include file="RTComments.xml" path="Comments/Memvar/*" />
+/// <seealso cref="NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals(TRUE)];
 FUNCTION VarPut(cVarName AS STRING,uValue AS USUAL) AS USUAL
     RETURN __VarPut(cVarName, uValue)
@@ -94,6 +103,7 @@ FUNCTION MemVarPutSym(symVar AS SYMBOL, uValue AS USUAL) AS USUAL
 
 
 /// <include file="XSharp.RT.Docs.xml" path="doc/_MClear/*" />
+/// <seealso cref="NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals(TRUE)];
 FUNCTION _MClear() AS VOID STRICT
 	XSharp.MemVar.ClearAll()
@@ -119,6 +129,7 @@ FUNCTION _MxRelease (var1, var2, var3, var4, varn) AS VOID CLIPPER
 	RETURN
 
 /// <include file="XSharp.RT.Docs.xml" path="doc/_MRelease/*" />
+/// <seealso cref="NeedsAccessToLocalsAttribute" />
 [NeedsAccessToLocals(TRUE)];
 FUNCTION _MRelease(cMask AS STRING, lMatch AS LOGIC)	AS VOID
 	LOCAL cName AS STRING
